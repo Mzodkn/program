@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Business Fundamentals | أساسيات الأعمال</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+/* brand colors default = teal (#14b8a6 / #0d9488). Each subject can switch them through CSS variables. */
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      brand: { 500: 'rgb(var(--b5) / <alpha-value>)', 600: 'rgb(var(--b6) / <alpha-value>)' },
+      dark: { base: '#0b0f17', surface: '#111827', elevated: '#1f2937', border: '#374151', text: '#f3f4f6', muted: '#9ca3af' }
+    },
+    fontFamily: { sans: ['Inter', 'sans-serif'], arabic: ['Cairo', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
+  } }
+}
+</script>
+<style>
+  :root { --b5: 20 184 166; --b6: 13 148 136; }
+  html[lang="en"] body { font-family: 'Inter', sans-serif; }
+  html[lang="ar"] body { font-family: 'Cairo', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #0b0f17; }
+  ::-webkit-scrollbar-thumb { background: #374151; border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgb(var(--b6)); }
+  .fade { animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .flip { perspective: 1000px; }
+  .flip-inner { transition: transform .5s; transform-style: preserve-3d; position: relative; min-height: 230px; }
+  .flip.on .flip-inner { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1.5rem; border-radius: 1rem; overflow: auto; }
+  .back { transform: rotateY(180deg); }
+</style>
+</head>
+<body class="bg-dark-base text-dark-text min-h-screen">
+
+<header class="fixed top-0 inset-x-0 z-40 h-14 bg-dark-surface/95 backdrop-blur border-b border-dark-border flex items-center justify-between px-3">
+  <div class="flex items-center gap-3 min-w-0">
+    <button id="menuBtn" class="p-2 rounded-lg hover:bg-dark-elevated" aria-label="Menu">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <a href="index.html" class="p-2 rounded-lg hover:bg-dark-elevated" title="All subjects">🗂️</a>
+    <span id="topTitle" class="font-bold text-brand-500 truncate"></span>
+  </div>
+  <div class="flex items-center gap-3">
+    <div id="topProgWrap" class="hidden sm:flex items-center gap-2" title="Mastery">
+      <div class="w-28 h-2 bg-dark-base rounded-full overflow-hidden"><div id="topBar" class="h-full bg-brand-500 transition-all" style="width:0%"></div></div>
+      <span id="topPct" class="mono text-xs text-dark-muted w-9"></span>
+    </div>
+    <button id="langBtn" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold"></button>
+  </div>
+</header>
+
+<div id="backdrop" class="fixed inset-0 bg-black/60 z-30 hidden lg:hidden"></div>
+
+<aside id="sidebar" class="fixed top-14 bottom-0 start-0 w-72 z-30 bg-dark-surface border-e border-dark-border overflow-y-auto transition-transform duration-300">
+  <nav id="nav" class="p-3 space-y-1"></nav>
+</aside>
+
+<main id="main" class="pt-14 transition-all duration-300">
+  <div id="app" class="max-w-4xl mx-auto p-4 sm:p-6 pb-24"></div>
+</main>
+
+<script>
+/* ============================================================
+   UI LABELS  [English, Arabic]
+   ============================================================ */
+const UI = {
+  hub:["All Subjects","كل المواد"], home:["Subject Home","الصفحة الرئيسية للمادة"], lecture:["Lecture","المحاضرة"],
+  objectives:["Learning Objectives","أهداف التعلم"], def:["Definition","تعريف"], ex:["Example","مثال"], tip:["Exam Tip","نصيحة للامتحان"],
+  take:["Key Takeaways","أهم النقاط"], quiz:["Self-Assessment Quiz","اختبار ذاتي"], flash:["Lecture Flashcards","بطاقات مراجعة المحاضرة"],
+  exam:["Final Exam","الاختبار النهائي"], next:["Next","التالي"], prev:["Previous","السابق"],
+  correct:["Correct! ✔","إجابة صحيحة! ✔"], wrong:["Incorrect ✘ - the correct answer is highlighted","إجابة خاطئة ✘ - الإجابة الصحيحة موضحة"],
+  score:["Your score","نتيجتك"], retry:["Try again","أعد المحاولة"], search:["Search a term...","ابحث عن مصطلح..."],
+  flip:["Tap the card to flip","اضغط على البطاقة لقلبها"], shuffle:["Shuffle","خلط"], start:["Start Exam","ابدأ الاختبار"],
+  mastery:["Mastery","مستوى الإتقان"], best:["Best","الأفضل"], plan:["How to score 100%","كيف تحصل على 100%"],
+  finish:["Finish","إنهاء"], reset:["Reset progress of this subject","إعادة ضبط تقدم هذه المادة"], read:["Read","تمت القراءة"],
+  soon:["Coming soon","قريبًا"], open:["Open","فتح"], subjects:["Subjects","المواد"], tools:["Study Tools","أدوات المراجعة"],
+  lectures:["Lectures","المحاضرات"], mistakes:["Questions you missed","الأسئلة التي أخطأت فيها"], yourAns:["Correct answer","الإجابة الصحيحة"],
+  glossFlash:["Term Flashcards","بطاقات المصطلحات"], glossList:["All Terms","كل المصطلحات"], questions:["questions","سؤالًا"],
+  question:["Question","السؤال"],
+  chooseSize:["Choose the number of questions","اختر عدد الأسئلة"], all:["All","الكل"], answerEN:["English","English"],
+  masteryHow:["Mastery = average of your best score in each lecture quiz and your best final exam score. Reading lectures does not raise it.","الإتقان = متوسط أفضل نتيجة لك في اختبار كل محاضرة وأفضل نتيجة في الاختبار النهائي. قراءة المحاضرات وحدها لا ترفعه."]
+};
+const LECTURES = [];
+
+LECTURES.push({ id:'l1', n:1,
+  title:["Introduction to Business and the Business Environment","مقدمة في الأعمال وبيئة الأعمال (Business Environment)"],
+  obj:[
+    ["Define business and explain its importance.","تعريف النشاط التجاري (Business) وشرح أهميته."],
+    ["Identify different types of businesses.","التعرف على أنواع الأعمال المختلفة."],
+    ["Understand the role of business in the economy.","فهم دور الأعمال في الاقتصاد (Economy)."],
+    ["Explain the relationship between technology and business development.","شرح العلاقة بين التكنولوجيا وتطور الأعمال."]
+  ],
+  sec:[
+   {t:["Definition of Business","تعريف الأعمال (Business)"], b:[
+     {k:'def', x:["A business is an organization or entity engaged in commercial, industrial, or professional activities. Businesses produce goods or services to satisfy customer needs and generate profit.","النشاط التجاري (Business) هو منظمة أو كيان يعمل في أنشطة تجارية أو صناعية أو مهنية. تنتج الأعمال سلعًا (Goods) أو خدمات (Services) لتلبية احتياجات العملاء وتحقيق الربح (Profit)."]}
+   ]},
+   {t:["Key Components of Business","المكونات الرئيسية للأعمال"], b:[
+     {k:'ul', h:["1 - Resources","1 - الموارد (Resources)"], x:[
+       ["Human resources (employees)","الموارد البشرية (Human resources) - الموظفون"],
+       ["Financial resources (capital)","الموارد المالية (Financial resources) - رأس المال (Capital)"],
+       ["Physical resources (equipment)","الموارد المادية (Physical resources) - المعدات"],
+       ["Information resources (data, software)","موارد المعلومات (Information resources) - البيانات والبرمجيات"]]},
+     {k:'p', x:["2 - Goods: Tangible products that customers can physically use.","2 - السلع (Goods): منتجات ملموسة (Tangible) يستطيع العملاء استخدامها فعليًا."]},
+     {k:'ul', h:["Examples of goods","أمثلة على السلع"], x:[["Computers","أجهزة الكمبيوتر"],["Smartphones","الهواتف الذكية"],["Networking devices","أجهزة الشبكات"]]},
+     {k:'p', x:["3 - Services: Intangible activities provided to customers.","3 - الخدمات (Services): أنشطة غير ملموسة (Intangible) تُقدم للعملاء."]},
+     {k:'ul', h:["Examples of services","أمثلة على الخدمات"], x:[["Software development","تطوير البرمجيات"],["Cloud hosting","الاستضافة السحابية (Cloud hosting)"],["Technical support","الدعم الفني"]]},
+     {k:'tip', x:["Goods = you can touch them (tangible). Services = you cannot touch them (intangible).","السلع = يمكن لمسها (Tangible). الخدمات = لا يمكن لمسها (Intangible)."]}
+   ]},
+   {t:["Why Businesses Exist","لماذا توجد الأعمال؟"], b:[
+     {k:'p', x:["Businesses exist to:","توجد الأعمال من أجل:"]},
+     {k:'ul', x:[["1. Produce goods and services","1. إنتاج السلع والخدمات"],["2. Generate profit","2. تحقيق الربح"],["3. Create employment","3. توفير فرص العمل"],["4. Promote innovation","4. تعزيز الابتكار"]]},
+     {k:'p', x:["1. Produce Goods and Services: Businesses create products that meet customer needs.","1. إنتاج السلع والخدمات: تصنع الأعمال منتجات تلبي احتياجات العملاء."]},
+     {k:'ex', x:["An IT company develops mobile applications for online shopping.","شركة تقنية معلومات (IT) تطور تطبيقات هاتف للتسوق عبر الإنترنت."]},
+     {k:'p', x:["2. Generate Profit: Profit is the main financial goal of most businesses.","2. تحقيق الربح: الربح (Profit) هو الهدف المالي الرئيسي لمعظم الأعمال."]},
+     {k:'formula', x:"Profit = Revenue - Expenses"},
+     {k:'ex', x:["Revenue from software sales = $50,000\nOperating costs = $30,000\nProfit = $20,000","الإيراد (Revenue) من مبيعات البرمجيات = $50,000\nتكاليف التشغيل (Operating costs) = $30,000\nالربح = $20,000"]},
+     {k:'formula', x:"Profit = 50,000 - 30,000 = 20,000"},
+     {k:'p', x:["3. Create Employment: Businesses provide jobs for people including:","3. توفير فرص العمل: توفر الأعمال وظائف للناس منها:"]},
+     {k:'ul', x:[["Software engineers","مهندسو البرمجيات"],["Network administrators","مديرو الشبكات"],["IT support specialists","أخصائيو الدعم الفني"],["Data analysts","محللو البيانات"]]},
+     {k:'p', x:["4. Promote Innovation: Businesses often invest in research and development to introduce new technologies.","4. تعزيز الابتكار: غالبًا ما تستثمر الأعمال في البحث والتطوير (Research and Development) لتقديم تقنيات جديدة."]},
+     {k:'ul', h:["Examples","أمثلة"], x:[["Artificial Intelligence","الذكاء الاصطناعي (Artificial Intelligence)"],["Cloud computing","الحوسبة السحابية (Cloud computing)"],["Blockchain technology","تقنية البلوكشين (Blockchain)"]]}
+   ]},
+   {t:["Types of Businesses","أنواع الأعمال"], b:[
+     {k:'p', x:["Businesses can be classified into different categories.","يمكن تصنيف الأعمال إلى فئات مختلفة."]},
+     {k:'cards', c:[
+       {t:["1- Manufacturing Businesses","1- الأعمال الصناعية (Manufacturing)"], l:[["Produce physical goods.","تنتج سلعًا مادية."],["Examples: Computer hardware manufacturers, Electronics companies","أمثلة: مصنعو أجهزة الكمبيوتر، شركات الإلكترونيات"]]},
+       {t:["2- Service Businesses","2- أعمال الخدمات (Service)"], l:[["Provide services instead of physical products.","تقدم خدمات بدلًا من منتجات مادية."],["Examples: Software companies, IT consulting firms","أمثلة: شركات البرمجيات، شركات الاستشارات التقنية"]]},
+       {t:["3- Retail Businesses","3- أعمال التجزئة (Retail)"], l:[["Sell products directly to customers.","تبيع المنتجات مباشرة للعملاء."],["Examples: Online stores, Electronics retailers","أمثلة: المتاجر الإلكترونية، تجار تجزئة الإلكترونيات"]]}
+     ]}
+   ]},
+   {t:["The Business Environment","بيئة الأعمال (Business Environment)"], b:[
+     {k:'p', x:["Businesses operate within a business environment that influences their success.","تعمل الأعمال داخل بيئة أعمال تؤثر في نجاحها."]},
+     {k:'cards', c:[
+       {t:["Internal Environment","البيئة الداخلية (Internal Environment)"], l:[["Factors inside the organization.","عوامل داخل المنظمة."],["Employees","الموظفون"],["Company culture","ثقافة الشركة"],["Technology systems","الأنظمة التقنية"],["Management","الإدارة"]]},
+       {t:["External Environment","البيئة الخارجية (External Environment)"], l:[["Factors outside the organization.","عوامل خارج المنظمة."],["Economic conditions","الظروف الاقتصادية"],["Government regulations","اللوائح الحكومية"],["Competitors","المنافسون"],["Technology trends","اتجاهات التكنولوجيا"]]}
+     ]}
+   ]},
+   {t:["Technology and Business","التكنولوجيا والأعمال"], b:[
+     {k:'p', x:["Technology has dramatically transformed business operations.","غيّرت التكنولوجيا عمليات الأعمال بشكل كبير."]},
+     {k:'ul', h:["Key Technologies Affecting Business","التقنيات الرئيسية المؤثرة في الأعمال"], x:[
+       ["1. Cloud Computing","1. الحوسبة السحابية (Cloud Computing)"],["2. E-commerce","2. التجارة الإلكترونية (E-commerce)"],["3. Artificial Intelligence","3. الذكاء الاصطناعي (Artificial Intelligence)"],["4. Data Analytics","4. تحليل البيانات (Data Analytics)"],["5. Cybersecurity","5. الأمن السيبراني (Cybersecurity)"]]},
+     {k:'ex', x:["Online businesses rely on cloud infrastructure to store customer data and run applications.","تعتمد الأعمال الإلكترونية على البنية التحتية السحابية لتخزين بيانات العملاء وتشغيل التطبيقات."]}
+   ]},
+   {t:["Economic, Technological, and Social Environments","البيئات الاقتصادية والتقنية والاجتماعية"], b:[
+     {k:'cards', c:[
+       {t:["Economic Environment","البيئة الاقتصادية (Economic Environment)"], l:[["The economic conditions that affect businesses. Examples include:","الظروف الاقتصادية التي تؤثر في الأعمال. تشمل:"],["inflation","التضخم (Inflation)"],["unemployment","البطالة (Unemployment)"],["interest rates","أسعار الفائدة (Interest rates)"],["economic growth","النمو الاقتصادي (Economic growth)"]]},
+       {t:["Technological Environment","البيئة التقنية (Technological Environment)"], l:[["Technology plays a major role in modern business operations.","تلعب التكنولوجيا دورًا كبيرًا في عمليات الأعمال الحديثة."],["Advancements in technology can create new business opportunities and increase efficiency.","التطورات التقنية يمكن أن تخلق فرص أعمال جديدة وتزيد الكفاءة."],["artificial intelligence","الذكاء الاصطناعي"],["cloud computing","الحوسبة السحابية"],["big data analytics","تحليل البيانات الضخمة (Big data analytics)"],["cybersecurity systems","أنظمة الأمن السيبراني"]]},
+       {t:["Social and Cultural Environment","البيئة الاجتماعية والثقافية"], l:[["Includes social values, attitudes, lifestyles, and cultural factors that influence consumer behavior.","تشمل القيم الاجتماعية والمواقف وأنماط الحياة والعوامل الثقافية التي تؤثر في سلوك المستهلك (Consumer behavior)."],["increasing use of digital services","زيادة استخدام الخدمات الرقمية"],["preference for online shopping","تفضيل التسوق عبر الإنترنت"],["growing concern for environmental sustainability","زيادة الاهتمام بالاستدامة البيئية (Sustainability)"]]}
+     ]},
+     {k:'ex', x:["During economic recessions, customers may reduce spending on technology products.","أثناء الركود الاقتصادي (Recession)، قد يقلل العملاء إنفاقهم على المنتجات التقنية."]},
+     {k:'p', x:["Businesses must continuously adapt to technological changes. Companies must understand social trends to meet customer expectations.","يجب على الأعمال التكيف باستمرار مع التغيرات التقنية. ويجب على الشركات فهم الاتجاهات الاجتماعية لتلبية توقعات العملاء."]}
+   ]},
+   {t:["Stakeholders in Business","أصحاب المصلحة (Stakeholders)"], b:[
+     {k:'def', x:["Stakeholders are individuals or groups who are affected by the activities of a business. Businesses must consider the interests of different stakeholders.","أصحاب المصلحة هم أفراد أو مجموعات يتأثرون بأنشطة الشركة. يجب على الأعمال مراعاة مصالح أصحاب المصلحة المختلفين."]},
+     {k:'cards', c:[
+       {t:["Owners / Shareholders","المالكون / المساهمون (Shareholders)"], l:[["Owners invest money in the business and expect profits.","يستثمر المالكون أموالهم في الشركة ويتوقعون الأرباح."]]},
+       {t:["Employees","الموظفون (Employees)"], l:[["Employees work for the organization and contribute to its success.","يعمل الموظفون في المنظمة ويساهمون في نجاحها."],["Examples: software developers, managers, technicians","أمثلة: مطورو البرمجيات، المديرون، الفنيون"]]},
+       {t:["Customers","العملاء (Customers)"], l:[["Customers purchase the company's products or services.","يشتري العملاء منتجات الشركة أو خدماتها."],["Customer satisfaction is critical for business success.","رضا العملاء ضروري لنجاح الأعمال."]]},
+       {t:["Suppliers","الموردون (Suppliers)"], l:[["Suppliers provide materials, equipment, or services needed for business operations.","يوفر الموردون المواد أو المعدات أو الخدمات اللازمة لعمليات الشركة."],["Example: A company purchasing computer hardware from a supplier.","مثال: شركة تشتري أجهزة كمبيوتر من مورد."]]},
+       {t:["Government","الحكومة (Government)"], l:[["Governments regulate business activities through laws and regulations.","تنظم الحكومات أنشطة الأعمال من خلال القوانين واللوائح."],["Examples: tax laws, labor regulations, data protection laws","أمثلة: قوانين الضرائب، لوائح العمل، قوانين حماية البيانات"]]}
+     ]}
+   ]}
+  ],
+  take:[
+   ["Business = produces goods or services to satisfy needs and make profit.","الأعمال = إنتاج سلع أو خدمات لتلبية الاحتياجات وتحقيق الربح."],
+   ["Profit = Revenue - Expenses.","الربح = الإيرادات - المصروفات."],
+   ["Internal environment is inside the company; external environment is outside it.","البيئة الداخلية داخل الشركة، والخارجية خارجها."],
+   ["Five stakeholders: owners, employees, customers, suppliers, government.","خمسة أصحاب مصلحة: المالكون، الموظفون، العملاء، الموردون، الحكومة."]
+  ],
+  fc:[
+   [["What is a business?","ما هو النشاط التجاري (Business)؟"],["An organization engaged in commercial, industrial, or professional activities. It produces goods or services to satisfy customer needs and make profit.","منظمة تعمل في أنشطة تجارية أو صناعية أو مهنية، وتنتج سلعًا أو خدمات لتلبية احتياجات العملاء وتحقيق الربح."]],
+   [["What is the profit formula?","ما هي معادلة الربح؟"],["Profit = Revenue - Expenses. Example: 50,000 - 30,000 = 20,000.","الربح = الإيرادات - المصروفات. مثال: 50,000 - 30,000 = 20,000."]],
+   [["What are the four types of resources?","ما هي أنواع الموارد الأربعة؟"],["Human (employees), financial (capital), physical (equipment), information (data, software).","بشرية (الموظفون)، مالية (رأس المال)، مادية (المعدات)، معلومات (البيانات والبرمجيات)."]],
+   [["Goods vs Services?","الفرق بين السلع والخدمات؟"],["Goods are tangible (computers, smartphones). Services are intangible (software development, cloud hosting, technical support).","السلع ملموسة (حاسوب، هاتف). الخدمات غير ملموسة (تطوير برمجيات، استضافة سحابية، دعم فني)."]],
+   [["Why do businesses exist? (4 reasons)","لماذا توجد الأعمال؟ (4 أسباب)"],["Produce goods and services, generate profit, create employment, promote innovation.","إنتاج السلع والخدمات، تحقيق الربح، توفير فرص العمل، تعزيز الابتكار."]],
+   [["What are the three types of businesses?","ما هي أنواع الأعمال الثلاثة؟"],["Manufacturing (produce physical goods), Service (provide services), Retail (sell directly to customers).","صناعية (تنتج سلعًا مادية)، خدمية (تقدم خدمات)، تجزئة (تبيع للعملاء مباشرة)."]],
+   [["Internal vs external environment?","البيئة الداخلية مقابل الخارجية؟"],["Internal: employees, company culture, technology systems, management. External: economic conditions, government regulations, competitors, technology trends.","الداخلية: الموظفون، ثقافة الشركة، الأنظمة التقنية، الإدارة. الخارجية: الظروف الاقتصادية، اللوائح الحكومية، المنافسون، اتجاهات التكنولوجيا."]],
+   [["Name the 5 key technologies affecting business.","اذكر التقنيات الخمس المؤثرة في الأعمال."],["Cloud computing, e-commerce, artificial intelligence, data analytics, cybersecurity.","الحوسبة السحابية، التجارة الإلكترونية، الذكاء الاصطناعي، تحليل البيانات، الأمن السيبراني."]],
+   [["Give examples of the economic environment.","أعط أمثلة على البيئة الاقتصادية."],["Inflation, unemployment, interest rates, economic growth. In a recession customers may spend less on technology.","التضخم، البطالة، أسعار الفائدة، النمو الاقتصادي. في الركود قد يقل إنفاق العملاء على التقنية."]],
+   [["Who are stakeholders? Name the 5 main ones.","من هم أصحاب المصلحة؟ اذكر الخمسة الرئيسيين."],["People or groups affected by the business: owners/shareholders, employees, customers, suppliers, government.","أفراد أو مجموعات يتأثرون بالشركة: المالكون/المساهمون، الموظفون، العملاء، الموردون، الحكومة."]]
+  ],
+  quiz:[
+   {q:["What is the profit formula?","ما هي معادلة الربح؟"], o:[["Revenue - Expenses","الإيرادات - المصروفات"],["Revenue + Expenses","الإيرادات + المصروفات"],["Expenses - Revenue","المصروفات - الإيرادات"],["Revenue × Expenses","الإيرادات × المصروفات"]], a:0},
+   {q:["Revenue is $50,000 and operating costs are $30,000. What is the profit?","الإيراد $50,000 وتكاليف التشغيل $30,000. كم الربح؟"], o:[["$80,000","$80,000"],["$20,000","$20,000"],["$30,000","$30,000"],["$50,000","$50,000"]], a:1},
+   {q:["Which of these is a service?","أي مما يلي يعتبر خدمة؟"], o:[["Computers","أجهزة الكمبيوتر"],["Smartphones","الهواتف الذكية"],["Cloud hosting","الاستضافة السحابية"],["Networking devices","أجهزة الشبكات"]], a:2},
+   {q:["Which is part of the EXTERNAL environment?","أي مما يلي من البيئة الخارجية؟"], o:[["Employees","الموظفون"],["Company culture","ثقافة الشركة"],["Management","الإدارة"],["Government regulations","اللوائح الحكومية"]], a:3},
+   {q:["Which stakeholder provides materials, equipment, or services?","أي صاحب مصلحة يوفر المواد أو المعدات أو الخدمات؟"], o:[["Suppliers","الموردون"],["Customers","العملاء"],["Owners","المالكون"],["Government","الحكومة"]], a:0},
+   {q:["Which of these is a human resource?","أي مما يلي مورد بشري؟"], o:[["Employees","الموظفون"],["Computers","أجهزة الكمبيوتر"],["Software","البرمجيات"],["Capital","رأس المال"]], a:0},
+   {q:["Which is one reason businesses exist?","أي مما يلي أحد أسباب وجود الأعمال؟"], o:[["To avoid customers","لتجنب العملاء"],["To promote innovation","لتعزيز الابتكار"],["To stop technology","لإيقاف التكنولوجيا"],["To reduce jobs","لتقليل الوظائف"]], a:1},
+   {q:["Which type of business sells products directly to customers?","أي نوع من الأعمال يبيع المنتجات مباشرة للعملاء؟"], o:[["Manufacturing","الصناعية"],["Service","الخدمية"],["Retail","التجزئة"],["Government","الحكومية"]], a:2},
+   {q:["Inflation, unemployment, and interest rates belong to which environment?","التضخم والبطالة وأسعار الفائدة تنتمي إلى أي بيئة؟"], o:[["Economic environment","البيئة الاقتصادية"],["Social environment","البيئة الاجتماعية"],["Technological environment","البيئة التقنية"],["Internal environment","البيئة الداخلية"]], a:0},
+   {q:["'Increasing use of digital services' is an example of which environment?","'زيادة استخدام الخدمات الرقمية' مثال على أي بيئة؟"], o:[["Social and cultural environment","البيئة الاجتماعية والثقافية"],["Economic environment","البيئة الاقتصادية"],["Internal environment","البيئة الداخلية"],["Government environment","البيئة الحكومية"]], a:0}
+  ]
+});
+
+LECTURES.push({ id:'l2', n:2,
+  title:["Forms of Business Ownership","أشكال ملكية الأعمال (Business Ownership)"],
+  obj:[
+    ["Understand the different forms of business ownership.","فهم أشكال ملكية الأعمال المختلفة."],
+    ["Explain the characteristics of sole proprietorship, partnership, corporation, and LLC.","شرح خصائص المنشأة الفردية (Sole Proprietorship) والشراكة (Partnership) والشركة المساهمة (Corporation) والشركة ذات المسؤولية المحدودة (LLC)."],
+    ["Identify the advantages and disadvantages of each business structure.","تحديد مزايا وعيوب كل هيكل أعمال."],
+    ["Understand how entrepreneurs choose the appropriate form of business ownership.","فهم كيف يختار رواد الأعمال شكل الملكية المناسب."],
+    ["Recognize how business ownership structures apply to technology startups.","التعرف على كيفية تطبيق هياكل الملكية على الشركات التقنية الناشئة (Startups)."]
+  ],
+  sec:[
+   {t:["Introduction to Business Ownership","مقدمة في ملكية الأعمال"], b:[
+     {k:'def', x:["A business ownership structure refers to the legal form of an organization.","هيكل ملكية الأعمال (Business ownership structure) هو الشكل القانوني للمنظمة."]},
+     {k:'ul', h:["It determines:","وهو يحدد:"], x:[["who owns the business","من يملك الشركة"],["who is responsible for business decisions","من المسؤول عن قرارات الشركة"],["how profits are distributed","كيف توزع الأرباح"],["the level of legal responsibility (liability) of the owners","مستوى المسؤولية القانونية (Liability) للمالكين"]]},
+     {k:'ul', h:["Choosing the correct business structure is very important because it affects:","اختيار الهيكل الصحيح مهم جدًا لأنه يؤثر في:"], x:[["taxation","الضرائب (Taxation)"],["legal responsibilities","المسؤوليات القانونية"],["ability to raise capital","القدرة على جمع رأس المال"],["management structure","الهيكل الإداري"],["business growth opportunities","فرص نمو الشركة"]]},
+     {k:'ul', h:["There are four common forms of business ownership:","هناك أربعة أشكال شائعة لملكية الأعمال:"], x:[["1. Sole Proprietorship","1. المنشأة الفردية (Sole Proprietorship)"],["2. Partnership","2. الشراكة (Partnership)"],["3. Corporation","3. الشركة المساهمة (Corporation)"],["4. Limited Liability Company (LLC)","4. الشركة ذات المسؤولية المحدودة (LLC)"]]}
+   ]},
+   {t:["Sole Proprietorship","المنشأة الفردية (Sole Proprietorship)"], b:[
+     {k:'def', x:["A sole proprietorship is a business that is owned and managed by one individual. It is the simplest and most common form of business ownership. The owner is responsible for all business decisions and receives all profits.","المنشأة الفردية هي شركة يملكها ويديرها شخص واحد. وهي أبسط وأكثر أشكال الملكية شيوعًا. المالك مسؤول عن كل القرارات ويحصل على كل الأرباح."]},
+     {k:'ul', h:["Characteristics","الخصائص"], x:[["Owned by one person","يملكها شخص واحد"],["Easy to establish","سهلة التأسيس"],["Owner has full control of the business","للمالك سيطرة كاملة على الشركة"],["Owner receives all profits","المالك يحصل على كل الأرباح"],["Owner is personally responsible for all debts","المالك مسؤول شخصيًا عن جميع الديون"]]},
+     {k:'ul', h:["Examples","أمثلة"], x:[["freelance web developers","مطورو الويب المستقلون (Freelance)"],["small IT consultants","مستشارو تقنية المعلومات الصغار"],["online shop owners","أصحاب المتاجر الإلكترونية"],["independent app developers","مطورو التطبيقات المستقلون"]]},
+     {k:'ul', h:["Advantages","المزايا"], x:[["Easy to start: Requires minimal legal procedures.","سهلة البدء: تحتاج إجراءات قانونية قليلة."],["Full control: The owner makes all business decisions.","سيطرة كاملة: المالك يتخذ كل القرارات."],["Keep all profits: The owner does not share profits with others.","الاحتفاظ بكل الأرباح: المالك لا يشارك الأرباح مع أحد."],["Low startup cost: It usually requires less capital to start.","تكلفة بدء منخفضة: تحتاج عادة رأس مال أقل للبدء."]]},
+     {k:'ul', h:["Disadvantages","العيوب"], x:[["Unlimited liability: The owner is personally responsible for business debts.","مسؤولية غير محدودة (Unlimited liability): المالك مسؤول شخصيًا عن ديون الشركة."],["Limited financial resources: It may be difficult to raise large amounts of capital.","موارد مالية محدودة: قد يصعب جمع مبالغ كبيرة من رأس المال."],["Limited business growth: The business may depend heavily on the owner's skills and time.","نمو محدود: قد تعتمد الشركة بشدة على مهارات المالك ووقته."],["High workload: The owner must manage all aspects of the business.","عبء عمل كبير: يجب على المالك إدارة كل جوانب الشركة."]]}
+   ]},
+   {t:["Partnership","الشراكة (Partnership)"], b:[
+     {k:'def', x:["A partnership is a business owned by two or more individuals who share responsibility for managing the business and sharing profits. Partnerships are common when people want to combine their skills, resources, and expertise.","الشراكة هي شركة يملكها شخصان أو أكثر يتشاركون مسؤولية الإدارة والأرباح. الشراكات شائعة عندما يريد الناس جمع مهاراتهم ومواردهم وخبراتهم."]},
+     {k:'cards', c:[
+       {t:["General Partnership","شراكة عامة (General Partnership)"], l:[["All partners share management responsibilities and liabilities.","جميع الشركاء يتشاركون مسؤوليات الإدارة والالتزامات."]]},
+       {t:["Limited Partnership","شراكة محدودة (Limited Partnership)"], l:[["Some partners invest money but do not participate in management.","بعض الشركاء يستثمرون المال لكن لا يشاركون في الإدارة."]]}
+     ]},
+     {k:'ul', h:["Characteristics","الخصائص"], x:[["Owned by two or more people","يملكها شخصان أو أكثر"],["Shared decision making","اتخاذ القرارات مشترك"],["Shared profits and losses","الأرباح والخسائر مشتركة"],["Partnership agreement often required","غالبًا يلزم اتفاق شراكة (Partnership agreement)"]]},
+     {k:'ul', h:["Examples","أمثلة"], x:[["two software developers creating a startup","مطوران يؤسسان شركة ناشئة"],["IT consultants working together","مستشارو تقنية يعملون معًا"],["small technology firms","شركات تقنية صغيرة"]]},
+     {k:'ul', h:["Advantages","المزايا"], x:[["More financial resources: Partners contribute capital.","موارد مالية أكثر: الشركاء يساهمون برأس المال."],["Shared responsibilities: Work and management tasks are divided.","مسؤوليات مشتركة: يتم تقسيم العمل والإدارة."],["More expertise: Partners may have different skills and knowledge.","خبرة أكثر: قد يمتلك الشركاء مهارات ومعارف مختلفة."],["Easier to start than corporations","أسهل في البدء من الشركات المساهمة"]]},
+     {k:'ul', h:["Disadvantages","العيوب"], x:[["Unlimited liability: Partners may be responsible for business debts.","مسؤولية غير محدودة: قد يكون الشركاء مسؤولين عن ديون الشركة."],["Potential conflicts: Partners may disagree on decisions.","احتمال حدوث خلافات: قد يختلف الشركاء في القرارات."],["Profit sharing: Profits must be divided among partners.","تقاسم الأرباح: يجب توزيع الأرباح بين الشركاء."],["Shared risk: One partner's mistake can affect the entire business.","مخاطر مشتركة: خطأ شريك واحد قد يؤثر في الشركة كلها."]]}
+   ]},
+   {t:["Corporation","الشركة المساهمة (Corporation)"], b:[
+     {k:'def', x:["A corporation is a legal entity that is separate from its owners. Ownership is represented by shares of stock.","الشركة المساهمة كيان قانوني (Legal entity) منفصل عن مالكيها. وتُمثل الملكية بأسهم (Shares of stock)."]},
+     {k:'ul', h:["This means the corporation itself can:","وهذا يعني أن الشركة نفسها يمكنها:"], x:[["own property","امتلاك الممتلكات"],["enter contracts","إبرام العقود"],["sue or be sued","أن ترفع دعوى أو تُرفع عليها دعوى"]]},
+     {k:'ul', h:["Characteristics","الخصائص"], x:[["Separate legal entity","كيان قانوني منفصل"],["Ownership divided into shares","الملكية مقسمة إلى أسهم"],["Managed by a board of directors","يديرها مجلس إدارة (Board of directors)"],["Shareholders are owners of the company","المساهمون هم مالكو الشركة"]]},
+     {k:'ex', x:["Large companies often operate as corporations. Examples include major technology companies that sell products globally.","الشركات الكبيرة غالبًا ما تعمل كشركات مساهمة، مثل كبرى شركات التكنولوجيا التي تبيع منتجاتها عالميًا."]},
+     {k:'ul', h:["Advantages","المزايا"], x:[["Limited liability: Shareholders are not personally responsible for company debts.","مسؤولية محدودة (Limited liability): المساهمون غير مسؤولين شخصيًا عن ديون الشركة."],["Ability to raise capital: Corporations can sell shares to investors.","القدرة على جمع رأس المال: يمكن للشركات بيع الأسهم للمستثمرين."],["Business continuity: The business continues even if owners change.","استمرارية الشركة (Business continuity): تستمر الشركة حتى لو تغير المالكون."],["Large growth potential","إمكانية نمو كبيرة"]]},
+     {k:'ul', h:["Disadvantages","العيوب"], x:[["Complex and expensive to establish","معقدة ومكلفة في التأسيس"],["More government regulations","لوائح حكومية أكثر"],["Possible double taxation","احتمال الازدواج الضريبي (Double taxation)"],["Less direct control by owners","سيطرة مباشرة أقل للمالكين"]]}
+   ]},
+   {t:["Limited Liability Company (LLC)","الشركة ذات المسؤولية المحدودة (LLC)"], b:[
+     {k:'def', x:["A Limited Liability Company (LLC) is a hybrid business structure that combines features of both partnerships and corporations. It provides limited liability protection while maintaining flexible management.","الشركة ذات المسؤولية المحدودة (LLC) هي هيكل هجين (Hybrid) يجمع بين ميزات الشراكات والشركات المساهمة. توفر حماية المسؤولية المحدودة مع إدارة مرنة."]},
+     {k:'ul', h:["Characteristics","الخصائص"], x:[["Owners are called members","يسمى المالكون أعضاء (Members)"],["Members have limited liability","الأعضاء لديهم مسؤولية محدودة"],["Flexible management structure","هيكل إداري مرن"],["Combines partnership and corporate features","تجمع بين ميزات الشراكة والشركة المساهمة"]]},
+     {k:'ul', h:["Examples: Many small and medium-sized businesses operate as LLCs, including:","أمثلة: كثير من الشركات الصغيرة والمتوسطة تعمل كـ LLC، ومنها:"], x:[["IT service companies","شركات خدمات تقنية المعلومات"],["software development firms","شركات تطوير البرمجيات"],["consulting businesses","شركات الاستشارات"]]},
+     {k:'ul', h:["Advantages","المزايا"], x:[["Limited liability: Members are not personally responsible for business debts.","مسؤولية محدودة: الأعضاء غير مسؤولين شخصيًا عن ديون الشركة."],["Flexible management","إدارة مرنة"],["Less regulation than corporations","لوائح أقل من الشركات المساهمة"],["Tax advantages","مزايا ضريبية"]]},
+     {k:'ul', h:["Disadvantages","العيوب"], x:[["More complex than sole proprietorship","أكثر تعقيدًا من المنشأة الفردية"],["May require legal documentation","قد تتطلب وثائق قانونية"],["Regulations vary by country","اللوائح تختلف من بلد لآخر"]]}
+   ]},
+   {t:["Comparison of Business Ownership Types","مقارنة بين أنواع ملكية الأعمال"], b:[
+     {k:'tbl', h:[["Type","النوع"],["Owners","المالكون"],["Liability","المسؤولية"],["Ease of Setup","سهولة التأسيس"],["Capital","رأس المال"]],
+      r:[
+       [["Sole Proprietorship","منشأة فردية"],["1","1"],["Unlimited","غير محدودة"],["Very Easy","سهل جدًا"],["Limited","محدود"]],
+       [["Partnership","شراكة"],["2 or more","2 أو أكثر"],["Unlimited","غير محدودة"],["Easy","سهل"],["Moderate","متوسط"]],
+       [["Corporation","شركة مساهمة"],["Shareholders","مساهمون"],["Limited","محدودة"],["Complex","معقد"],["High","مرتفع"]],
+       [["LLC","شركة ذات مسؤولية محدودة"],["Members","أعضاء"],["Limited","محدودة"],["Moderate","متوسط"],["Moderate","متوسط"]]
+      ]},
+     {k:'tip', x:["Memory trick: the two SMALL forms (sole proprietorship and partnership) have UNLIMITED liability. The two forms with 'limited' protection are the corporation and the LLC.","حيلة للحفظ: الشكلان الصغيران (المنشأة الفردية والشراكة) مسؤوليتهما غير محدودة (Unlimited). أما الشركة المساهمة والـ LLC فمسؤوليتهما محدودة (Limited)."]}
+   ]},
+   {t:["Choosing the Right Business Structure","اختيار هيكل الأعمال المناسب"], b:[
+     {k:'ul', h:["Entrepreneurs must consider several factors when choosing a business structure. Important factors:","يجب على رواد الأعمال مراعاة عدة عوامل عند اختيار الهيكل. العوامل المهمة:"], x:[["1. Number of owners","1. عدد المالكين"],["2. Level of liability protection","2. مستوى حماية المسؤولية"],["3. Capital requirements","3. متطلبات رأس المال"],["4. Management structure","4. الهيكل الإداري"],["5. Tax considerations","5. الاعتبارات الضريبية"],["6. Future business growth","6. نمو الشركة في المستقبل"]]},
+     {k:'p', x:["Choosing the correct structure can affect the long-term success of the business.","اختيار الهيكل الصحيح يمكن أن يؤثر في نجاح الشركة على المدى الطويل."]}
+   ]},
+   {t:["Example: Technology Startup Decision","مثال: قرار شركة تقنية ناشئة"], b:[
+     {k:'p', x:["Many technology startups must decide whether to operate as a partnership or corporation.","كثير من الشركات التقنية الناشئة يجب أن تقرر هل تعمل كشراكة أم كشركة مساهمة."]},
+     {k:'cards', c:[
+       {t:["Partnership Example","مثال الشراكة"], l:[["How software developers create a mobile app and share profits equally.","كيف ينشئ مطورو البرمجيات تطبيق هاتف ويتقاسمون الأرباح بالتساوي."]]},
+       {t:["Corporation Example","مثال الشركة المساهمة"], l:[["A technology company plans to attract investors and expand globally, so it becomes a corporation.","شركة تقنية تخطط لجذب المستثمرين والتوسع عالميًا، فتصبح شركة مساهمة."]]}
+     ]},
+     {k:'ul', h:["Corporations are often preferred when startups plan to:","غالبًا تُفضّل الشركات المساهمة عندما تخطط الشركات الناشئة إلى:"], x:[["raise large investments","جمع استثمارات كبيرة"],["expand internationally","التوسع دوليًا"],["grow rapidly","النمو بسرعة"]]}
+   ]}
+  ],
+  take:[
+   ["Four forms: sole proprietorship, partnership, corporation, LLC.","أربعة أشكال: منشأة فردية، شراكة، شركة مساهمة، LLC."],
+   ["Unlimited liability: sole proprietorship and partnership. Limited liability: corporation and LLC.","مسؤولية غير محدودة: المنشأة الفردية والشراكة. مسؤولية محدودة: الشركة المساهمة والـ LLC."],
+   ["Corporation = separate legal entity, owned through shares.","الشركة المساهمة = كيان قانوني منفصل، تُملك عبر الأسهم."],
+   ["Startups that want big investment and global growth prefer corporations.","الشركات الناشئة التي تريد استثمارًا كبيرًا ونموًا عالميًا تفضل الشركة المساهمة."]
+  ],
+  fc:[
+   [["What does a business ownership structure determine?","ماذا يحدد هيكل ملكية الأعمال؟"],["Who owns the business, who makes decisions, how profits are distributed, and the owners' liability.","من يملك الشركة، ومن يتخذ القرارات، وكيف توزع الأرباح، ومسؤولية المالكين."]],
+   [["Name the four forms of business ownership.","اذكر أشكال ملكية الأعمال الأربعة."],["Sole proprietorship, partnership, corporation, LLC.","منشأة فردية، شراكة، شركة مساهمة، LLC."]],
+   [["What is a sole proprietorship?","ما هي المنشأة الفردية؟"],["A business owned and managed by one person. Simplest and most common. Owner keeps all profits but has unlimited liability.","شركة يملكها ويديرها شخص واحد. الأبسط والأشيع. المالك يحتفظ بكل الأرباح لكن مسؤوليته غير محدودة."]],
+   [["Main disadvantages of a sole proprietorship?","أهم عيوب المنشأة الفردية؟"],["Unlimited liability, limited financial resources, limited growth, high workload.","مسؤولية غير محدودة، موارد مالية محدودة، نمو محدود، عبء عمل كبير."]],
+   [["What is a partnership? Name its two types.","ما هي الشراكة؟ اذكر نوعيها."],["Owned by two or more people who share management and profits. Types: general partnership and limited partnership.","يملكها شخصان أو أكثر يتشاركون الإدارة والأرباح. النوعان: شراكة عامة وشراكة محدودة."]],
+   [["General vs limited partnership?","الشراكة العامة مقابل المحدودة؟"],["General: all partners share management and liabilities. Limited: some partners invest money but do not participate in management.","العامة: كل الشركاء يتشاركون الإدارة والالتزامات. المحدودة: بعض الشركاء يستثمرون المال دون المشاركة في الإدارة."]],
+   [["What is a corporation?","ما هي الشركة المساهمة؟"],["A legal entity separate from its owners. Ownership is in shares of stock. Managed by a board of directors.","كيان قانوني منفصل عن مالكيه. الملكية بأسهم. يديرها مجلس إدارة."]],
+   [["Advantages of a corporation?","مزايا الشركة المساهمة؟"],["Limited liability, ability to raise capital, business continuity, large growth potential.","مسؤولية محدودة، القدرة على جمع رأس المال، استمرارية الشركة، إمكانية نمو كبيرة."]],
+   [["What is an LLC? What are its owners called?","ما هي الـ LLC؟ وماذا يسمى مالكوها؟"],["A hybrid structure combining partnership and corporation features, with limited liability and flexible management. Owners are called members.","هيكل هجين يجمع ميزات الشراكة والشركة المساهمة، بمسؤولية محدودة وإدارة مرنة. يسمى المالكون أعضاء."]],
+   [["Which forms have unlimited liability and which have limited?","أي الأشكال مسؤوليتها غير محدودة وأيها محدودة؟"],["Unlimited: sole proprietorship, partnership. Limited: corporation, LLC.","غير محدودة: المنشأة الفردية والشراكة. محدودة: الشركة المساهمة والـ LLC."]],
+   [["List the 6 factors for choosing a structure.","اذكر العوامل الستة لاختيار الهيكل."],["Number of owners, liability protection, capital requirements, management structure, tax considerations, future growth.","عدد المالكين، حماية المسؤولية، متطلبات رأس المال، الهيكل الإداري، الاعتبارات الضريبية، النمو المستقبلي."]],
+   [["When do tech startups prefer a corporation?","متى تفضل الشركات التقنية الناشئة الشركة المساهمة؟"],["When they plan to raise large investments, expand internationally, and grow rapidly.","عندما تخطط لجمع استثمارات كبيرة والتوسع دوليًا والنمو بسرعة."]]
+  ],
+  quiz:[
+   {q:["Which form is owned and managed by one person and is the simplest?","أي شكل يملكه ويديره شخص واحد وهو الأبسط؟"], o:[["Partnership","الشراكة"],["Sole proprietorship","المنشأة الفردية"],["Corporation","الشركة المساهمة"],["LLC","LLC"]], a:1},
+   {q:["In a corporation, ownership is represented by:","في الشركة المساهمة، تُمثل الملكية بـ:"], o:[["Partnership agreements","اتفاقيات الشراكة"],["Members","الأعضاء"],["Shares of stock","الأسهم"],["Licenses","التراخيص"]], a:2},
+   {q:["Which structure is a hybrid combining partnership and corporation features?","أي هيكل هجين يجمع ميزات الشراكة والشركة المساهمة؟"], o:[["LLC","LLC"],["Sole proprietorship","المنشأة الفردية"],["General partnership","الشراكة العامة"],["Limited partnership","الشراكة المحدودة"]], a:0},
+   {q:["In a limited partnership, some partners:","في الشراكة المحدودة، بعض الشركاء:"], o:[["Pay no money at all","لا يدفعون أي مال"],["Manage everything alone","يديرون كل شيء وحدهم"],["Have unlimited control","لديهم سيطرة غير محدودة"],["Invest money but do not participate in management","يستثمرون المال لكن لا يشاركون في الإدارة"]], a:3},
+   {q:["Which structure is often preferred by startups that plan to raise large investments?","أي هيكل تفضله غالبًا الشركات الناشئة التي تخطط لجمع استثمارات كبيرة؟"], o:[["Sole proprietorship","المنشأة الفردية"],["Corporation","الشركة المساهمة"],["Partnership","الشراكة"],["None of them","لا شيء منها"]], a:1},
+   {q:["Which disadvantage belongs to a corporation?","أي عيب ينطبق على الشركة المساهمة؟"], o:[["Unlimited liability","مسؤولية غير محدودة"],["Possible double taxation","احتمال الازدواج الضريبي"],["Owner keeps all profits","المالك يحتفظ بكل الأرباح"],["Very easy to start","سهلة جدًا في البدء"]], a:1},
+   {q:["What are the owners of an LLC called?","ماذا يسمى مالكو الـ LLC؟"], o:[["Members","أعضاء (Members)"],["Shareholders","مساهمون"],["Directors","مديرون"],["Partners","شركاء"]], a:0},
+   {q:["According to the comparison table, which structure has 'Very Easy' setup and 'Limited' capital?","حسب جدول المقارنة، أي هيكل سهولة تأسيسه 'سهل جدًا' ورأس ماله 'محدود'؟"], o:[["Corporation","الشركة المساهمة"],["LLC","LLC"],["Partnership","الشراكة"],["Sole proprietorship","المنشأة الفردية"]], a:3},
+   {q:["Who manages a corporation?","من يدير الشركة المساهمة؟"], o:[["A board of directors","مجلس الإدارة"],["Only one owner","مالك واحد فقط"],["The government","الحكومة"],["The suppliers","الموردون"]], a:0},
+   {q:["Which is an advantage of a partnership?","أي مما يلي من مزايا الشراكة؟"], o:[["Unlimited liability","مسؤولية غير محدودة"],["Possible conflicts","احتمال الخلافات"],["More financial resources","موارد مالية أكثر"],["Profit sharing","تقاسم الأرباح"]], a:2}
+  ]
+});
+
+LECTURES.push({ id:'l3', n:3,
+  title:["Business Ethics and Social Responsibility","أخلاقيات الأعمال والمسؤولية الاجتماعية"],
+  obj:[
+    ["Define business ethics and explain its importance.","تعريف أخلاقيات الأعمال (Business ethics) وشرح أهميتها."],
+    ["Understand the process of ethical decision making.","فهم عملية اتخاذ القرار الأخلاقي."],
+    ["Explain corporate social responsibility (CSR).","شرح المسؤولية الاجتماعية للشركات (CSR)."],
+    ["Identify environmental responsibilities of businesses.","تحديد المسؤوليات البيئية للشركات."],
+    ["Recognize ethical issues in technology and IT industries.","التعرف على القضايا الأخلاقية في التكنولوجيا وصناعة تقنية المعلومات."]
+  ],
+  sec:[
+   {t:["Definition of Business Ethics","تعريف أخلاقيات الأعمال"], b:[
+     {k:'def', x:["Business ethics refers to the moral principles and standards that guide behavior in the world of business. It involves doing what is right, fair, and honest in business practices.","أخلاقيات الأعمال هي المبادئ والمعايير الأخلاقية التي توجه السلوك في عالم الأعمال. وتعني فعل ما هو صحيح وعادل وصادق في ممارسات الأعمال."]},
+     {k:'ul', h:["Why Business Ethics is Important?","لماذا أخلاقيات الأعمال مهمة؟"], x:[["1. Builds trust with customers","1. تبني الثقة مع العملاء"],["2. Improves company reputation","2. تحسن سمعة الشركة"],["3. Encourages fair competition","3. تشجع المنافسة العادلة"],["4. Reduces legal risks","4. تقلل المخاطر القانونية"],["5. Promotes long-term success","5. تعزز النجاح طويل المدى"]]},
+     {k:'cards', c:[
+       {t:["Examples of Ethical Behavior","أمثلة على السلوك الأخلاقي"], l:[["Honest advertising","إعلان صادق"],["Fair pricing","تسعير عادل"],["Respecting customer privacy","احترام خصوصية العملاء"],["Treating employees fairly","معاملة الموظفين بعدل"]]},
+       {t:["Examples of Unethical Behavior","أمثلة على السلوك غير الأخلاقي"], l:[["1. False advertising","1. الإعلان الكاذب"],["2. Selling low-quality products knowingly","2. بيع منتجات رديئة الجودة عن علم"],["3. Misusing customer data","3. إساءة استخدام بيانات العملاء"],["4. Corruption or bribery","4. الفساد أو الرشوة"]]}
+     ]}
+   ]},
+   {t:["Ethical Decision Making","اتخاذ القرار الأخلاقي"], b:[
+     {k:'def', x:["Ethical decision making is the process of choosing actions that are morally correct.","اتخاذ القرار الأخلاقي هو عملية اختيار الأفعال الصحيحة أخلاقيًا."]},
+     {k:'ul', h:["Steps in Ethical Decision Making","خطوات اتخاذ القرار الأخلاقي"], x:[
+       ["1. Identify the Problem: Recognize the ethical issue. Example: Should a company collect user data without consent?","1. تحديد المشكلة: التعرف على القضية الأخلاقية. مثال: هل يجب على شركة جمع بيانات المستخدمين دون موافقة (Consent)؟"],
+       ["2. Gather Information: Understand all facts and stakeholders involved.","2. جمع المعلومات: فهم كل الحقائق وأصحاب المصلحة المعنيين."],
+       ["3. Evaluate Alternatives: Consider different possible actions.","3. تقييم البدائل: النظر في الإجراءات الممكنة المختلفة."],
+       ["4. Make a Decision: Choose the most ethical option.","4. اتخاذ القرار: اختيار الخيار الأكثر أخلاقية."],
+       ["5. Take Action: Implement the decision.","5. اتخاذ الإجراء: تنفيذ القرار."],
+       ["6. Review the Outcome: Evaluate the consequences.","6. مراجعة النتيجة: تقييم العواقب."]]},
+     {k:'tip', x:["Steps in order: Identify → Gather → Evaluate → Decide → Act → Review.","الخطوات بالترتيب: حدد ← اجمع ← قيّم ← قرر ← نفّذ ← راجع."]},
+     {k:'ul', h:["Ethical Principles","المبادئ الأخلاقية"], x:[["Honesty","الصدق (Honesty)"],["Integrity","النزاهة (Integrity)"],["Fairness","العدالة (Fairness)"],["Responsibility","المسؤولية (Responsibility)"],["Accountability","المساءلة (Accountability)"]]}
+   ]},
+   {t:["Corporate Social Responsibility (CSR)","المسؤولية الاجتماعية للشركات (CSR)"], b:[
+     {k:'def', x:["Corporate Social Responsibility (CSR) means that businesses have a responsibility to contribute positively to society.","المسؤولية الاجتماعية للشركات (CSR) تعني أن على الأعمال مسؤولية المساهمة بشكل إيجابي في المجتمع."]},
+     {k:'ul', h:["Businesses should not only focus on profit but also consider:","يجب ألا تركز الأعمال على الربح فقط بل تراعي أيضًا:"], x:[["social impact","الأثر الاجتماعي"],["environmental impact","الأثر البيئي"],["ethical responsibilities","المسؤوليات الأخلاقية"]]},
+     {k:'cards', c:[
+       {t:["1. Economic Responsibility","1. المسؤولية الاقتصادية"], l:[["Be profitable and sustainable.","أن تكون مربحة ومستدامة."]]},
+       {t:["2. Legal Responsibility","2. المسؤولية القانونية"], l:[["Follow laws and regulations.","اتباع القوانين واللوائح."]]},
+       {t:["3. Ethical Responsibility","3. المسؤولية الأخلاقية"], l:[["Do what is right beyond legal requirements.","فعل الصواب بما يتجاوز المتطلبات القانونية."]]},
+       {t:["4. Philanthropic Responsibility","4. المسؤولية الخيرية (Philanthropic)"], l:[["Contribute to society through donations or community support.","المساهمة في المجتمع عبر التبرعات أو دعم المجتمع."]]}
+     ]},
+     {k:'tip', x:["Remember CSR types with E-L-E-P: Economic, Legal, Ethical, Philanthropic.","تذكر أنواع CSR بالحروف E-L-E-P: اقتصادية، قانونية، أخلاقية، خيرية."]},
+     {k:'ul', h:["Examples of CSR Activities","أمثلة على أنشطة CSR"], x:[["1. Supporting education programs","1. دعم برامج التعليم"],["2. Donating to charities","2. التبرع للجمعيات الخيرية"],["3. Promoting sustainability","3. تعزيز الاستدامة"],["4. Providing fair working conditions","4. توفير ظروف عمل عادلة"]]}
+   ]},
+   {t:["Environmental Responsibility","المسؤولية البيئية"], b:[
+     {k:'p', x:["Businesses must minimize their negative impact on the environment.","يجب على الأعمال تقليل أثرها السلبي على البيئة."]},
+     {k:'ul', h:["Key Environmental Responsibilities","المسؤوليات البيئية الرئيسية"], x:[["Reducing pollution","تقليل التلوث"],["Conserving energy","توفير الطاقة"],["Recycling materials","إعادة تدوير المواد"],["Using sustainable resources","استخدام موارد مستدامة"]]},
+     {k:'ex', x:["A company reducing paper usage by using digital systems instead of printed documents.","شركة تقلل استخدام الورق باستخدام أنظمة رقمية بدلًا من المستندات المطبوعة."]},
+     {k:'ul', h:["Importance for IT Companies: Even IT companies affect the environment through:","أهمية ذلك لشركات تقنية المعلومات: حتى هذه الشركات تؤثر في البيئة من خلال:"], x:[["data centers (energy consumption)","مراكز البيانات (Data centers) - استهلاك الطاقة"],["electronic waste","النفايات الإلكترونية (Electronic waste)"],["hardware production","تصنيع الأجهزة"]]},
+     {k:'p', x:["Companies must adopt green IT practices.","يجب على الشركات تبني ممارسات تقنية المعلومات الخضراء (Green IT)."]}
+   ]},
+   {t:["Ethical Issues in Technology","القضايا الأخلاقية في التكنولوجيا"], b:[
+     {k:'p', x:["Technology creates many ethical challenges, especially in IT-related fields.","تخلق التكنولوجيا تحديات أخلاقية كثيرة، خاصة في مجالات تقنية المعلومات."]},
+     {k:'cards', c:[
+       {t:["1. Data Privacy","1. خصوصية البيانات (Data Privacy)"], l:[["Data privacy refers to protecting personal information of users.","خصوصية البيانات تعني حماية المعلومات الشخصية للمستخدمين."],["Issues: collecting user data without consent","المشكلات: جمع بيانات المستخدمين دون موافقة"],["Issues: sharing data with third parties","المشكلات: مشاركة البيانات مع أطراف ثالثة"],["Issues: storing sensitive information insecurely","المشكلات: تخزين معلومات حساسة بشكل غير آمن"],["Example: A mobile app collecting user location data without permission.","مثال: تطبيق هاتف يجمع بيانات موقع المستخدم دون إذن."]]},
+       {t:["2. Protection of Customer Data","2. حماية بيانات العملاء"], l:[["Businesses must ensure customer data is secure.","يجب على الأعمال ضمان أمان بيانات العملاء."],["Responsibilities: using encryption","المسؤوليات: استخدام التشفير (Encryption)"],["Responsibilities: securing databases","المسؤوليات: تأمين قواعد البيانات"],["Responsibilities: preventing data breaches","المسؤوليات: منع اختراق البيانات (Data breaches)"],["Example: Protecting customer payment details in e-commerce systems.","مثال: حماية بيانات الدفع للعملاء في أنظمة التجارة الإلكترونية."]]},
+       {t:["3. Ethical Use of Artificial Intelligence","3. الاستخدام الأخلاقي للذكاء الاصطناعي"], l:[["Artificial Intelligence (AI) must be used responsibly.","يجب استخدام الذكاء الاصطناعي (AI) بمسؤولية."],["Concerns: bias in algorithms","المخاوف: التحيز في الخوارزميات (Bias in algorithms)"],["Concerns: lack of transparency","المخاوف: نقص الشفافية (Transparency)"],["Concerns: misuse of AI systems","المخاوف: إساءة استخدام أنظمة الذكاء الاصطناعي"],["Example: AI systems making unfair hiring decisions.","مثال: أنظمة ذكاء اصطناعي تتخذ قرارات توظيف غير عادلة."]]},
+       {t:["4. Intellectual Property Rights","4. حقوق الملكية الفكرية (Intellectual Property Rights)"], l:[["Businesses must respect ownership of: software, digital content, innovations","يجب على الأعمال احترام ملكية: البرمجيات، المحتوى الرقمي، الابتكارات"],["Example: Illegal copying of software is unethical and illegal.","مثال: النسخ غير القانوني للبرمجيات غير أخلاقي وغير قانوني."]]},
+       {t:["5. Cybersecurity Ethics","5. أخلاقيات الأمن السيبراني"], l:[["Organizations must protect systems and data from cyber threats.","يجب على المنظمات حماية الأنظمة والبيانات من التهديدات السيبرانية."],["Ethical responsibility: protecting users from hacking","المسؤولية الأخلاقية: حماية المستخدمين من الاختراق"],["Ethical responsibility: ensuring secure systems","المسؤولية الأخلاقية: ضمان أنظمة آمنة"],["Ethical responsibility: reporting security issues","المسؤولية الأخلاقية: الإبلاغ عن المشكلات الأمنية"]]}
+     ]}
+   ]},
+   {t:["Importance of Ethics in IT Industry","أهمية الأخلاقيات في صناعة تقنية المعلومات"], b:[
+     {k:'ul', h:["Ethics is especially important in IT because:","الأخلاقيات مهمة بشكل خاص في تقنية المعلومات لأن:"], x:[["businesses collect large amounts of user data","الشركات تجمع كميات كبيرة من بيانات المستخدمين"],["systems affect millions of users","الأنظمة تؤثر في ملايين المستخدمين"],["technology decisions have global impact","قرارات التكنولوجيا لها أثر عالمي"]]},
+     {k:'ul', h:["Unethical behavior can lead to:","السلوك غير الأخلاقي قد يؤدي إلى:"], x:[["loss of trust","فقدان الثقة"],["legal penalties","عقوبات قانونية"],["business failure","فشل الشركة"]]},
+     {k:'ul', h:["Examples (Applied to IT)","أمثلة (مطبقة على تقنية المعلومات)"], x:[["Example 1: Data Privacy - A company collects user emails and sells them without permission = unethical.","مثال 1: خصوصية البيانات - شركة تجمع بريد المستخدمين وتبيعه دون إذن = غير أخلاقي."],["Example 2: AI Ethics - An AI system discriminates against certain groups = unethical.","مثال 2: أخلاقيات الذكاء الاصطناعي - نظام ذكاء اصطناعي يميز ضد فئات معينة = غير أخلاقي."],["Example 3: Customer Data Protection - A company fails to secure customer data, leading to a data breach = unethical and harmful.","مثال 3: حماية بيانات العملاء - شركة تفشل في تأمين بيانات العملاء مما يؤدي إلى اختراق = غير أخلاقي وضار."]]}
+   ]}
+  ],
+  take:[
+   ["Ethics = doing what is right, fair, and honest in business.","الأخلاقيات = فعل ما هو صحيح وعادل وصادق في الأعمال."],
+   ["Six decision steps: Identify, Gather, Evaluate, Decide, Act, Review.","ست خطوات للقرار: حدد، اجمع، قيّم، قرر، نفّذ، راجع."],
+   ["Four CSR types: Economic, Legal, Ethical, Philanthropic.","أربعة أنواع CSR: اقتصادية، قانونية، أخلاقية، خيرية."],
+   ["Five IT ethics issues: data privacy, customer data protection, AI, intellectual property, cybersecurity.","خمس قضايا أخلاقية في IT: الخصوصية، حماية البيانات، الذكاء الاصطناعي، الملكية الفكرية، الأمن السيبراني."]
+  ],
+  fc:[
+   [["What is business ethics?","ما هي أخلاقيات الأعمال؟"],["Moral principles and standards that guide behavior in business: doing what is right, fair, and honest.","المبادئ والمعايير الأخلاقية التي توجه السلوك في الأعمال: فعل ما هو صحيح وعادل وصادق."]],
+   [["Why is business ethics important? (5 reasons)","لماذا أخلاقيات الأعمال مهمة؟ (5 أسباب)"],["Builds trust, improves reputation, encourages fair competition, reduces legal risks, promotes long-term success.","تبني الثقة، تحسن السمعة، تشجع المنافسة العادلة، تقلل المخاطر القانونية، تعزز النجاح طويل المدى."]],
+   [["Examples of unethical behavior?","أمثلة على السلوك غير الأخلاقي؟"],["False advertising, selling low-quality products knowingly, misusing customer data, corruption or bribery.","الإعلان الكاذب، بيع منتجات رديئة عن علم، إساءة استخدام بيانات العملاء، الفساد أو الرشوة."]],
+   [["List the 6 steps of ethical decision making.","اذكر خطوات القرار الأخلاقي الست."],["Identify the problem, gather information, evaluate alternatives, make a decision, take action, review the outcome.","تحديد المشكلة، جمع المعلومات، تقييم البدائل، اتخاذ القرار، التنفيذ، مراجعة النتيجة."]],
+   [["List the 5 ethical principles.","اذكر المبادئ الأخلاقية الخمسة."],["Honesty, integrity, fairness, responsibility, accountability.","الصدق، النزاهة، العدالة، المسؤولية، المساءلة."]],
+   [["What is CSR?","ما هي المسؤولية الاجتماعية للشركات (CSR)؟"],["Businesses have a responsibility to contribute positively to society, not only to focus on profit.","على الأعمال مسؤولية المساهمة إيجابيًا في المجتمع وليس التركيز على الربح فقط."]],
+   [["Name the 4 types of CSR (E-L-E-P).","اذكر أنواع CSR الأربعة (E-L-E-P)."],["Economic (be profitable and sustainable), Legal (follow laws), Ethical (do right beyond the law), Philanthropic (donations, community support).","اقتصادية (مربحة ومستدامة)، قانونية (اتباع القوانين)، أخلاقية (الصواب بما يتجاوز القانون)، خيرية (التبرعات ودعم المجتمع)."]],
+   [["Key environmental responsibilities?","المسؤوليات البيئية الرئيسية؟"],["Reducing pollution, conserving energy, recycling materials, using sustainable resources.","تقليل التلوث، توفير الطاقة، إعادة التدوير، استخدام موارد مستدامة."]],
+   [["How do IT companies affect the environment?","كيف تؤثر شركات IT في البيئة؟"],["Data centers (energy use), electronic waste, hardware production. They must adopt green IT practices.","مراكز البيانات (استهلاك الطاقة)، النفايات الإلكترونية، تصنيع الأجهزة. ويجب تبني ممارسات Green IT."]],
+   [["Name the 5 ethical issues in technology.","اذكر القضايا الأخلاقية الخمس في التكنولوجيا."],["Data privacy, protection of customer data, ethical use of AI, intellectual property rights, cybersecurity ethics.","خصوصية البيانات، حماية بيانات العملاء، الاستخدام الأخلاقي للذكاء الاصطناعي، الملكية الفكرية، أخلاقيات الأمن السيبراني."]],
+   [["AI ethical concerns?","المخاوف الأخلاقية للذكاء الاصطناعي؟"],["Bias in algorithms, lack of transparency, misuse of AI systems. Example: unfair hiring decisions.","التحيز في الخوارزميات، نقص الشفافية، إساءة الاستخدام. مثال: قرارات توظيف غير عادلة."]],
+   [["Why is ethics especially important in IT?","لماذا الأخلاقيات مهمة خاصة في IT؟"],["Businesses collect large amounts of user data, systems affect millions of users, and decisions have global impact. Unethical behavior leads to loss of trust, legal penalties, business failure.","الشركات تجمع بيانات ضخمة، والأنظمة تؤثر في ملايين المستخدمين، والقرارات لها أثر عالمي. السلوك غير الأخلاقي يؤدي لفقدان الثقة وعقوبات قانونية وفشل الشركة."]]
+  ],
+  quiz:[
+   {q:["What is the FIRST step in ethical decision making?","ما هي الخطوة الأولى في اتخاذ القرار الأخلاقي؟"], o:[["Identify the problem","تحديد المشكلة"],["Take action","اتخاذ الإجراء"],["Review the outcome","مراجعة النتيجة"],["Make a decision","اتخاذ القرار"]], a:0},
+   {q:["Which CSR type means 'be profitable and sustainable'?","أي نوع من CSR يعني 'أن تكون مربحة ومستدامة'؟"], o:[["Legal","قانونية"],["Philanthropic","خيرية"],["Economic","اقتصادية"],["Ethical","أخلاقية"]], a:2},
+   {q:["A mobile app collects user location without permission. This is a problem of:","تطبيق هاتف يجمع موقع المستخدم دون إذن. هذه مشكلة في:"], o:[["Intellectual property","الملكية الفكرية"],["Data privacy","خصوصية البيانات"],["Supply chain","سلسلة الإمداد"],["Pricing","التسعير"]], a:1},
+   {q:["Which is an example of unethical behavior?","أي مما يلي مثال على سلوك غير أخلاقي؟"], o:[["Honest advertising","إعلان صادق"],["Fair pricing","تسعير عادل"],["Respecting privacy","احترام الخصوصية"],["Selling user emails without permission","بيع بريد المستخدمين دون إذن"]], a:3},
+   {q:["Which is an environmental effect of IT companies?","أي مما يلي أثر بيئي لشركات تقنية المعلومات؟"], o:[["Data center energy consumption","استهلاك الطاقة في مراكز البيانات"],["Offering donations","تقديم التبرعات"],["Honest ads","إعلانات صادقة"],["Fair wages","أجور عادلة"]], a:0},
+   {q:["Illegal copying of software violates:","النسخ غير القانوني للبرمجيات ينتهك:"], o:[["Cloud hosting","الاستضافة السحابية"],["Intellectual property rights","حقوق الملكية الفكرية"],["Recycling rules","قواعد إعادة التدوير"],["Pricing strategy","استراتيجية التسعير"]], a:1},
+   {q:["Which of these is NOT an ethical principle from the lecture?","أي مما يلي ليس مبدأ أخلاقيًا من المحاضرة؟"], o:[["Honesty","الصدق"],["Integrity","النزاهة"],["Corruption","الفساد"],["Fairness","العدالة"]], a:2},
+   {q:["Which CSR type means 'do what is right beyond legal requirements'?","أي نوع CSR يعني 'فعل الصواب بما يتجاوز المتطلبات القانونية'؟"], o:[["Economic","اقتصادية"],["Legal","قانونية"],["Philanthropic","خيرية"],["Ethical","أخلاقية"]], a:3},
+   {q:["Using encryption and securing databases belongs to which issue?","استخدام التشفير وتأمين قواعد البيانات ينتمي إلى أي قضية؟"], o:[["Protection of customer data","حماية بيانات العملاء"],["Fair pricing","التسعير العادل"],["Recycling","إعادة التدوير"],["Philanthropy","العمل الخيري"]], a:0},
+   {q:["AI systems making unfair hiring decisions is a problem of:","أنظمة ذكاء اصطناعي تتخذ قرارات توظيف غير عادلة هي مشكلة في:"], o:[["Pollution","التلوث"],["Taxes","الضرائب"],["Bias in algorithms (ethical use of AI)","التحيز في الخوارزميات (الاستخدام الأخلاقي للذكاء الاصطناعي)"],["Supply chain","سلسلة الإمداد"]], a:2}
+  ]
+});
+
+LECTURES.push({ id:'l4', n:4,
+  title:["Business in a Global Environment","الأعمال في البيئة العالمية"],
+  obj:[
+    ["Define globalization and explain its importance.","تعريف العولمة (Globalization) وشرح أهميتها."],
+    ["Understand international trade and how it works.","فهم التجارة الدولية (International trade) وكيف تعمل."],
+    ["Identify global markets and their characteristics.","التعرف على الأسواق العالمية وخصائصها."],
+    ["Explain the role of multinational companies.","شرح دور الشركات متعددة الجنسيات (Multinational companies)."],
+    ["Recognize the importance of cultural differences in business.","إدراك أهمية الاختلافات الثقافية في الأعمال."],
+    ["Analyze the impact of globalization on modern businesses, especially in IT.","تحليل أثر العولمة على الأعمال الحديثة، خاصة في تقنية المعلومات."]
+  ],
+  sec:[
+   {t:["Globalization","العولمة (Globalization)"], b:[
+     {k:'def', x:["Globalization is the process by which businesses and economies become connected and integrated across the world. It allows companies to operate beyond their local markets and reach customers globally.","العولمة هي العملية التي ترتبط بها الشركات والاقتصادات وتتكامل حول العالم. وتسمح للشركات بالعمل خارج أسواقها المحلية والوصول إلى العملاء عالميًا."]},
+     {k:'ul', h:["Key Features of Globalization","السمات الرئيسية للعولمة"], x:[["Free movement of goods and services","حرية حركة السلع والخدمات"],["International investment","الاستثمار الدولي"],["Global communication","التواصل العالمي"],["Technology-driven connectivity","الترابط المدفوع بالتكنولوجيا"]]},
+     {k:'ul', h:["Drivers of Globalization","محركات العولمة"], x:[["1. Technology (internet, cloud computing)","1. التكنولوجيا (الإنترنت، الحوسبة السحابية)"],["2. Transportation (faster logistics and shipping)","2. النقل (لوجستيات وشحن أسرع)"],["3. Trade agreements between countries","3. اتفاقيات التجارة بين الدول"],["4. Global communication systems","4. أنظمة الاتصال العالمية"]]},
+     {k:'ex', x:["A software company can develop an application in one country and sell it worldwide through online platforms.","شركة برمجيات تستطيع تطوير تطبيق في بلد وبيعه عالميًا عبر المنصات الإلكترونية."]}
+   ]},
+   {t:["International Trade","التجارة الدولية (International Trade)"], b:[
+     {k:'def', x:["International trade refers to the exchange of goods and services between countries.","التجارة الدولية هي تبادل السلع والخدمات بين الدول."]},
+     {k:'cards', c:[
+       {t:["Exports","الصادرات (Exports)"], l:[["Goods and services sold to other countries.","السلع والخدمات التي تُباع لدول أخرى."],["Example: A company selling software to international customers.","مثال: شركة تبيع برمجيات لعملاء دوليين."]]},
+       {t:["Imports","الواردات (Imports)"], l:[["Goods and services purchased from other countries.","السلع والخدمات التي تُشترى من دول أخرى."],["Example: Buying computer hardware from another country.","مثال: شراء أجهزة كمبيوتر من بلد آخر."]]}
+     ]},
+     {k:'cards', c:[
+       {t:["Benefits of International Trade","فوائد التجارة الدولية"], l:[["Access to new markets","الوصول إلى أسواق جديدة"],["Increased revenue opportunities","زيادة فرص الإيرادات"],["Availability of diverse products","توفر منتجات متنوعة"],["Lower production costs","تكاليف إنتاج أقل"]]},
+       {t:["Challenges of International Trade","تحديات التجارة الدولية"], l:[["Trade restrictions (tariffs, taxes)","قيود التجارة (الرسوم الجمركية Tariffs، الضرائب)"],["Currency differences","اختلاف العملات"],["Political risks","المخاطر السياسية"],["Legal regulations","اللوائح القانونية"]]}
+     ]}
+   ]},
+   {t:["Global Markets","الأسواق العالمية (Global Markets)"], b:[
+     {k:'def', x:["A global market is a market where businesses sell products or services across multiple countries.","السوق العالمي هو سوق تبيع فيه الشركات منتجات أو خدمات عبر دول متعددة."]},
+     {k:'ul', h:["Characteristics of Global Markets","خصائص الأسواق العالمية"], x:[["Large customer base","قاعدة عملاء كبيرة"],["High competition","منافسة عالية"],["Diverse customer needs","احتياجات عملاء متنوعة"],["Different regulations","لوائح مختلفة"]]},
+     {k:'ex', x:["Example in IT: Digital products such as mobile applications, online platforms, and cloud services can be sold globally without physical distribution.","مثال في IT: المنتجات الرقمية مثل تطبيقات الهاتف والمنصات الإلكترونية والخدمات السحابية يمكن بيعها عالميًا دون توزيع مادي."]}
+   ]},
+   {t:["Multinational Companies (MNCs)","الشركات متعددة الجنسيات (MNCs)"], b:[
+     {k:'def', x:["A multinational company (MNC) is a business that operates in more than one country.","الشركة متعددة الجنسيات (MNC) هي شركة تعمل في أكثر من بلد."]},
+     {k:'ul', h:["Characteristics","الخصائص"], x:[["Offices or operations in multiple countries","مكاتب أو عمليات في دول متعددة"],["Global workforce","قوة عاملة عالمية"],["Large-scale production and services","إنتاج وخدمات بنطاق واسع"],["International management structure","هيكل إداري دولي"]]},
+     {k:'cards', c:[
+       {t:["Advantages of MNCs","مزايا الشركات متعددة الجنسيات"], l:[["Access to global resources","الوصول إلى موارد عالمية"],["Larger markets","أسواق أكبر"],["Increased profits","أرباح أكبر"],["Economies of scale","وفورات الحجم (Economies of scale)"]]},
+       {t:["Challenges for MNCs","تحديات الشركات متعددة الجنسيات"], l:[["Cultural differences","الاختلافات الثقافية"],["Legal and regulatory differences","الاختلافات القانونية والتنظيمية"],["Communication barriers","عوائق التواصل"],["Political risks","المخاطر السياسية"]]}
+     ]},
+     {k:'ul', h:["Example: Technology companies often operate globally by:","مثال: شركات التكنولوجيا تعمل غالبًا عالميًا عن طريق:"], x:[["providing services worldwide","تقديم الخدمات حول العالم"],["hiring international teams","توظيف فرق دولية"],["managing global operations","إدارة العمليات العالمية"]]}
+   ]},
+   {t:["Cultural Differences in Business","الاختلافات الثقافية في الأعمال"], b:[
+     {k:'def', x:["Culture refers to the values, beliefs, behaviors, and customs of a group of people. Cultural differences affect how business is conducted in different countries.","الثقافة (Culture) هي القيم والمعتقدات والسلوكيات والعادات لمجموعة من الناس. وتؤثر الاختلافات الثقافية في كيفية ممارسة الأعمال في الدول المختلفة."]},
+     {k:'ul', h:["Key Cultural Factors","العوامل الثقافية الرئيسية"], x:[["Language","اللغة"],["Communication style","أسلوب التواصل"],["Work habits","عادات العمل"],["Business etiquette","آداب الأعمال (Business etiquette)"],["Decision-making styles","أساليب اتخاذ القرار"]]},
+     {k:'ul', h:["Examples of Cultural Differences","أمثلة على الاختلافات الثقافية"], x:[["Some cultures prefer formal communication, others prefer informal.","بعض الثقافات تفضل التواصل الرسمي وبعضها غير الرسمي."],["In some countries, business decisions are made quickly; in others, they take more time.","في بعض الدول تُتخذ قرارات الأعمال بسرعة، وفي أخرى تستغرق وقتًا أطول."],["Attitudes toward time, deadlines, and teamwork may differ.","قد تختلف المواقف تجاه الوقت والمواعيد النهائية والعمل الجماعي."]]},
+     {k:'ul', h:["Importance in Business: Understanding culture helps businesses:","الأهمية في الأعمال: فهم الثقافة يساعد الشركات على:"], x:[["communicate effectively","التواصل بفعالية"],["avoid misunderstandings","تجنب سوء الفهم"],["build strong relationships","بناء علاقات قوية"],["succeed in global markets","النجاح في الأسواق العالمية"]]}
+   ]},
+   {t:["Impact of Globalization on Businesses","أثر العولمة على الأعمال"], b:[
+     {k:'p', x:["Globalization has both positive and negative impacts.","للعولمة آثار إيجابية وسلبية."]},
+     {k:'cards', c:[
+       {t:["Positive Impacts","الآثار الإيجابية"], l:[["1. Market Expansion: Businesses can reach customers worldwide.","1. توسع السوق: تستطيع الشركات الوصول إلى عملاء حول العالم."],["2. Increased Innovation: Companies learn from global competition and improve their products.","2. زيادة الابتكار: تتعلم الشركات من المنافسة العالمية وتحسن منتجاتها."],["3. Cost Reduction: Businesses can outsource production to reduce costs.","3. خفض التكاليف: تستطيع الشركات الاستعانة بمصادر خارجية (Outsource) للإنتاج لتقليل التكاليف."],["4. Access to Talent: Companies can hire skilled employees from different countries.","4. الوصول إلى المواهب: تستطيع الشركات توظيف موظفين مهرة من دول مختلفة."]]},
+       {t:["Negative Impacts","الآثار السلبية"], l:[["1. Increased Competition: Local businesses face global competitors.","1. زيادة المنافسة: الشركات المحلية تواجه منافسين عالميين."],["2. Cultural Challenges: Businesses must adapt to different cultures.","2. تحديات ثقافية: يجب على الشركات التكيف مع ثقافات مختلفة."],["3. Economic Risks: Global crises can affect businesses worldwide.","3. مخاطر اقتصادية: الأزمات العالمية قد تؤثر في الشركات حول العالم."],["4. Job Displacement: Outsourcing may reduce jobs in some regions.","4. فقدان الوظائف (Job displacement): الاستعانة بمصادر خارجية قد تقلل الوظائف في بعض المناطق."]]}
+     ]}
+   ]},
+   {t:["Role of IT in Global Business","دور تقنية المعلومات في الأعمال العالمية"], b:[
+     {k:'p', x:["Technology is a key factor in globalization.","التكنولوجيا عامل رئيسي في العولمة."]},
+     {k:'ul', h:["Examples","أمثلة"], x:[["1. E-commerce: Businesses sell products globally through websites and apps.","1. التجارة الإلكترونية: تبيع الشركات المنتجات عالميًا عبر المواقع والتطبيقات."],["2. Cloud Computing: Companies manage global operations using cloud systems.","2. الحوسبة السحابية: تدير الشركات عملياتها العالمية باستخدام الأنظمة السحابية."],["3. Digital Communication: Teams collaborate across countries using video conferencing, messaging platforms, and project management tools.","3. التواصل الرقمي: تتعاون الفرق عبر الدول باستخدام مؤتمرات الفيديو (Video conferencing) ومنصات المراسلة وأدوات إدارة المشاريع."],["4. Remote Work: Employees work from different countries on the same projects.","4. العمل عن بعد (Remote work): يعمل الموظفون من دول مختلفة على نفس المشاريع."]]},
+     {k:'ul', h:["Example: A global software company may:","مثال: شركة برمجيات عالمية قد:"], x:[["develop software in one country","تطور البرمجيات في بلد"],["test it in another","تختبرها في بلد آخر"],["sell it worldwide","تبيعها حول العالم"],["support customers online globally","تدعم العملاء عبر الإنترنت عالميًا"]]}
+   ]}
+  ],
+  take:[
+   ["Globalization connects businesses and economies across the world.","العولمة تربط الشركات والاقتصادات حول العالم."],
+   ["Exports = sold to other countries. Imports = bought from other countries.","الصادرات = تُباع لدول أخرى. الواردات = تُشترى من دول أخرى."],
+   ["MNC = a business that operates in more than one country.","MNC = شركة تعمل في أكثر من بلد."],
+   ["Understanding culture helps avoid misunderstandings and build relationships.","فهم الثقافة يساعد على تجنب سوء الفهم وبناء العلاقات."]
+  ],
+  fc:[
+   [["What is globalization?","ما هي العولمة؟"],["The process by which businesses and economies become connected and integrated across the world.","العملية التي ترتبط بها الشركات والاقتصادات وتتكامل حول العالم."]],
+   [["What are the 4 drivers of globalization?","ما هي المحركات الأربعة للعولمة؟"],["Technology, transportation, trade agreements between countries, global communication systems.","التكنولوجيا، النقل، اتفاقيات التجارة بين الدول، أنظمة الاتصال العالمية."]],
+   [["Exports vs imports?","الصادرات مقابل الواردات؟"],["Exports: goods and services sold to other countries. Imports: goods and services purchased from other countries.","الصادرات: سلع وخدمات تُباع لدول أخرى. الواردات: سلع وخدمات تُشترى من دول أخرى."]],
+   [["Benefits of international trade?","فوائد التجارة الدولية؟"],["Access to new markets, increased revenue opportunities, diverse products, lower production costs.","الوصول لأسواق جديدة، زيادة فرص الإيرادات، منتجات متنوعة، تكاليف إنتاج أقل."]],
+   [["Challenges of international trade?","تحديات التجارة الدولية؟"],["Trade restrictions (tariffs, taxes), currency differences, political risks, legal regulations.","قيود التجارة (رسوم جمركية، ضرائب)، اختلاف العملات، مخاطر سياسية، لوائح قانونية."]],
+   [["What is a global market? Its characteristics?","ما هو السوق العالمي؟ وخصائصه؟"],["A market where businesses sell across multiple countries. Large customer base, high competition, diverse customer needs, different regulations.","سوق تبيع فيه الشركات عبر دول متعددة. قاعدة عملاء كبيرة، منافسة عالية، احتياجات متنوعة، لوائح مختلفة."]],
+   [["What is a multinational company (MNC)?","ما هي الشركة متعددة الجنسيات (MNC)؟"],["A business that operates in more than one country.","شركة تعمل في أكثر من بلد."]],
+   [["Advantages and challenges of MNCs?","مزايا وتحديات الـ MNCs؟"],["Advantages: global resources, larger markets, increased profits, economies of scale. Challenges: cultural, legal and regulatory differences, communication barriers, political risks.","المزايا: موارد عالمية، أسواق أكبر، أرباح أكبر، وفورات حجم. التحديات: اختلافات ثقافية وقانونية، عوائق تواصل، مخاطر سياسية."]],
+   [["What is culture? Name key cultural factors.","ما هي الثقافة؟ اذكر العوامل الثقافية."],["Values, beliefs, behaviors and customs of a group. Factors: language, communication style, work habits, business etiquette, decision-making styles.","القيم والمعتقدات والسلوكيات والعادات لمجموعة. العوامل: اللغة، أسلوب التواصل، عادات العمل، آداب الأعمال، أساليب القرار."]],
+   [["Why does understanding culture matter?","لماذا يهم فهم الثقافة؟"],["It helps businesses communicate effectively, avoid misunderstandings, build strong relationships, and succeed in global markets.","يساعد على التواصل بفعالية، وتجنب سوء الفهم، وبناء علاقات قوية، والنجاح في الأسواق العالمية."]],
+   [["Positive impacts of globalization?","الآثار الإيجابية للعولمة؟"],["Market expansion, increased innovation, cost reduction, access to talent.","توسع السوق، زيادة الابتكار، خفض التكاليف، الوصول إلى المواهب."]],
+   [["Negative impacts of globalization?","الآثار السلبية للعولمة؟"],["Increased competition, cultural challenges, economic risks, job displacement.","زيادة المنافسة، تحديات ثقافية، مخاطر اقتصادية، فقدان الوظائف."]],
+   [["Role of IT in global business?","دور IT في الأعمال العالمية؟"],["E-commerce, cloud computing, digital communication (video conferencing, messaging, project tools), remote work.","التجارة الإلكترونية، الحوسبة السحابية، التواصل الرقمي، العمل عن بعد."]]
+  ],
+  quiz:[
+   {q:["What are exports?","ما هي الصادرات؟"], o:[["Goods bought from other countries","سلع تُشترى من دول أخرى"],["Goods and services sold to other countries","سلع وخدمات تُباع لدول أخرى"],["Only physical goods made at home","سلع مادية فقط تُصنع محليًا"],["Taxes on trade","ضرائب على التجارة"]], a:1},
+   {q:["Which is a driver of globalization?","أي مما يلي من محركات العولمة؟"], o:[["Local-only marketing","التسويق المحلي فقط"],["Paper records","السجلات الورقية"],["Trade agreements between countries","اتفاقيات التجارة بين الدول"],["Slow shipping","الشحن البطيء"]], a:2},
+   {q:["A multinational company (MNC) is a business that:","الشركة متعددة الجنسيات هي شركة:"], o:[["Sells only online","تبيع عبر الإنترنت فقط"],["Has only one office","لها مكتب واحد فقط"],["Has no employees","ليس لها موظفون"],["Operates in more than one country","تعمل في أكثر من بلد"]], a:3},
+   {q:["Which is a NEGATIVE impact of globalization?","أي مما يلي أثر سلبي للعولمة؟"], o:[["Market expansion","توسع السوق"],["Job displacement","فقدان الوظائف"],["Access to talent","الوصول إلى المواهب"],["Cost reduction","خفض التكاليف"]], a:1},
+   {q:["Why is understanding culture important in global business?","لماذا فهم الثقافة مهم في الأعمال العالمية؟"], o:[["It helps avoid misunderstandings and build relationships","يساعد على تجنب سوء الفهم وبناء العلاقات"],["It removes taxes","يلغي الضرائب"],["It lowers hardware prices","يخفض أسعار الأجهزة"],["It stops competition","يوقف المنافسة"]], a:0},
+   {q:["Which is a challenge of international trade?","أي مما يلي من تحديات التجارة الدولية؟"], o:[["Access to new markets","الوصول إلى أسواق جديدة"],["Lower production costs","تكاليف إنتاج أقل"],["Currency differences","اختلاف العملات"],["Diverse products","منتجات متنوعة"]], a:2},
+   {q:["What are imports?","ما هي الواردات؟"], o:[["Goods sold to other countries","سلع تُباع لدول أخرى"],["Goods and services purchased from other countries","سلع وخدمات تُشترى من دول أخرى"],["Only taxes","الضرائب فقط"],["Local products only","منتجات محلية فقط"]], a:1},
+   {q:["Which is a benefit of international trade?","أي مما يلي من فوائد التجارة الدولية؟"], o:[["Access to new markets","الوصول إلى أسواق جديدة"],["Tariffs","الرسوم الجمركية"],["Currency differences","اختلاف العملات"],["Political risks","المخاطر السياسية"]], a:0},
+   {q:["Which is a characteristic of global markets?","أي مما يلي من خصائص الأسواق العالمية؟"], o:[["Small customer base","قاعدة عملاء صغيرة"],["High competition","منافسة عالية"],["Identical customer needs","احتياجات عملاء متطابقة"],["One single regulation","لائحة واحدة فقط"]], a:1},
+   {q:["Which is an example of IT's role in global business?","أي مما يلي مثال على دور IT في الأعمال العالمية؟"], o:[["Using cloud computing to manage global operations","استخدام الحوسبة السحابية لإدارة العمليات العالمية"],["Printing paper reports only","طباعة تقارير ورقية فقط"],["Selling only in local stores","البيع في المتاجر المحلية فقط"],["Closing all offices","إغلاق كل المكاتب"]], a:0}
+  ]
+});
+
+LECTURES.push({ id:'l5', n:5,
+  title:["Entrepreneurship and Starting a Business","ريادة الأعمال وبدء مشروع"],
+  obj:[
+    ["Define entrepreneurship and explain its importance.","تعريف ريادة الأعمال (Entrepreneurship) وشرح أهميتها."],
+    ["Identify key characteristics of successful entrepreneurs.","تحديد الخصائص الرئيسية لرواد الأعمال الناجحين."],
+    ["Understand what startup businesses are.","فهم ما هي الشركات الناشئة (Startups)."],
+    ["Explain the process of business planning.","شرح عملية تخطيط الأعمال."],
+    ["Identify different sources of business ideas.","تحديد مصادر أفكار المشاريع المختلفة."],
+    ["Recognize challenges involved in starting a business.","إدراك التحديات المرتبطة ببدء مشروع."]
+  ],
+  sec:[
+   {t:["What is Entrepreneurship?","ما هي ريادة الأعمال؟"], b:[
+     {k:'def', x:["Entrepreneurship is the process of identifying a business opportunity and creating, organizing, and managing a new business, while taking risks in order to make a profit.","ريادة الأعمال هي عملية تحديد فرصة تجارية وإنشاء وتنظيم وإدارة مشروع جديد، مع تحمل المخاطر من أجل تحقيق الربح."]},
+     {k:'def', x:["An entrepreneur is a person who starts and manages a business.","رائد الأعمال (Entrepreneur) هو شخص يبدأ ويدير مشروعًا."]},
+     {k:'ul', h:["Importance of Entrepreneurship: it plays a major role in economic development","أهمية ريادة الأعمال: لها دور كبير في التنمية الاقتصادية"], x:[["Creates new jobs","تخلق وظائف جديدة"],["Encourages innovation","تشجع الابتكار"],["Promotes economic growth","تعزز النمو الاقتصادي"],["Introduces new products and services","تقدم منتجات وخدمات جديدة"]]},
+     {k:'ex', x:["IT Context: A developer creates a mobile application that solves a problem (e.g., food delivery, education app) and launches it as a business.","في سياق IT: مطور ينشئ تطبيق هاتف يحل مشكلة (مثل توصيل الطعام أو تطبيق تعليمي) ويطلقه كمشروع تجاري."]}
+   ]},
+   {t:["Characteristics of Entrepreneurs","خصائص رواد الأعمال"], b:[
+     {k:'cards', c:[
+       {t:["1. Creativity","1. الإبداع (Creativity)"], l:[["Ability to generate new ideas and solutions.","القدرة على توليد أفكار وحلول جديدة."],["Example: Creating a unique app feature.","مثال: ابتكار ميزة فريدة في تطبيق."]]},
+       {t:["2. Risk-Taking","2. تحمل المخاطر (Risk-Taking)"], l:[["Willingness to take financial and business risks.","الاستعداد لتحمل المخاطر المالية والتجارية."]]},
+       {t:["3. Innovation","3. الابتكار (Innovation)"], l:[["Developing new products, services, or processes.","تطوير منتجات أو خدمات أو عمليات جديدة."]]},
+       {t:["4. Leadership","4. القيادة (Leadership)"], l:[["Ability to manage and motivate a team.","القدرة على إدارة الفريق وتحفيزه."]]},
+       {t:["5. Persistence","5. المثابرة (Persistence)"], l:[["Continuing efforts despite challenges and failures.","مواصلة الجهود رغم التحديات والفشل."]]},
+       {t:["6. Problem-Solving Skills","6. مهارات حل المشكلات"], l:[["Ability to identify and solve business problems.","القدرة على تحديد مشكلات العمل وحلها."]]},
+       {t:["7. Vision","7. الرؤية (Vision)"], l:[["Ability to plan for the future and set goals.","القدرة على التخطيط للمستقبل ووضع الأهداف."]]}
+     ]},
+     {k:'tip', x:["Seven traits: Creativity, Risk-taking, Innovation, Leadership, Persistence, Problem-solving, Vision.","سبع صفات: الإبداع، تحمل المخاطر، الابتكار، القيادة، المثابرة، حل المشكلات، الرؤية."]}
+   ]},
+   {t:["Startup Businesses","الشركات الناشئة (Startups)"], b:[
+     {k:'def', x:["A startup is a newly established business designed to develop a unique and scalable product or service. Startups are common in the technology sector.","الشركة الناشئة هي شركة حديثة التأسيس مصممة لتطوير منتج أو خدمة فريدة وقابلة للتوسع (Scalable). والشركات الناشئة شائعة في قطاع التكنولوجيا."]},
+     {k:'ul', h:["Characteristics of Startups","خصائص الشركات الناشئة"], x:[["Focus on innovation","التركيز على الابتكار"],["High growth potential","إمكانية نمو عالية"],["Use of technology","استخدام التكنولوجيا"],["Limited initial resources","موارد أولية محدودة"],["High risk","مخاطر عالية"]]},
+     {k:'ul', h:["Types of Tech Startups","أنواع الشركات التقنية الناشئة"], x:[["Mobile app startups","شركات تطبيقات الهاتف"],["Software as a Service (SaaS) companies","شركات البرمجيات كخدمة (SaaS)"],["E-commerce platforms","منصات التجارة الإلكترونية"],["Artificial Intelligence startups","شركات الذكاء الاصطناعي الناشئة"]]},
+     {k:'ex', x:["A startup developing a mobile app for online learning.","شركة ناشئة تطور تطبيق هاتف للتعلم عبر الإنترنت."]}
+   ]},
+   {t:["Business Planning","تخطيط الأعمال (Business Planning)"], b:[
+     {k:'def', x:["A business plan is a written document that outlines a business idea and how it will be implemented.","خطة العمل (Business plan) وثيقة مكتوبة توضح فكرة المشروع وكيف سيتم تنفيذها."]},
+     {k:'ul', h:["Importance of a Business Plan","أهمية خطة العمل"], x:[["Guides business operations","توجه عمليات الشركة"],["Helps secure funding","تساعد في الحصول على التمويل"],["Defines business goals","تحدد أهداف الشركة"],["Reduces risks","تقلل المخاطر"]]},
+     {k:'cards', c:[
+       {t:["1. Business Idea","1. فكرة العمل"], l:[["Description of the product or service.","وصف المنتج أو الخدمة."]]},
+       {t:["2. Market Analysis","2. تحليل السوق (Market Analysis)"], l:[["Understanding customers and competitors.","فهم العملاء والمنافسين."]]},
+       {t:["3. Marketing Strategy","3. استراتيجية التسويق"], l:[["How the business will attract customers.","كيف ستجذب الشركة العملاء."]]},
+       {t:["4. Operations Plan","4. خطة العمليات"], l:[["How the product/service will be delivered.","كيف سيتم تقديم المنتج/الخدمة."]]},
+       {t:["5. Financial Plan","5. الخطة المالية"], l:[["Estimated costs, revenue, and profit.","التكاليف والإيرادات والأرباح المقدرة."]]},
+       {t:["6. Management Team","6. فريق الإدارة"], l:[["People responsible for running the business.","الأشخاص المسؤولون عن إدارة الشركة."]]}
+     ]},
+     {k:'tip', x:["Six plan parts: Idea, Market, Marketing, Operations, Financial, Management team.","ست أجزاء للخطة: الفكرة، السوق، التسويق، العمليات، المالية، فريق الإدارة."]}
+   ]},
+   {t:["Sources of Business Ideas","مصادر أفكار المشاريع"], b:[
+     {k:'p', x:["Entrepreneurs can generate business ideas from various sources.","يستطيع رواد الأعمال توليد أفكار المشاريع من مصادر متنوعة."]},
+     {k:'cards', c:[
+       {t:["1. Personal Experience","1. الخبرة الشخصية"], l:[["Identifying problems in daily life.","ملاحظة المشكلات في الحياة اليومية."],["Example: Creating an app to solve a personal problem.","مثال: إنشاء تطبيق لحل مشكلة شخصية."]]},
+       {t:["2. Market Needs","2. احتياجات السوق"], l:[["Identifying gaps in the market.","اكتشاف الفجوات في السوق."],["Example: Lack of a specific online service.","مثال: غياب خدمة إلكترونية معينة."]]},
+       {t:["3. Technology Trends","3. اتجاهات التكنولوجيا"], l:[["Using new technologies to create opportunities.","استخدام تقنيات جديدة لخلق الفرص."],["Examples: AI applications, Mobile apps, Cloud services","أمثلة: تطبيقات الذكاء الاصطناعي، تطبيقات الهاتف، الخدمات السحابية"]]},
+       {t:["4. Innovation and Creativity","4. الابتكار والإبداع"], l:[["Developing new or improved products.","تطوير منتجات جديدة أو محسنة."]]},
+       {t:["5. Customer Feedback","5. ملاحظات العملاء"], l:[["Listening to customer needs and suggestions.","الاستماع لاحتياجات العملاء واقتراحاتهم."]]},
+       {t:["6. Competitor Analysis","6. تحليل المنافسين"], l:[["Improving existing products offered by competitors.","تحسين المنتجات الحالية التي يقدمها المنافسون."]]}
+     ]}
+   ]},
+   {t:["Challenges of Starting a Business","تحديات بدء مشروع"], b:[
+     {k:'p', x:["Starting a business involves many challenges.","بدء مشروع يتضمن تحديات كثيرة."]},
+     {k:'ul', x:[["1. Financial Constraints: Limited funding and resources.","1. القيود المالية: تمويل وموارد محدودة."],["2. Market Competition: Competing with existing businesses.","2. منافسة السوق: التنافس مع الشركات القائمة."],["3. Lack of Experience: New entrepreneurs may lack business knowledge.","3. نقص الخبرة: قد يفتقر رواد الأعمال الجدد إلى المعرفة التجارية."],["4. Risk of Failure: Many startups fail due to poor planning or execution.","4. خطر الفشل: كثير من الشركات الناشئة تفشل بسبب سوء التخطيط أو التنفيذ."],["5. Legal and Regulatory Issues: Businesses must comply with laws and regulations.","5. قضايا قانونية وتنظيمية: يجب على الشركات الالتزام بالقوانين واللوائح."],["6. Managing Growth: Rapid growth can create operational challenges.","6. إدارة النمو: النمو السريع قد يخلق تحديات تشغيلية."],["7. Technology Challenges: Developing reliable systems, maintaining security, handling data.","7. تحديات تقنية: تطوير أنظمة موثوقة، الحفاظ على الأمان، التعامل مع البيانات."]]}
+   ]},
+   {t:["Example: Developing a Mobile App Startup","مثال: تطوير شركة ناشئة لتطبيق هاتف"], b:[
+     {k:'p', x:["Let's apply the concepts:","لنطبق المفاهيم:"]},
+     {k:'ul', x:[["Step 1: Identify Idea - A mobile app for car rental booking.","الخطوة 1: تحديد الفكرة - تطبيق هاتف لحجز تأجير السيارات."],["Step 2: Market Research - Who are the customers? Are there competitors?","الخطوة 2: أبحاث السوق (Market Research) - من هم العملاء؟ هل يوجد منافسون؟"],["Step 3: Develop Product - Create the app using programming skills.","الخطوة 3: تطوير المنتج - إنشاء التطبيق باستخدام مهارات البرمجة."],["Step 4: Business Plan - Define pricing model, marketing strategy, revenue sources.","الخطوة 4: خطة العمل - تحديد نموذج التسعير (Pricing model) واستراتيجية التسويق ومصادر الإيرادات."],["Step 5: Launch Business - Release the app to users.","الخطوة 5: إطلاق المشروع - إصدار التطبيق للمستخدمين."],["Step 6: Growth - Improve features, expand to new markets, increase users.","الخطوة 6: النمو - تحسين الميزات، التوسع إلى أسواق جديدة، زيادة المستخدمين."]]}
+   ]}
+  ],
+  take:[
+   ["Entrepreneur = starts and manages a business and takes risks to make a profit.","رائد الأعمال = يبدأ ويدير مشروعًا ويتحمل المخاطر لتحقيق الربح."],
+   ["Startup = new business with a unique and scalable product.","الشركة الناشئة = مشروع جديد بمنتج فريد وقابل للتوسع."],
+   ["Business plan has 6 parts; there are 6 sources of ideas and 7 challenges.","خطة العمل 6 أجزاء؛ ومصادر الأفكار 6؛ والتحديات 7."],
+   ["App startup steps: Idea → Research → Develop → Plan → Launch → Growth.","خطوات الشركة الناشئة: فكرة ← بحث ← تطوير ← خطة ← إطلاق ← نمو."]
+  ],
+  fc:[
+   [["What is entrepreneurship?","ما هي ريادة الأعمال؟"],["Identifying a business opportunity and creating, organizing and managing a new business while taking risks to make a profit.","تحديد فرصة تجارية وإنشاء وتنظيم وإدارة مشروع جديد مع تحمل المخاطر لتحقيق الربح."]],
+   [["Why is entrepreneurship important?","لماذا ريادة الأعمال مهمة؟"],["Creates new jobs, encourages innovation, promotes economic growth, introduces new products and services.","تخلق وظائف، تشجع الابتكار، تعزز النمو الاقتصادي، تقدم منتجات وخدمات جديدة."]],
+   [["Name the 7 characteristics of entrepreneurs.","اذكر الخصائص السبع لرواد الأعمال."],["Creativity, risk-taking, innovation, leadership, persistence, problem-solving skills, vision.","الإبداع، تحمل المخاطر، الابتكار، القيادة، المثابرة، حل المشكلات، الرؤية."]],
+   [["What is a startup?","ما هي الشركة الناشئة؟"],["A newly established business designed to develop a unique and scalable product or service. Common in technology.","شركة حديثة التأسيس لتطوير منتج أو خدمة فريدة وقابلة للتوسع. شائعة في قطاع التكنولوجيا."]],
+   [["Characteristics of startups?","خصائص الشركات الناشئة؟"],["Focus on innovation, high growth potential, use of technology, limited initial resources, high risk.","التركيز على الابتكار، نمو عالٍ محتمل، استخدام التكنولوجيا، موارد أولية محدودة، مخاطر عالية."]],
+   [["Types of tech startups?","أنواع الشركات التقنية الناشئة؟"],["Mobile app startups, SaaS companies, e-commerce platforms, AI startups.","شركات تطبيقات الهاتف، SaaS، منصات التجارة الإلكترونية، شركات الذكاء الاصطناعي."]],
+   [["What is a business plan and why is it important?","ما هي خطة العمل ولماذا هي مهمة؟"],["A written document outlining a business idea and how to implement it. It guides operations, helps secure funding, defines goals, reduces risks.","وثيقة مكتوبة توضح فكرة المشروع وتنفيذه. توجه العمليات، تساعد في التمويل، تحدد الأهداف، تقلل المخاطر."]],
+   [["Name the 6 parts of a business plan.","اذكر الأجزاء الستة لخطة العمل."],["Business idea, market analysis, marketing strategy, operations plan, financial plan, management team.","فكرة العمل، تحليل السوق، استراتيجية التسويق، خطة العمليات، الخطة المالية، فريق الإدارة."]],
+   [["Name the 6 sources of business ideas.","اذكر مصادر أفكار المشاريع الستة."],["Personal experience, market needs, technology trends, innovation and creativity, customer feedback, competitor analysis.","الخبرة الشخصية، احتياجات السوق، اتجاهات التكنولوجيا، الابتكار والإبداع، ملاحظات العملاء، تحليل المنافسين."]],
+   [["Name the 7 challenges of starting a business.","اذكر التحديات السبعة لبدء مشروع."],["Financial constraints, market competition, lack of experience, risk of failure, legal and regulatory issues, managing growth, technology challenges.","القيود المالية، منافسة السوق، نقص الخبرة، خطر الفشل، القضايا القانونية، إدارة النمو، التحديات التقنية."]],
+   [["Steps of the mobile app startup example?","خطوات مثال تطبيق الهاتف؟"],["1 Identify idea, 2 market research, 3 develop product, 4 business plan, 5 launch, 6 growth.","1 تحديد الفكرة، 2 أبحاث السوق، 3 تطوير المنتج، 4 خطة العمل، 5 الإطلاق، 6 النمو."]]
+  ],
+  quiz:[
+   {q:["An entrepreneur is a person who:","رائد الأعمال هو شخص:"], o:[["Only invests money","يستثمر المال فقط"],["Only works for a salary","يعمل براتب فقط"],["Starts and manages a business","يبدأ ويدير مشروعًا"],["Only buys products","يشتري المنتجات فقط"]], a:2},
+   {q:["Which is NOT a part of a business plan?","أي مما يلي ليس جزءًا من خطة العمل؟"], o:[["Market analysis","تحليل السوق"],["Financial plan","الخطة المالية"],["Operations plan","خطة العمليات"],["Weather forecast","توقعات الطقس"]], a:3},
+   {q:["A startup is designed to develop a product that is:","الشركة الناشئة مصممة لتطوير منتج:"], o:[["Unique and scalable","فريد وقابل للتوسع"],["Copied and small","منسوخ وصغير"],["Free and temporary","مجاني ومؤقت"],["Old and stable","قديم ومستقر"]], a:0},
+   {q:["In the mobile app example, what is Step 2?","في مثال تطبيق الهاتف، ما هي الخطوة 2؟"], o:[["Launch business","إطلاق المشروع"],["Market research","أبحاث السوق"],["Growth","النمو"],["Develop product","تطوير المنتج"]], a:1},
+   {q:["'Limited funding and resources' is which challenge?","'تمويل وموارد محدودة' هو أي تحدٍّ؟"], o:[["Risk of failure","خطر الفشل"],["Managing growth","إدارة النمو"],["Financial constraints","القيود المالية"],["Technology challenges","التحديات التقنية"]], a:2},
+   {q:["Using customer suggestions to find a new idea is which source?","استخدام اقتراحات العملاء لإيجاد فكرة جديدة هو أي مصدر؟"], o:[["Competitor analysis","تحليل المنافسين"],["Personal experience","الخبرة الشخصية"],["Technology trends","اتجاهات التكنولوجيا"],["Customer feedback","ملاحظات العملاء"]], a:3},
+   {q:["Which trait means 'ability to plan for the future and set goals'?","أي صفة تعني 'القدرة على التخطيط للمستقبل ووضع الأهداف'؟"], o:[["Vision","الرؤية"],["Persistence","المثابرة"],["Creativity","الإبداع"],["Leadership","القيادة"]], a:0},
+   {q:["Which is a characteristic of startups?","أي مما يلي من خصائص الشركات الناشئة؟"], o:[["No risk at all","لا مخاطر إطلاقًا"],["Unlimited resources","موارد غير محدودة"],["Limited initial resources","موارد أولية محدودة"],["Slow innovation","ابتكار بطيء"]], a:2},
+   {q:["Which is a type of tech startup?","أي مما يلي نوع من الشركات التقنية الناشئة؟"], o:[["Fishing company","شركة صيد"],["SaaS company","شركة SaaS"],["Mining company","شركة تعدين"],["Farm","مزرعة"]], a:1},
+   {q:["Why is a business plan important?","لماذا خطة العمل مهمة؟"], o:[["It replaces employees","تحل محل الموظفين"],["It removes all competition","تلغي كل المنافسة"],["It helps secure funding","تساعد في الحصول على التمويل"],["It makes failure impossible","تجعل الفشل مستحيلًا"]], a:2}
+  ]
+});
+
+LECTURES.push({ id:'l6', n:6,
+  title:["Management and Human Resource Management","الإدارة وإدارة الموارد البشرية"],
+  obj:[
+    ["Define management and explain its importance.","تعريف الإدارة (Management) وشرح أهميتها."],
+    ["Identify the main functions of management.","تحديد الوظائف الرئيسية للإدارة."],
+    ["Understand different levels of management.","فهم المستويات الإدارية المختلفة."],
+    ["Explain the role of Human Resource Management (HRM).","شرح دور إدارة الموارد البشرية (HRM)."],
+    ["Understand recruitment, motivation, and employee development.","فهم التوظيف (Recruitment) والتحفيز (Motivation) وتطوير الموظفين."],
+    ["Recognize the importance of managing people in IT organizations.","إدراك أهمية إدارة الأفراد في مؤسسات تقنية المعلومات."]
+  ],
+  sec:[
+   {t:["What is Management?","ما هي الإدارة؟"], b:[
+     {k:'def', x:["Management is the process of planning, organizing, leading, and controlling resources to achieve organizational goals efficiently and effectively. Managers are responsible for ensuring that business activities are completed successfully.","الإدارة هي عملية التخطيط والتنظيم والقيادة والرقابة على الموارد لتحقيق أهداف المنظمة بكفاءة وفعالية. المديرون مسؤولون عن ضمان إنجاز أنشطة الشركة بنجاح."]},
+     {k:'ul', h:["Importance of Management","أهمية الإدارة"], x:[["Helps achieve business goals","تساعد في تحقيق أهداف الشركة"],["Improves efficiency and productivity","تحسن الكفاءة والإنتاجية"],["Coordinates different departments","تنسق بين الأقسام المختلفة"],["Supports decision making","تدعم اتخاذ القرار"],["Ensures effective use of resources","تضمن الاستخدام الفعال للموارد"]]}
+   ]},
+   {t:["The Four Functions of Management","الوظائف الأربع للإدارة"], b:[
+     {k:'p', x:["Management is based on four main functions:","تقوم الإدارة على أربع وظائف رئيسية:"]},
+     {k:'cards', c:[
+       {t:["1. Planning","1. التخطيط (Planning)"], l:[["Planning involves setting goals and deciding how to achieve them.","التخطيط يعني وضع الأهداف وتحديد كيفية تحقيقها."],["Activities: setting objectives","الأنشطة: وضع الأهداف"],["Activities: developing strategies","الأنشطة: تطوير الاستراتيجيات"],["Activities: forecasting future conditions","الأنشطة: التنبؤ بالظروف المستقبلية"],["Example (IT): Planning the development of a new mobile application.","مثال (IT): التخطيط لتطوير تطبيق هاتف جديد."]]},
+       {t:["2. Organizing","2. التنظيم (Organizing)"], l:[["Organizing involves arranging resources and tasks.","التنظيم يعني ترتيب الموارد والمهام."],["Activities: assigning responsibilities","الأنشطة: توزيع المسؤوليات"],["Activities: allocating resources","الأنشطة: تخصيص الموارد"],["Activities: creating organizational structure","الأنشطة: إنشاء الهيكل التنظيمي"],["Example: Assigning developers, designers, and testers to a project.","مثال: تعيين مطورين ومصممين ومختبرين لمشروع."]]},
+       {t:["3. Leading","3. القيادة (Leading)"], l:[["Leading involves motivating and guiding employees.","القيادة تعني تحفيز الموظفين وتوجيههم."],["Activities: communication","الأنشطة: التواصل"],["Activities: leadership","الأنشطة: القيادة"],["Activities: team management","الأنشطة: إدارة الفريق"],["Example: A project manager guiding a software development team.","مثال: مدير مشروع يوجه فريق تطوير برمجيات."]]},
+       {t:["4. Controlling","4. الرقابة (Controlling)"], l:[["Controlling involves monitoring performance and making corrections.","الرقابة تعني متابعة الأداء وإجراء التصحيحات."],["Activities: measuring performance","الأنشطة: قياس الأداء"],["Activities: comparing results with goals","الأنشطة: مقارنة النتائج بالأهداف"],["Activities: making improvements","الأنشطة: إجراء التحسينات"],["Example: Checking if a software project meets deadlines.","مثال: التحقق من أن مشروع برمجي يلتزم بالمواعيد النهائية."]]}
+     ]},
+     {k:'tip', x:["Memory trick: P-O-L-C = Planning, Organizing, Leading, Controlling.","حيلة للحفظ: P-O-L-C = التخطيط، التنظيم، القيادة، الرقابة."]}
+   ]},
+   {t:["Levels of Management","مستويات الإدارة"], b:[
+     {k:'p', x:["Organizations have different levels of management.","للمنظمات مستويات إدارية مختلفة."]},
+     {k:'cards', c:[
+       {t:["1. Top-Level Management","1. الإدارة العليا (Top-Level)"], l:[["Responsible for overall direction and strategic decisions.","مسؤولة عن التوجه العام والقرارات الاستراتيجية."],["Examples: CEO","أمثلة: الرئيس التنفيذي (CEO)"],["Responsibilities: setting long-term goals","المسؤوليات: وضع أهداف طويلة المدى"],["Responsibilities: making major decisions","المسؤوليات: اتخاذ القرارات الكبرى"]]},
+       {t:["2. Middle-Level Management","2. الإدارة الوسطى (Middle-Level)"], l:[["Responsible for implementing strategies.","مسؤولة عن تنفيذ الاستراتيجيات."],["Examples: IT Manager, Department Head","أمثلة: مدير تقنية المعلومات، رئيس القسم"],["Responsibilities: managing teams","المسؤوليات: إدارة الفرق"],["Responsibilities: coordinating departments","المسؤوليات: تنسيق الأقسام"]]},
+       {t:["3. Operational (Lower-Level) Management","3. الإدارة التشغيلية (Lower-Level)"], l:[["Responsible for daily operations.","مسؤولة عن العمليات اليومية."],["Examples: Team Leaders, Supervisors","أمثلة: قادة الفرق، المشرفون"],["Responsibilities: overseeing daily tasks","المسؤوليات: الإشراف على المهام اليومية"],["Responsibilities: ensuring work is completed","المسؤوليات: ضمان إنجاز العمل"]]}
+     ]}
+   ]},
+   {t:["Human Resource Management (HRM)","إدارة الموارد البشرية (HRM)"], b:[
+     {k:'def', x:["Human Resource Management (HRM) is the process of recruiting, developing, and managing employees in an organization. HRM focuses on people as the most important resource.","إدارة الموارد البشرية (HRM) هي عملية توظيف الموظفين وتطويرهم وإدارتهم في المنظمة. وتركز على الأفراد باعتبارهم أهم مورد."]},
+     {k:'ul', h:["Importance of HRM","أهمية HRM"], x:[["Ensures the right employees are hired","تضمن توظيف الموظفين المناسبين"],["Improves employee performance","تحسن أداء الموظفين"],["Enhances job satisfaction","تعزز الرضا الوظيفي"],["Reduces employee turnover","تقلل معدل دوران الموظفين (Turnover)"],["Supports business success","تدعم نجاح الشركة"]]}
+   ]},
+   {t:["Recruitment and Selection","التوظيف والاختيار (Recruitment and Selection)"], b:[
+     {k:'cards', c:[
+       {t:["Recruitment","التوظيف / الاستقطاب (Recruitment)"], l:[["Recruitment is the process of attracting candidates for a job.","الاستقطاب هو عملية جذب المرشحين لوظيفة."],["Methods: job advertisements","الطرق: إعلانات الوظائف"],["Methods: online job portals","الطرق: بوابات الوظائف الإلكترونية"],["Methods: social media","الطرق: وسائل التواصل الاجتماعي"]]},
+       {t:["Selection","الاختيار (Selection)"], l:[["Selection is the process of choosing the best candidate.","الاختيار هو عملية انتقاء أفضل مرشح."],["Steps: reviewing applications","الخطوات: مراجعة الطلبات"],["Steps: conducting interviews","الخطوات: إجراء المقابلات"],["Steps: testing skills","الخطوات: اختبار المهارات"],["Steps: making job offers","الخطوات: تقديم عروض العمل"],["Example (IT): Hiring a software developer based on programming skills and experience.","مثال (IT): توظيف مطور برمجيات بناءً على مهارات البرمجة والخبرة."]]}
+     ]}
+   ]},
+   {t:["Training and Development","التدريب والتطوير (Training and Development)"], b:[
+     {k:'cards', c:[
+       {t:["Training","التدريب (Training)"], l:[["Training helps employees learn skills needed for their jobs.","التدريب يساعد الموظفين على تعلم المهارات اللازمة لوظائفهم."],["Example: Teaching developers a new programming language.","مثال: تعليم المطورين لغة برمجة جديدة."]]},
+       {t:["Development","التطوير (Development)"], l:[["Development focuses on long-term growth.","التطوير يركز على النمو طويل المدى."],["Example: Preparing employees for leadership roles.","مثال: إعداد الموظفين لأدوار قيادية."]]}
+     ]}
+   ]},
+   {t:["Employee Motivation","تحفيز الموظفين (Motivation)"], b:[
+     {k:'p', x:["Motivation encourages employees to perform well.","التحفيز يشجع الموظفين على الأداء الجيد."]},
+     {k:'cards', c:[
+       {t:["1. Financial Motivation","1. التحفيز المالي"], l:[["salary","الراتب"],["bonuses","المكافآت"],["incentives","الحوافز"]]},
+       {t:["2. Non-Financial Motivation","2. التحفيز غير المالي"], l:[["recognition","التقدير"],["career growth","النمو الوظيفي"],["flexible work environment","بيئة عمل مرنة"]]}
+     ]},
+     {k:'ul', h:["Importance: Motivated employees:","الأهمية: الموظفون المتحمسون:"], x:[["work more efficiently","يعملون بكفاءة أكبر"],["produce better results","ينتجون نتائج أفضل"],["stay longer in the company","يبقون مدة أطول في الشركة"]]}
+   ]},
+   {t:["Employee Retention","الاحتفاظ بالموظفين (Retention)"], b:[
+     {k:'def', x:["Retention means keeping talented employees in the organization.","الاحتفاظ بالموظفين (Retention) يعني إبقاء الموظفين الموهوبين في المنظمة."]},
+     {k:'ul', h:["Strategies","الاستراتيجيات"], x:[["competitive salaries","رواتب تنافسية"],["career development opportunities","فرص التطوير الوظيفي"],["positive work environment","بيئة عمل إيجابية"],["work-life balance","التوازن بين العمل والحياة"]]},
+     {k:'p', x:["Importance: Losing skilled employees can affect business performance.","الأهمية: فقدان الموظفين المهرة قد يؤثر في أداء الشركة."]}
+   ]},
+   {t:["HRM in IT Organizations","إدارة الموارد البشرية في مؤسسات IT"], b:[
+     {k:'ul', h:["Human resource management is very important in IT companies because:","إدارة الموارد البشرية مهمة جدًا في شركات IT لأن:"], x:[["IT work requires specialized skills","عمل IT يتطلب مهارات متخصصة"],["employees need continuous training","الموظفون يحتاجون تدريبًا مستمرًا"],["teamwork is essential","العمل الجماعي أساسي"],["innovation depends on people","الابتكار يعتمد على الأفراد"]]},
+     {k:'ul', h:["Challenges in IT HRM","تحديات HRM في IT"], x:[["high competition for skilled employees","منافسة عالية على الموظفين المهرة"],["fast-changing technology","تكنولوجيا سريعة التغير"],["employee burnout","الإرهاق الوظيفي (Burnout)"],["remote work management","إدارة العمل عن بعد"]]},
+     {k:'ul', h:["Example: A software company must:","مثال: شركة برمجيات يجب أن:"], x:[["hire skilled developers","توظف مطورين مهرة"],["train them in new technologies","تدربهم على تقنيات جديدة"],["motivate them to innovate","تحفزهم على الابتكار"],["retain them to maintain project continuity","تحتفظ بهم للحفاظ على استمرارية المشاريع"]]}
+   ]}
+  ],
+  take:[
+   ["Four functions of management: Planning, Organizing, Leading, Controlling.","الوظائف الأربع للإدارة: التخطيط، التنظيم، القيادة، الرقابة."],
+   ["Three levels: top (CEO), middle (IT manager), operational (team leader).","ثلاثة مستويات: عليا (CEO)، وسطى (مدير IT)، تشغيلية (قائد فريق)."],
+   ["Recruitment attracts candidates; selection chooses the best one.","الاستقطاب يجذب المرشحين؛ والاختيار ينتقي الأفضل."],
+   ["Training = skills for the job now. Development = long-term growth.","التدريب = مهارات للوظيفة الآن. التطوير = نمو طويل المدى."]
+  ],
+  fc:[
+   [["What is management?","ما هي الإدارة؟"],["The process of planning, organizing, leading and controlling resources to achieve organizational goals efficiently and effectively.","عملية التخطيط والتنظيم والقيادة والرقابة على الموارد لتحقيق أهداف المنظمة بكفاءة وفعالية."]],
+   [["Why is management important?","لماذا الإدارة مهمة؟"],["Helps achieve goals, improves efficiency and productivity, coordinates departments, supports decision making, ensures effective use of resources.","تحقق الأهداف، تحسن الكفاءة والإنتاجية، تنسق الأقسام، تدعم القرار، تضمن الاستخدام الفعال للموارد."]],
+   [["Name the 4 functions of management (P-O-L-C).","اذكر الوظائف الأربع للإدارة (P-O-L-C)."],["Planning, Organizing, Leading, Controlling.","التخطيط، التنظيم، القيادة، الرقابة."]],
+   [["What does Planning involve?","ماذا يشمل التخطيط؟"],["Setting goals and deciding how to achieve them: setting objectives, developing strategies, forecasting future conditions.","وضع الأهداف وتحديد كيفية تحقيقها: وضع الأهداف، تطوير الاستراتيجيات، التنبؤ بالمستقبل."]],
+   [["What does Organizing involve?","ماذا يشمل التنظيم؟"],["Arranging resources and tasks: assigning responsibilities, allocating resources, creating organizational structure.","ترتيب الموارد والمهام: توزيع المسؤوليات، تخصيص الموارد، إنشاء الهيكل التنظيمي."]],
+   [["What do Leading and Controlling involve?","ماذا تشمل القيادة والرقابة؟"],["Leading: motivating and guiding employees. Controlling: monitoring performance and making corrections (measure, compare with goals, improve).","القيادة: تحفيز وتوجيه الموظفين. الرقابة: متابعة الأداء والتصحيح (قياس، مقارنة بالأهداف، تحسين)."]],
+   [["Name the 3 levels of management with examples.","اذكر مستويات الإدارة الثلاثة مع أمثلة."],["Top: CEO (strategy, long-term goals). Middle: IT manager, department head (implement strategies). Operational: team leaders, supervisors (daily tasks).","العليا: CEO (الاستراتيجية). الوسطى: مدير IT ورئيس القسم (تنفيذ الاستراتيجيات). التشغيلية: قادة الفرق والمشرفون (المهام اليومية)."]],
+   [["What is HRM?","ما هي إدارة الموارد البشرية (HRM)؟"],["The process of recruiting, developing and managing employees. It treats people as the most important resource.","عملية توظيف الموظفين وتطويرهم وإدارتهم، وتعتبر الأفراد أهم مورد."]],
+   [["Recruitment vs selection?","الاستقطاب مقابل الاختيار؟"],["Recruitment: attracting candidates (job ads, online portals, social media). Selection: choosing the best candidate (review applications, interviews, skills tests, job offers).","الاستقطاب: جذب المرشحين (إعلانات، بوابات، تواصل اجتماعي). الاختيار: انتقاء الأفضل (مراجعة الطلبات، مقابلات، اختبار مهارات، عروض عمل)."]],
+   [["Training vs development?","التدريب مقابل التطوير؟"],["Training: learning skills needed for the job (e.g., new programming language). Development: long-term growth (e.g., preparing for leadership roles).","التدريب: تعلم مهارات الوظيفة (مثل لغة برمجة جديدة). التطوير: نمو طويل المدى (مثل الإعداد للقيادة)."]],
+   [["Types of motivation?","أنواع التحفيز؟"],["Financial: salary, bonuses, incentives. Non-financial: recognition, career growth, flexible work environment.","مالي: راتب، مكافآت، حوافز. غير مالي: تقدير، نمو وظيفي، بيئة عمل مرنة."]],
+   [["What is retention and its strategies?","ما هو الاحتفاظ بالموظفين واستراتيجياته؟"],["Keeping talented employees. Competitive salaries, career development, positive work environment, work-life balance.","إبقاء الموظفين الموهوبين. رواتب تنافسية، تطوير وظيفي، بيئة إيجابية، توازن بين العمل والحياة."]],
+   [["Challenges in IT HRM?","تحديات HRM في IT؟"],["High competition for skilled employees, fast-changing technology, employee burnout, remote work management.","منافسة عالية على المهرة، تكنولوجيا سريعة التغير، إرهاق وظيفي، إدارة العمل عن بعد."]]
+  ],
+  quiz:[
+   {q:["What are the four functions of management?","ما هي الوظائف الأربع للإدارة؟"], o:[["Buying, Selling, Hiring, Firing","الشراء، البيع، التوظيف، الفصل"],["Planning, Organizing, Leading, Controlling","التخطيط، التنظيم، القيادة، الرقابة"],["Design, Code, Test, Deploy","التصميم، البرمجة، الاختبار، النشر"],["Product, Price, Place, Promotion","المنتج، السعر، المكان، الترويج"]], a:1},
+   {q:["A CEO belongs to which level of management?","إلى أي مستوى إداري ينتمي الرئيس التنفيذي (CEO)؟"], o:[["Top-level","الإدارة العليا"],["Middle-level","الإدارة الوسطى"],["Operational level","المستوى التشغيلي"],["No level","لا مستوى"]], a:0},
+   {q:["Selection is the process of:","الاختيار (Selection) هو عملية:"], o:[["Attracting candidates with ads","جذب المرشحين بالإعلانات"],["Teaching new skills","تعليم مهارات جديدة"],["Choosing the best candidate","اختيار أفضل مرشح"],["Paying bonuses","دفع المكافآت"]], a:2},
+   {q:["Which function includes measuring performance and comparing results with goals?","أي وظيفة تتضمن قياس الأداء ومقارنة النتائج بالأهداف؟"], o:[["Planning","التخطيط"],["Organizing","التنظيم"],["Leading","القيادة"],["Controlling","الرقابة"]], a:3},
+   {q:["Which is a non-financial motivation?","أي مما يلي تحفيز غير مالي؟"], o:[["Bonuses","المكافآت"],["Career growth","النمو الوظيفي"],["Salary","الراتب"],["Incentives","الحوافز"]], a:1},
+   {q:["Teaching developers a new programming language is an example of:","تعليم المطورين لغة برمجة جديدة مثال على:"], o:[["Recruitment","الاستقطاب"],["Selection","الاختيار"],["Training","التدريب"],["Controlling","الرقابة"]], a:2},
+   {q:["Team leaders and supervisors belong to which level?","قادة الفرق والمشرفون ينتمون إلى أي مستوى؟"], o:[["Top-level","العليا"],["Middle-level","الوسطى"],["Operational (lower-level)","التشغيلي"],["Board level","مستوى مجلس الإدارة"]], a:2},
+   {q:["Which is a recruitment method?","أي مما يلي طريقة استقطاب؟"], o:[["Online job portals","بوابات الوظائف الإلكترونية"],["Paying bonuses","دفع المكافآت"],["Testing skills","اختبار المهارات"],["Making job offers","تقديم عروض العمل"]], a:0},
+   {q:["Employee retention means:","الاحتفاظ بالموظفين يعني:"], o:[["Hiring new employees","توظيف موظفين جدد"],["Keeping talented employees in the organization","إبقاء الموظفين الموهوبين في المنظمة"],["Firing employees","فصل الموظفين"],["Reducing salaries","تخفيض الرواتب"]], a:1},
+   {q:["Which is a challenge in IT HRM?","أي مما يلي تحدٍّ في HRM في IT؟"], o:[["Slow technology","تكنولوجيا بطيئة"],["No competition for employees","لا منافسة على الموظفين"],["Employee burnout","الإرهاق الوظيفي"],["No need for training","لا حاجة للتدريب"]], a:2}
+  ]
+});
+
+LECTURES.push({ id:'l7', n:7,
+  title:["Marketing and Operations Management","التسويق وإدارة العمليات"],
+  obj:[
+    ["Define marketing and explain its importance.","تعريف التسويق (Marketing) وشرح أهميته."],
+    ["Understand how businesses create value for customers.","فهم كيف تخلق الشركات قيمة للعملاء."],
+    ["Explain the marketing mix (4Ps).","شرح المزيج التسويقي (Marketing mix - 4Ps)."],
+    ["Understand basic concepts of operations management.","فهم المفاهيم الأساسية لإدارة العمليات (Operations management)."],
+    ["Differentiate between manufacturing and service operations.","التمييز بين العمليات الصناعية وعمليات الخدمات."],
+    ["Recognize the role of operations in business success, especially in IT environments.","إدراك دور العمليات في نجاح الأعمال، خاصة في بيئات IT."]
+  ],
+  sec:[
+   {t:["What is Marketing?","ما هو التسويق؟"], b:[
+     {k:'def', x:["Marketing is the process of identifying customer needs and satisfying them by creating and delivering value through products or services. Marketing is not only about selling, it starts before the product is created.","التسويق هو عملية تحديد احتياجات العملاء وإرضائها عبر خلق قيمة وتقديمها من خلال المنتجات أو الخدمات. التسويق ليس البيع فقط، بل يبدأ قبل إنشاء المنتج."]},
+     {k:'ul', h:["Importance of Marketing","أهمية التسويق"], x:[["Helps businesses understand customer needs","يساعد الشركات على فهم احتياجات العملاء"],["Increases sales and revenue","يزيد المبيعات والإيرادات"],["Builds brand awareness","يبني الوعي بالعلامة التجارية (Brand awareness)"],["Creates competitive advantage","يخلق ميزة تنافسية (Competitive advantage)"],["Improves customer satisfaction","يحسن رضا العملاء"]]}
+   ]},
+   {t:["Customer Value","قيمة العميل (Customer Value)"], b:[
+     {k:'def', x:["Customer value is the benefit that customers receive from a product compared to its cost.","قيمة العميل هي الفائدة التي يحصل عليها العملاء من المنتج مقارنة بتكلفته."]},
+     {k:'formula', x:"Value = Benefits - Cost"},
+     {k:'ul', h:["Types of Value","أنواع القيمة"], x:[["Functional value (product usefulness)","القيمة الوظيفية (فائدة المنتج)"],["Emotional value (customer satisfaction)","القيمة العاطفية (رضا العميل)"],["Social value (status, brand image)","القيمة الاجتماعية (المكانة، صورة العلامة)"]]},
+     {k:'ex', x:["A mobile app that is easy to use, fast, and affordable provides high value to customers.","تطبيق هاتف سهل الاستخدام وسريع وبسعر مناسب يوفر قيمة عالية للعملاء."]}
+   ]},
+   {t:["The Marketing Mix (4Ps)","المزيج التسويقي (4Ps)"], b:[
+     {k:'def', x:["The marketing mix is a set of tools used by businesses to market products.","المزيج التسويقي مجموعة من الأدوات التي تستخدمها الشركات لتسويق المنتجات."]},
+     {k:'cards', c:[
+       {t:["1. Product","1. المنتج (Product)"], l:[["The goods or services offered to customers.","السلع أو الخدمات المقدمة للعملاء."],["Includes: design, features, quality, branding","يشمل: التصميم، الميزات، الجودة، العلامة التجارية (Branding)"],["Example: A software application with user-friendly features.","مثال: تطبيق برمجي بميزات سهلة الاستخدام."]]},
+       {t:["2. Price","2. السعر (Price)"], l:[["The amount customers pay for a product.","المبلغ الذي يدفعه العملاء مقابل المنتج."],["Pricing strategies: low pricing, premium pricing, subscription models","استراتيجيات التسعير: تسعير منخفض، تسعير مميز (Premium)، نماذج الاشتراك (Subscription)"],["Example: Monthly subscription for a cloud service.","مثال: اشتراك شهري في خدمة سحابية."]]},
+       {t:["3. Place","3. المكان (Place)"], l:[["Where and how products are distributed.","أين وكيف يتم توزيع المنتجات."],["Includes: physical stores, online platforms, mobile apps","يشمل: المتاجر الفعلية، المنصات الإلكترونية، تطبيقات الهاتف"],["Example: Selling software through a website or app store.","مثال: بيع البرمجيات عبر موقع أو متجر تطبيقات."]]},
+       {t:["4. Promotion","4. الترويج (Promotion)"], l:[["Activities used to communicate with customers.","الأنشطة المستخدمة للتواصل مع العملاء."],["Includes: advertising, social media marketing, email marketing, promotions","يشمل: الإعلان، التسويق عبر وسائل التواصل، التسويق عبر البريد، العروض الترويجية"],["Example: Advertising a mobile app on social media.","مثال: الإعلان عن تطبيق هاتف عبر وسائل التواصل الاجتماعي."]]}
+     ]},
+     {k:'tip', x:["The 4Ps: Product, Price, Place, Promotion. For each P, remember one IT example (app, subscription, app store, social media ad).","الـ 4Ps: المنتج، السعر، المكان، الترويج. لكل P تذكر مثالًا من IT (تطبيق، اشتراك، متجر تطبيقات، إعلان اجتماعي)."]}
+   ]},
+   {t:["Digital Marketing","التسويق الرقمي (Digital Marketing)"], b:[
+     {k:'def', x:["Digital marketing uses online platforms to promote products.","التسويق الرقمي يستخدم المنصات الإلكترونية للترويج للمنتجات."]},
+     {k:'ul', h:["Types of Digital Marketing","أنواع التسويق الرقمي"], x:[["Social media marketing","التسويق عبر وسائل التواصل الاجتماعي"],["Search engine optimization (SEO)","تحسين محركات البحث (SEO)"],["Email marketing","التسويق عبر البريد الإلكتروني"],["Online advertising","الإعلان عبر الإنترنت"]]},
+     {k:'ul', h:["Importance","الأهمية"], x:[["reaches global audience","يصل إلى جمهور عالمي"],["cost-effective","فعال من حيث التكلفة"],["measurable results","نتائج قابلة للقياس"],["fast communication","تواصل سريع"]]}
+   ]},
+   {t:["Introduction to Operations Management","مقدمة في إدارة العمليات"], b:[
+     {k:'def', x:["Operations management is the process of planning, organizing, and controlling the production of goods and services. It ensures that business operations run efficiently.","إدارة العمليات هي عملية التخطيط والتنظيم والرقابة على إنتاج السلع والخدمات. وتضمن أن تعمل عمليات الشركة بكفاءة."]},
+     {k:'ul', h:["Importance of Operations Management","أهمية إدارة العمليات"], x:[["improves efficiency","تحسن الكفاءة"],["reduces costs","تقلل التكاليف"],["ensures quality","تضمن الجودة"],["meets customer demand","تلبي طلب العملاء"]]}
+   ]},
+   {t:["Manufacturing vs Service Operations","العمليات الصناعية مقابل عمليات الخدمات"], b:[
+     {k:'cards', c:[
+       {t:["Manufacturing Operations","العمليات الصناعية (Manufacturing)"], l:[["Involves producing physical goods.","تتضمن إنتاج سلع مادية."],["Examples: computer manufacturing, electronics production","أمثلة: تصنيع الكمبيوتر، إنتاج الإلكترونيات"],["Characteristics: tangible output","الخصائص: ناتج ملموس"],["Characteristics: can be stored","الخصائص: يمكن تخزينه"],["Characteristics: involves production processes","الخصائص: تتضمن عمليات إنتاج"]]},
+       {t:["Service Operations","عمليات الخدمات (Service)"], l:[["Involves providing services.","تتضمن تقديم خدمات."],["Examples: software development, IT support, cloud services","أمثلة: تطوير البرمجيات، الدعم الفني، الخدمات السحابية"],["Characteristics: intangible output","الخصائص: ناتج غير ملموس"],["Characteristics: cannot be stored","الخصائص: لا يمكن تخزينه"],["Characteristics: produced and consumed at the same time","الخصائص: يُنتج ويُستهلك في الوقت نفسه"]]}
+     ]},
+     {k:'tbl', h:[["Feature","الميزة"],["Manufacturing","صناعي"],["Service","خدمي"]],
+      r:[[["Output","الناتج"],["Tangible","ملموس"],["Intangible","غير ملموس"]],[["Can be stored?","هل يمكن تخزينه؟"],["Yes","نعم"],["No","لا"]],[["Produced and consumed at the same time?","يُنتج ويُستهلك معًا؟"],["No","لا"],["Yes","نعم"]]]}
+   ]},
+   {t:["Supply Chain Management","إدارة سلسلة الإمداد (Supply Chain)"], b:[
+     {k:'def', x:["A supply chain is the network of organizations involved in producing and delivering a product.","سلسلة الإمداد هي شبكة المنظمات المشاركة في إنتاج المنتج وتسليمه."]},
+     {k:'ul', h:["Components","المكونات"], x:[["suppliers","الموردون (Suppliers)"],["manufacturers","المصنّعون (Manufacturers)"],["distributors","الموزعون (Distributors)"],["retailers","تجار التجزئة (Retailers)"]]},
+     {k:'ul', h:["Importance","الأهمية"], x:[["ensures product availability","تضمن توفر المنتج"],["reduces delays","تقلل التأخير"],["lowers costs","تخفض التكاليف"]]},
+     {k:'ex', x:["IT: hardware supplier → manufacturer → retailer → customer","IT: مورد أجهزة ← مصنّع ← تاجر تجزئة ← عميل"]}
+   ]},
+   {t:["Quality Management","إدارة الجودة (Quality Management)"], b:[
+     {k:'def', x:["Quality management ensures that products or services meet customer expectations.","إدارة الجودة تضمن أن المنتجات أو الخدمات تلبي توقعات العملاء."]},
+     {k:'cards', c:[
+       {t:["Quality control","مراقبة الجودة (Quality control)"], l:[["checking products","فحص المنتجات"]]},
+       {t:["Quality assurance","ضمان الجودة (Quality assurance)"], l:[["preventing defects","منع العيوب"]]}
+     ]},
+     {k:'ex', x:["Testing software to ensure it works correctly before release.","اختبار البرمجيات للتأكد من عملها بشكل صحيح قبل الإصدار."]}
+   ]},
+   {t:["Operations in IT Organizations","العمليات في مؤسسات IT"], b:[
+     {k:'ul', h:["Operations management in IT includes:","تشمل إدارة العمليات في IT:"], x:[["software development processes","عمليات تطوير البرمجيات"],["system maintenance","صيانة الأنظمة"],["data management","إدارة البيانات"],["cloud infrastructure management","إدارة البنية التحتية السحابية"]]},
+     {k:'ul', h:["Example: A software company must:","مثال: شركة برمجيات يجب أن:"], x:[["develop applications","تطور التطبيقات"],["test them","تختبرها"],["deploy them","تنشرها (Deploy)"],["maintain systems","تصون الأنظمة"]]}
+   ]},
+   {t:["Relationship Between Marketing and Operations","العلاقة بين التسويق والعمليات"], b:[
+     {k:'ul', h:["Marketing and operations must work together:","يجب أن يعمل التسويق والعمليات معًا:"], x:[["Marketing identifies customer needs","التسويق يحدد احتياجات العملاء"],["Operations produce products/services to meet those needs","العمليات تنتج المنتجات/الخدمات لتلبية هذه الاحتياجات"]]},
+     {k:'ex', x:["Marketing team identifies demand for a mobile app → Operations team develops and delivers the app.","فريق التسويق يحدد الطلب على تطبيق هاتف ← فريق العمليات يطور التطبيق ويسلمه."]}
+   ]}
+  ],
+  take:[
+   ["Marketing starts before the product is created; it is not only selling.","التسويق يبدأ قبل إنشاء المنتج؛ وليس البيع فقط."],
+   ["Value = Benefits - Cost. The 4Ps = Product, Price, Place, Promotion.","القيمة = الفوائد - التكلفة. الـ 4Ps = المنتج، السعر، المكان، الترويج."],
+   ["Services are intangible, cannot be stored, and are produced and consumed at the same time.","الخدمات غير ملموسة، لا تُخزن، وتُنتج وتُستهلك في الوقت نفسه."],
+   ["Quality control = checking products. Quality assurance = preventing defects.","مراقبة الجودة = فحص المنتجات. ضمان الجودة = منع العيوب."]
+  ],
+  fc:[
+   [["What is marketing?","ما هو التسويق؟"],["Identifying customer needs and satisfying them by creating and delivering value. It starts before the product is created, not only selling.","تحديد احتياجات العملاء وإرضاؤها بخلق القيمة وتقديمها. يبدأ قبل إنشاء المنتج وليس البيع فقط."]],
+   [["Why is marketing important?","لماذا التسويق مهم؟"],["Understand customer needs, increase sales and revenue, build brand awareness, create competitive advantage, improve customer satisfaction.","فهم احتياجات العملاء، زيادة المبيعات، بناء الوعي بالعلامة، ميزة تنافسية، تحسين رضا العملاء."]],
+   [["What is customer value? Its formula?","ما هي قيمة العميل؟ ومعادلتها؟"],["The benefit customers receive compared to cost. Value = Benefits - Cost.","الفائدة التي يحصل عليها العميل مقارنة بالتكلفة. القيمة = الفوائد - التكلفة."]],
+   [["Types of value?","أنواع القيمة؟"],["Functional (usefulness), emotional (satisfaction), social (status, brand image).","وظيفية (الفائدة)، عاطفية (الرضا)، اجتماعية (المكانة وصورة العلامة)."]],
+   [["Name the 4Ps of the marketing mix.","اذكر الـ 4Ps للمزيج التسويقي."],["Product, Price, Place, Promotion.","المنتج، السعر، المكان، الترويج."]],
+   [["Explain Product and Price.","اشرح المنتج والسعر."],["Product: goods/services offered (design, features, quality, branding). Price: amount paid (low, premium, subscription models).","المنتج: السلع/الخدمات المقدمة (تصميم، ميزات، جودة، علامة). السعر: المبلغ المدفوع (منخفض، مميز، اشتراك)."]],
+   [["Explain Place and Promotion.","اشرح المكان والترويج."],["Place: where and how products are distributed (stores, online platforms, apps). Promotion: communicating with customers (advertising, social media, email, promotions).","المكان: أين وكيف توزع المنتجات (متاجر، منصات، تطبيقات). الترويج: التواصل مع العملاء (إعلان، تواصل اجتماعي، بريد، عروض)."]],
+   [["What is digital marketing and its types?","ما هو التسويق الرقمي وأنواعه؟"],["Uses online platforms to promote products: social media marketing, SEO, email marketing, online advertising.","يستخدم المنصات الإلكترونية للترويج: وسائل التواصل، SEO، البريد الإلكتروني، الإعلان عبر الإنترنت."]],
+   [["What is operations management?","ما هي إدارة العمليات؟"],["Planning, organizing and controlling the production of goods and services so operations run efficiently. It improves efficiency, reduces costs, ensures quality, meets demand.","التخطيط والتنظيم والرقابة على إنتاج السلع والخدمات لتعمل العمليات بكفاءة. تحسن الكفاءة وتقلل التكاليف وتضمن الجودة وتلبي الطلب."]],
+   [["Manufacturing vs service operations?","العمليات الصناعية مقابل الخدمية؟"],["Manufacturing: physical goods, tangible, can be stored. Service: intangible, cannot be stored, produced and consumed at the same time.","الصناعية: سلع مادية، ملموسة، يمكن تخزينها. الخدمية: غير ملموسة، لا تُخزن، تُنتج وتُستهلك معًا."]],
+   [["What is a supply chain? Its components?","ما هي سلسلة الإمداد؟ ومكوناتها؟"],["The network of organizations producing and delivering a product: suppliers, manufacturers, distributors, retailers. Example: hardware supplier → manufacturer → retailer → customer.","شبكة المنظمات التي تنتج المنتج وتسلمه: موردون، مصنّعون، موزعون، تجار تجزئة. مثال: مورد ← مصنّع ← تاجر تجزئة ← عميل."]],
+   [["Quality control vs quality assurance?","مراقبة الجودة مقابل ضمان الجودة؟"],["Quality control: checking products. Quality assurance: preventing defects. Example: testing software before release.","مراقبة الجودة: فحص المنتجات. ضمان الجودة: منع العيوب. مثال: اختبار البرمجيات قبل الإصدار."]],
+   [["How do marketing and operations work together?","كيف يعمل التسويق والعمليات معًا؟"],["Marketing identifies customer needs; operations produce products/services to meet those needs.","التسويق يحدد احتياجات العملاء؛ والعمليات تنتج المنتجات/الخدمات لتلبيتها."]]
+  ],
+  quiz:[
+   {q:["What are the 4Ps of the marketing mix?","ما هي الـ 4Ps في المزيج التسويقي؟"], o:[["Plan, Profit, People, Process","الخطة، الربح، الأفراد، العملية"],["Product, Profit, Place, Policy","المنتج، الربح، المكان، السياسة"],["Product, Price, Place, Promotion","المنتج، السعر، المكان، الترويج"],["Price, People, Plan, Power","السعر، الأفراد، الخطة، القوة"]], a:2},
+   {q:["What is the formula for customer value?","ما معادلة قيمة العميل؟"], o:[["Benefits - Cost","الفوائد - التكلفة"],["Benefits + Cost","الفوائد + التكلفة"],["Cost - Benefits","التكلفة - الفوائد"],["Benefits × Cost","الفوائد × التكلفة"]], a:0},
+   {q:["A monthly subscription for a cloud service belongs to which P?","الاشتراك الشهري في خدمة سحابية ينتمي إلى أي P؟"], o:[["Product","المنتج"],["Price","السعر"],["Place","المكان"],["Promotion","الترويج"]], a:1},
+   {q:["Which is a characteristic of service operations?","أي مما يلي من خصائص عمليات الخدمات؟"], o:[["Tangible output","ناتج ملموس"],["Can be stored","يمكن تخزينه"],["Always made in a factory","تُصنع دائمًا في مصنع"],["Cannot be stored","لا يمكن تخزينه"]], a:3},
+   {q:["Quality assurance focuses on:","ضمان الجودة يركز على:"], o:[["Checking finished products","فحص المنتجات النهائية"],["Selling products","بيع المنتجات"],["Preventing defects","منع العيوب"],["Hiring staff","توظيف الموظفين"]], a:2},
+   {q:["Which is the correct supply chain order for IT hardware?","ما هو الترتيب الصحيح لسلسلة الإمداد لأجهزة IT؟"], o:[["Customer → retailer → supplier","عميل ← تاجر تجزئة ← مورد"],["Supplier → manufacturer → retailer → customer","مورد ← مصنّع ← تاجر تجزئة ← عميل"],["Retailer → supplier → customer","تاجر تجزئة ← مورد ← عميل"],["Manufacturer → customer → supplier","مصنّع ← عميل ← مورد"]], a:1},
+   {q:["Which type of value is about product usefulness?","أي نوع من القيمة يتعلق بفائدة المنتج؟"], o:[["Functional value","القيمة الوظيفية"],["Emotional value","القيمة العاطفية"],["Social value","القيمة الاجتماعية"],["Brand value","قيمة العلامة"]], a:0},
+   {q:["Which is a type of digital marketing?","أي مما يلي نوع من التسويق الرقمي؟"], o:[["Printing posters","طباعة الملصقات"],["Search engine optimization (SEO)","تحسين محركات البحث (SEO)"],["Door-to-door selling","البيع من باب لباب"],["Newspaper ads","إعلانات الصحف"]], a:1},
+   {q:["The 'Place' in the 4Ps covers:","'المكان' في الـ 4Ps يغطي:"], o:[["The price of the product","سعر المنتج"],["Ads on social media","الإعلانات على وسائل التواصل"],["Where and how products are distributed","أين وكيف يتم توزيع المنتجات"],["Product quality","جودة المنتج"]], a:2},
+   {q:["Quality control means:","مراقبة الجودة تعني:"], o:[["Checking products","فحص المنتجات"],["Preventing all defects before production","منع كل العيوب قبل الإنتاج"],["Setting prices","تحديد الأسعار"],["Hiring suppliers","توظيف الموردين"]], a:0}
+  ]
+});
+
+const GLOSSARY = [
+["Business","نشاط تجاري / أعمال"],["Goods","سلع"],["Services","خدمات"],["Resources","موارد"],["Human resources","الموارد البشرية"],["Financial resources","الموارد المالية"],["Capital","رأس المال"],["Physical resources","الموارد المادية"],["Information resources","موارد المعلومات"],["Tangible","ملموس"],["Intangible","غير ملموس"],["Revenue","الإيرادات"],["Expenses","المصروفات"],["Profit","الربح"],["Operating costs","تكاليف التشغيل"],["Employment","التوظيف / فرص العمل"],["Innovation","الابتكار"],["Research and Development (R&D)","البحث والتطوير"],["Artificial Intelligence (AI)","الذكاء الاصطناعي"],["Cloud computing","الحوسبة السحابية"],["Blockchain","البلوكشين (سلسلة الكتل)"],["Manufacturing","التصنيع"],["Retail","التجزئة"],["Business environment","بيئة الأعمال"],["Internal environment","البيئة الداخلية"],["External environment","البيئة الخارجية"],["Economic environment","البيئة الاقتصادية"],["Inflation","التضخم"],["Unemployment","البطالة"],["Interest rates","أسعار الفائدة"],["Economic growth","النمو الاقتصادي"],["Recession","الركود الاقتصادي"],["Technological environment","البيئة التقنية"],["Big data analytics","تحليل البيانات الضخمة"],["Data analytics","تحليل البيانات"],["Cybersecurity","الأمن السيبراني"],["E-commerce","التجارة الإلكترونية"],["Social and cultural environment","البيئة الاجتماعية والثقافية"],["Consumer behavior","سلوك المستهلك"],["Sustainability","الاستدامة"],["Stakeholders","أصحاب المصلحة"],["Shareholders","المساهمون"],["Suppliers","الموردون"],["Government regulations","اللوائح الحكومية"],
+["Business ownership structure","هيكل ملكية الأعمال"],["Liability","المسؤولية القانونية"],["Unlimited liability","مسؤولية غير محدودة"],["Limited liability","مسؤولية محدودة"],["Taxation","الضرائب"],["Sole proprietorship","منشأة فردية"],["Partnership","شراكة"],["General partnership","شراكة عامة"],["Limited partnership","شراكة محدودة"],["Partnership agreement","اتفاقية الشراكة"],["Corporation","شركة مساهمة"],["Legal entity","كيان قانوني"],["Shares of stock","أسهم"],["Board of directors","مجلس الإدارة"],["Business continuity","استمرارية الأعمال"],["Double taxation","الازدواج الضريبي"],["Limited Liability Company (LLC)","شركة ذات مسؤولية محدودة"],["Members","أعضاء (مالكو الـ LLC)"],["Hybrid","هجين"],["Startup","شركة ناشئة"],["Investors","مستثمرون"],
+["Business ethics","أخلاقيات الأعمال"],["Ethical decision making","اتخاذ القرار الأخلاقي"],["Honesty","الصدق"],["Integrity","النزاهة"],["Fairness","العدالة"],["Responsibility","المسؤولية"],["Accountability","المساءلة"],["Corporate Social Responsibility (CSR)","المسؤولية الاجتماعية للشركات"],["Economic responsibility","المسؤولية الاقتصادية"],["Legal responsibility","المسؤولية القانونية"],["Ethical responsibility","المسؤولية الأخلاقية"],["Philanthropic responsibility","المسؤولية الخيرية"],["Environmental responsibility","المسؤولية البيئية"],["Green IT","تقنية المعلومات الخضراء"],["Data centers","مراكز البيانات"],["Electronic waste","النفايات الإلكترونية"],["Data privacy","خصوصية البيانات"],["Consent","الموافقة"],["Third parties","أطراف ثالثة"],["Data breach","اختراق البيانات"],["Encryption","التشفير"],["Bias in algorithms","التحيز في الخوارزميات"],["Transparency","الشفافية"],["Intellectual property rights","حقوق الملكية الفكرية"],["False advertising","الإعلان الكاذب"],["Bribery","الرشوة"],["Corruption","الفساد"],
+["Globalization","العولمة"],["International trade","التجارة الدولية"],["Exports","الصادرات"],["Imports","الواردات"],["Tariffs","الرسوم الجمركية"],["Trade agreements","اتفاقيات التجارة"],["Logistics","اللوجستيات"],["Global market","السوق العالمي"],["Multinational company (MNC)","شركة متعددة الجنسيات"],["Economies of scale","وفورات الحجم"],["Culture","الثقافة"],["Business etiquette","آداب الأعمال"],["Outsourcing","الاستعانة بمصادر خارجية"],["Job displacement","فقدان الوظائف"],["Remote work","العمل عن بعد"],["Video conferencing","مؤتمرات الفيديو"],["Workforce","القوة العاملة"],
+["Entrepreneurship","ريادة الأعمال"],["Entrepreneur","رائد أعمال"],["Creativity","الإبداع"],["Risk-taking","تحمل المخاطر"],["Leadership","القيادة"],["Persistence","المثابرة"],["Vision","الرؤية"],["Scalable","قابل للتوسع"],["Software as a Service (SaaS)","البرمجيات كخدمة"],["Business plan","خطة العمل"],["Market analysis","تحليل السوق"],["Marketing strategy","استراتيجية التسويق"],["Operations plan","خطة العمليات"],["Financial plan","الخطة المالية"],["Management team","فريق الإدارة"],["Market research","أبحاث السوق"],["Pricing model","نموذج التسعير"],["Competitor analysis","تحليل المنافسين"],["Customer feedback","ملاحظات العملاء"],["Financial constraints","القيود المالية"],
+["Management","الإدارة"],["Planning","التخطيط"],["Organizing","التنظيم"],["Leading","القيادة"],["Controlling","الرقابة"],["Top-level management","الإدارة العليا"],["Middle-level management","الإدارة الوسطى"],["Operational management","الإدارة التشغيلية"],["Human Resource Management (HRM)","إدارة الموارد البشرية"],["Recruitment","الاستقطاب / التوظيف"],["Selection","الاختيار"],["Training","التدريب"],["Development","التطوير"],["Motivation","التحفيز"],["Financial motivation","التحفيز المالي"],["Non-financial motivation","التحفيز غير المالي"],["Incentives","الحوافز"],["Retention","الاحتفاظ بالموظفين"],["Turnover","دوران الموظفين"],["Burnout","الإرهاق الوظيفي"],["Work-life balance","التوازن بين العمل والحياة"],
+["Marketing","التسويق"],["Customer value","قيمة العميل"],["Functional value","القيمة الوظيفية"],["Emotional value","القيمة العاطفية"],["Social value","القيمة الاجتماعية"],["Marketing mix (4Ps)","المزيج التسويقي"],["Product","المنتج"],["Price","السعر"],["Place","المكان (التوزيع)"],["Promotion","الترويج"],["Branding","العلامة التجارية"],["Premium pricing","التسعير المميز"],["Subscription","الاشتراك"],["Digital marketing","التسويق الرقمي"],["Search engine optimization (SEO)","تحسين محركات البحث"],["Brand awareness","الوعي بالعلامة التجارية"],["Competitive advantage","ميزة تنافسية"],["Operations management","إدارة العمليات"],["Supply chain","سلسلة الإمداد"],["Distributors","الموزعون"],["Retailers","تجار التجزئة"],["Manufacturers","المصنّعون"],["Quality management","إدارة الجودة"],["Quality control","مراقبة الجودة"],["Quality assurance","ضمان الجودة"],["Deploy","نشر (إطلاق النظام)"],["Cloud infrastructure","البنية التحتية السحابية"]
+].sort((a,b)=>a[0].localeCompare(b[0]));
+
+/* ============================================================
+   SUBJECTS + THEMES  (8 subjects, each with its own color)
+   To add a subject: set ready:true and give it lectures + glossary.
+   ============================================================ */
+const THEMES = {
+  teal:['20 184 166','13 148 136'], pink:['236 72 153','219 39 119'], purple:['168 85 247','147 51 234'],
+  blue:['59 130 246','37 99 235'], orange:['249 115 22','234 88 12'], green:['34 197 94','22 163 74'],
+  yellow:['234 179 8','202 138 4'], red:['239 68 68','220 38 38']
+};
+/* ----- THIS PAGE'S SUBJECT (edit when copying this file to make a new subject) ----- */
+const SUBJECT = {id:'biz', color:'teal', ready:true, icon:'💼', name:["Business Fundamentals","أساسيات الأعمال (Business Fundamentals)"], lectures:LECTURES, glossary:GLOSSARY};
+const SUBJECTS = [SUBJECT];
+
+/* ============================================================
+   STATE + STORAGE
+   ============================================================ */
+const KEY = 'studyHubV2';
+const store = (()=>{ try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ return {}; } })();
+const state = { lang: store.lang||'en', subject:SUBJECT.id, page:'home', sidebar: window.innerWidth>=1024, data: store.data||{}, decks:{}, qz:{}, exam:null };
+function save(){
+  try{
+    const cur=JSON.parse(localStorage.getItem(KEY)||'{}'); cur.data=cur.data||{};
+    cur.lang=state.lang;
+    const d=sd(SUBJECT.id); d.mastery=mastery(SUBJECT); d.n=SUBJECT.lectures.length;
+    cur.data[SUBJECT.id]=d;
+    localStorage.setItem(KEY, JSON.stringify(cur));
+  }catch(e){}
+}
+const subj = () => SUBJECTS.find(s=>s.id===state.subject);
+const LECT = () => subj().lectures;
+function sd(id){ id=id||state.subject; return state.data[id]||(state.data[id]={seen:{},best:{},exam:0}); }
+function mastery(s){
+  if(!s.ready) return 0;
+  const d=sd(s.id); let sum=0;
+  s.lectures.forEach(l=>{ sum += (d.best[l.id]||0)/100; });
+  sum += (d.exam||0)/100;
+  return Math.round(sum/(s.lectures.length+1)*100);
+}
+
+/* ============================================================
+   HELPERS  (invisible citation handling + XSS protection)
+   ============================================================ */
+const clean = s => String(s)
+  .replace(/<\/?(antml:)?cite[^>]*>/gi,'')
+  .replace(/\[cite[^\]]*\]/gi,'')
+  .replace(/\[(source|ref)[^\]]*\]/gi,'')
+  .replace(/[ \t]{2,}/g,' ').trim();
+const esc = s => clean(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const fmt = s => esc(s).replace(/(\$?\d[\d,.]*\d|\$?\d)/g,'<span class="mono">$1</span>');
+const li = () => state.lang==='ar'?1:0;
+const tx = a => fmt(a[li()]);
+const u = k => UI[k][li()];
+const $ = id => document.getElementById(id);
+function shuf(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function mixQ(q){ const idx=shuf(q.o.map((_,i)=>i)); return {q:q.q, o:idx.map(i=>q.o[i]), a:idx.indexOf(q.a)}; }
+function applyTheme(){
+  const t = THEMES[(state.subject&&subj().color)||'teal'];
+  document.documentElement.style.setProperty('--b5',t[0]);
+  document.documentElement.style.setProperty('--b6',t[1]);
+}
+
+/* ============================================================
+   BLOCK RENDERERS
+   ============================================================ */
+const labelColors = {
+  def:['border-brand-500 bg-brand-500/10','text-brand-500'],
+  ex:['border-amber-400 bg-amber-400/10','text-amber-400'],
+  tip:['border-violet-400 bg-violet-400/10','text-violet-400']
+};
+function renderBlock(b){
+  if(b.k==='p') return `<p class="leading-relaxed text-dark-text/90 my-3">${tx(b.x)}</p>`;
+  if(labelColors[b.k]){
+    const c=labelColors[b.k];
+    return `<div class="border-s-4 ${c[0]} rounded-e-xl p-4 my-3"><div class="text-xs font-bold uppercase tracking-wide ${c[1]} mb-1">${u(b.k)}</div><div class="leading-relaxed whitespace-pre-line">${tx(b.x)}</div></div>`;
+  }
+  if(b.k==='formula') return `<pre class="mono bg-dark-base border border-dark-border rounded-xl p-4 my-3 text-brand-500 overflow-x-auto" dir="ltr"><code>${esc(b.x)}</code></pre>`;
+  if(b.k==='ul') return `<div class="my-3">${b.h?`<div class="font-semibold text-brand-500 mb-1">${tx(b.h)}</div>`:''}<ul class="space-y-1.5">${b.x.map(i=>`<li class="flex gap-2 leading-relaxed"><span class="text-brand-500 mt-1.5 shrink-0">●</span><span>${tx(i)}</span></li>`).join('')}</ul></div>`;
+  if(b.k==='cards') return `<div class="grid gap-3 sm:grid-cols-2 my-3">${b.c.map(c=>`<div class="bg-dark-surface border border-dark-border rounded-xl p-4"><div class="font-bold text-brand-500 mb-2">${tx(c.t)}</div><ul class="space-y-1 text-sm leading-relaxed">${c.l.map(i=>`<li class="flex gap-2"><span class="text-dark-muted shrink-0">▪</span><span>${tx(i)}</span></li>`).join('')}</ul></div>`).join('')}</div>`;
+  if(b.k==='tbl') return `<div class="overflow-x-auto my-3 rounded-xl border border-dark-border"><table class="w-full text-sm"><thead class="bg-brand-600 text-white"><tr>${b.h.map(h=>`<th class="p-3 text-start font-semibold">${tx(h)}</th>`).join('')}</tr></thead><tbody>${b.r.map((r,i)=>`<tr class="${i%2?'bg-dark-surface':'bg-dark-elevated'}">${r.map((c,j)=>`<td class="p-3 border-t border-dark-border ${j===0?'font-semibold':''}">${tx(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  return '';
+}
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+function optHTML(o,i){
+  return `<button class="opt w-full text-start p-3 rounded-lg border border-dark-border bg-dark-surface hover:border-brand-500 transition flex gap-3 items-start" data-i="${i}"><span class="mono text-dark-muted shrink-0">${'ABCD'[i]}.</span><span>${tx(o)}</span></button>`;
+}
+function qHTML(q,idx,total){
+  return `<div class="qbox bg-dark-elevated border border-dark-border rounded-xl p-4 mb-4" data-a="${q.a}">
+    <div class="font-semibold mb-3"><span class="mono text-brand-500">${idx}/${total}</span> ${tx(q.q)}</div>
+    <div class="space-y-2">${q.o.map(optHTML).join('')}</div>
+    <div class="fb mt-3 text-sm font-semibold hidden"></div></div>`;
+}
+function getQz(L){ return state.qz[L.id] || (state.qz[L.id]=L.quiz.map(mixQ)); }
+function quizInner(L){
+  const qs=getQz(L), best=sd().best[L.id];
+  return `<div class="flex justify-between items-center mb-3"><h2 class="font-bold text-lg">📝 ${u('quiz')} <span class="mono text-sm text-dark-muted">(${qs.length})</span></h2>${best!=null?`<span class="mono text-xs text-dark-muted">${u('best')}: ${best}%</span>`:''}</div>
+    ${qs.map((q,i)=>qHTML(q,i+1,qs.length)).join('')}
+    <div class="qscore hidden mt-2 p-3 rounded-lg bg-dark-surface border border-brand-500 flex flex-wrap items-center justify-between gap-2"><b class="qs-text"></b><button data-act="retryQuiz" data-id="${L.id}" class="px-4 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm">${u('retry')}</button></div>`;
+}
+
+/* ============================================================
+   FLASHCARD DECKS (shared by lectures and glossary)
+   ============================================================ */
+function getDeck(id,kind,list){
+  if(!state.decks[id]) state.decks[id]={kind,list:list.slice(),i:0,flip:false};
+  return state.decks[id];
+}
+function deckHTML(id){
+  const d=state.decks[id], c=d.list[d.i], l=li();
+  let front, back;
+  if(d.kind==='g'){
+    front=`<div class="mono text-2xl text-brand-500 font-bold" dir="ltr">${esc(c[0])}</div>`;
+    back=`<div class="text-2xl font-bold text-white" dir="rtl" style="font-family:Cairo">${esc(c[1])}</div>`;
+  } else {
+    front=`<div class="text-xs mono text-dark-muted mb-2">${u('question')}</div><div class="text-lg font-bold">${esc(c[0][l])}</div>`;
+    back=`<div class="text-base font-semibold text-white leading-relaxed">${esc(c[1][l])}</div><div class="text-xs text-white/70 mt-3 leading-relaxed" dir="${l?'ltr':'rtl'}">${esc(c[1][1-l])}</div>`;
+  }
+  return `<p class="text-dark-muted mb-3 text-sm">${u('flip')} • <span class="mono">${d.i+1}/${d.list.length}</span></p>
+    <div class="flip ${d.flip?'on':''} cursor-pointer mb-3" data-act="dk-flip" data-deck="${id}"><div class="flip-inner">
+      <div class="face bg-dark-elevated border border-brand-500">${front}</div>
+      <div class="face back bg-brand-600">${back}</div></div></div>
+    <div class="flex justify-between gap-2">
+      <button data-act="dk-prev" data-deck="${id}" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500">${u('prev')}</button>
+      <button data-act="dk-shuf" data-deck="${id}" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500">🔀 ${u('shuffle')}</button>
+      <button data-act="dk-next" data-deck="${id}" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white">${u('next')}</button>
+    </div>`;
+}
+function deckBox(id,kind,list){ getDeck(id,kind,list); return `<div id="deck-${id}">${deckHTML(id)}</div>`; }
+function redrawDeck(id){ const el=$('deck-'+id); if(el) el.innerHTML=deckHTML(id); }
+
+/* ============================================================
+   PAGES
+   ============================================================ */
+function renderHome(){
+  const s=subj(), d=sd(), m=mastery(s), n=s.lectures.length;
+  const steps = [
+    ["Read each lecture slowly, then read the Key Takeaways.","اقرأ كل محاضرة ببطء ثم اقرأ أهم النقاط."],
+    ["Go through the lecture flashcards, then do the quiz until you get 100%.","راجع بطاقات المحاضرة ثم حل الاختبار حتى تحصل على 100%."],
+    ["Use the term flashcards in the Glossary page for 10 minutes every day.","استخدم بطاقات المصطلحات في صفحة القاموس 10 دقائق يوميًا."],
+    ["Take the Final Exam again and again until you score 90% or more. Read the mistakes list after each try.","أدِّ الاختبار النهائي مرارًا حتى تحصل على 90% أو أكثر. اقرأ قائمة الأخطاء بعد كل محاولة."],
+    ["Memorize the lists: 4 ownership forms, 4 CSR types, 4 functions of management (P-O-L-C), 4Ps.","احفظ القوائم: 4 أشكال ملكية، 4 أنواع CSR، 4 وظائف إدارية (P-O-L-C)، الـ 4Ps."],
+    ["Know the formulas: Profit = Revenue - Expenses and Value = Benefits - Cost.","اعرف المعادلات: الربح = الإيرادات - المصروفات والقيمة = الفوائد - التكلفة."]
+  ];
+  return `<div class="fade">
+    <div class="rounded-2xl bg-gradient-to-br from-brand-600 to-dark-elevated p-6 mb-6 border border-dark-border">
+      <div class="text-3xl mb-1">${s.icon}</div>
+      <h1 class="text-3xl font-extrabold mb-1">${tx(s.name)}</h1>
+      <p class="text-white/80">${n} ${u('lectures').toLowerCase()} • ${state.lang==='ar'?'اختبارات • بطاقات • اختبار نهائي • قاموس':'quizzes • flashcards • final exam • glossary'}</p>
+    </div>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-6">
+      <div class="flex justify-between mb-2"><b>${u('mastery')}</b><span class="mono text-brand-500">${m}%</span></div>
+      <div class="h-3 bg-dark-base rounded-full overflow-hidden"><div class="h-full bg-brand-500 transition-all" style="width:${m}%"></div></div>
+      <p class="text-xs text-dark-muted mt-2">${u('masteryHow')}</p>
+    </div>
+    <div class="grid gap-3 sm:grid-cols-2 mb-6">
+      ${s.lectures.map(l=>{ const b=d.best[l.id]; return `<button data-go="${l.id}" class="text-start bg-dark-elevated border border-dark-border hover:border-brand-500 rounded-xl p-4 transition">
+        <div class="flex justify-between"><span class="mono text-brand-500 text-sm">${u('lecture')} ${l.n}</span>${d.seen[l.id]?`<span class="text-dark-muted text-xs">📖 ${u('read')}</span>`:''}</div>
+        <div class="font-semibold mt-1">${tx(l.title)}</div>
+        <div class="h-1.5 bg-dark-base rounded-full overflow-hidden mt-3"><div class="h-full bg-brand-500" style="width:${b||0}%"></div></div>
+        <div class="mono text-xs text-dark-muted mt-1">${u('quiz')}: ${b!=null?b+'%':'—'}</div></button>`; }).join('')}
+    </div>
+    <div class="grid gap-3 sm:grid-cols-2 mb-6">
+      <button data-go="exam" class="bg-dark-elevated border border-dark-border hover:border-brand-500 rounded-xl p-4 font-semibold text-start">🏆 ${u('exam')}<div class="mono text-xs text-dark-muted mt-1">${u('best')}: ${d.exam?d.exam+'%':'—'}</div></button>
+      <button data-go="glossary" class="bg-dark-elevated border border-dark-border hover:border-brand-500 rounded-xl p-4 font-semibold text-start">📖 Glossary / قاموس المصطلحات<div class="mono text-xs text-dark-muted mt-1">${s.glossary.length} • ${u('glossFlash')}</div></button>
+    </div>
+    <div class="border-s-4 border-violet-400 bg-violet-400/10 rounded-e-xl p-5">
+      <h2 class="font-bold text-violet-400 mb-2">🚀 ${u('plan')}</h2>
+      <ol class="space-y-1.5 list-decimal ps-5">${steps.map(x=>`<li>${tx(x)}</li>`).join('')}</ol>
+    </div>
+    <button data-act="reset" class="mt-6 text-xs text-dark-muted underline">${u('reset')}</button>
+  </div>`;
+}
+
+function renderLecture(L, idx){
+  const d=sd(); d.seen[L.id]=true; save();
+  const lects=LECT(), prev=lects[idx-1], next=lects[idx+1], ar=state.lang==='ar';
+  return `<div class="fade">
+    <div class="mono text-brand-500 text-sm mb-1">${u('lecture')} ${L.n}</div>
+    <h1 class="text-2xl sm:text-3xl font-extrabold mb-4">${tx(L.title)}</h1>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-5">
+      <h2 class="font-bold text-lg mb-2">🎯 ${u('objectives')}</h2>
+      <ul class="space-y-1">${L.obj.map(o=>`<li class="flex gap-2"><span class="text-brand-500">✓</span><span>${tx(o)}</span></li>`).join('')}</ul>
+    </div>
+    ${L.sec.map((s,i)=>`<section class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-5">
+        <h2 class="text-xl font-bold mb-2 flex items-center gap-2"><span class="mono text-sm bg-brand-600 text-white rounded-md px-2 py-0.5">${i+1}</span>${tx(s.t)}</h2>
+        ${s.b.map(renderBlock).join('')}</section>`).join('')}
+    <div class="bg-brand-500/10 border border-brand-500 rounded-2xl p-5 mb-5">
+      <h2 class="font-bold text-lg mb-2 text-brand-500">⭐ ${u('take')}</h2>
+      <ul class="space-y-1">${L.take.map(t=>`<li class="flex gap-2"><span class="text-brand-500">★</span><span>${tx(t)}</span></li>`).join('')}</ul>
+    </div>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-5">
+      <h2 class="font-bold text-lg mb-3">🃏 ${u('flash')}</h2>
+      ${deckBox('fc-'+L.id,'l',L.fc)}
+    </div>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-5" data-quiz="${L.id}" id="quiz-${L.id}">${quizInner(L)}</div>
+    <div class="flex justify-between gap-3">
+      ${prev?`<button data-go="${prev.id}" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500">${ar?'→':'←'} ${u('prev')}</button>`:'<span></span>'}
+      ${next?`<button data-go="${next.id}" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white">${u('next')} ${ar?'←':'→'}</button>`:`<button data-go="exam" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white">${u('exam')} ${ar?'←':'→'}</button>`}
+    </div></div>`;
+}
+
+function gItems(list){
+  return list.map(g=>`<div class="bg-dark-elevated border border-dark-border rounded-xl p-3 flex flex-wrap justify-between gap-2"><span class="mono text-brand-500 font-semibold" dir="ltr">${esc(g[0])}</span><span class="font-semibold" dir="rtl" style="font-family:Cairo">${esc(g[1])}</span></div>`).join('') || '<div class="text-dark-muted">—</div>';
+}
+function renderGlossary(){
+  const G=subj().glossary;
+  return `<div class="fade">
+    <h1 class="text-3xl font-extrabold mb-1">Glossary / قاموس المصطلحات</h1>
+    <p class="text-dark-muted mb-5 mono text-sm">${G.length} terms</p>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-6">
+      <h2 class="font-bold text-lg mb-3">🃏 ${u('glossFlash')}</h2>
+      ${deckBox('gl','g',shuf(G))}
+    </div>
+    <h2 class="font-bold text-lg mb-2">📖 ${u('glossList')}</h2>
+    <input id="gSearch" placeholder="${u('search')}" class="w-full p-3 rounded-xl bg-dark-elevated border border-dark-border focus:border-brand-500 outline-none mb-4">
+    <div id="gList" class="grid gap-2">${gItems(G)}</div></div>`;
+}
+
+/* ---------- FINAL EXAM ---------- */
+function pool(){ const p=[]; LECT().forEach(l=>l.quiz.forEach(q=>p.push(q))); return p; }
+function newExam(size){
+  const qs=shuf(pool()).slice(0,size).map(mixQ);
+  state.exam={qs,i:0,score:0,wrong:[],finished:false,size};
+}
+function renderExam(){
+  const e=state.exam, total=pool().length, d=sd();
+  if(!e){
+    const sizes=[20,40,total];
+    return `<div class="fade text-center py-8"><h1 class="text-3xl font-extrabold mb-2">🏆 ${u('exam')}</h1>
+      <p class="text-dark-muted mb-1">${state.lang==='ar'?`بنك الأسئلة: ${total} سؤالًا من كل المحاضرات. تتغير الأسئلة وترتيب الخيارات في كل مرة.`:`Question bank: ${total} questions from all lectures. Questions and answer order change every time.`}</p>
+      <p class="mono text-sm text-dark-muted mb-6">${u('best')}: ${d.exam?d.exam+'%':'—'}</p>
+      <p class="font-semibold mb-3">${u('chooseSize')}</p>
+      <div class="flex flex-wrap justify-center gap-3">${sizes.map((n,i)=>`<button data-size="${n}" class="px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold"><span class="mono">${n}</span> ${i===2?`(${u('all')})`:u('questions')}</button>`).join('')}</div></div>`;
+  }
+  if(e.finished){
+    const p=Math.round(e.score/e.qs.length*100);
+    return `<div class="fade py-6"><div class="text-center">
+      <h1 class="text-3xl font-extrabold mb-3">🏆 ${u('exam')}</h1>
+      <div class="mono text-5xl font-extrabold ${p>=90?'text-green-400':p>=60?'text-amber-400':'text-red-400'} mb-2">${e.score}/${e.qs.length}</div>
+      <div class="mono text-xl mb-4">${p}%</div>
+      <p class="mb-6">${p>=90?(state.lang==='ar'?'ممتاز! أنت جاهز للامتحان 🎉':'Excellent! You are ready 🎉'):(state.lang==='ar'?'راجع المحاضرات وأعد المحاولة للوصول إلى 90%+':'Review the lectures and try again to reach 90%+')}</p>
+      <button data-act="examAgain" class="px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold">${u('retry')}</button></div>
+      ${e.wrong.length?`<h2 class="font-bold text-lg mt-8 mb-3">❌ ${u('mistakes')} (${e.wrong.length})</h2>
+      ${e.wrong.map(w=>`<div class="bg-dark-elevated border border-dark-border border-s-4 border-s-red-500 rounded-xl p-4 mb-3"><div class="font-semibold mb-1">${tx(w.q)}</div><div class="text-sm text-green-400">${u('yourAns')}: ${tx(w.c)}</div></div>`).join('')}`:''}
+    </div>`;
+  }
+  const q=e.qs[e.i];
+  return `<div class="fade"><h1 class="text-2xl font-extrabold mb-3">🏆 ${u('exam')}</h1>
+    <div class="h-2 bg-dark-surface rounded-full mb-4 overflow-hidden"><div class="h-full bg-brand-500" style="width:${e.i/e.qs.length*100}%"></div></div>
+    <div data-exam="1">${qHTML(q,e.i+1,e.qs.length)}</div>
+    <div class="flex justify-between items-center"><span class="mono text-sm text-dark-muted">${u('score')}: ${e.score}</span>
+    <button id="examNext" class="hidden px-5 py-2 rounded-lg bg-brand-600 text-white">${e.i===e.qs.length-1?u('finish'):u('next')}</button></div></div>`;
+}
+
+/* ============================================================
+   SHELL: nav, layout, render
+   ============================================================ */
+function renderNav(){
+  const item=(id,icon,label,extra='')=>`<button data-go="${id}" class="w-full flex items-center gap-3 text-start px-3 py-2.5 rounded-lg transition ${state.page===id?'bg-brand-600 text-white':'hover:bg-dark-elevated text-dark-text'}"><span>${icon}</span><span class="flex-1 text-sm">${label}</span>${extra}</button>`;
+  const head=t=>`<div class="px-3 pt-3 pb-1 text-xs uppercase tracking-wider text-dark-muted">${t}</div>`;
+  const s=subj(), d=sd();
+  let h=`<a href="index.html" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-dark-elevated text-dark-text"><span>🗂️</span><span class="flex-1 text-sm">${u('hub')}</span></a>`;
+  h += `<div class="px-3 pt-3 pb-1 text-sm font-bold text-brand-500">${s.icon} ${tx(s.name)}</div>`;
+  h += item('home','🏠',u('home'));
+  h += head(u('lectures')) + s.lectures.map(l=>item(l.id,`<span class="mono text-xs">${l.n}</span>`,tx(l.title),d.best[l.id]!=null?`<span class="mono text-[10px] opacity-80">${d.best[l.id]}%</span>`:'')).join('');
+  h += head(u('tools')) + item('exam','🏆',u('exam'),d.exam?`<span class="mono text-[10px] opacity-80">${d.exam}%</span>`:'') + item('glossary','📖','Glossary / قاموس المصطلحات');
+  $('nav').innerHTML=h;
+}
+function applyLayout(){
+  const sb=$('sidebar'), main=$('main'), bd=$('backdrop');
+  sb.classList.toggle('ltr:-translate-x-full',!state.sidebar);
+  sb.classList.toggle('rtl:translate-x-full',!state.sidebar);
+  main.classList.toggle('lg:ps-72',state.sidebar);
+  bd.classList.toggle('hidden',!(state.sidebar && window.innerWidth<1024));
+}
+function updateTop(){
+  const show=!!state.subject, m=show?mastery(subj()):0;
+  $('topProgWrap').classList.toggle('hidden',!show); $('topProgWrap').classList.toggle('sm:flex',show);
+  $('topBar').style.width=m+'%'; $('topPct').textContent=m+'%';
+}
+function render(){
+  document.documentElement.lang=state.lang;
+  document.documentElement.dir=state.lang==='ar'?'rtl':'ltr';
+  $('langBtn').textContent = state.lang==='ar'?'English':'العربية';
+  applyTheme();
+  const lects = state.subject?LECT():[];
+  const idx=lects.findIndex(l=>l.id===state.page);
+  let html='', title='';
+  if(state.page==='home'){ html=renderHome(); title=tx(subj().name).replace(/<[^>]+>/g,''); }
+  else if(idx>=0){ html=renderLecture(lects[idx],idx); title=`${u('lecture')} ${lects[idx].n}`; }
+  else if(state.page==='exam'){ html=renderExam(); title=u('exam'); }
+  else if(state.page==='glossary'){ html=renderGlossary(); title='Glossary / قاموس المصطلحات'; }
+  $('app').innerHTML=html; $('topTitle').textContent=title;
+  updateTop(); renderNav(); applyLayout();
+}
+function go(p){
+  state.page=p; state.qz={}; state.decks={}; if(p!=='exam') state.exam=null;
+  if(window.innerWidth<1024) state.sidebar=false;
+  render(); window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ============================================================
+   EVENTS
+   ============================================================ */
+document.addEventListener('click',e=>{
+  const g=e.target.closest('[data-go]'); if(g){ go(g.dataset.go); return; }
+
+  const sz=e.target.closest('[data-size]'); if(sz){ newExam(+sz.dataset.size); render(); window.scrollTo({top:0}); return; }
+
+  const opt=e.target.closest('.opt');
+  if(opt){
+    const box=opt.closest('.qbox'); if(box.dataset.done) return;
+    box.dataset.done='1';
+    const a=+box.dataset.a, i=+opt.dataset.i, ok=(i===a);
+    if(ok) box.dataset.ok='1';
+    box.querySelectorAll('.opt').forEach(b=>{
+      b.disabled=true; b.classList.remove('hover:border-brand-500'); b.classList.add('cursor-not-allowed');
+      if(+b.dataset.i===a) b.classList.add('!bg-green-600/30','!border-green-500');
+    });
+    if(!ok) opt.classList.add('!bg-red-600/30','!border-red-500');
+    const fb=box.querySelector('.fb'); fb.classList.remove('hidden');
+    fb.className='fb mt-3 text-sm font-semibold '+(ok?'text-green-400':'text-red-400');
+    fb.textContent=ok?u('correct'):u('wrong');
+
+    const exam=box.closest('[data-exam]');
+    if(exam){
+      const ex=state.exam, q=ex.qs[ex.i];
+      if(ok) ex.score++; else ex.wrong.push({q:q.q,c:q.o[q.a]});
+      $('examNext').classList.remove('hidden'); return;
+    }
+    const qz=box.closest('[data-quiz]');
+    if(qz){
+      const boxes=[...qz.querySelectorAll('.qbox')];
+      if(boxes.every(b=>b.dataset.done)){
+        const sc=boxes.filter(b=>b.dataset.ok).length, pct=Math.round(sc/boxes.length*100);
+        const sEl=qz.querySelector('.qscore'); sEl.classList.remove('hidden');
+        qz.querySelector('.qs-text').textContent=`${u('score')}: ${sc}/${boxes.length} (${pct}%)`;
+        const d=sd(), id=qz.dataset.quiz;
+        if(d.best[id]==null||pct>d.best[id]){ d.best[id]=pct; save(); }
+        updateTop(); renderNav();
+      }
+    }
+    return;
+  }
+
+  const a=e.target.closest('[data-act]'); if(!a) return;
+  const act=a.dataset.act;
+  if(act.startsWith('dk-')){
+    const id=a.dataset.deck, d=state.decks[id]; if(!d) return;
+    if(act==='dk-flip'){ d.flip=!d.flip; const f=document.querySelector(`#deck-${id} .flip`); if(f) f.classList.toggle('on',d.flip); return; }
+    if(act==='dk-next') d.i=(d.i+1)%d.list.length;
+    if(act==='dk-prev') d.i=(d.i-1+d.list.length)%d.list.length;
+    if(act==='dk-shuf'){ d.list=shuf(d.list); d.i=0; }
+    d.flip=false; redrawDeck(id); return;
+  }
+  if(act==='retryQuiz'){
+    const L=LECT().find(l=>l.id===a.dataset.id); delete state.qz[L.id];
+    $('quiz-'+L.id).innerHTML=quizInner(L); $('quiz-'+L.id).scrollIntoView({behavior:'smooth',block:'start'}); return;
+  }
+  if(act==='examAgain'){ state.exam=null; render(); return; }
+  if(act==='reset'){ state.data[state.subject]={seen:{},best:{},exam:0}; save(); render(); return; }
+});
+document.addEventListener('click',e=>{
+  if(e.target.id==='examNext'){
+    const ex=state.exam;
+    if(ex.i<ex.qs.length-1) ex.i++;
+    else { ex.finished=true; const p=Math.round(ex.score/ex.qs.length*100), d=sd(); if(p>(d.exam||0)){ d.exam=p; save(); } }
+    render(); window.scrollTo({top:0});
+  }
+});
+document.addEventListener('input',e=>{
+  if(e.target.id==='gSearch'){
+    const q=e.target.value.toLowerCase();
+    $('gList').innerHTML=gItems(subj().glossary.filter(g=>(g[0]+' '+g[1]).toLowerCase().includes(q)));
+  }
+});
+$('menuBtn').onclick=()=>{ state.sidebar=!state.sidebar; applyLayout(); };
+$('backdrop').onclick=()=>{ state.sidebar=false; applyLayout(); };
+$('langBtn').onclick=()=>{ state.lang=state.lang==='ar'?'en':'ar'; save(); render(); };
+window.addEventListener('resize',applyLayout);
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>University Study Hub | مركز المذاكرة الجامعي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      brand: { 500: 'rgb(var(--b5) / <alpha-value>)', 600: 'rgb(var(--b6) / <alpha-value>)' },
+      dark: { base: '#0b0f17', surface: '#111827', elevated: '#1f2937', border: '#374151', text: '#f3f4f6', muted: '#9ca3af' }
+    },
+    fontFamily: { sans: ['Inter', 'sans-serif'], arabic: ['Cairo', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
+  } }
+}
+</script>
+<style>
+  :root { --b5: 20 184 166; --b6: 13 148 136; }
+  html[lang="en"] body { font-family: 'Inter', sans-serif; }
+  html[lang="ar"] body { font-family: 'Cairo', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #0b0f17; }
+  ::-webkit-scrollbar-thumb { background: #374151; border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgb(var(--b6)); }
+  .fade { animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .flip { perspective: 1000px; }
+  .flip-inner { transition: transform .5s; transform-style: preserve-3d; position: relative; min-height: 230px; }
+  .flip.on .flip-inner { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1.5rem; border-radius: 1rem; overflow: auto; }
+  .back { transform: rotateY(180deg); }
+</style>
+</head>
+<body class="bg-dark-base text-dark-text min-h-screen">
+<header class="fixed top-0 inset-x-0 z-40 h-14 bg-dark-surface/95 backdrop-blur border-b border-dark-border flex items-center justify-between px-4">
+  <span class="font-bold text-brand-500">🗂️ University Study Hub</span>
+  <button id="langBtn" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold"></button>
+</header>
+<main class="pt-14"><div id="app" class="max-w-4xl mx-auto p-4 sm:p-6 pb-24"></div></main>
+
+<script>
+/* ============================================================
+   HOW TO ADD / REMOVE A SUBJECT
+   - Each subject is ONE file (example: Business.html) + ONE line below.
+   - Add:    copy Business.html, rename it (Math.html), edit the SUBJECT line + lectures/glossary inside it,
+             then change its line below: ready:true, file:'Math.html', name, icon, id (same id as inside the file).
+   - Remove: delete the file and delete (or reset) its line below.
+   - Colors: teal, pink, purple, blue, orange, green, yellow, red.
+   ============================================================ */
+const SUBJECTS = [
+  {id:'biz', file:'Business.html', color:'teal',   ready:true,  icon:'💼', name:["Business Fundamentals","أساسيات الأعمال (Business Fundamentals)"]},
+  {id:'s2',  file:'',              color:'pink',   ready:false, icon:'📘', name:["Subject 2","المادة 2"]},
+  {id:'s3',  file:'',              color:'purple', ready:false, icon:'📗', name:["Subject 3","المادة 3"]},
+  {id:'s4',  file:'',              color:'blue',   ready:false, icon:'📙', name:["Subject 4","المادة 4"]},
+  {id:'s5',  file:'',              color:'orange', ready:false, icon:'📕', name:["Subject 5","المادة 5"]},
+  {id:'s6',  file:'',              color:'green',  ready:false, icon:'📓', name:["Subject 6","المادة 6"]},
+  {id:'s7',  file:'',              color:'yellow', ready:false, icon:'📔', name:["Subject 7","المادة 7"]},
+  {id:'s8',  file:'',              color:'red',    ready:false, icon:'📒', name:["Subject 8","المادة 8"]}
+];
+const THEMES = {
+  teal:['20 184 166','13 148 136'], pink:['236 72 153','219 39 119'], purple:['168 85 247','147 51 234'],
+  blue:['59 130 246','37 99 235'], orange:['249 115 22','234 88 12'], green:['34 197 94','22 163 74'],
+  yellow:['234 179 8','202 138 4'], red:['239 68 68','220 38 38']
+};
+const KEY='studyHubV2';
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ return {}; } }
+let lang = load().lang||'en';
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function render(){
+  const ar=lang==='ar', data=load().data||{};
+  document.documentElement.lang=lang; document.documentElement.dir=ar?'rtl':'ltr';
+  document.getElementById('langBtn').textContent=ar?'English':'العربية';
+  const cards=SUBJECTS.map(s=>{
+    const t=THEMES[s.color], d=data[s.id]||{}, m=s.ready?(d.mastery||0):0;
+    const tag=s.ready?'a href="'+esc(s.file)+'"':'div';
+    const close=s.ready?'a':'div';
+    return `<${tag} class="block text-start rounded-2xl p-5 border border-dark-border bg-dark-elevated transition ${s.ready?'hover:-translate-y-0.5 hover:shadow-lg':'opacity-70 cursor-not-allowed'}" style="border-top:4px solid rgb(${t[0]})">
+      <div class="flex items-center justify-between mb-2"><span class="text-3xl">${s.icon}</span>
+      <span class="text-xs mono px-2 py-0.5 rounded-md" style="background:rgb(${t[0]} / .2);color:rgb(${t[0]})">${s.ready?m+'%':(ar?'قريبًا':'Coming soon')}</span></div>
+      <div class="font-bold text-lg">${esc(s.name[ar?1:0])}</div>
+      ${s.ready?`<div class="text-xs text-dark-muted mt-1">${d.n?d.n+' '+(ar?'محاضرات':'lectures'):''}</div>
+      <div class="h-2 bg-dark-base rounded-full overflow-hidden mt-3"><div class="h-full transition-all" style="width:${m}%;background:rgb(${t[0]})"></div></div>`:''}
+    </${close}>`;
+  }).join('');
+  document.getElementById('app').innerHTML=`<div class="fade">
+    <div class="rounded-2xl bg-gradient-to-br from-brand-600 to-dark-elevated p-6 mb-6 border border-dark-border">
+      <h1 class="text-3xl font-extrabold mb-1">${ar?'مركز المذاكرة الجامعي (University Study Hub)':'University Study Hub'}</h1>
+      <p class="text-white/80">${ar?'كل مادة بلونها الخاص • اختبارات وبطاقات ومصطلحات':'Each subject has its own color • quizzes, flashcards and glossary'}</p>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-2">${cards}</div></div>`;
+}
+document.getElementById('langBtn').onclick=()=>{
+  lang=lang==='ar'?'en':'ar';
+  try{ const c=load(); c.lang=lang; localStorage.setItem(KEY,JSON.stringify(c)); }catch(e){}
+  render();
+};
+render();
+</script>
+</body>
+</html>
