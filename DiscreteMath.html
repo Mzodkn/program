@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Discrete Mathematics | الرياضيات المتقطعة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+/* brand colors default = teal (#14b8a6 / #0d9488). Each subject can switch them through CSS variables. */
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      brand: { 500: 'rgb(var(--b5) / <alpha-value>)', 600: 'rgb(var(--b6) / <alpha-value>)' },
+      dark: { base: '#0b0f17', surface: '#111827', elevated: '#1f2937', border: '#374151', text: '#f3f4f6', muted: '#9ca3af' }
+    },
+    fontFamily: { sans: ['Inter', 'sans-serif'], arabic: ['Cairo', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
+  } }
+}
+</script>
+<style>
+  :root { --b5: 20 184 166; --b6: 13 148 136; }
+  html[lang="en"] body { font-family: 'Inter', sans-serif; }
+  html[lang="ar"] body { font-family: 'Cairo', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #0b0f17; }
+  ::-webkit-scrollbar-thumb { background: #374151; border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgb(var(--b6)); }
+  .fade { animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .flip { perspective: 1000px; }
+  .flip-inner { transition: transform .5s; transform-style: preserve-3d; position: relative; min-height: 230px; }
+  .flip.on .flip-inner { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1.5rem; border-radius: 1rem; overflow: auto; }
+  .back { transform: rotateY(180deg); }
+</style>
+</head>
+<body class="bg-dark-base text-dark-text min-h-screen">
+
+<header class="fixed top-0 inset-x-0 z-40 h-14 bg-dark-surface/95 backdrop-blur border-b border-dark-border flex items-center justify-between px-3">
+  <div class="flex items-center gap-3 min-w-0">
+    <button id="menuBtn" class="p-2 rounded-lg hover:bg-dark-elevated" aria-label="Menu">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <a href="index.html" class="p-2 rounded-lg hover:bg-dark-elevated" title="All subjects">🗂️</a>
+    <span id="topTitle" class="font-bold text-brand-500 truncate"></span>
+  </div>
+  <div class="flex items-center gap-3">
+    <div id="topProgWrap" class="hidden sm:flex items-center gap-2" title="Mastery">
+      <div class="w-28 h-2 bg-dark-base rounded-full overflow-hidden"><div id="topBar" class="h-full bg-brand-500 transition-all" style="width:0%"></div></div>
+      <span id="topPct" class="mono text-xs text-dark-muted w-9"></span>
+    </div>
+    <button id="langBtn" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold"></button>
+  </div>
+</header>
+
+<div id="backdrop" class="fixed inset-0 bg-black/60 z-30 hidden lg:hidden"></div>
+
+<aside id="sidebar" class="fixed top-14 bottom-0 start-0 w-72 z-30 bg-dark-surface border-e border-dark-border overflow-y-auto transition-transform duration-300">
+  <nav id="nav" class="p-3 space-y-1"></nav>
+</aside>
+
+<main id="main" class="pt-14 transition-all duration-300">
+  <div id="app" class="max-w-4xl mx-auto p-4 sm:p-6 pb-24"></div>
+</main>
+
+<script>
+/* ============================================================
+   UI LABELS  [English, Arabic]
+   ============================================================ */
+const UI = {
+  hub:["All Subjects","كل المواد"], home:["Subject Home","الصفحة الرئيسية للمادة"], lecture:["Lecture","المحاضرة"],
+  objectives:["Learning Objectives","أهداف التعلم"], def:["Definition","تعريف"], ex:["Example","مثال"], tip:["Exam Tip","نصيحة للامتحان"],
+  take:["Key Takeaways","أهم النقاط"], quiz:["Self-Assessment Quiz","اختبار ذاتي"], flash:["Lecture Flashcards","بطاقات مراجعة المحاضرة"],
+  exam:["Final Exam","الاختبار النهائي"], next:["Next","التالي"], prev:["Previous","السابق"],
+  correct:["Correct! ✔","إجابة صحيحة! ✔"], wrong:["Incorrect ✘ - the correct answer is highlighted","إجابة خاطئة ✘ - الإجابة الصحيحة موضحة"],
+  score:["Your score","نتيجتك"], retry:["Try again","أعد المحاولة"], search:["Search a term...","ابحث عن مصطلح..."],
+  flip:["Tap the card to flip","اضغط على البطاقة لقلبها"], shuffle:["Shuffle","خلط"], start:["Start Exam","ابدأ الاختبار"],
+  mastery:["Mastery","مستوى الإتقان"], best:["Best","الأفضل"], plan:["How to score 100%","كيف تحصل على 100%"],
+  finish:["Finish","إنهاء"], reset:["Reset progress of this subject","إعادة ضبط تقدم هذه المادة"], read:["Read","تمت القراءة"],
+  soon:["Coming soon","قريبًا"], open:["Open","فتح"], subjects:["Subjects","المواد"], tools:["Study Tools","أدوات المراجعة"],
+  lectures:["Lectures","المحاضرات"], mistakes:["Questions you missed","الأسئلة التي أخطأت فيها"], yourAns:["Correct answer","الإجابة الصحيحة"],
+  glossFlash:["Term Flashcards","بطاقات المصطلحات"], glossList:["All Terms","كل المصطلحات"], questions:["questions","سؤالًا"],
+  question:["Question","السؤال"],
+  chooseSize:["Choose the number of questions","اختر عدد الأسئلة"], all:["All","الكل"], answerEN:["English","English"],
+  masteryHow:["Mastery = average of your best score in each lecture quiz and your best final exam score. Reading lectures does not raise it.","الإتقان = متوسط أفضل نتيجة لك في اختبار كل محاضرة وأفضل نتيجة في الاختبار النهائي. قراءة المحاضرات وحدها لا ترفعه."]
+};
+const LECTURES = [];
+
+LECTURES.push({ id:'l1', n:1,
+  title:["Propositional Logic","المنطق القضوي (Propositional Logic)"],
+  obj:[
+    ["Define a proposition and distinguish it from a propositional function.","تعريف القضية (Proposition) والتمييز بينها وبين الدالة القضوية (Propositional Function)."],
+    ["Identify the six logical connectives and their symbols.","التعرف على الروابط المنطقية الستة (Logical Connectives) ورموزها."],
+    ["Apply operator precedence to read and write compound propositions.","تطبيق أسبقية العمليات (Precedence) لقراءة وكتابة القضايا المركبة."],
+    ["Translate English sentences into propositional logic statements.","ترجمة الجمل الإنجليزية إلى عبارات في منطق القضايا."],
+    ["Use the laws of logical equivalence to prove that two statements are equivalent.","استخدام قوانين التكافؤ المنطقي (Equivalence Laws) لإثبات تكافؤ عبارتين."]
+  ],
+  sec:[
+   {t:["Propositions and Propositional Functions","القضايا (Propositions) والدوال القضوية"], b:[
+     {k:'def', x:["A proposition is a declarative statement that is either true (T) or false (F), but not both.","القضية (Proposition) هي جملة خبرية إما أن تكون صحيحة (T) أو خاطئة (F)، وليس كلاهما معًا."]},
+     {k:'def', x:["A propositional function (open sentence) is a statement involving one or more variables, e.g. 'y > 5'. Its truth value depends on the value given to the variable.","الدالة القضوية (Propositional Function) أو الجملة المفتوحة (Open Sentence) هي جملة تحتوي على متغير واحد أو أكثر، مثل 'y > 5'. تعتمد قيمتها الصدقية (Truth Value) على القيمة المُعطاة للمتغير."]},
+     {k:'tip', x:["A sentence is only a proposition if it has one fixed truth value. 'y > 5' is NOT a proposition by itself since its truth depends on y — it only becomes a proposition once y is given a specific value (e.g. y = 10 makes it a true proposition).","الجملة تكون قضية فقط إذا كانت لها قيمة صدقية واحدة ثابتة. فالجملة 'y > 5' ليست قضية بحد ذاتها لأن صدقها يعتمد على y — وتصبح قضية فقط بعد إعطاء y قيمة محددة (مثلًا y = 10 تجعلها قضية صحيحة)."]}
+   ]},
+   {t:["Logical Operators (Connectives)","الروابط المنطقية (Logical Connectives)"], b:[
+     {k:'p', x:["Propositions can be combined using logical operators, also called connectives, to form compound propositions.","يمكن دمج القضايا باستخدام العمليات المنطقية، وتسمى أيضًا الروابط المنطقية (Connectives)، لتكوين قضايا مركبة."]},
+     {k:'tbl', h:[["Operator","العملية"],["Symbol","الرمز"]],
+      r:[
+       [["Negation (NOT)","النفي (Negation)"],["¬","¬"]],
+       [["Conjunction (AND)","الاقتران (Conjunction)"],["∧","∧"]],
+       [["Disjunction (OR)","الفصل (Disjunction)"],["∨","∨"]],
+       [["Exclusive-or (XOR)","أو الحصرية (Exclusive-or)"],["⊕","⊕"]],
+       [["Implication (if-then)","الاستلزام (Implication)"],["→","→"]],
+       [["Biconditional (if and only if)","الشرط الثنائي (Biconditional)"],["↔","↔"]]
+      ]},
+     {k:'tip', x:["Memory trick: ∧ looks like the 'A' in AND; ∨ looks like a cup that 'collects' either option, for OR.","حيلة للحفظ: ∧ يشبه حرف الـ A في AND (و)؛ ∨ يشبه كأسًا 'يجمع' أحد الخيارين، لعملية OR (أو)."]}
+   ]},
+   {t:["Operator Precedence","أسبقية العمليات (Precedence)"], b:[
+     {k:'p', x:["When a compound proposition has no parentheses, precedence rules decide which operator applies first.","عندما لا تحتوي القضية المركبة على أقواس، تحدد قواعد الأسبقية أي عملية تُطبَّق أولًا."]},
+     {k:'ul', h:["Precedence, from highest to lowest priority","الأسبقية، من الأعلى إلى الأدنى"], x:[
+       ["1. Parentheses () (Highest Priority)","1. الأقواس () (الأعلى أولوية)"],
+       ["2. ¬ (Negation)","2. ¬ (النفي)"],
+       ["3. ∧ (Conjunction)","3. ∧ (الاقتران)"],
+       ["4. ∨ (Disjunction)","4. ∨ (الفصل)"],
+       ["5. → (Implication)","5. → (الاستلزام)"],
+       ["6. ↔ (Biconditional) (Lowest Priority)","6. ↔ (الشرط الثنائي) (الأدنى أولوية)"]]},
+     {k:'ex', x:["¬P ∨ Q ∧ R is read as (¬P) ∨ (Q ∧ R), because ¬ binds tighter than ∧, and ∧ binds tighter than ∨.","تُقرأ ¬P ∨ Q ∧ R كـ (¬P) ∨ (Q ∧ R)، لأن ¬ أقوى ارتباطًا من ∧، و∧ أقوى ارتباطًا من ∨."]}
+   ]},
+   {t:["Translating English to Logic","ترجمة الإنجليزية إلى منطق"], b:[
+     {k:'p', x:["To translate a sentence, first assign a letter to each simple statement, then combine them with connectives that match the sentence's structure.","لترجمة الجملة، نُعطي أولًا رمزًا لكل عبارة بسيطة، ثم نربطها بروابط منطقية تطابق تركيب الجملة."]},
+     {k:'ex', x:["\"School is closed if more than 2 feet of snow falls or if the wind chill is below -100.\"\nP: School is closed\nQ: 2 feet of snow falls\nR: wind chill is below -100\nTranslation: (Q ∨ R) → P","\"تُغلق المدرسة إذا تساقط أكثر من 2 قدم من الثلج أو إذا كانت درجة برودة الرياح أقل من -100.\"\nP: المدرسة مغلقة\nQ: تساقط أكثر من 2 قدم من الثلج\nR: درجة برودة الرياح أقل من -100\nالترجمة: (Q ∨ R) → P"]},
+     {k:'tip', x:["In translations, the word 'if' usually introduces the condition (antecedent) of an implication, even when it appears mid-sentence: '[School closed] if [snow falls]' means [snow falls] → [school closed], not the other way around.","في الترجمة، كلمة 'إذا' (if) غالبًا ما تُقدّم الشرط (المقدّم) في عبارة الاستلزام، حتى لو جاءت في وسط الجملة: '[إغلاق المدرسة] إذا [تساقط الثلج]' تعني [تساقط الثلج] → [إغلاق المدرسة]، وليس العكس."]}
+   ]},
+   {t:["Equivalence Laws","قوانين التكافؤ (Equivalence Laws)"], b:[
+     {k:'def', x:["Two propositional statements S1 and S2 are logically equivalent (S1 ≡ S2) if they have the same truth table.","تكون عبارتان منطقيتان S1 وS2 متكافئتين منطقيًا (S1 ≡ S2) إذا كان لهما جدول الصدق (Truth Table) نفسه."]},
+     {k:'tbl', h:[["Law","القانون"],["Statement","العبارة"]],
+      r:[
+       [["Identity laws","قوانين المحايد (Identity)"],["P ∧ T ≡ P","P ∧ T ≡ P"]],
+       [["Domination laws","قوانين السيطرة (Domination)"],["P ∧ F ≡ F","P ∧ F ≡ F"]],
+       [["Idempotent laws","قوانين اللا-قوة (Idempotent)"],["P ∧ P ≡ P","P ∧ P ≡ P"]],
+       [["Double negation law","قانون النفي المزدوج (Double Negation)"],["¬(¬P) ≡ P","¬(¬P) ≡ P"]],
+       [["Commutative laws","قوانين الإبدال (Commutative)"],["P ∧ Q ≡ Q ∧ P","P ∧ Q ≡ Q ∧ P"]],
+       [["Associative laws","قوانين الدمج (Associative)"],["P ∧ (Q ∧ R) ≡ (P ∧ Q) ∧ R","P ∧ (Q ∧ R) ≡ (P ∧ Q) ∧ R"]],
+       [["Distributive laws","قوانين التوزيع (Distributive)"],["P ∧ (Q ∨ R) ≡ (P ∧ Q) ∨ (P ∧ R)","P ∧ (Q ∨ R) ≡ (P ∧ Q) ∨ (P ∧ R)"]],
+       [["De Morgan's laws","قوانين دي مورجان (De Morgan's)"],["¬(P ∧ Q) ≡ (¬P) ∨ (¬Q)","¬(P ∧ Q) ≡ (¬P) ∨ (¬Q)"]],
+       [["Law with implication","قانون الاستلزام (Implication Law)"],["P → Q ≡ ¬P ∨ Q","P → Q ≡ ¬P ∨ Q"]]
+      ]},
+     {k:'tip', x:["Each law above is stated using ∧; the matching version with ∨ in place of ∧ (and vice versa) also holds. For example, the Commutative law also gives P ∨ Q ≡ Q ∨ P.","كل قانون أعلاه مكتوب باستخدام ∧؛ وتصح أيضًا النسخة المقابلة باستبدال ∧ بـ ∨ (والعكس). فمثلًا، قانون الإبدال يُعطي أيضًا P ∨ Q ≡ Q ∨ P."]}
+   ]},
+   {t:["Proof Example: Using the Equivalence Laws","مثال إثبات: باستخدام قوانين التكافؤ"], b:[
+     {k:'p', x:["We can use the equivalence laws to prove two statements are logically equivalent, without building a full truth table.","يمكن استخدام قوانين التكافؤ لإثبات تكافؤ عبارتين منطقيًا، دون بناء جدول صدق كامل."]},
+     {k:'p', x:["Show that (P → Q) ∧ (P → R) ≡ P → (Q ∧ R).","أثبت أن (P → Q) ∧ (P → R) ≡ P → (Q ∧ R)."]},
+     {k:'formula', x:"(P → Q) ∧ (P → R)\n≡ (¬P ∨ Q) ∧ (¬P ∨ R)     [Implication law]\n≡ ¬P ∨ (Q ∧ R)            [Distributive law]\n≡ P → (Q ∧ R)             [Implication law]"},
+     {k:'p', x:["The implication law is applied twice (once to rewrite each side) and the distributive law is applied once, in the middle step.","يُطبَّق قانون الاستلزام مرتين (مرة لإعادة كتابة كل طرف) ويُطبَّق قانون التوزيع مرة واحدة في الخطوة الوسطى."]}
+   ]}
+  ],
+  take:[
+   ["A proposition has one fixed truth value (T or F); a propositional function's truth value depends on its variable(s).","القضية لها قيمة صدقية ثابتة (T أو F)؛ بينما قيمة الدالة القضوية تعتمد على متغيراتها."],
+   ["Operator precedence (highest to lowest): () , ¬, ∧, ∨, →, ↔.","أسبقية العمليات (من الأعلى إلى الأدنى): () ، ¬، ∧، ∨، →، ↔."],
+   ["P → Q is logically equivalent to ¬P ∨ Q — this is the key law used in most equivalence proofs.","P → Q تكافئ منطقيًا ¬P ∨ Q — وهذا هو القانون الأساسي المستخدم في معظم إثباتات التكافؤ."],
+   ["Two statements are logically equivalent if they share the same truth table; this can be proven using the equivalence laws instead of a full truth table.","تكون العبارتان متكافئتين منطقيًا إذا تشاركتا جدول الصدق نفسه؛ ويمكن إثبات ذلك باستخدام قوانين التكافؤ بدلًا من جدول صدق كامل."]
+  ],
+  fc:[
+   [["What is a proposition?","ما هي القضية (Proposition)؟"],["A declarative statement that is either true or false, but not both.","جملة خبرية إما صحيحة أو خاطئة، وليس كلاهما."]],
+   [["What is a propositional function (open sentence)? Give the lecture's example.","ما هي الدالة القضوية (الجملة المفتوحة)؟ اذكر مثال المحاضرة."],["A statement involving one or more variables whose truth value depends on the variable, e.g. 'y > 5'.","جملة تحتوي على متغير أو أكثر وتعتمد قيمتها الصدقية على المتغير، مثل 'y > 5'."]],
+   [["Give the symbols for negation, conjunction, and disjunction.","اذكر رموز النفي والاقتران والفصل."],["Negation: ¬. Conjunction: ∧. Disjunction: ∨.","النفي: ¬. الاقتران: ∧. الفصل: ∨."]],
+   [["Give the symbols for exclusive-or, implication, and biconditional.","اذكر رموز أو الحصرية والاستلزام والشرط الثنائي."],["Exclusive-or: ⊕. Implication: →. Biconditional: ↔.","أو الحصرية: ⊕. الاستلزام: →. الشرط الثنائي: ↔."]],
+   [["List the operator precedence from highest to lowest.","اذكر ترتيب أسبقية العمليات من الأعلى إلى الأدنى."],["(), ¬, ∧, ∨, →, ↔.","()، ¬، ∧، ∨، →، ↔."]],
+   [["In the snow-day example, what do P, Q and R stand for?","في مثال يوم الثلج، ماذا يمثل P وQ وR؟"],["P: school is closed. Q: more than 2 feet of snow falls. R: wind chill is below -100.","P: المدرسة مغلقة. Q: تساقط أكثر من 2 قدم ثلج. R: برودة الرياح أقل من -100."]],
+   [["What is the correct translation of the snow-day sentence?","ما هي الترجمة الصحيحة لجملة يوم الثلج؟"],["(Q ∨ R) → P.","(Q ∨ R) → P."]],
+   [["State the Identity law and the Domination law (for ∧).","اذكر قانون المحايد وقانون السيطرة (لـ ∧)."],["Identity: P ∧ T ≡ P. Domination: P ∧ F ≡ F.","المحايد: P ∧ T ≡ P. السيطرة: P ∧ F ≡ F."]],
+   [["State De Morgan's law for ∧.","اذكر قانون دي مورجان لـ ∧."],["¬(P ∧ Q) ≡ (¬P) ∨ (¬Q).","¬(P ∧ Q) ≡ (¬P) ∨ (¬Q)."]],
+   [["State the law with implication.","اذكر قانون الاستلزام."],["P → Q ≡ ¬P ∨ Q.","P → Q ≡ ¬P ∨ Q."]],
+   [["State the Distributive law for ∧ over ∨.","اذكر قانون التوزيع لـ ∧ على ∨."],["P ∧ (Q ∨ R) ≡ (P ∧ Q) ∨ (P ∧ R).","P ∧ (Q ∨ R) ≡ (P ∧ Q) ∨ (P ∧ R)."]],
+   [["In the proof of (P→Q)∧(P→R) ≡ P→(Q∧R), which law is used in the first step?","في إثبات (P→Q)∧(P→R) ≡ P→(Q∧R)، أي قانون يُستخدم في الخطوة الأولى؟"],["The implication law, applied to both conjuncts: P→Q ≡ ¬P∨Q and P→R ≡ ¬P∨R.","قانون الاستلزام، يُطبَّق على كلا الطرفين: P→Q ≡ ¬P∨Q وP→R ≡ ¬P∨R."]],
+   [["In that same proof, which law turns (¬P∨Q)∧(¬P∨R) into ¬P∨(Q∧R)?","في الإثبات نفسه، أي قانون يحوّل (¬P∨Q)∧(¬P∨R) إلى ¬P∨(Q∧R)؟"],["The distributive law.","قانون التوزيع."]]
+  ],
+  quiz:[
+   {q:["Which of the following is a proposition?","أي مما يلي قضية (Proposition)؟"], o:[["\"Khartoum is the capital of Sudan.\"","\"الخرطوم عاصمة السودان.\""],["\"Close the door.\"","\"أغلق الباب.\""],["\"Is it raining?\"","\"هل تمطر؟\""],["\"x + 1 = 5\" (with x unspecified)","\"x + 1 = 5\" (دون تحديد x)"]], a:0},
+   {q:["What is the truth value of a propositional function like 'y > 5' by itself?","ما القيمة الصدقية للدالة القضوية 'y > 5' بحد ذاتها؟"], o:[["Always true","دائمًا صحيحة"],["Always false","دائمًا خاطئة"],["Both true and false at once","صحيحة وخاطئة معًا"],["It has no fixed truth value until y is given a value","ليس لها قيمة صدقية ثابتة حتى تُعطى y قيمة"]], a:3},
+   {q:["Which symbol represents the biconditional (if and only if)?","أي رمز يمثل الشرط الثنائي (if and only if)؟"], o:[["⊕","⊕"],["↔","↔"],["→","→"],["∧","∧"]], a:1},
+   {q:["Which symbol represents exclusive-or (XOR)?","أي رمز يمثل أو الحصرية (XOR)؟"], o:[["∨","∨"],["↔","↔"],["⊕","⊕"],["¬","¬"]], a:2},
+   {q:["Outside parentheses, which operator is evaluated FIRST according to the precedence rules?","خارج الأقواس، أي عملية تُنفَّذ أولًا حسب قواعد الأسبقية؟"], o:[["∧","∧"],["¬","¬"],["∨","∨"],["→","→"]], a:1},
+   {q:["In the precedence order, which operator comes immediately after ∧?","في ترتيب الأسبقية، أي عملية تأتي مباشرة بعد ∧؟"], o:[["↔","↔"],["¬","¬"],["∨","∨"],["→","→"]], a:2},
+   {q:["With P: school closed, Q: snow falls, R: wind chill below -100, what is the correct translation of 'School is closed if Q or R'?","مع P: إغلاق المدرسة، Q: تساقط الثلج، R: برودة الرياح أقل من -100، ما ترجمة 'تُغلق المدرسة إذا Q أو R'؟"], o:[["(Q ∨ R) → P","(Q ∨ R) → P"],["P → (Q ∨ R)","P → (Q ∨ R)"],["(Q ∧ R) → P","(Q ∧ R) → P"],["P ↔ (Q ∨ R)","P ↔ (Q ∨ R)"]], a:0},
+   {q:["Which law states P ∧ P ≡ P?","أي قانون ينص على P ∧ P ≡ P؟"], o:[["Commutative law","قانون الإبدال"],["Domination law","قانون السيطرة"],["Identity law","قانون المحايد"],["Idempotent law","قانون اللا-قوة"]], a:3},
+   {q:["Which equivalence correctly expresses the implication law?","أي تكافؤ يعبّر بشكل صحيح عن قانون الاستلزام؟"], o:[["P → Q ≡ ¬P ∨ Q","P → Q ≡ ¬P ∨ Q"],["P → Q ≡ P ∨ Q","P → Q ≡ P ∨ Q"],["P → Q ≡ ¬P ∧ Q","P → Q ≡ ¬P ∧ Q"],["P → Q ≡ ¬(P ∨ Q)","P → Q ≡ ¬(P ∨ Q)"]], a:0},
+   {q:["¬(¬P) is equivalent to:","¬(¬P) تكافئ:"], o:[["F","F"],["¬P","¬P"],["P","P"],["T","T"]], a:2},
+   {q:["After applying the implication law to (P → Q) ∧ (P → R), what do we get?","بعد تطبيق قانون الاستلزام على (P → Q) ∧ (P → R)، ماذا نحصل؟"], o:[["(¬P ∨ Q) ∧ (¬P ∨ R)","(¬P ∨ Q) ∧ (¬P ∨ R)"],["(P ∨ Q) ∧ (P ∨ R)","(P ∨ Q) ∧ (P ∨ R)"],["¬P ∧ (Q ∨ R)","¬P ∧ (Q ∨ R)"],["(¬P ∧ Q) ∨ (¬P ∧ R)","(¬P ∧ Q) ∨ (¬P ∧ R)"]], a:0},
+   {q:["Which law turns (¬P ∨ Q) ∧ (¬P ∨ R) into ¬P ∨ (Q ∧ R)?","أي قانون يحوّل (¬P ∨ Q) ∧ (¬P ∨ R) إلى ¬P ∨ (Q ∧ R)؟"], o:[["Commutative law","قانون الإبدال"],["De Morgan's law","قانون دي مورجان"],["Distributive law","قانون التوزيع"],["Associative law","قانون الدمج"]], a:2}
+  ]
+});
+
+LECTURES.push({ id:'l2', n:2,
+  title:["Propositional Functions and Quantifiers","الدوال القضوية والمُحدِّدات الكمية (Quantifiers)"],
+  obj:[
+    ["Define a propositional function and recognize it is not a proposition on its own.","تعريف الدالة القضوية وإدراك أنها ليست قضية بحد ذاتها."],
+    ["Define the universal and existential quantifiers and their symbols.","تعريف المحدد الكمي الشامل والمحدد الكمي الوجودي ورموزهما."],
+    ["Apply De Morgan's laws for quantifiers to negate quantified statements.","تطبيق قوانين دي مورجان للمحددات الكمية لنفي العبارات المُحدَّدة كميًا."],
+    ["Read and interpret nested quantifier statements.","قراءة وتفسير عبارات المحددات الكمية المتداخلة (Nested Quantifiers)."]
+  ],
+  sec:[
+   {t:["Propositional Functions","الدوال القضوية (Propositional Functions)"], b:[
+     {k:'def', x:["A propositional function is a statement involving one or more variables, e.g. 'x - 3 > 5'.","الدالة القضوية هي جملة تحتوي على متغير واحد أو أكثر، مثل 'x - 3 > 5'."]},
+     {k:'tip', x:["A propositional function only becomes a proposition (with a fixed T/F value) once every variable is either assigned a value or bound by a quantifier.","تصبح الدالة القضوية قضية (بقيمة صدقية ثابتة) فقط بعد أن يُعطى كل متغير قيمة أو يُقيَّد بمحدد كمي (Quantifier)."]}
+   ]},
+   {t:["Quantifiers","المحددات الكمية (Quantifiers)"], b:[
+     {k:'p', x:["Quantifiers let us turn a propositional function into a proposition by stating how many values of the variable make it true.","تسمح لنا المحددات الكمية بتحويل الدالة القضوية إلى قضية بتحديد عدد قيم المتغير التي تجعلها صحيحة."]},
+     {k:'def', x:["Universal Quantifier (∀): For all x in the universe of discourse, P(x) is true.","المحدد الكمي الشامل (∀): لكل x في مجال الخطاب (Universe of Discourse)، P(x) صحيحة."]},
+     {k:'def', x:["Existential Quantifier (∃): There exists an x in the universe of discourse for which P(x) is true.","المحدد الكمي الوجودي (∃): يوجد x في مجال الخطاب بحيث تكون P(x) صحيحة."]},
+     {k:'tbl', h:[["Quantifier","المحدد الكمي"],["Symbol","الرمز"],["Reads as","يُقرأ"]],
+      r:[
+       [["Universal","الشامل"],["∀","∀"],["\"for all\" / \"for every\"","\"لكل\""]],
+       [["Existential","الوجودي"],["∃","∃"],["\"there exists\" / \"for some\"","\"يوجد\""]]
+      ]}
+   ]},
+   {t:["Negation of Quantifiers (De Morgan's Laws for Quantifiers)","نفي المحددات الكمية (قوانين دي مورجان للمحددات الكمية)"], b:[
+     {k:'p', x:["Negating a quantified statement flips the quantifier and moves the negation onto the predicate.","نفي عبارة مُحدَّدة كميًا يقلب نوع المحدد الكمي وينقل النفي إلى الدالة القضوية."]},
+     {k:'tbl', h:[["Law","القانون"],["Statement","العبارة"]],
+      r:[
+       [["Negating ∀","نفي ∀"],["¬(∀x P(x)) ≡ ∃x (¬P(x))","¬(∀x P(x)) ≡ ∃x (¬P(x))"]],
+       [["Negating ∃","نفي ∃"],["¬(∃x P(x)) ≡ ∀x (¬P(x))","¬(∃x P(x)) ≡ ∀x (¬P(x))"]]
+      ]},
+     {k:'tip', x:["These are also called 'De Morgan's laws for quantifiers' because, like De Morgan's laws for ∧ and ∨, negation pushes through and swaps the operator (here, the quantifier) for its dual.","تُسمى أيضًا 'قوانين دي مورجان للمحددات الكمية' لأن النفي، كما في قوانين دي مورجان لـ ∧ وَ∨، يدخل إلى الداخل ويستبدل العملية (هنا المحدد الكمي) بمقابلها."]}
+   ]},
+   {t:["Nested Quantifiers","المحددات الكمية المتداخلة (Nested Quantifiers)"], b:[
+     {k:'p', x:["Nested quantifiers occur when a statement quantifies more than one variable, possibly in different ways (∀ and ∃ mixed together).","تحدث المحددات الكمية المتداخلة عندما تُحدِّد العبارة أكثر من متغير، وربما بطرق مختلفة (مزيج من ∀ وَ∃)."]},
+     {k:'formula', x:"∀x, y, z (S(x, y, z) → (x ≤ z ∧ y ≤ z))"},
+     {k:'p', x:["In words: for all x, y and z, if S(x, y, z) holds, then x ≤ z and y ≤ z.","بالكلمات: لكل x وَy وَz، إذا تحققت S(x, y, z)، فإن x ≤ z وَy ≤ z."]},
+     {k:'formula', x:"∃x ∀y ∀z (F(x, y) ∧ F(x, z) ∧ (y ≠ z) → ¬F(y, z))"},
+     {k:'p', x:["In words: there exists an x such that, for all y and z, if F(x, y) and F(x, z) hold and y ≠ z, then ¬F(y, z).","بالكلمات: يوجد x بحيث، لكل y وَz، إذا تحققت F(x, y) وَF(x, z) وَ y ≠ z، فإن ¬F(y, z)."]},
+     {k:'tip', x:["Order matters when quantifier types are mixed: ∃x ∀y P(x,y) is generally NOT the same statement as ∀y ∃x P(x,y). Read nested quantifiers strictly left to right.","يهم الترتيب عند مزج أنواع المحددات الكمية: ∃x ∀y P(x,y) ليست عمومًا نفس العبارة ∀y ∃x P(x,y). اقرأ المحددات الكمية المتداخلة من اليسار إلى اليمين بدقة."]}
+   ]}
+  ],
+  take:[
+   ["A propositional function becomes a proposition only once its variable(s) are assigned a value or bound by a quantifier.","تصبح الدالة القضوية قضية فقط بعد أن يُعطى متغيرها قيمة أو يُقيَّد بمحدد كمي."],
+   ["∀ means 'for all'; ∃ means 'there exists'.","∀ تعني 'لكل'؛ ∃ تعني 'يوجد'."],
+   ["¬(∀x P(x)) ≡ ∃x(¬P(x)) and ¬(∃x P(x)) ≡ ∀x(¬P(x)).","¬(∀x P(x)) ≡ ∃x(¬P(x)) وَ ¬(∃x P(x)) ≡ ∀x(¬P(x))."],
+   ["In nested quantifiers, the order of different quantifier types (∀ vs ∃) generally cannot be swapped without changing the meaning.","في المحددات الكمية المتداخلة، لا يمكن عمومًا تبديل ترتيب أنواع المحددات المختلفة (∀ وَ∃) دون تغيير المعنى."]
+  ],
+  fc:[
+   [["What is a propositional function? Give the lecture's example.","ما هي الدالة القضوية؟ اذكر مثال المحاضرة."],["A statement involving one or more variables, e.g. 'x - 3 > 5'.","جملة تحتوي على متغير أو أكثر، مثل 'x - 3 > 5'."]],
+   [["What does ∀x P(x) mean in words?","ماذا تعني ∀x P(x) بالكلمات؟"],["For all x in the universe of discourse, P(x) is true.","لكل x في مجال الخطاب، P(x) صحيحة."]],
+   [["What does ∃x P(x) mean in words?","ماذا تعني ∃x P(x) بالكلمات؟"],["There exists an x in the universe of discourse for which P(x) is true.","يوجد x في مجال الخطاب بحيث تكون P(x) صحيحة."]],
+   [["What symbol is used for 'for all'?","ما الرمز المستخدم لـ 'لكل'؟"],["∀","∀"]],
+   [["What symbol is used for 'there exists'?","ما الرمز المستخدم لـ 'يوجد'؟"],["∃","∃"]],
+   [["What is ¬(∀x P(x)) equivalent to?","ما مكافئ ¬(∀x P(x))؟"],["∃x (¬P(x))","∃x (¬P(x))"]],
+   [["What is ¬(∃x P(x)) equivalent to?","ما مكافئ ¬(∃x P(x))؟"],["∀x (¬P(x))","∀x (¬P(x))"]],
+   [["When you negate a quantified statement, what happens to the quantifier?","عند نفي عبارة مُحدَّدة كميًا، ماذا يحدث للمحدد الكمي؟"],["It flips (∀ becomes ∃, and vice versa), and the negation moves onto the predicate.","يُقلب (∀ تصبح ∃، والعكس)، وينتقل النفي إلى الدالة القضوية."]],
+   [["In words, what does '∀x,y,z (S(x,y,z) → (x≤z ∧ y≤z))' say?","ماذا تعني بالكلمات '∀x,y,z (S(x,y,z) → (x≤z ∧ y≤z))'؟"],["For all x, y, z: if S(x,y,z) holds, then x≤z and y≤z.","لكل x وy وz: إذا تحققت S(x,y,z)، فإن x≤z وy≤z."]],
+   [["Does the order of ∀ and ∃ matter when mixed in a nested statement?","هل يهم ترتيب ∀ وَ∃ عند مزجهما في عبارة متداخلة؟"],["Yes — ∃x∀y P(x,y) is generally not the same as ∀y∃x P(x,y).","نعم — ∃x∀y P(x,y) ليست عمومًا نفس ∀y∃x P(x,y)."]],
+   [["True or false: 'x - 3 > 5' is a proposition.","صح أم خطأ: 'x - 3 > 5' قضية."],["False — it's a propositional function; it has no fixed truth value until x is given a value.","خطأ — إنها دالة قضوية؛ ليس لها قيمة صدقية ثابتة حتى تُعطى x قيمة."]]
+  ],
+  quiz:[
+   {q:["Which symbol means 'for all'?","أي رمز يعني 'لكل'؟"], o:[["∃","∃"],["∀","∀"],["¬","¬"],["⊕","⊕"]], a:1},
+   {q:["Which symbol means 'there exists'?","أي رمز يعني 'يوجد'؟"], o:[["∀","∀"],["↔","↔"],["∃","∃"],["∧","∧"]], a:2},
+   {q:["What is ¬(∀x P(x)) equivalent to?","ما مكافئ ¬(∀x P(x))؟"], o:[["∃x (¬P(x))","∃x (¬P(x))"],["∀x (¬P(x))","∀x (¬P(x))"],["∃x P(x)","∃x P(x)"],["¬∃x P(x)","¬∃x P(x)"]], a:0},
+   {q:["What is ¬(∃x P(x)) equivalent to?","ما مكافئ ¬(∃x P(x))؟"], o:[["∃x (¬P(x))","∃x (¬P(x))"],["∀x P(x)","∀x P(x)"],["∀x (¬P(x))","∀x (¬P(x))"],["¬∀x P(x)","¬∀x P(x)"]], a:2},
+   {q:["'x - 3 > 5' is best described as:","أفضل وصف لـ 'x - 3 > 5' هو:"], o:[["A proposition","قضية"],["A logical connective","رابط منطقي"],["A quantifier","محدد كمي"],["A propositional function","دالة قضوية"]], a:3},
+   {q:["According to the lecture, what does ∀x P(x) mean?","حسب المحاضرة، ماذا تعني ∀x P(x)؟"], o:[["There exists an x for which P(x) is true","يوجد x تكون P(x) صحيحة من أجله"],["For all x in the universe of discourse, P(x) is true","لكل x في مجال الخطاب، P(x) صحيحة"],["P(x) is always false","P(x) دائمًا خاطئة"],["x is a proposition","x قضية"]], a:1},
+   {q:["In ∀x,y,z (S(x,y,z) → (x≤z ∧ y≤z)), what is concluded when S(x,y,z) holds?","في ∀x,y,z (S(x,y,z) → (x≤z ∧ y≤z))، ماذا يُستنتج عند تحقق S(x,y,z)؟"], o:[["x > z and y > z","x > z وَy > z"],["x ≤ z and y ≤ z","x ≤ z وَy ≤ z"],["x = y = z","x = y = z"],["S(x,y,z) is false","S(x,y,z) خاطئة"]], a:1},
+   {q:["Swapping ∃x∀y P(x,y) to ∀y∃x P(x,y) generally:","تبديل ∃x∀y P(x,y) إلى ∀y∃x P(x,y) عمومًا:"], o:[["Keeps exactly the same meaning","يُبقي المعنى نفسه تمامًا"],["Is not allowed in logic at all","غير مسموح به في المنطق إطلاقًا"],["Can change the meaning of the statement","قد يغيّر معنى العبارة"],["Always makes the statement false","يجعل العبارة خاطئة دائمًا"]], a:2},
+   {q:["The laws ¬(∀xP(x))≡∃x¬P(x) and ¬(∃xP(x))≡∀x¬P(x) are known as:","القوانين ¬(∀xP(x))≡∃x¬P(x) وَ¬(∃xP(x))≡∀x¬P(x) تُعرف باسم:"], o:[["The implication laws","قوانين الاستلزام"],["De Morgan's laws for quantifiers","قوانين دي مورجان للمحددات الكمية"],["The distributive laws","قوانين التوزيع"],["The identity laws","قوانين المحايد"]], a:1},
+   {q:["In the statement '∃x ∀y ∀z (F(x,y)∧F(x,z)∧(y≠z) → ¬F(y,z))', which variable is bound by the existential quantifier?","في العبارة '∃x ∀y ∀z (F(x,y)∧F(x,z)∧(y≠z) → ¬F(y,z))'، أي متغير مُقيَّد بالمحدد الكمي الوجودي؟"], o:[["y","y"],["z","z"],["x","x"],["F","F"]], a:2}
+  ]
+});
+
+LECTURES.push({ id:'l3', n:3,
+  title:["Set Theory","نظرية المجموعات (Set Theory)"],
+  obj:[
+    ["Recall basic set notation: membership, subset, and equality.","تذكّر الترميز الأساسي للمجموعات: العضوية والمجموعة الجزئية والتساوي."],
+    ["State the formal definition of a subset using a quantified implication.","صياغة التعريف الرسمي للمجموعة الجزئية باستخدام عبارة استلزام مُحدَّدة كميًا."],
+    ["Apply the rules for set equality and subset transitivity.","تطبيق قواعد تساوي المجموعات وتعدّي العلاقة الجزئية (Transitivity)."],
+    ["Compute the Cartesian product of two sets, including A × B and B × A.","حساب الضرب الديكارتي (Cartesian Product) لمجموعتين، بما في ذلك A × B وَB × A."]
+  ],
+  sec:[
+   {t:["Sets: Basic Notation","المجموعات: الترميز الأساسي"], b:[
+     {k:'p', x:["A set is an unordered collection of distinct objects, called its elements or members. We write x ∈ A to say x is an element of A, and x ∉ A to say it is not.","المجموعة (Set) هي تجميع غير مرتب لعناصر مميزة، تُسمى عناصرها أو أعضاءها. نكتب x ∈ A للدلالة على أن x عنصر في A، وَx ∉ A للدلالة على أنه ليس كذلك."]},
+     {k:'tip', x:["This basic notation (∈, ∉) is standard background used throughout the subset definition and the Cartesian product below.","هذا الترميز الأساسي (∈, ∉) خلفية قياسية تُستخدم طوال تعريف المجموعة الجزئية والضرب الديكارتي أدناه."]}
+   ]},
+   {t:["Subsets","المجموعات الجزئية (Subsets)"], b:[
+     {k:'def', x:["A ⊆ B means 'A is a subset of B', defined formally as: A ⊆ B ⇔ ∀x (x ∈ A → x ∈ B).","A ⊆ B تعني 'A مجموعة جزئية من B'، وتُعرَّف رسميًا بـ: A ⊆ B ⇔ ∀x (x ∈ A → x ∈ B)."]},
+     {k:'p', x:["In words: A is a subset of B if and only if every element of A is also an element of B.","بالكلمات: A مجموعة جزئية من B إذا وفقط إذا كان كل عنصر في A هو أيضًا عنصر في B."]},
+     {k:'cards', c:[
+       {t:["Set equality","تساوي المجموعات"], l:[["A = B ⇔ (A ⊆ B) ∧ (B ⊆ A)","A = B ⇔ (A ⊆ B) ∧ (B ⊆ A)"]]},
+       {t:["Transitivity of ⊆","تعدّي العلاقة ⊆"], l:[["(A ⊆ B) ∧ (B ⊆ C) ⇒ A ⊆ C","(A ⊆ B) ∧ (B ⊆ C) ⇒ A ⊆ C"]]}
+     ]},
+     {k:'tip', x:["To prove A = B, you must prove BOTH directions: A ⊆ B and B ⊆ A — this is the standard 'double subset' proof technique.","لإثبات A = B، يجب إثبات الاتجاهين كليهما: A ⊆ B وَB ⊆ A — وهذه هي تقنية الإثبات القياسية 'المجموعة الجزئية المزدوجة'."]}
+   ]},
+   {t:["Cartesian Product","الضرب الديكارتي (Cartesian Product)"], b:[
+     {k:'def', x:["The Cartesian product A × B is the set of all ordered pairs (a, b) where a ∈ A and b ∈ B.","الضرب الديكارتي A × B هو مجموعة كل الأزواج المرتبة (a, b) بحيث a ∈ A وَb ∈ B."]},
+     {k:'ex', x:["Let A = {good, bad}, B = {student, prof}.\nA × B = {(good, student), (good, prof), (bad, student), (bad, prof)}\nB × A = {(student, good), (student, bad), (prof, good), (prof, bad)}","لتكن A = {good, bad}, B = {student, prof}.\nA × B = {(good, student), (good, prof), (bad, student), (bad, prof)}\nB × A = {(student, good), (student, bad), (prof, good), (prof, bad)}"]},
+     {k:'tip', x:["A × B has |A| × |B| ordered pairs. Here |A| = 2 and |B| = 2, so both A × B and B × A have 2 × 2 = 4 pairs — but notice A × B ≠ B × A, since the order inside each pair matters.","يحتوي A × B على |A| × |B| زوجًا مرتبًا. هنا |A| = 2 وَ|B| = 2، لذا يحتوي كل من A × B وَB × A على 2 × 2 = 4 أزواج — لكن لاحظ أن A × B ≠ B × A، لأن الترتيب داخل كل زوج يهم."]}
+   ]}
+  ],
+  take:[
+   ["x ∈ A means x is an element of A.","x ∈ A تعني أن x عنصر في A."],
+   ["A ⊆ B ⇔ ∀x (x ∈ A → x ∈ B): every element of A must also be in B.","A ⊆ B ⇔ ∀x (x ∈ A → x ∈ B): يجب أن يكون كل عنصر من A في B أيضًا."],
+   ["A = B is proven by showing A ⊆ B AND B ⊆ A.","يُثبت A = B بإظهار A ⊆ B وَB ⊆ A معًا."],
+   ["⊆ is transitive: (A ⊆ B) ∧ (B ⊆ C) ⇒ A ⊆ C.","⊆ علاقة متعدية: (A ⊆ B) ∧ (B ⊆ C) ⇒ A ⊆ C."],
+   ["A × B is the set of ordered pairs (a,b); in general A × B ≠ B × A.","A × B هي مجموعة الأزواج المرتبة (a,b)؛ وبشكل عام A × B ≠ B × A."]
+  ],
+  fc:[
+   [["What does x ∈ A mean?","ماذا تعني x ∈ A؟"],["x is an element (member) of the set A.","x عنصر (عضو) في المجموعة A."]],
+   [["Give the formal definition of A ⊆ B.","اذكر التعريف الرسمي لـ A ⊆ B."],["A ⊆ B ⇔ ∀x (x ∈ A → x ∈ B).","A ⊆ B ⇔ ∀x (x ∈ A → x ∈ B)."]],
+   [["What rule is used to prove two sets are equal?","ما القاعدة المستخدمة لإثبات تساوي مجموعتين؟"],["A = B ⇔ (A ⊆ B) ∧ (B ⊆ A).","A = B ⇔ (A ⊆ B) ∧ (B ⊆ A)."]],
+   [["State the transitivity rule for ⊆.","اذكر قاعدة التعدي لـ ⊆."],["(A ⊆ B) ∧ (B ⊆ C) ⇒ A ⊆ C.","(A ⊆ B) ∧ (B ⊆ C) ⇒ A ⊆ C."]],
+   [["Define the Cartesian product A × B.","عرّف الضرب الديكارتي A × B."],["The set of all ordered pairs (a,b) where a ∈ A and b ∈ B.","مجموعة كل الأزواج المرتبة (a,b) بحيث a ∈ A وَb ∈ B."]],
+   [["Given A = {good, bad}, B = {student, prof}, list A × B.","بما أن A = {good, bad}, B = {student, prof}، اذكر A × B."],["{(good, student), (good, prof), (bad, student), (bad, prof)}","{(good, student), (good, prof), (bad, student), (bad, prof)}"]],
+   [["Given the same A and B, list B × A.","بنفس A وَB، اذكر B × A."],["{(student, good), (student, bad), (prof, good), (prof, bad)}","{(student, good), (student, bad), (prof, good), (prof, bad)}"]],
+   [["Is A × B equal to B × A in general?","هل A × B تساوي B × A بشكل عام؟"],["No — order inside each pair matters, so A × B ≠ B × A in general.","لا — الترتيب داخل كل زوج يهم، لذا A × B ≠ B × A بشكل عام."]],
+   [["If |A| = 2 and |B| = 2, how many ordered pairs are in A × B?","إذا كانت |A| = 2 وَ|B| = 2، كم زوجًا مرتبًا في A × B؟"],["4 pairs (|A| × |B| = 2 × 2 = 4).","4 أزواج (|A| × |B| = 2 × 2 = 4)."]],
+   [["What proof technique does A = B require?","ما تقنية الإثبات التي يتطلبها A = B؟"],["The 'double subset' technique: prove A ⊆ B and B ⊆ A separately.","تقنية 'المجموعة الجزئية المزدوجة': إثبات A ⊆ B وَB ⊆ A بشكل منفصل."]],
+   [["What symbol denotes 'x is not an element of A'?","ما الرمز الذي يدل على 'x ليست عنصرًا في A'؟"],["x ∉ A.","x ∉ A."]]
+  ],
+  quiz:[
+   {q:["What does x ∈ A mean?","ماذا تعني x ∈ A؟"], o:[["x is a subset of A","x مجموعة جزئية من A"],["x is an element of A","x عنصر في A"],["x equals A","x تساوي A"],["x is not in A","x ليست في A"]], a:1},
+   {q:["Which is the correct formal definition of A ⊆ B?","ما التعريف الرسمي الصحيح لـ A ⊆ B؟"], o:[["∀x (x ∈ B → x ∈ A)","∀x (x ∈ B → x ∈ A)"],["∃x (x ∈ A → x ∈ B)","∃x (x ∈ A → x ∈ B)"],["∀x (x ∈ A → x ∈ B)","∀x (x ∈ A → x ∈ B)"],["∀x (x ∈ A ∧ x ∈ B)","∀x (x ∈ A ∧ x ∈ B)"]], a:2},
+   {q:["Which rule correctly captures set equality?","أي قاعدة تمثل تساوي المجموعات بشكل صحيح؟"], o:[["A = B ⇔ A ⊆ B only","A = B ⇔ A ⊆ B فقط"],["A = B ⇔ (A ⊆ B) ∧ (B ⊆ A)","A = B ⇔ (A ⊆ B) ∧ (B ⊆ A)"],["A = B ⇔ (A ⊆ B) ∨ (B ⊆ A)","A = B ⇔ (A ⊆ B) ∨ (B ⊆ A)"],["A = B ⇔ A × B = B × A","A = B ⇔ A × B = B × A"]], a:1},
+   {q:["If A ⊆ B and B ⊆ C, what can we conclude?","إذا كانت A ⊆ B وَB ⊆ C، فماذا نستنتج؟"], o:[["A = C","A = C"],["C ⊆ A","C ⊆ A"],["A ⊆ C","A ⊆ C"],["Nothing can be concluded","لا يمكن استنتاج شيء"]], a:2},
+   {q:["What is the Cartesian product A × B?","ما هو الضرب الديكارتي A × B؟"], o:[["The set of elements common to A and B","مجموعة العناصر المشتركة بين A وَB"],["The set of all ordered pairs (a,b) with a∈A, b∈B","مجموعة كل الأزواج المرتبة (a,b) بحيث a∈A, b∈B"],["The set of elements in A but not B","مجموعة العناصر في A وليست في B"],["The union of A and B","اتحاد A وَB"]], a:1},
+   {q:["Given A = {good, bad}, B = {student, prof}, which pair is in A × B?","بما أن A = {good, bad}, B = {student, prof}، أي زوج موجود في A × B؟"], o:[["(student, good)","(student, good)"],["(prof, bad)","(prof, bad)"],["(bad, prof)","(bad, prof)"],["(good, good)","(good, good)"]], a:2},
+   {q:["Given the same A and B, which pair is in B × A but NOT in A × B?","بنفس A وَB، أي زوج موجود في B × A وليس في A × B؟"], o:[["(good, student)","(good, student)"],["(student, good)","(student, good)"],["(bad, prof)","(bad, prof)"],["(good, prof)","(good, prof)"]], a:1},
+   {q:["If |A| = 2 and |B| = 2, how many ordered pairs does A × B contain?","إذا كانت |A| = 2 وَ|B| = 2، كم زوجًا يحتوي A × B؟"], o:[["2","2"],["8","8"],["4","4"],["6","6"]], a:2},
+   {q:["In general, how does A × B relate to B × A?","بشكل عام، كيف تتعلق A × B بـ B × A؟"], o:[["They are always equal","دائمًا متساويتان"],["They are generally not equal, since pair order matters","غير متساويتين عمومًا، لأن ترتيب الزوج يهم"],["B × A is always empty","B × A دائمًا فارغة"],["A × B has fewer elements than B × A","A × B تحتوي عناصر أقل من B × A"]], a:1},
+   {q:["To prove A = B using the double-subset technique, you must show:","لإثبات A = B باستخدام تقنية المجموعة الجزئية المزدوجة، يجب إظهار:"], o:[["A ⊆ B only","A ⊆ B فقط"],["B ⊆ A only","B ⊆ A فقط"],["A × B = B × A","A × B = B × A"],["A ⊆ B and B ⊆ A","A ⊆ B وَB ⊆ A"]], a:3}
+  ]
+});
+
+LECTURES.push({ id:'l4', n:4,
+  title:["Functions: Floor and Ceiling","الدوال: دالتا الأرضية والسقف (Floor and Ceiling)"],
+  obj:[
+    ["Define the floor function and compute its value for a given real number.","تعريف دالة الأرضية (Floor Function) وحساب قيمتها لعدد حقيقي معطى."],
+    ["Define the ceiling function and compute its value for a given real number.","تعريف دالة السقف (Ceiling Function) وحساب قيمتها لعدد حقيقي معطى."],
+    ["Correctly apply floor and ceiling to negative and non-integer real numbers.","تطبيق دالتي الأرضية والسقف بشكل صحيح على الأعداد السالبة وغير الصحيحة."]
+  ],
+  sec:[
+   {t:["Floor Function","دالة الأرضية (Floor Function)"], b:[
+     {k:'def', x:["The floor function ⌊r⌋ assigns to r ∈ R the largest z ∈ Z with z ≤ r.","دالة الأرضية ⌊r⌋ تُسنِد لـ r ∈ R أكبر عدد صحيح z ∈ Z بحيث z ≤ r."]},
+     {k:'tbl', h:[["Input r","المُدخل r"],["⌊r⌋"]],
+      r:[
+       [["2.3","2.3"],["2","2"]],
+       [["2","2"],["2","2"]],
+       [["0.5","0.5"],["0","0"]],
+       [["-3.5","-3.5"],["-4","-4"]]
+      ]},
+     {k:'tip', x:["Think of ⌊r⌋ as 'round down toward negative infinity'. This is why ⌊-3.5⌋ = -4, not -3: -4 is the largest integer that is still ≤ -3.5.","تخيّل ⌊r⌋ كأنها 'تقريب للأسفل نحو ما لا نهاية سالب'. لهذا ⌊-3.5⌋ = -4، وليس -3: فـ -4 هو أكبر عدد صحيح لا يزال ≤ -3.5."]}
+   ]},
+   {t:["Ceiling Function","دالة السقف (Ceiling Function)"], b:[
+     {k:'def', x:["The ceiling function ⌈r⌉ assigns to r ∈ R the smallest z ∈ Z with z ≥ r.","دالة السقف ⌈r⌉ تُسنِد لـ r ∈ R أصغر عدد صحيح z ∈ Z بحيث z ≥ r."]},
+     {k:'tbl', h:[["Input r","المُدخل r"],["⌈r⌉"]],
+      r:[
+       [["2.3","2.3"],["3","3"]],
+       [["2","2"],["2","2"]],
+       [["0.5","0.5"],["1","1"]],
+       [["-3.5","-3.5"],["-3","-3"]]
+      ]},
+     {k:'tip', x:["Think of ⌈r⌉ as 'round up toward positive infinity'. This is why ⌈-3.5⌉ = -3, not -4: -3 is the smallest integer that is still ≥ -3.5.","تخيّل ⌈r⌉ كأنها 'تقريب للأعلى نحو ما لا نهاية موجب'. لهذا ⌈-3.5⌉ = -3، وليس -4: فـ -3 هو أصغر عدد صحيح لا يزال ≥ -3.5."]}
+   ]},
+   {t:["Comparing Floor and Ceiling","مقارنة الأرضية والسقف"], b:[
+     {k:'p', x:["When r is already an integer, floor and ceiling agree: ⌊2⌋ = ⌈2⌉ = 2. Otherwise, ⌈r⌉ = ⌊r⌋ + 1 for non-integer r.","عندما يكون r عددًا صحيحًا بالفعل، تتفق الأرضية والسقف: ⌊2⌋ = ⌈2⌉ = 2. وإلا، فإن ⌈r⌉ = ⌊r⌋ + 1 لـ r غير الصحيح."]}
+   ]}
+  ],
+  take:[
+   ["⌊r⌋ is the largest integer ≤ r (round down).","⌊r⌋ هو أكبر عدد صحيح ≤ r (تقريب للأسفل)."],
+   ["⌈r⌉ is the smallest integer ≥ r (round up).","⌈r⌉ هو أصغر عدد صحيح ≥ r (تقريب للأعلى)."],
+   ["For negative non-integers, floor rounds further away from zero than you might expect: ⌊-3.5⌋ = -4.","للأعداد السالبة غير الصحيحة، تُقرّب الأرضية بعيدًا عن الصفر أكثر مما قد تتوقع: ⌊-3.5⌋ = -4."],
+   ["When r is an integer, ⌊r⌋ = ⌈r⌉ = r.","عندما يكون r عددًا صحيحًا، ⌊r⌋ = ⌈r⌉ = r."]
+  ],
+  fc:[
+   [["Define the floor function ⌊r⌋.","عرّف دالة الأرضية ⌊r⌋."],["It assigns to r ∈ R the largest z ∈ Z with z ≤ r.","تُسنِد لـ r ∈ R أكبر عدد صحيح z ∈ Z بحيث z ≤ r."]],
+   [["Define the ceiling function ⌈r⌉.","عرّف دالة السقف ⌈r⌉."],["It assigns to r ∈ R the smallest z ∈ Z with z ≥ r.","تُسنِد لـ r ∈ R أصغر عدد صحيح z ∈ Z بحيث z ≥ r."]],
+   [["What is ⌊2.3⌋?","كم تساوي ⌊2.3⌋؟"],["2.","2."]],
+   [["What is ⌊2⌋?","كم تساوي ⌊2⌋؟"],["2.","2."]],
+   [["What is ⌊0.5⌋?","كم تساوي ⌊0.5⌋؟"],["0.","0."]],
+   [["What is ⌊-3.5⌋?","كم تساوي ⌊-3.5⌋؟"],["-4.","-4."]],
+   [["What is ⌈2.3⌉?","كم تساوي ⌈2.3⌉؟"],["3.","3."]],
+   [["What is ⌈2⌉?","كم تساوي ⌈2⌉؟"],["2.","2."]],
+   [["What is ⌈0.5⌉?","كم تساوي ⌈0.5⌉؟"],["1.","1."]],
+   [["What is ⌈-3.5⌉?","كم تساوي ⌈-3.5⌉؟"],["-3.","-3."]],
+   [["If r is an integer, how do ⌊r⌋ and ⌈r⌉ compare?","إذا كانت r عددًا صحيحًا، كيف تُقارن ⌊r⌋ وَ⌈r⌉؟"],["They are equal: ⌊r⌋ = ⌈r⌉ = r.","متساويتان: ⌊r⌋ = ⌈r⌉ = r."]],
+   [["Why is ⌊-3.5⌋ = -4 and not -3?","لماذا ⌊-3.5⌋ = -4 وليست -3؟"],["Because floor takes the LARGEST integer that is still ≤ r, and -4 ≤ -3.5 while -3 is not ≤ -3.5.","لأن الأرضية تأخذ أكبر عدد صحيح لا يزال ≤ r، وَ-4 ≤ -3.5 بينما -3 ليست ≤ -3.5."]]
+  ],
+  quiz:[
+   {q:["What is ⌊2.3⌋?","كم تساوي ⌊2.3⌋؟"], o:[["3","3"],["2","2"],["2.3","2.3"],["0","0"]], a:1},
+   {q:["What is ⌊2⌋?","كم تساوي ⌊2⌋؟"], o:[["1","1"],["3","3"],["2","2"],["0","0"]], a:2},
+   {q:["What is ⌊0.5⌋?","كم تساوي ⌊0.5⌋؟"], o:[["1","1"],["0","0"],["0.5","0.5"],["-1","-1"]], a:1},
+   {q:["What is ⌊-3.5⌋?","كم تساوي ⌊-3.5⌋؟"], o:[["-3","-3"],["-4","-4"],["3","3"],["4","4"]], a:1},
+   {q:["What is ⌈2.3⌉?","كم تساوي ⌈2.3⌉؟"], o:[["2","2"],["4","4"],["3","3"],["2.3","2.3"]], a:2},
+   {q:["What is ⌈2⌉?","كم تساوي ⌈2⌉؟"], o:[["3","3"],["2","2"],["1","1"],["0","0"]], a:1},
+   {q:["What is ⌈0.5⌉?","كم تساوي ⌈0.5⌉؟"], o:[["0","0"],["0.5","0.5"],["2","2"],["1","1"]], a:3},
+   {q:["What is ⌈-3.5⌉?","كم تساوي ⌈-3.5⌉؟"], o:[["-4","-4"],["3","3"],["-3","-3"],["4","4"]], a:2},
+   {q:["The floor function ⌊r⌋ gives:","دالة الأرضية ⌊r⌋ تُعطي:"], o:[["The smallest integer ≥ r","أصغر عدد صحيح ≥ r"],["The nearest integer to r","أقرب عدد صحيح لـ r"],["The largest integer ≤ r","أكبر عدد صحيح ≤ r"],["r rounded to one decimal place","r مُقرَّبة لمنزلة عشرية واحدة"]], a:2},
+   {q:["The ceiling function ⌈r⌉ gives:","دالة السقف ⌈r⌉ تُعطي:"], o:[["The largest integer ≤ r","أكبر عدد صحيح ≤ r"],["The smallest integer ≥ r","أصغر عدد صحيح ≥ r"],["r rounded down always","r مُقرَّبة للأسفل دائمًا"],["The absolute value of r","القيمة المطلقة لـ r"]], a:1}
+  ]
+});
+
+LECTURES.push({ id:'l5', n:5,
+  title:["Boolean Algebra","الجبر البولياني (Boolean Algebra)"],
+  obj:[
+    ["Define a Boolean algebra in terms of its set, operations, and special elements.","تعريف الجبر البولياني من حيث مجموعته وعملياته وعناصره الخاصة."],
+    ["List the five defining axioms of a Boolean algebra and state each in both its ∨ and ∧ forms.","سرد البديهيات الخمس المُعرِّفة للجبر البولياني وصياغة كل منها بصورتيها ∨ وَ∧."],
+    ["Recognize that the complement operation is unary while ∨ and ∧ are binary.","إدراك أن عملية المتمم أحادية بينما ∨ وَ∧ ثنائيتان."]
+  ],
+  sec:[
+   {t:["Definition of a Boolean Algebra","تعريف الجبر البولياني"], b:[
+     {k:'p', x:["Boolean algebra provides operations and rules for working with the set {0, 1}.","يوفر الجبر البولياني عمليات وقواعد للتعامل مع المجموعة {0, 1}."]},
+     {k:'def', x:["A Boolean algebra is a set B with two binary operations ∨ and ∧, elements 0 and 1, and a unary operation ' - ' (complement), satisfying the axioms below.","الجبر البولياني هو مجموعة B مع عمليتين ثنائيتين ∨ وَ∧، وعنصرين 0 وَ1، وعملية أحادية ' - ' (المتمم)، تحقق البديهيات أدناه."]},
+     {k:'tip', x:["'Binary operation' means it takes two inputs (like x ∨ y); 'unary operation' means it takes only one input (like -x, the complement of x).","'العملية الثنائية' تعني أنها تأخذ مُدخلين (مثل x ∨ y)؛ 'العملية الأحادية' تعني أنها تأخذ مُدخلًا واحدًا فقط (مثل -x، متمم x)."]}
+   ]},
+   {t:["The Five Axioms","البديهيات الخمس"], b:[
+     {k:'tbl', h:[["Axiom","البديهية"],["∨ form","صيغة ∨"],["∧ form","صيغة ∧"]],
+      r:[
+       [["Identity","المحايد"],["x ∨ 0 = x","x ∨ 0 = x"],["x ∧ 1 = x","x ∧ 1 = x"]],
+       [["Complement","المتمم"],["x ∨ (-x) = 1","x ∨ (-x) = 1"],["x ∧ (-x) = 0","x ∧ (-x) = 0"]],
+       [["Associative","الدمج"],["(x ∨ y) ∨ z = x ∨ (y ∨ z)","(x ∨ y) ∨ z = x ∨ (y ∨ z)"],["(x ∧ y) ∧ z = x ∧ (y ∧ z)","(x ∧ y) ∧ z = x ∧ (y ∧ z)"]],
+       [["Commutative","الإبدال"],["x ∨ y = y ∨ x","x ∨ y = y ∨ x"],["x ∧ y = y ∧ x","x ∧ y = y ∧ x"]],
+       [["Distributive","التوزيع"],["x ∨ (y ∧ z) = (x ∨ y) ∧ (x ∨ z)","x ∨ (y ∧ z) = (x ∨ y) ∧ (x ∨ z)"],["x ∧ (y ∨ z) = (x ∧ y) ∨ (x ∧ z)","x ∧ (y ∨ z) = (x ∧ y) ∨ (x ∧ z)"]]
+      ]},
+     {k:'tip', x:["Notice the symmetry: every axiom comes in a matching ∨/∧ pair, with 0 and 1 swapping roles between the two forms (e.g. Identity uses 0 with ∨, but 1 with ∧).","لاحظ التناظر: تأتي كل بديهية في زوج متطابق ∨/∧، مع تبادل الأدوار بين 0 وَ1 في الصيغتين (مثلًا، المحايد يستخدم 0 مع ∨، لكن 1 مع ∧)."]}
+   ]},
+   {t:["Why This Matters","لماذا يهم هذا"], b:[
+     {k:'p', x:["These same five axioms (identity, complement, associative, commutative, distributive) are the abstract backbone behind digital logic circuits and the propositional-logic equivalence laws from Lecture 1 — the set {0,1} with ∨ = OR, ∧ = AND, and complement = NOT is itself a Boolean algebra.","هذه البديهيات الخمس نفسها (المحايد، المتمم، الدمج، الإبدال، التوزيع) هي العمود الفقري المجرد وراء دوائر المنطق الرقمي وقوانين التكافؤ في منطق القضايا من المحاضرة 1 — فالمجموعة {0,1} مع ∨ = OR، وَ∧ = AND، والمتمم = NOT هي نفسها جبر بولياني."]}
+   ]}
+  ],
+  take:[
+   ["A Boolean algebra needs: a set B, two binary operations ∨ and ∧, elements 0 and 1, and a unary complement operation.","يحتاج الجبر البولياني إلى: مجموعة B، عمليتين ثنائيتين ∨ وَ∧، عنصرين 0 وَ1، وعملية متمم أحادية."],
+   ["Identity: x ∨ 0 = x and x ∧ 1 = x.","المحايد: x ∨ 0 = x وَx ∧ 1 = x."],
+   ["Complement: x ∨ (-x) = 1 and x ∧ (-x) = 0.","المتمم: x ∨ (-x) = 1 وَx ∧ (-x) = 0."],
+   ["Every axiom has a matching ∨ form and ∧ form.","لكل بديهية صيغة ∨ مطابقة وصيغة ∧."]
+  ],
+  fc:[
+   [["What set and operations define a Boolean algebra?","ما المجموعة والعمليات التي تُعرِّف الجبر البولياني؟"],["A set B with binary operations ∨ and ∧, elements 0 and 1, and a unary complement operation '-'.","مجموعة B مع عمليتين ثنائيتين ∨ وَ∧، وعنصرين 0 وَ1، وعملية متمم أحادية '-'."]],
+   [["State the Identity axiom (both forms).","اذكر بديهية المحايد (الصيغتين)."],["x ∨ 0 = x and x ∧ 1 = x.","x ∨ 0 = x وَx ∧ 1 = x."]],
+   [["State the Complement axiom (both forms).","اذكر بديهية المتمم (الصيغتين)."],["x ∨ (-x) = 1 and x ∧ (-x) = 0.","x ∨ (-x) = 1 وَx ∧ (-x) = 0."]],
+   [["State the Associative axiom for ∨.","اذكر بديهية الدمج لـ ∨."],["(x ∨ y) ∨ z = x ∨ (y ∨ z).","(x ∨ y) ∨ z = x ∨ (y ∨ z)."]],
+   [["State the Associative axiom for ∧.","اذكر بديهية الدمج لـ ∧."],["(x ∧ y) ∧ z = x ∧ (y ∧ z).","(x ∧ y) ∧ z = x ∧ (y ∧ z)."]],
+   [["State the Commutative axiom (both forms).","اذكر بديهية الإبدال (الصيغتين)."],["x ∨ y = y ∨ x and x ∧ y = y ∧ x.","x ∨ y = y ∨ x وَx ∧ y = y ∧ x."]],
+   [["State the Distributive axiom for ∨ over ∧.","اذكر بديهية التوزيع لـ ∨ على ∧."],["x ∨ (y ∧ z) = (x ∨ y) ∧ (x ∨ z).","x ∨ (y ∧ z) = (x ∨ y) ∧ (x ∨ z)."]],
+   [["State the Distributive axiom for ∧ over ∨.","اذكر بديهية التوزيع لـ ∧ على ∨."],["x ∧ (y ∨ z) = (x ∧ y) ∨ (x ∧ z).","x ∧ (y ∨ z) = (x ∧ y) ∨ (x ∧ z)."]],
+   [["Is the complement operation unary or binary?","هل عملية المتمم أحادية أم ثنائية؟"],["Unary — it takes a single input, -x.","أحادية — تأخذ مُدخلًا واحدًا، -x."]],
+   [["Which real-world structure is an example of a Boolean algebra?","أي بنية واقعية مثال على الجبر البولياني؟"],["The set {0,1} with ∨ = OR, ∧ = AND, and complement = NOT (the basis of digital logic circuits).","المجموعة {0,1} مع ∨ = OR، وَ∧ = AND، والمتمم = NOT (أساس دوائر المنطق الرقمي)."]],
+   [["In the Identity axiom, which element pairs with ∨, and which pairs with ∧?","في بديهية المحايد، أي عنصر يقترن بـ ∨، وأيهما يقترن بـ ∧؟"],["0 pairs with ∨ (x ∨ 0 = x); 1 pairs with ∧ (x ∧ 1 = x).","0 يقترن بـ ∨ (x ∨ 0 = x)؛ وَ1 يقترن بـ ∧ (x ∧ 1 = x)."]],
+   [["How many defining axioms does a Boolean algebra have?","كم عدد البديهيات المُعرِّفة للجبر البولياني؟"],["Five: Identity, Complement, Associative, Commutative, and Distributive (each with a ∨ and ∧ form).","خمس: المحايد، المتمم، الدمج، الإبدال، والتوزيع (لكل منها صيغة ∨ وَ∧)."]]
+  ],
+  quiz:[
+   {q:["How many binary operations does a Boolean algebra have?","كم عدد العمليات الثنائية في الجبر البولياني؟"], o:[["One","واحدة"],["Three","ثلاث"],["Two (∨ and ∧)","اثنتان (∨ وَ∧)"],["Four","أربع"]], a:2},
+   {q:["Is the complement operation unary or binary?","هل عملية المتمم أحادية أم ثنائية؟"], o:[["Binary","ثنائية"],["Unary","أحادية"],["Ternary","ثلاثية"],["It has no fixed arity","ليس لها عدد مُدخلات ثابت"]], a:1},
+   {q:["Which equation is the ∨ form of the Identity axiom?","أي معادلة هي صيغة ∨ لبديهية المحايد؟"], o:[["x ∧ 1 = x","x ∧ 1 = x"],["x ∨ (-x) = 1","x ∨ (-x) = 1"],["x ∨ 0 = x","x ∨ 0 = x"],["x ∧ 0 = x","x ∧ 0 = x"]], a:2},
+   {q:["Which equation is the ∧ form of the Complement axiom?","أي معادلة هي صيغة ∧ لبديهية المتمم؟"], o:[["x ∧ (-x) = 0","x ∧ (-x) = 0"],["x ∨ (-x) = 1","x ∨ (-x) = 1"],["x ∧ 1 = x","x ∧ 1 = x"],["x ∧ (-x) = 1","x ∧ (-x) = 1"]], a:0},
+   {q:["Which equation is the ∧ form of the Associative axiom?","أي معادلة هي صيغة ∧ لبديهية الدمج؟"], o:[["(x ∨ y) ∨ z = x ∨ (y ∨ z)","(x ∨ y) ∨ z = x ∨ (y ∨ z)"],["x ∧ y = y ∧ x","x ∧ y = y ∧ x"],["(x ∧ y) ∧ z = x ∧ (y ∧ z)","(x ∧ y) ∧ z = x ∧ (y ∧ z)"],["x ∧ (y ∨ z) = (x ∧ y) ∨ (x ∧ z)","x ∧ (y ∨ z) = (x ∧ y) ∨ (x ∧ z)"]], a:2},
+   {q:["Which equation is the ∨ form of the Commutative axiom?","أي معادلة هي صيغة ∨ لبديهية الإبدال؟"], o:[["x ∨ y = y ∨ x","x ∨ y = y ∨ x"],["x ∧ y = y ∧ x","x ∧ y = y ∧ x"],["x ∨ 0 = x","x ∨ 0 = x"],["(x ∨ y) ∨ z = x ∨ (y ∨ z)","(x ∨ y) ∨ z = x ∨ (y ∨ z)"]], a:0},
+   {q:["Which equation is the ∧ form of the Distributive axiom?","أي معادلة هي صيغة ∧ لبديهية التوزيع؟"], o:[["x ∨ (y ∧ z) = (x ∨ y) ∧ (x ∨ z)","x ∨ (y ∧ z) = (x ∨ y) ∧ (x ∨ z)"],["x ∧ (y ∨ z) = (x ∧ y) ∨ (x ∧ z)","x ∧ (y ∨ z) = (x ∧ y) ∨ (x ∧ z)"],["x ∧ y = y ∧ x","x ∧ y = y ∧ x"],["x ∧ 1 = x","x ∧ 1 = x"]], a:1},
+   {q:["Which special elements appear in the definition of a Boolean algebra?","أي عناصر خاصة تظهر في تعريف الجبر البولياني؟"], o:[["0 and 1","0 وَ1"],["-1 and 1","-1 وَ1"],["Only 1","1 فقط"],["0, 1, and 2","0 وَ1 وَ2"]], a:0},
+   {q:["Which of these is NOT one of the five Boolean algebra axioms?","أي مما يلي ليس إحدى البديهيات الخمس للجبر البولياني؟"], o:[["Identity","المحايد"],["Distributive","التوزيع"],["Idempotent","اللا-قوة"],["Associative","الدمج"]], a:2},
+   {q:["The set {0,1} with ∨=OR, ∧=AND, complement=NOT is an example of:","المجموعة {0,1} مع ∨=OR، ∧=AND، المتمم=NOT هي مثال على:"], o:[["A propositional function","دالة قضوية"],["A Cartesian product","ضرب ديكارتي"],["A Boolean algebra","جبر بولياني"],["A quantified statement","عبارة محددة كميًا"]], a:2}
+  ]
+});
+
+LECTURES.push({ id:'l6', n:6,
+  title:["Sequences and Series","المتتاليات والمتسلسلات (Sequences and Series)"],
+  obj:[
+    ["Read summation (Σ) notation and identify its index and bounds.","قراءة ترميز الجمع (Σ) وتحديد متغيّر الجمع وحدوده."],
+    ["State the arithmetic series (Gauss) formula and use it to evaluate a sum of consecutive integers.","صياغة صيغة المتسلسلة الحسابية (جاوس) واستخدامها لحساب مجموع أعداد صحيحة متتالية."],
+    ["State the geometric series formula and use it to evaluate a finite geometric sum.","صياغة صيغة المتسلسلة الهندسية واستخدامها لحساب مجموع هندسي منته."]
+  ],
+  sec:[
+   {t:["Summation Notation","ترميز الجمع (Σ)"], b:[
+     {k:'p', x:["The symbol Σ (sigma) denotes a sum. In ∑_{j=1}^{n} j, the variable j is the index, starting at 1 (the lower bound) and ending at n (the upper bound), and we add up the value of the expression for every j in between.","يرمز الحرف Σ (سيجما) إلى الجمع. في ∑_{j=1}^{n} j، المتغير j هو دليل الجمع، يبدأ من 1 (الحد الأدنى) وينتهي عند n (الحد الأعلى)، ونجمع قيمة التعبير لكل j بينهما."]}
+   ]},
+   {t:["Arithmetic Series (Gauss Formula)","المتسلسلة الحسابية (صيغة جاوس)"], b:[
+     {k:'formula', x:"∑_{j=1}^{n} j = n(n + 1) / 2"},
+     {k:'p', x:["This formula gives the sum of the first n positive integers: 1 + 2 + 3 + ... + n.","تُعطي هذه الصيغة مجموع أول n عدد صحيح موجب: 1 + 2 + 3 + ... + n."]},
+     {k:'ex', x:["Evaluate ∑_{j=1}^{10} j using the Gauss formula:\n∑_{j=1}^{10} j = 10(10+1)/2 = 10(11)/2 = 110/2 = 55\nCheck: 1+2+3+...+10 = 55 ✓","احسب ∑_{j=1}^{10} j باستخدام صيغة جاوس:\n∑_{j=1}^{10} j = 10(10+1)/2 = 10(11)/2 = 110/2 = 55\nتحقق: 1+2+3+...+10 = 55 ✓"]},
+     {k:'tip', x:["Legend says a young Gauss found this formula by pairing the first and last terms: (1+n) + (2+(n-1)) + ... — each pair sums to (n+1), and there are n/2 such pairs, giving n(n+1)/2.","تقول الأسطورة إن جاوس الشاب اكتشف هذه الصيغة بإقران الحد الأول بالأخير: (1+n) + (2+(n-1)) + ... — كل زوج يساوي (n+1)، ويوجد n/2 من هذه الأزواج، فنحصل على n(n+1)/2."]}
+   ]},
+   {t:["Geometric Series","المتسلسلة الهندسية (Geometric Series)"], b:[
+     {k:'formula', x:"∑_{j=0}^{n} a^j = (a^{n+1} - 1) / (a - 1)"},
+     {k:'p', x:["This formula gives the sum of powers of a constant a, from a^0 up to a^n (valid for a ≠ 1).","تُعطي هذه الصيغة مجموع قوى الثابت a، من a^0 إلى a^n (صالحة من أجل a ≠ 1)."]},
+     {k:'ex', x:["Evaluate ∑_{j=0}^{3} 2^j using the geometric series formula (a = 2, n = 3):\n∑_{j=0}^{3} 2^j = (2^4 - 1)/(2 - 1) = (16 - 1)/1 = 15\nCheck: 2^0+2^1+2^2+2^3 = 1+2+4+8 = 15 ✓","احسب ∑_{j=0}^{3} 2^j باستخدام صيغة المتسلسلة الهندسية (a = 2, n = 3):\n∑_{j=0}^{3} 2^j = (2^4 - 1)/(2 - 1) = (16 - 1)/1 = 15\nتحقق: 2^0+2^1+2^2+2^3 = 1+2+4+8 = 15 ✓"]}
+   ]}
+  ],
+  take:[
+   ["Gauss (arithmetic series) formula: ∑_{j=1}^{n} j = n(n+1)/2.","صيغة جاوس (المتسلسلة الحسابية): ∑_{j=1}^{n} j = n(n+1)/2."],
+   ["Geometric series formula: ∑_{j=0}^{n} a^j = (a^{n+1} - 1)/(a - 1).","صيغة المتسلسلة الهندسية: ∑_{j=0}^{n} a^j = (a^{n+1} - 1)/(a - 1)."],
+   ["In ∑_{j=1}^{n}, j is the index, 1 is the lower bound, and n is the upper bound.","في ∑_{j=1}^{n}، j هو دليل الجمع، 1 الحد الأدنى، وَn الحد الأعلى."],
+   ["∑_{j=1}^{10} j = 55 and ∑_{j=0}^{3} 2^j = 15 are two directly computable examples.","∑_{j=1}^{10} j = 55 وَ∑_{j=0}^{3} 2^j = 15 مثالان قابلان للحساب المباشر."]
+  ],
+  fc:[
+   [["What does the symbol Σ denote?","ماذا يرمز الحرف Σ؟"],["A sum (summation) over the given index and bounds.","مجموع (عملية جمع) على المدى المحدد بدليل الجمع وحدوده."]],
+   [["State the Gauss (arithmetic series) formula.","اذكر صيغة جاوس (المتسلسلة الحسابية)."],["∑_{j=1}^{n} j = n(n+1)/2.","∑_{j=1}^{n} j = n(n+1)/2."]],
+   [["State the geometric series formula.","اذكر صيغة المتسلسلة الهندسية."],["∑_{j=0}^{n} a^j = (a^{n+1} - 1)/(a - 1).","∑_{j=0}^{n} a^j = (a^{n+1} - 1)/(a - 1)."]],
+   [["In ∑_{j=1}^{n} j, what is the lower bound of the index?","في ∑_{j=1}^{n} j، ما الحد الأدنى لدليل الجمع؟"],["1.","1."]],
+   [["Use the Gauss formula to find ∑_{j=1}^{10} j.","استخدم صيغة جاوس لإيجاد ∑_{j=1}^{10} j."],["55 (= 10×11/2).","55 (= 10×11/2)."]],
+   [["Use the geometric series formula to find ∑_{j=0}^{3} 2^j.","استخدم صيغة المتسلسلة الهندسية لإيجاد ∑_{j=0}^{3} 2^j."],["15 (= (2^4-1)/(2-1) = 15/1).","15 (= (2^4-1)/(2-1) = 15/1)."]],
+   [["What does the Gauss formula compute?","ماذا تحسب صيغة جاوس؟"],["The sum of the first n positive integers: 1+2+3+...+n.","مجموع أول n عدد صحيح موجب: 1+2+3+...+n."]],
+   [["What does the geometric series formula compute?","ماذا تحسب صيغة المتسلسلة الهندسية؟"],["The sum of powers of a constant a from a^0 to a^n.","مجموع قوى الثابت a من a^0 إلى a^n."]],
+   [["According to the Gauss-pairing idea, what does each pair of terms sum to?","حسب فكرة إقران جاوس، كم يساوي مجموع كل زوج حدود؟"],["(n + 1), with n/2 such pairs in total.","(n + 1)، بوجود n/2 من هذه الأزواج إجمالًا."]],
+   [["For the geometric series formula to apply as given, what must a NOT equal?","لتطبيق صيغة المتسلسلة الهندسية كما هي، ماذا يجب ألا تساوي a؟"],["1 (since a - 1 appears in the denominator).","1 (لأن a - 1 تظهر في المقام)."]],
+   [["Verify by direct addition: does 1+2+...+10 equal 55?","تحقق بالجمع المباشر: هل 1+2+...+10 تساوي 55؟"],["Yes, 1+2+3+4+5+6+7+8+9+10 = 55, matching the Gauss formula result.","نعم، 1+2+3+4+5+6+7+8+9+10 = 55، مطابقة لنتيجة صيغة جاوس."]]
+  ],
+  quiz:[
+   {q:["What does Σ denote in mathematics?","ماذا يرمز Σ في الرياضيات؟"], o:[["A product","جداء"],["A sum","مجموع"],["A derivative","مشتقة"],["A limit","نهاية"]], a:1},
+   {q:["Which formula is the Gauss (arithmetic series) formula?","أي صيغة هي صيغة جاوس (المتسلسلة الحسابية)؟"], o:[["∑_{j=0}^{n} a^j = (a^{n+1}-1)/(a-1)","∑_{j=0}^{n} a^j = (a^{n+1}-1)/(a-1)"],["∑_{j=1}^{n} j = n(n+1)/2","∑_{j=1}^{n} j = n(n+1)/2"],["∑_{j=1}^{n} j = n²","∑_{j=1}^{n} j = n²"],["∑_{j=1}^{n} j = n(n-1)/2","∑_{j=1}^{n} j = n(n-1)/2"]], a:1},
+   {q:["Which formula is the geometric series formula?","أي صيغة هي صيغة المتسلسلة الهندسية؟"], o:[["∑_{j=1}^{n} j = n(n+1)/2","∑_{j=1}^{n} j = n(n+1)/2"],["∑_{j=0}^{n} a^j = (a^n - 1)/(a - 1)","∑_{j=0}^{n} a^j = (a^n - 1)/(a - 1)"],["∑_{j=0}^{n} a^j = (a^{n+1} - 1)/(a - 1)","∑_{j=0}^{n} a^j = (a^{n+1} - 1)/(a - 1)"],["∑_{j=0}^{n} a^j = a^{n+1} - 1","∑_{j=0}^{n} a^j = a^{n+1} - 1"]], a:2},
+   {q:["Using the Gauss formula, what is ∑_{j=1}^{10} j?","باستخدام صيغة جاوس، كم تساوي ∑_{j=1}^{10} j؟"], o:[["45","45"],["50","50"],["55","55"],["60","60"]], a:2},
+   {q:["Using the geometric series formula with a=2, n=3, what is ∑_{j=0}^{3} 2^j?","باستخدام صيغة المتسلسلة الهندسية مع a=2, n=3، كم تساوي ∑_{j=0}^{3} 2^j؟"], o:[["8","8"],["16","16"],["7","7"],["15","15"]], a:3},
+   {q:["In ∑_{j=1}^{n} j, what role does n play?","في ∑_{j=1}^{n} j، ما دور n؟"], o:[["The index variable","متغير دليل الجمع"],["The lower bound","الحد الأدنى"],["The upper bound","الحد الأعلى"],["The common ratio","الأساس المشترك"]], a:2},
+   {q:["What does the Gauss formula compute?","ماذا تحسب صيغة جاوس؟"], o:[["The sum of the first n positive integers","مجموع أول n عدد صحيح موجب"],["The product of the first n positive integers","جداء أول n عدد صحيح موجب"],["The sum of powers of a constant","مجموع قوى ثابت"],["The average of n numbers","متوسط n عدد"]], a:0},
+   {q:["In the geometric series formula, what must a NOT equal?","في صيغة المتسلسلة الهندسية، ماذا يجب ألا تساوي a؟"], o:[["0","0"],["1","1"],["-1","-1"],["n","n"]], a:1},
+   {q:["In the Gauss-pairing explanation, how many pairs are formed from 1 to n?","في شرح إقران جاوس، كم زوجًا يتكوّن من 1 إلى n؟"], o:[["n","n"],["n - 1","n - 1"],["n/2","n/2"],["2n","2n"]], a:2},
+   {q:["Direct addition check: 2^0+2^1+2^2+2^3 equals:","تحقق بالجمع المباشر: 2^0+2^1+2^2+2^3 تساوي:"], o:[["15","15"],["14","14"],["16","16"],["8","8"]], a:0}
+  ]
+});
+
+LECTURES.push({ id:'l7', n:7,
+  title:["Induction and Working with Quantifiers","الاستقراء والعمل مع المحددات الكمية"],
+  obj:[
+    ["State the two components required for a proof by mathematical induction: the base case and the inductive step.","صياغة الركنين المطلوبين للإثبات بالاستقراء الرياضي: حالة الأساس وخطوة الاستقراء."],
+    ["Carry out a simple proof by mathematical induction.","تنفيذ إثبات بسيط بالاستقراء الرياضي."],
+    ["Apply De Morgan's laws for quantifiers to negate a quantified statement such as ∃x(x² = 2).","تطبيق قوانين دي مورجان للمحددات الكمية لنفي عبارة مُحدَّدة كميًا مثل ∃x(x² = 2)."]
+  ],
+  sec:[
+   {t:["The Principle of Mathematical Induction","مبدأ الاستقراء الرياضي"], b:[
+     {k:'tip', x:["Supplementary standard content: your lecture slide for this topic only contained the quantifier-negation tutorial below. Since the course objectives list 'Proof Techniques' and Lecture 9 (Recursion) explicitly says 'prove by induction' without defining it, this section adds the standard definition of induction so that technique is covered before you need it.","محتوى تكميلي قياسي: شريحة محاضرتك لهذا الموضوع تضمنت فقط تمرين نفي المحدد الكمي أدناه. وبما أن أهداف المقرر تذكر 'تقنيات الإثبات' وأن المحاضرة 9 (التكرار) تقول صراحة 'أثبت بالاستقراء' دون تعريفه، يضيف هذا القسم التعريف القياسي للاستقراء حتى تكون هذه التقنية مُغطاة قبل الحاجة إليها."]},
+     {k:'def', x:["Mathematical induction proves that a statement P(n) is true for every integer n ≥ n0 using two steps: a Base Case and an Inductive Step.","يُثبت الاستقراء الرياضي أن العبارة P(n) صحيحة لكل عدد صحيح n ≥ n0 باستخدام خطوتين: حالة الأساس وخطوة الاستقراء."]},
+     {k:'ul', h:["The two required steps","الخطوتان المطلوبتان"], x:[
+       ["Base Case: show that P(n0) is true (usually n0 = 0 or 1).","حالة الأساس: إثبات أن P(n0) صحيحة (عادةً n0 = 0 أو 1)."],
+       ["Inductive Step: assume P(k) is true for an arbitrary k ≥ n0 (the inductive hypothesis), then show P(k+1) must also be true.","خطوة الاستقراء: افترض أن P(k) صحيحة من أجل k ≥ n0 عشوائي (فرضية الاستقراء)، ثم أثبت أن P(k+1) صحيحة أيضًا."]]},
+     {k:'p', x:["If both steps succeed, P(n) is true for every integer n ≥ n0 — the base case starts the chain, and the inductive step shows each value 'passes the truth' to the next one.","إذا نجحت الخطوتان، تكون P(n) صحيحة لكل عدد صحيح n ≥ n0 — حالة الأساس تبدأ السلسلة، وخطوة الاستقراء تُظهر أن كل قيمة 'تُمرّر الصحة' إلى التي تليها."]}
+   ]},
+   {t:["Worked Example: Proving the Gauss Formula by Induction","مثال محلول: إثبات صيغة جاوس بالاستقراء"], b:[
+     {k:'p', x:["Prove by induction that, for all integers n ≥ 1: ∑_{i=1}^{n} i = n(n+1)/2 (the arithmetic series formula from Lecture 6).","أثبت بالاستقراء أنه لكل عدد صحيح n ≥ 1: ∑_{i=1}^{n} i = n(n+1)/2 (صيغة المتسلسلة الحسابية من المحاضرة 6)."]},
+     {k:'formula', x:"Base case (n = 1): LHS = 1. RHS = 1(1+1)/2 = 1. LHS = RHS. ✓\n\nInductive step: Assume ∑_{i=1}^{k} i = k(k+1)/2 (inductive hypothesis).\nShow ∑_{i=1}^{k+1} i = (k+1)(k+2)/2.\n\n∑_{i=1}^{k+1} i = [∑_{i=1}^{k} i] + (k+1)\n              = k(k+1)/2 + (k+1)          [by inductive hypothesis]\n              = (k+1)[k/2 + 1]\n              = (k+1)(k+2)/2\n\nSo P(k+1) holds. By induction, P(n) is true for all n ≥ 1."},
+     {k:'tip', x:["The key move is always the same: replace the first k terms with the inductive hypothesis, then show the resulting algebra matches the formula for k+1.","الحركة الأساسية دائمًا واحدة: استبدل أول k حدًا بفرضية الاستقراء، ثم أثبت أن الجبر الناتج يطابق الصيغة من أجل k+1."]}
+   ]},
+   {t:["Tutorial: Negating a Quantified Statement","تمرين: نفي عبارة مُحدَّدة كميًا"], b:[
+     {k:'p', x:["Using the De Morgan's laws for quantifiers from Lecture 2, negate ∃x(x² = 2).","باستخدام قوانين دي مورجان للمحددات الكمية من المحاضرة 2، انفِ ∃x(x² = 2)."]},
+     {k:'formula', x:"¬∃x(x² = 2) ≡ ∀x ¬(x² = 2) ≡ ∀x(x² ≠ 2)"},
+     {k:'p', x:["Step 1 flips ∃ to ∀ and moves the negation inside. Step 2 simplifies ¬(x² = 2) to the equivalent inequality x² ≠ 2.","الخطوة 1 تقلب ∃ إلى ∀ وتنقل النفي إلى الداخل. الخطوة 2 تُبسّط ¬(x² = 2) إلى المتباينة المكافئة x² ≠ 2."]}
+   ]}
+  ],
+  take:[
+   ["A proof by induction needs a Base Case (show P(n0) true) and an Inductive Step (show P(k) true ⇒ P(k+1) true).","يحتاج الإثبات بالاستقراء إلى حالة أساس (إثبات P(n0)) وخطوة استقراء (إثبات أن P(k) صحيحة ⇒ P(k+1) صحيحة)."],
+   ["The assumption that P(k) is true during the inductive step is called the inductive hypothesis.","يُسمى افتراض صحة P(k) أثناء خطوة الاستقراء بفرضية الاستقراء."],
+   ["∑_{i=1}^{n} i = n(n+1)/2 can itself be proven by induction, confirming the Gauss formula from Lecture 6.","يمكن إثبات ∑_{i=1}^{n} i = n(n+1)/2 بالاستقراء نفسه، مما يؤكد صيغة جاوس من المحاضرة 6."],
+   ["¬∃x(x² = 2) ≡ ∀x(x² ≠ 2), by De Morgan's laws for quantifiers.","¬∃x(x² = 2) ≡ ∀x(x² ≠ 2)، بموجب قوانين دي مورجان للمحددات الكمية."]
+  ],
+  fc:[
+   [["What two steps does a proof by mathematical induction require?","ما الخطوتان اللتان يتطلبهما الإثبات بالاستقراء الرياضي؟"],["A base case and an inductive step.","حالة أساس وخطوة استقراء."]],
+   [["What must you show in the base case?","ماذا يجب إثباته في حالة الأساس؟"],["That P(n0) is true, usually for n0 = 0 or 1.","أن P(n0) صحيحة، عادةً من أجل n0 = 0 أو 1."]],
+   [["What is the inductive hypothesis?","ما فرضية الاستقراء؟"],["The assumption that P(k) is true for an arbitrary k ≥ n0, used to prove P(k+1).","افتراض أن P(k) صحيحة من أجل k ≥ n0 عشوائي، يُستخدم لإثبات P(k+1)."]],
+   [["What must you show in the inductive step?","ماذا يجب إثباته في خطوة الاستقراء؟"],["That if P(k) is true, then P(k+1) is also true.","أنه إذا كانت P(k) صحيحة، فإن P(k+1) صحيحة أيضًا."]],
+   [["In the worked example, what is the base case for ∑_{i=1}^{n} i = n(n+1)/2?","في المثال المحلول، ما حالة الأساس لـ ∑_{i=1}^{n} i = n(n+1)/2؟"],["n = 1: LHS = 1, RHS = 1(2)/2 = 1, so they match.","n = 1: الطرف الأيسر = 1، الطرف الأيمن = 1(2)/2 = 1، فهما متطابقان."]],
+   [["In that same proof, what do we add to the inductive hypothesis k(k+1)/2 to reach the inductive step?","في الإثبات نفسه، ماذا نضيف إلى فرضية الاستقراء k(k+1)/2 للوصول إلى خطوة الاستقراء؟"],["(k+1), giving k(k+1)/2 + (k+1) = (k+1)(k+2)/2.","(k+1)، فنحصل على k(k+1)/2 + (k+1) = (k+1)(k+2)/2."]],
+   [["Negate ∃x(x² = 2) using De Morgan's laws for quantifiers.","انفِ ∃x(x² = 2) باستخدام قوانين دي مورجان للمحددات الكمية."],["¬∃x(x² = 2) ≡ ∀x(x² ≠ 2).","¬∃x(x² = 2) ≡ ∀x(x² ≠ 2)."]],
+   [["What does ¬(x² = 2) simplify to?","إلى ماذا تُبسَّط ¬(x² = 2)؟"],["x² ≠ 2.","x² ≠ 2."]],
+   [["If both the base case and the inductive step succeed, what can you conclude?","إذا نجحت حالة الأساس وخطوة الاستقراء، ماذا يمكن أن تستنتج؟"],["P(n) is true for every integer n ≥ n0.","P(n) صحيحة لكل عدد صحيح n ≥ n0."]],
+   [["Which previously defined law is used in the quantifier-negation tutorial?","أي قانون معرَّف سابقًا يُستخدم في تمرين نفي المحدد الكمي؟"],["De Morgan's law for quantifiers: ¬(∃x P(x)) ≡ ∀x(¬P(x)).","قانون دي مورجان للمحددات الكمية: ¬(∃x P(x)) ≡ ∀x(¬P(x))."]],
+   [["Why does the worked induction example matter for Lecture 6?","لماذا يهم مثال الاستقراء المحلول بالنسبة للمحاضرة 6؟"],["It proves, rather than just states, the Gauss (arithmetic series) formula used there.","إنه يُثبت صيغة جاوس (المتسلسلة الحسابية) المستخدمة هناك، بدلًا من مجرد ذكرها."]],
+   [["In the inductive step, is k a specific fixed number or an arbitrary one?","في خطوة الاستقراء، هل k عدد محدد ثابت أم عشوائي؟"],["Arbitrary — the step must hold for any k ≥ n0, not just one specific value.","عشوائي — يجب أن تصح الخطوة لأي k ≥ n0، وليس لقيمة محددة واحدة فقط."]]
+  ],
+  quiz:[
+   {q:["What are the two required steps of a proof by induction?","ما الخطوتان المطلوبتان للإثبات بالاستقراء؟"], o:[["Guess and check","التخمين والتحقق"],["Base case and inductive step","حالة الأساس وخطوة الاستقراء"],["Direct proof and contradiction","الإثبات المباشر والتناقض"],["Hypothesis and conclusion only","الفرضية والنتيجة فقط"]], a:1},
+   {q:["What is typically shown in the base case?","ماذا يُظهَر عادةً في حالة الأساس؟"], o:[["That P(k+1) is true","أن P(k+1) صحيحة"],["That P(n0) is true for the starting value n0","أن P(n0) صحيحة من أجل قيمة البداية n0"],["That the statement is false","أن العبارة خاطئة"],["That n is infinite","أن n لانهائي"]], a:1},
+   {q:["What is the inductive hypothesis?","ما فرضية الاستقراء؟"], o:[["The assumption that P(k) is true, used to prove P(k+1)","افتراض أن P(k) صحيحة، يُستخدم لإثبات P(k+1)"],["The final conclusion of the proof","الاستنتاج النهائي للإثبات"],["The negation of the base case","نفي حالة الأساس"],["A guess with no justification","تخمين بلا تبرير"]], a:0},
+   {q:["In the worked example, what is the base case value of n?","في المثال المحلول، ما قيمة n في حالة الأساس؟"], o:[["0","0"],["2","2"],["n (general)","n (عام)"],["1","1"]], a:3},
+   {q:["In that proof, ∑_{i=1}^{k+1} i is rewritten as:","في ذلك الإثبات، تُعاد كتابة ∑_{i=1}^{k+1} i على شكل:"], o:[["[∑_{i=1}^{k} i] + (k+1)","[∑_{i=1}^{k} i] + (k+1)"],["[∑_{i=1}^{k} i] × (k+1)","[∑_{i=1}^{k} i] × (k+1)"],["k(k+1)/2 only","k(k+1)/2 فقط"],["(k+1)(k+2)","(k+1)(k+2)"]], a:0},
+   {q:["Negating ∃x(x² = 2) using De Morgan's laws for quantifiers gives:","نفي ∃x(x² = 2) باستخدام قوانين دي مورجان للمحددات الكمية يُعطي:"], o:[["∃x(x² ≠ 2)","∃x(x² ≠ 2)"],["∀x(x² ≠ 2)","∀x(x² ≠ 2)"],["∀x(x² = 2)","∀x(x² = 2)"],["¬∀x(x² = 2)","¬∀x(x² = 2)"]], a:1},
+   {q:["What does ¬(x² = 2) simplify to?","إلى ماذا تُبسَّط ¬(x² = 2)؟"], o:[["x² < 2","x² < 2"],["x² = -2","x² = -2"],["x² ≠ 2","x² ≠ 2"],["x ≠ 2","x ≠ 2"]], a:2},
+   {q:["If both the base case and inductive step hold, what is concluded?","إذا صحت حالة الأساس وخطوة الاستقراء، ماذا نستنتج؟"], o:[["P(n) is true only for n = n0","P(n) صحيحة فقط من أجل n = n0"],["P(n) is true for every integer n ≥ n0","P(n) صحيحة لكل عدد صحيح n ≥ n0"],["P(n) is false for all n","P(n) خاطئة لكل n"],["Nothing can be concluded","لا يمكن استنتاج شيء"]], a:1},
+   {q:["In the inductive step, k represents:","في خطوة الاستقراء، يمثل k:"], o:[["A fixed, specific number only","عددًا محددًا ثابتًا فقط"],["An arbitrary integer ≥ n0","عددًا صحيحًا عشوائيًا ≥ n0"],["The upper bound of the whole proof","الحد الأعلى للإثبات بأكمله"],["Zero"," صفر"]], a:1},
+   {q:["Which formula does the worked induction example prove?","أي صيغة يُثبتها مثال الاستقراء المحلول؟"], o:[["The geometric series formula","صيغة المتسلسلة الهندسية"],["The Boolean algebra identity axiom","بديهية المحايد في الجبر البولياني"],["The Gauss (arithmetic series) formula ∑_{i=1}^{n} i = n(n+1)/2","صيغة جاوس (المتسلسلة الحسابية) ∑_{i=1}^{n} i = n(n+1)/2"],["De Morgan's law for ∧","قانون دي مورجان لـ ∧"]], a:2}
+  ]
+});
+
+LECTURES.push({ id:'l8', n:8,
+  title:["Recursion","التكرار (Recursion)"],
+  obj:[
+    ["State the two things every recursive definition must specify: the base case and the recursive step.","صياغة الركنين اللذين يجب أن يحددهما كل تعريف تكراري: حالة الأساس وخطوة التكرار."],
+    ["Read a recursively defined set and determine which elements it contains.","قراءة مجموعة مُعرَّفة تكراريًا وتحديد العناصر التي تحتويها."],
+    ["Prove that a recursively defined set equals a given set, using the double-subset technique (A ⊆ S and S ⊆ A).","إثبات أن مجموعة مُعرَّفة تكراريًا تساوي مجموعة معطاة، باستخدام تقنية المجموعة الجزئية المزدوجة (A ⊆ S وَS ⊆ A)."]
+  ],
+  sec:[
+   {t:["What Is Recursion?","ما هو التكرار؟ (Recursion)"], b:[
+     {k:'p', x:["In recursion, we need to define two things.","في التكرار، نحتاج إلى تعريف شيئين."]},
+     {k:'ul', h:["Every recursive definition needs:","يحتاج كل تعريف تكراري إلى:"], x:[
+       ["1. Initial value (Base case).","1. القيمة الابتدائية (حالة الأساس)."],
+       ["2. The rule of construction (Recursive step).","2. قاعدة البناء (خطوة التكرار)."]]},
+     {k:'tip', x:["This mirrors the structure of a proof by induction from Lecture 7: a base case to start from, and a step that builds every further case from earlier ones.","هذا يُطابق بنية الإثبات بالاستقراء من المحاضرة 7: حالة أساس للانطلاق منها، وخطوة تبني كل الحالات اللاحقة من السابقة."]}
+   ]},
+   {t:["Recursively Defined Sets","المجموعات المُعرَّفة تكراريًا"], b:[
+     {k:'p', x:["Let S be recursively defined by:","لتكن S مُعرَّفة تكراريًا بـ:"]},
+     {k:'formula', x:"1. 3 ∈ S                              (base case)\n2. (x + y) ∈ S if (x ∈ S) and (y ∈ S)   (recursive step)"},
+     {k:'p', x:["Starting from 3 ∈ S, the recursive step generates more elements: since 3 ∈ S, taking x = y = 3 gives 3+3 = 6 ∈ S; then taking x = 6, y = 3 gives 9 ∈ S, and so on — S ends up containing 3, 6, 9, 12, ...","بدءًا من 3 ∈ S، تُولِّد خطوة التكرار عناصر أكثر: بما أن 3 ∈ S، فإن أخذ x = y = 3 يُعطي 3+3 = 6 ∈ S؛ ثم أخذ x = 6, y = 3 يُعطي 9 ∈ S، وهكذا — تنتهي S باحتوائها على 3 وَ6 وَ9 وَ12 وَ..."]}
+   ]},
+   {t:["Proof That S Is the Set of Positive Integers Divisible by 3","إثبات أن S هي مجموعة الأعداد الصحيحة الموجبة القابلة للقسمة على 3"], b:[
+     {k:'p', x:["Let A be the set of positive integers divisible by 3. To show A = S, we must show both A ⊆ S and S ⊆ A (the double-subset technique from Lecture 4).","لتكن A مجموعة الأعداد الصحيحة الموجبة القابلة للقسمة على 3. لإثبات A = S، يجب إثبات A ⊆ S وَS ⊆ A معًا (تقنية المجموعة الجزئية المزدوجة من المحاضرة 4)."]},
+     {k:'p', x:["Part I: A ⊆ S — completed using induction (Lecture 7). Every element of A has the form 3k for some positive integer k; we prove 3k ∈ S for all positive integers k by induction on k.","الجزء الأول: A ⊆ S — يُكمَل باستخدام الاستقراء (المحاضرة 7). كل عنصر في A له الصورة 3k من أجل عدد صحيح موجب k؛ نُثبت 3k ∈ S لكل عدد صحيح موجب k بالاستقراء على k."]},
+     {k:'formula', x:"Base case (k = 1): 3(1) = 3 ∈ S, given directly by the base case of S's definition. ✓\n\nInductive step: Assume 3k ∈ S (inductive hypothesis).\nShow 3(k+1) ∈ S.\n\n3(k+1) = 3k + 3\nSince 3k ∈ S (by the inductive hypothesis) and 3 ∈ S (base case),\nthe recursive step gives (3k) + 3 ∈ S, i.e. 3(k+1) ∈ S.\n\nBy induction, 3k ∈ S for every positive integer k, so A ⊆ S."},
+     {k:'p', x:["Part II: S ⊆ A.","الجزء الثاني: S ⊆ A."]},
+     {k:'cards', c:[
+       {t:["Basis step","خطوة الأساس"], l:[["All initial elements of S are in A. 3 is in A (true, since 3 | 3).","كل العناصر الابتدائية لـ S موجودة في A. 3 موجودة في A (صحيح، لأن 3 | 3)."]]},
+       {t:["Inductive step","خطوة الاستقراء"], l:[["If x and y are both in S (and, by the inductive hypothesis, in A), then (x + y) is in A. Since x and y are both in A, 3 | x and 3 | y. Therefore 3 | (x + y).","إذا كانت x وَy كلتاهما في S (وبفرضية الاستقراء، في A)، فإن (x + y) في A. بما أن x وَy في A، فإن 3 | x وَ3 | y. لذا 3 | (x + y)."]]}
+     ]},
+     {k:'p', x:["Conclusion: S ⊆ A. Since both A ⊆ S and S ⊆ A hold, A = S.","الخلاصة: S ⊆ A. وبما أن A ⊆ S وَS ⊆ A كلاهما يتحققان، فإن A = S."]}
+   ]}
+  ],
+  take:[
+   ["Every recursive definition needs an initial value (base case) and a rule of construction (recursive step).","يحتاج كل تعريف تكراري إلى قيمة ابتدائية (حالة أساس) وقاعدة بناء (خطوة تكرار)."],
+   ["S is recursively defined by: 3 ∈ S (base case); (x+y) ∈ S if x ∈ S and y ∈ S (recursive step).","S مُعرَّفة تكراريًا بـ: 3 ∈ S (حالة الأساس)؛ (x+y) ∈ S إذا كانت x ∈ S وَy ∈ S (خطوة التكرار)."],
+   ["To prove A = S, show both A ⊆ S and S ⊆ A — the double-subset technique.","لإثبات A = S، أثبت A ⊆ S وَS ⊆ A معًا — تقنية المجموعة الجزئية المزدوجة."],
+   ["S ⊆ A's inductive step uses: if 3|x and 3|y, then 3|(x+y).","خطوة الاستقراء لـ S ⊆ A تستخدم: إذا كانت 3|x وَ3|y، فإن 3|(x+y)."]
+  ],
+  fc:[
+   [["What two things must every recursive definition specify?","ما الشيئان اللذان يجب أن يحددهما كل تعريف تكراري؟"],["An initial value (base case) and a rule of construction (recursive step).","قيمة ابتدائية (حالة أساس) وقاعدة بناء (خطوة تكرار)."]],
+   [["State the base case of the recursive definition of S.","اذكر حالة الأساس للتعريف التكراري لـ S."],["3 ∈ S.","3 ∈ S."]],
+   [["State the recursive step of the definition of S.","اذكر خطوة التكرار للتعريف التكراري لـ S."],["(x + y) ∈ S if x ∈ S and y ∈ S.","(x + y) ∈ S إذا كانت x ∈ S وَy ∈ S."]],
+   [["What set A is S eventually proven to equal?","ما المجموعة A التي يُثبت أن S تساويها في النهاية؟"],["The set of positive integers divisible by 3.","مجموعة الأعداد الصحيحة الموجبة القابلة للقسمة على 3."]],
+   [["What two things must be shown to prove A = S?","ما الأمران اللذان يجب إثباتهما لإثبات A = S؟"],["A ⊆ S and S ⊆ A.","A ⊆ S وَS ⊆ A."]],
+   [["What is the base case of the Part I induction proof (A ⊆ S)?","ما حالة الأساس في إثبات الجزء الأول بالاستقراء (A ⊆ S)؟"],["k = 1: 3(1) = 3 ∈ S, given directly by S's own base case.","k = 1: 3(1) = 3 ∈ S، معطاة مباشرة من حالة أساس S نفسها."]],
+   [["In the Part I inductive step, how is 3(k+1) ∈ S shown?","في خطوة الاستقراء للجزء الأول، كيف تُثبت 3(k+1) ∈ S؟"],["3(k+1) = 3k + 3; since 3k ∈ S (IH) and 3 ∈ S (base case), the recursive step gives 3k+3 ∈ S.","3(k+1) = 3k + 3؛ وبما أن 3k ∈ S (فرضية الاستقراء) وَ3 ∈ S (حالة الأساس)، فإن خطوة التكرار تُعطي 3k+3 ∈ S."]],
+   [["What is the basis step of Part II (S ⊆ A)?","ما خطوة الأساس في الجزء الثاني (S ⊆ A)؟"],["All initial elements of S are in A: 3 is in A, since 3 | 3.","كل العناصر الابتدائية لـ S موجودة في A: 3 موجودة في A، لأن 3 | 3."]],
+   [["What is the inductive step of Part II (S ⊆ A)?","ما خطوة الاستقراء في الجزء الثاني (S ⊆ A)؟"],["If x and y are both in S (and by IH in A), then x+y is in A, since 3|x and 3|y imply 3|(x+y).","إذا كانت x وَy في S (وبفرضية الاستقراء في A)، فإن x+y في A، لأن 3|x وَ3|y يستلزمان 3|(x+y)."]],
+   [["What divisibility fact is used to conclude 3 | (x+y)?","ما حقيقة القسمة المستخدمة لاستنتاج 3 | (x+y)؟"],["If 3 | x and 3 | y, then 3 | (x + y).","إذا كانت 3 | x وَ3 | y، فإن 3 | (x + y)."]],
+   [["Besides 3, name two more elements that must be in S, and explain why.","إلى جانب 3، اذكر عنصرين إضافيين يجب أن يكونا في S، ووضّح السبب."],["6 ∈ S (since 3+3=6, with x=y=3 ∈ S) and 9 ∈ S (since 6+3=9, with x=6, y=3 ∈ S).","6 ∈ S (لأن 3+3=6، مع x=y=3 ∈ S) وَ9 ∈ S (لأن 6+3=9، مع x=6, y=3 ∈ S)."]],
+   [["Once A ⊆ S and S ⊆ A are both proven, what can you conclude?","بعد إثبات A ⊆ S وَS ⊆ A كليهما، ماذا يمكن أن تستنتج؟"],["A = S.","A = S."]]
+  ],
+  quiz:[
+   {q:["What two things must a recursive definition specify?","ما الشيئان اللذان يجب أن يحددهما التعريف التكراري؟"], o:[["A domain and a codomain","مجال ومجال مقابل"],["An initial value (base case) and a rule of construction (recursive step)","قيمة ابتدائية (حالة أساس) وقاعدة بناء (خطوة تكرار)"],["Two quantifiers","محددان كميان"],["A Boolean algebra and its axioms","جبر بولياني وبديهياته"]], a:1},
+   {q:["What is the base case in the recursive definition of S?","ما حالة الأساس في التعريف التكراري لـ S؟"], o:[["(x+y) ∈ S if x,y ∈ S","(x+y) ∈ S إذا كانت x,y ∈ S"],["3 ∈ S","3 ∈ S"],["S ⊆ A","S ⊆ A"],["0 ∈ S","0 ∈ S"]], a:1},
+   {q:["What is the recursive step in the definition of S?","ما خطوة التكرار في تعريف S؟"], o:[["3 ∈ S","3 ∈ S"],["A = S","A = S"],["(x+y) ∈ S if (x ∈ S) and (y ∈ S)","(x+y) ∈ S إذا كانت (x ∈ S) وَ(y ∈ S)"],["x ∈ S if x > 3","x ∈ S إذا كانت x > 3"]], a:2},
+   {q:["Which set does S turn out to equal?","أي مجموعة تتضح أن S تساويها؟"], o:[["All even integers","كل الأعداد الصحيحة الزوجية"],["All positive integers divisible by 3","كل الأعداد الصحيحة الموجبة القابلة للقسمة على 3"],["All integers ≥ 3","كل الأعداد الصحيحة ≥ 3"],["All prime numbers","كل الأعداد الأولية"]], a:1},
+   {q:["Which technique is used to prove A = S?","أي تقنية تُستخدم لإثبات A = S؟"], o:[["Proof by contradiction only","الإثبات بالتناقض فقط"],["The double-subset technique: A ⊆ S and S ⊆ A","تقنية المجموعة الجزئية المزدوجة: A ⊆ S وَS ⊆ A"],["Direct substitution","التعويض المباشر"],["Truth tables","جداول الصدق"]], a:1},
+   {q:["In the Part I induction proof, what is the base case?","في إثبات الجزء الأول بالاستقراء، ما حالة الأساس؟"], o:[["k = 0: 3(0) = 0 ∈ S","k = 0: 3(0) = 0 ∈ S"],["k = 1: 3(1) = 3 ∈ S","k = 1: 3(1) = 3 ∈ S"],["k = 3: 3(3) = 9 ∈ S","k = 3: 3(3) = 9 ∈ S"],["There is no base case needed","لا حاجة لحالة أساس"]], a:1},
+   {q:["In the Part I inductive step, 3(k+1) is rewritten as:","في خطوة الاستقراء للجزء الأول، تُعاد كتابة 3(k+1) على شكل:"], o:[["3k × 3","3k × 3"],["3k + 3","3k + 3"],["3k - 3","3k - 3"],["k + 3","k + 3"]], a:1},
+   {q:["What is the basis step of Part II (S ⊆ A)?","ما خطوة الأساس للجزء الثاني (S ⊆ A)؟"], o:[["6 is in A","6 موجودة في A"],["3 is in A, since 3 | 3","3 موجودة في A، لأن 3 | 3"],["A is empty","A فارغة"],["S has no elements yet","S لا تحتوي عناصر بعد"]], a:1},
+   {q:["In the Part II inductive step, why is x + y in A when x, y ∈ S?","في خطوة الاستقراء للجزء الثاني، لماذا x + y في A عندما x, y ∈ S؟"], o:[["Because x and y are both even","لأن x وَy كلتاهما زوجيتان"],["Because 3 | x and 3 | y, so 3 | (x+y)","لأن 3 | x وَ3 | y، لذا 3 | (x+y)"],["Because x = y always","لأن x = y دائمًا"],["Because A ⊆ S by definition","لأن A ⊆ S بالتعريف"]], a:1},
+   {q:["Once A ⊆ S and S ⊆ A are both proven, what is concluded?","بعد إثبات A ⊆ S وَS ⊆ A، ماذا نستنتج؟"], o:[["A and S are disjoint","A وَS منفصلتان"],["A = S","A = S"],["A is a proper subset of S","A مجموعة جزئية حقيقية من S"],["No conclusion can be drawn","لا يمكن استنتاج شيء"]], a:1}
+  ]
+});
+
+const GLOSSARY = [
+  ["Proposition","القضية (Proposition)"],
+  ["Propositional function (open sentence)","الدالة القضوية / الجملة المفتوحة (Propositional Function)"],
+  ["Negation","النفي (Negation)"],
+  ["Conjunction","الاقتران (Conjunction)"],
+  ["Disjunction","الفصل (Disjunction)"],
+  ["Exclusive-or (XOR)","أو الحصرية (Exclusive-or)"],
+  ["Implication","الاستلزام (Implication)"],
+  ["Biconditional","الشرط الثنائي (Biconditional)"],
+  ["Connective","الرابط المنطقي (Connective)"],
+  ["Operator precedence","أسبقية العمليات (Precedence)"],
+  ["Logical equivalence","التكافؤ المنطقي (Logical Equivalence)"],
+  ["Truth table","جدول الصدق (Truth Table)"],
+  ["Truth value","القيمة الصدقية (Truth Value)"],
+  ["Identity law","قانون المحايد (Identity Law)"],
+  ["Domination law","قانون السيطرة (Domination Law)"],
+  ["Idempotent law","قانون اللا-قوة (Idempotent Law)"],
+  ["Double negation law","قانون النفي المزدوج (Double Negation Law)"],
+  ["Commutative law","قانون الإبدال (Commutative Law)"],
+  ["Associative law","قانون الدمج (Associative Law)"],
+  ["Distributive law","قانون التوزيع (Distributive Law)"],
+  ["De Morgan's laws","قوانين دي مورجان (De Morgan's Laws)"],
+  ["Universal quantifier","المحدد الكمي الشامل (Universal Quantifier)"],
+  ["Existential quantifier","المحدد الكمي الوجودي (Existential Quantifier)"],
+  ["Universe of discourse","مجال الخطاب (Universe of Discourse)"],
+  ["Nested quantifiers","المحددات الكمية المتداخلة (Nested Quantifiers)"],
+  ["De Morgan's laws for quantifiers","قوانين دي مورجان للمحددات الكمية (De Morgan's Laws for Quantifiers)"],
+  ["Set","المجموعة (Set)"],
+  ["Element (member)","العنصر (Element / Member)"],
+  ["Subset","المجموعة الجزئية (Subset)"],
+  ["Set equality","تساوي المجموعات (Set Equality)"],
+  ["Transitivity","التعدي (Transitivity)"],
+  ["Cartesian product","الضرب الديكارتي (Cartesian Product)"],
+  ["Ordered pair","الزوج المرتب (Ordered Pair)"],
+  ["Double-subset technique","تقنية المجموعة الجزئية المزدوجة (Double-Subset Technique)"],
+  ["Floor function","دالة الأرضية (Floor Function)"],
+  ["Ceiling function","دالة السقف (Ceiling Function)"],
+  ["Real numbers (R)","الأعداد الحقيقية (Real Numbers)"],
+  ["Integers (Z)","الأعداد الصحيحة (Integers)"],
+  ["Boolean algebra","الجبر البولياني (Boolean Algebra)"],
+  ["Complement","المتمم (Complement)"],
+  ["Binary operation","العملية الثنائية (Binary Operation)"],
+  ["Unary operation","العملية الأحادية (Unary Operation)"],
+  ["Summation notation (Σ)","ترميز الجمع (Summation Notation)"],
+  ["Index (of summation)","دليل الجمع (Index of Summation)"],
+  ["Arithmetic series","المتسلسلة الحسابية (Arithmetic Series)"],
+  ["Geometric series","المتسلسلة الهندسية (Geometric Series)"],
+  ["Gauss formula","صيغة جاوس (Gauss Formula)"],
+  ["Mathematical induction","الاستقراء الرياضي (Mathematical Induction)"],
+  ["Base case","حالة الأساس (Base Case)"],
+  ["Inductive step","خطوة الاستقراء (Inductive Step)"],
+  ["Inductive hypothesis","فرضية الاستقراء (Inductive Hypothesis)"],
+  ["Recursion","التكرار (Recursion)"],
+  ["Recursive definition","التعريف التكراري (Recursive Definition)"],
+  ["Recursive step","خطوة التكرار (Recursive Step)"],
+  ["Recursively defined set","المجموعة المُعرَّفة تكراريًا (Recursively Defined Set)"],
+  ["Basis step","خطوة الأساس (Basis Step)"],
+  ["Divisibility","القسمة (Divisibility)"]
+].sort((a,b)=>a[0].localeCompare(b[0]));
+
+
+/* ============================================================
+   SUBJECTS + THEMES  (8 subjects, each with its own color)
+   To add a subject: set ready:true and give it lectures + glossary.
+   ============================================================ */
+const THEMES = {
+  teal:['20 184 166','13 148 136'], pink:['236 72 153','219 39 119'], purple:['168 85 247','147 51 234'],
+  blue:['59 130 246','37 99 235'], orange:['249 115 22','234 88 12'], green:['34 197 94','22 163 74'],
+  yellow:['234 179 8','202 138 4'], red:['239 68 68','220 38 38']
+};
+/* ----- THIS PAGE'S SUBJECT (edit when copying this file to make a new subject) ----- */
+const SUBJECT = {id:'dmath', color:'blue', ready:true, icon:'🧮', name:["Discrete Mathematics","الرياضيات المتقطعة (Discrete Mathematics)"], lectures:LECTURES, glossary:GLOSSARY};
+const SUBJECTS = [SUBJECT];
+
+/* ============================================================
+   STATE + STORAGE
+   ============================================================ */
+const KEY = 'studyHubV2';
+const store = (()=>{ try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ return {}; } })();
+const state = { lang: store.lang||'en', subject:SUBJECT.id, page:'home', sidebar: window.innerWidth>=1024, data: store.data||{}, decks:{}, qz:{}, exam:null };
+function save(){
+  try{
+    const cur=JSON.parse(localStorage.getItem(KEY)||'{}'); cur.data=cur.data||{};
+    cur.lang=state.lang;
+    const d=sd(SUBJECT.id); d.mastery=mastery(SUBJECT); d.n=SUBJECT.lectures.length;
+    cur.data[SUBJECT.id]=d;
+    localStorage.setItem(KEY, JSON.stringify(cur));
+  }catch(e){}
+}
+const subj = () => SUBJECTS.find(s=>s.id===state.subject);
+const LECT = () => subj().lectures;
+function sd(id){ id=id||state.subject; return state.data[id]||(state.data[id]={seen:{},best:{},exam:0}); }
+function mastery(s){
+  if(!s.ready) return 0;
+  const d=sd(s.id); let sum=0;
+  s.lectures.forEach(l=>{ sum += (d.best[l.id]||0)/100; });
+  sum += (d.exam||0)/100;
+  return Math.round(sum/(s.lectures.length+1)*100);
+}
+
+/* ============================================================
+   HELPERS  (invisible citation handling + XSS protection)
+   ============================================================ */
+const clean = s => String(s)
+  .replace(/<\/?(antml:)?cite[^>]*>/gi,'')
+  .replace(/\[cite[^\]]*\]/gi,'')
+  .replace(/\[(source|ref)[^\]]*\]/gi,'')
+  .replace(/[ \t]{2,}/g,' ').trim();
+const esc = s => clean(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const fmt = s => esc(s).replace(/(\$?\d[\d,.]*\d|\$?\d)/g,'<span class="mono">$1</span>');
+const li = () => state.lang==='ar'?1:0;
+const tx = a => fmt(a[li()]);
+const u = k => UI[k][li()];
+const $ = id => document.getElementById(id);
+function shuf(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function mixQ(q){ const idx=shuf(q.o.map((_,i)=>i)); return {q:q.q, o:idx.map(i=>q.o[i]), a:idx.indexOf(q.a)}; }
+function applyTheme(){
+  const t = THEMES[(state.subject&&subj().color)||'teal'];
+  document.documentElement.style.setProperty('--b5',t[0]);
+  document.documentElement.style.setProperty('--b6',t[1]);
+}
+
+/* ============================================================
+   BLOCK RENDERERS
+   ============================================================ */
+const labelColors = {
+  def:['border-brand-500 bg-brand-500/10','text-brand-500'],
+  ex:['border-amber-400 bg-amber-400/10','text-amber-400'],
+  tip:['border-violet-400 bg-violet-400/10','text-violet-400']
+};
+function renderBlock(b){
+  if(b.k==='p') return `<p class="leading-relaxed text-dark-text/90 my-3">${tx(b.x)}</p>`;
+  if(labelColors[b.k]){
+    const c=labelColors[b.k];
+    return `<div class="border-s-4 ${c[0]} rounded-e-xl p-4 my-3"><div class="text-xs font-bold uppercase tracking-wide ${c[1]} mb-1">${u(b.k)}</div><div class="leading-relaxed whitespace-pre-line">${tx(b.x)}</div></div>`;
+  }
+  if(b.k==='formula') return `<pre class="mono bg-dark-base border border-dark-border rounded-xl p-4 my-3 text-brand-500 overflow-x-auto" dir="ltr"><code>${esc(b.x)}</code></pre>`;
+  if(b.k==='ul') return `<div class="my-3">${b.h?`<div class="font-semibold text-brand-500 mb-1">${tx(b.h)}</div>`:''}<ul class="space-y-1.5">${b.x.map(i=>`<li class="flex gap-2 leading-relaxed"><span class="text-brand-500 mt-1.5 shrink-0">●</span><span>${tx(i)}</span></li>`).join('')}</ul></div>`;
+  if(b.k==='cards') return `<div class="grid gap-3 sm:grid-cols-2 my-3">${b.c.map(c=>`<div class="bg-dark-surface border border-dark-border rounded-xl p-4"><div class="font-bold text-brand-500 mb-2">${tx(c.t)}</div><ul class="space-y-1 text-sm leading-relaxed">${c.l.map(i=>`<li class="flex gap-2"><span class="text-dark-muted shrink-0">▪</span><span>${tx(i)}</span></li>`).join('')}</ul></div>`).join('')}</div>`;
+  if(b.k==='tbl') return `<div class="overflow-x-auto my-3 rounded-xl border border-dark-border"><table class="w-full text-sm"><thead class="bg-brand-600 text-white"><tr>${b.h.map(h=>`<th class="p-3 text-start font-semibold">${tx(h)}</th>`).join('')}</tr></thead><tbody>${b.r.map((r,i)=>`<tr class="${i%2?'bg-dark-surface':'bg-dark-elevated'}">${r.map((c,j)=>`<td class="p-3 border-t border-dark-border ${j===0?'font-semibold':''}">${tx(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  return '';
+}
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+function optHTML(o,i){
+  return `<button class="opt w-full text-start p-3 rounded-lg border border-dark-border bg-dark-surface hover:border-brand-500 transition flex gap-3 items-start" data-i="${i}"><span class="mono text-dark-muted shrink-0">${'ABCD'[i]}.</span><span>${tx(o)}</span></button>`;
+}
+function qHTML(q,idx,total){
+  return `<div class="qbox bg-dark-elevated border border-dark-border rounded-xl p-4 mb-4" data-a="${q.a}">
+    <div class="font-semibold mb-3"><span class="mono text-brand-500">${idx}/${total}</span> ${tx(q.q)}</div>
+    <div class="space-y-2">${q.o.map(optHTML).join('')}</div>
+    <div class="fb mt-3 text-sm font-semibold hidden"></div></div>`;
+}
+function getQz(L){ return state.qz[L.id] || (state.qz[L.id]=L.quiz.map(mixQ)); }
+function quizInner(L){
+  const qs=getQz(L), best=sd().best[L.id];
+  return `<div class="flex justify-between items-center mb-3"><h2 class="font-bold text-lg">📝 ${u('quiz')} <span class="mono text-sm text-dark-muted">(${qs.length})</span></h2>${best!=null?`<span class="mono text-xs text-dark-muted">${u('best')}: ${best}%</span>`:''}</div>
+    ${qs.map((q,i)=>qHTML(q,i+1,qs.length)).join('')}
+    <div class="qscore hidden mt-2 p-3 rounded-lg bg-dark-surface border border-brand-500 flex flex-wrap items-center justify-between gap-2"><b class="qs-text"></b><button data-act="retryQuiz" data-id="${L.id}" class="px-4 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm">${u('retry')}</button></div>`;
+}
+
+/* ============================================================
+   FLASHCARD DECKS (shared by lectures and glossary)
+   ============================================================ */
+function getDeck(id,kind,list){
+  if(!state.decks[id]) state.decks[id]={kind,list:list.slice(),i:0,flip:false};
+  return state.decks[id];
+}
+function deckHTML(id){
+  const d=state.decks[id], c=d.list[d.i], l=li();
+  let front, back;
+  if(d.kind==='g'){
+    front=`<div class="mono text-2xl text-brand-500 font-bold" dir="ltr">${esc(c[0])}</div>`;
+    back=`<div class="text-2xl font-bold text-white" dir="rtl" style="font-family:Cairo">${esc(c[1])}</div>`;
+  } else {
+    front=`<div class="text-xs mono text-dark-muted mb-2">${u('question')}</div><div class="text-lg font-bold">${esc(c[0][l])}</div>`;
+    back=`<div class="text-base font-semibold text-white leading-relaxed">${esc(c[1][l])}</div><div class="text-xs text-white/70 mt-3 leading-relaxed" dir="${l?'ltr':'rtl'}">${esc(c[1][1-l])}</div>`;
+  }
+  return `<p class="text-dark-muted mb-3 text-sm">${u('flip')} • <span class="mono">${d.i+1}/${d.list.length}</span></p>
+    <div class="flip ${d.flip?'on':''} cursor-pointer mb-3" data-act="dk-flip" data-deck="${id}"><div class="flip-inner">
+      <div class="face bg-dark-elevated border border-brand-500">${front}</div>
+      <div class="face back bg-brand-600">${back}</div></div></div>
+    <div class="flex justify-between gap-2">
+      <button data-act="dk-prev" data-deck="${id}" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500">${u('prev')}</button>
+      <button data-act="dk-shuf" data-deck="${id}" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500">🔀 ${u('shuffle')}</button>
+      <button data-act="dk-next" data-deck="${id}" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white">${u('next')}</button>
+    </div>`;
+}
+function deckBox(id,kind,list){ getDeck(id,kind,list); return `<div id="deck-${id}">${deckHTML(id)}</div>`; }
+function redrawDeck(id){ const el=$('deck-'+id); if(el) el.innerHTML=deckHTML(id); }
+
+/* ============================================================
+   PAGES
+   ============================================================ */
+function renderHome(){
+  const s=subj(), d=sd(), m=mastery(s), n=s.lectures.length;
+  const steps = [
+    ["Read each lecture slowly, then read the Key Takeaways.","اقرأ كل محاضرة ببطء ثم اقرأ أهم النقاط."],
+    ["Go through the lecture flashcards, then do the quiz until you get 100%.","راجع بطاقات المحاضرة ثم حل الاختبار حتى تحصل على 100%."],
+    ["Use the term flashcards in the Glossary page for 10 minutes every day.","استخدم بطاقات المصطلحات في صفحة القاموس 10 دقائق يوميًا."],
+    ["Take the Final Exam again and again until you score 90% or more. Read the mistakes list after each try.","أدِّ الاختبار النهائي مرارًا حتى تحصل على 90% أو أكثر. اقرأ قائمة الأخطاء بعد كل محاولة."],
+    ["Memorize the lists: 4 ownership forms, 4 CSR types, 4 functions of management (P-O-L-C), 4Ps.","احفظ القوائم: 4 أشكال ملكية، 4 أنواع CSR، 4 وظائف إدارية (P-O-L-C)، الـ 4Ps."],
+    ["Know the formulas: Profit = Revenue - Expenses and Value = Benefits - Cost.","اعرف المعادلات: الربح = الإيرادات - المصروفات والقيمة = الفوائد - التكلفة."]
+  ];
+  return `<div class="fade">
+    <div class="rounded-2xl bg-gradient-to-br from-brand-600 to-dark-elevated p-6 mb-6 border border-dark-border">
+      <div class="text-3xl mb-1">${s.icon}</div>
+      <h1 class="text-3xl font-extrabold mb-1">${tx(s.name)}</h1>
+      <p class="text-white/80">${n} ${u('lectures').toLowerCase()} • ${state.lang==='ar'?'اختبارات • بطاقات • اختبار نهائي • قاموس':'quizzes • flashcards • final exam • glossary'}</p>
+    </div>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-6">
+      <div class="flex justify-between mb-2"><b>${u('mastery')}</b><span class="mono text-brand-500">${m}%</span></div>
+      <div class="h-3 bg-dark-base rounded-full overflow-hidden"><div class="h-full bg-brand-500 transition-all" style="width:${m}%"></div></div>
+      <p class="text-xs text-dark-muted mt-2">${u('masteryHow')}</p>
+    </div>
+    <div class="grid gap-3 sm:grid-cols-2 mb-6">
+      ${s.lectures.map(l=>{ const b=d.best[l.id]; return `<button data-go="${l.id}" class="text-start bg-dark-elevated border border-dark-border hover:border-brand-500 rounded-xl p-4 transition">
+        <div class="flex justify-between"><span class="mono text-brand-500 text-sm">${u('lecture')} ${l.n}</span>${d.seen[l.id]?`<span class="text-dark-muted text-xs">📖 ${u('read')}</span>`:''}</div>
+        <div class="font-semibold mt-1">${tx(l.title)}</div>
+        <div class="h-1.5 bg-dark-base rounded-full overflow-hidden mt-3"><div class="h-full bg-brand-500" style="width:${b||0}%"></div></div>
+        <div class="mono text-xs text-dark-muted mt-1">${u('quiz')}: ${b!=null?b+'%':'—'}</div></button>`; }).join('')}
+    </div>
+    <div class="grid gap-3 sm:grid-cols-2 mb-6">
+      <button data-go="exam" class="bg-dark-elevated border border-dark-border hover:border-brand-500 rounded-xl p-4 font-semibold text-start">🏆 ${u('exam')}<div class="mono text-xs text-dark-muted mt-1">${u('best')}: ${d.exam?d.exam+'%':'—'}</div></button>
+      <button data-go="glossary" class="bg-dark-elevated border border-dark-border hover:border-brand-500 rounded-xl p-4 font-semibold text-start">📖 Glossary / قاموس المصطلحات<div class="mono text-xs text-dark-muted mt-1">${s.glossary.length} • ${u('glossFlash')}</div></button>
+    </div>
+    <div class="border-s-4 border-violet-400 bg-violet-400/10 rounded-e-xl p-5">
+      <h2 class="font-bold text-violet-400 mb-2">🚀 ${u('plan')}</h2>
+      <ol class="space-y-1.5 list-decimal ps-5">${steps.map(x=>`<li>${tx(x)}</li>`).join('')}</ol>
+    </div>
+    <button data-act="reset" class="mt-6 text-xs text-dark-muted underline">${u('reset')}</button>
+  </div>`;
+}
+
+function renderLecture(L, idx){
+  const d=sd(); d.seen[L.id]=true; save();
+  const lects=LECT(), prev=lects[idx-1], next=lects[idx+1], ar=state.lang==='ar';
+  return `<div class="fade">
+    <div class="mono text-brand-500 text-sm mb-1">${u('lecture')} ${L.n}</div>
+    <h1 class="text-2xl sm:text-3xl font-extrabold mb-4">${tx(L.title)}</h1>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-5">
+      <h2 class="font-bold text-lg mb-2">🎯 ${u('objectives')}</h2>
+      <ul class="space-y-1">${L.obj.map(o=>`<li class="flex gap-2"><span class="text-brand-500">✓</span><span>${tx(o)}</span></li>`).join('')}</ul>
+    </div>
+    ${L.sec.map((s,i)=>`<section class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-5">
+        <h2 class="text-xl font-bold mb-2 flex items-center gap-2"><span class="mono text-sm bg-brand-600 text-white rounded-md px-2 py-0.5">${i+1}</span>${tx(s.t)}</h2>
+        ${s.b.map(renderBlock).join('')}</section>`).join('')}
+    <div class="bg-brand-500/10 border border-brand-500 rounded-2xl p-5 mb-5">
+      <h2 class="font-bold text-lg mb-2 text-brand-500">⭐ ${u('take')}</h2>
+      <ul class="space-y-1">${L.take.map(t=>`<li class="flex gap-2"><span class="text-brand-500">★</span><span>${tx(t)}</span></li>`).join('')}</ul>
+    </div>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-5">
+      <h2 class="font-bold text-lg mb-3">🃏 ${u('flash')}</h2>
+      ${deckBox('fc-'+L.id,'l',L.fc)}
+    </div>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-5" data-quiz="${L.id}" id="quiz-${L.id}">${quizInner(L)}</div>
+    <div class="flex justify-between gap-3">
+      ${prev?`<button data-go="${prev.id}" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500">${ar?'→':'←'} ${u('prev')}</button>`:'<span></span>'}
+      ${next?`<button data-go="${next.id}" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white">${u('next')} ${ar?'←':'→'}</button>`:`<button data-go="exam" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white">${u('exam')} ${ar?'←':'→'}</button>`}
+    </div></div>`;
+}
+
+function gItems(list){
+  return list.map(g=>`<div class="bg-dark-elevated border border-dark-border rounded-xl p-3 flex flex-wrap justify-between gap-2"><span class="mono text-brand-500 font-semibold" dir="ltr">${esc(g[0])}</span><span class="font-semibold" dir="rtl" style="font-family:Cairo">${esc(g[1])}</span></div>`).join('') || '<div class="text-dark-muted">—</div>';
+}
+function renderGlossary(){
+  const G=subj().glossary;
+  return `<div class="fade">
+    <h1 class="text-3xl font-extrabold mb-1">Glossary / قاموس المصطلحات</h1>
+    <p class="text-dark-muted mb-5 mono text-sm">${G.length} terms</p>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-6">
+      <h2 class="font-bold text-lg mb-3">🃏 ${u('glossFlash')}</h2>
+      ${deckBox('gl','g',shuf(G))}
+    </div>
+    <h2 class="font-bold text-lg mb-2">📖 ${u('glossList')}</h2>
+    <input id="gSearch" placeholder="${u('search')}" class="w-full p-3 rounded-xl bg-dark-elevated border border-dark-border focus:border-brand-500 outline-none mb-4">
+    <div id="gList" class="grid gap-2">${gItems(G)}</div></div>`;
+}
+
+/* ---------- FINAL EXAM ---------- */
+function pool(){ const p=[]; LECT().forEach(l=>l.quiz.forEach(q=>p.push(q))); return p; }
+function newExam(size){
+  const qs=shuf(pool()).slice(0,size).map(mixQ);
+  state.exam={qs,i:0,score:0,wrong:[],finished:false,size};
+}
+function renderExam(){
+  const e=state.exam, total=pool().length, d=sd();
+  if(!e){
+    const sizes=[20,40,total];
+    return `<div class="fade text-center py-8"><h1 class="text-3xl font-extrabold mb-2">🏆 ${u('exam')}</h1>
+      <p class="text-dark-muted mb-1">${state.lang==='ar'?`بنك الأسئلة: ${total} سؤالًا من كل المحاضرات. تتغير الأسئلة وترتيب الخيارات في كل مرة.`:`Question bank: ${total} questions from all lectures. Questions and answer order change every time.`}</p>
+      <p class="mono text-sm text-dark-muted mb-6">${u('best')}: ${d.exam?d.exam+'%':'—'}</p>
+      <p class="font-semibold mb-3">${u('chooseSize')}</p>
+      <div class="flex flex-wrap justify-center gap-3">${sizes.map((n,i)=>`<button data-size="${n}" class="px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold"><span class="mono">${n}</span> ${i===2?`(${u('all')})`:u('questions')}</button>`).join('')}</div></div>`;
+  }
+  if(e.finished){
+    const p=Math.round(e.score/e.qs.length*100);
+    return `<div class="fade py-6"><div class="text-center">
+      <h1 class="text-3xl font-extrabold mb-3">🏆 ${u('exam')}</h1>
+      <div class="mono text-5xl font-extrabold ${p>=90?'text-green-400':p>=60?'text-amber-400':'text-red-400'} mb-2">${e.score}/${e.qs.length}</div>
+      <div class="mono text-xl mb-4">${p}%</div>
+      <p class="mb-6">${p>=90?(state.lang==='ar'?'ممتاز! أنت جاهز للامتحان 🎉':'Excellent! You are ready 🎉'):(state.lang==='ar'?'راجع المحاضرات وأعد المحاولة للوصول إلى 90%+':'Review the lectures and try again to reach 90%+')}</p>
+      <button data-act="examAgain" class="px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold">${u('retry')}</button></div>
+      ${e.wrong.length?`<h2 class="font-bold text-lg mt-8 mb-3">❌ ${u('mistakes')} (${e.wrong.length})</h2>
+      ${e.wrong.map(w=>`<div class="bg-dark-elevated border border-dark-border border-s-4 border-s-red-500 rounded-xl p-4 mb-3"><div class="font-semibold mb-1">${tx(w.q)}</div><div class="text-sm text-green-400">${u('yourAns')}: ${tx(w.c)}</div></div>`).join('')}`:''}
+    </div>`;
+  }
+  const q=e.qs[e.i];
+  return `<div class="fade"><h1 class="text-2xl font-extrabold mb-3">🏆 ${u('exam')}</h1>
+    <div class="h-2 bg-dark-surface rounded-full mb-4 overflow-hidden"><div class="h-full bg-brand-500" style="width:${e.i/e.qs.length*100}%"></div></div>
+    <div data-exam="1">${qHTML(q,e.i+1,e.qs.length)}</div>
+    <div class="flex justify-between items-center"><span class="mono text-sm text-dark-muted">${u('score')}: ${e.score}</span>
+    <button id="examNext" class="hidden px-5 py-2 rounded-lg bg-brand-600 text-white">${e.i===e.qs.length-1?u('finish'):u('next')}</button></div></div>`;
+}
+
+/* ============================================================
+   SHELL: nav, layout, render
+   ============================================================ */
+function renderNav(){
+  const item=(id,icon,label,extra='')=>`<button data-go="${id}" class="w-full flex items-center gap-3 text-start px-3 py-2.5 rounded-lg transition ${state.page===id?'bg-brand-600 text-white':'hover:bg-dark-elevated text-dark-text'}"><span>${icon}</span><span class="flex-1 text-sm">${label}</span>${extra}</button>`;
+  const head=t=>`<div class="px-3 pt-3 pb-1 text-xs uppercase tracking-wider text-dark-muted">${t}</div>`;
+  const s=subj(), d=sd();
+  let h=`<a href="index.html" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-dark-elevated text-dark-text"><span>🗂️</span><span class="flex-1 text-sm">${u('hub')}</span></a>`;
+  h += `<div class="px-3 pt-3 pb-1 text-sm font-bold text-brand-500">${s.icon} ${tx(s.name)}</div>`;
+  h += item('home','🏠',u('home'));
+  h += head(u('lectures')) + s.lectures.map(l=>item(l.id,`<span class="mono text-xs">${l.n}</span>`,tx(l.title),d.best[l.id]!=null?`<span class="mono text-[10px] opacity-80">${d.best[l.id]}%</span>`:'')).join('');
+  h += head(u('tools')) + item('exam','🏆',u('exam'),d.exam?`<span class="mono text-[10px] opacity-80">${d.exam}%</span>`:'') + item('glossary','📖','Glossary / قاموس المصطلحات');
+  $('nav').innerHTML=h;
+}
+function applyLayout(){
+  const sb=$('sidebar'), main=$('main'), bd=$('backdrop');
+  sb.classList.toggle('ltr:-translate-x-full',!state.sidebar);
+  sb.classList.toggle('rtl:translate-x-full',!state.sidebar);
+  main.classList.toggle('lg:ps-72',state.sidebar);
+  bd.classList.toggle('hidden',!(state.sidebar && window.innerWidth<1024));
+}
+function updateTop(){
+  const show=!!state.subject, m=show?mastery(subj()):0;
+  $('topProgWrap').classList.toggle('hidden',!show); $('topProgWrap').classList.toggle('sm:flex',show);
+  $('topBar').style.width=m+'%'; $('topPct').textContent=m+'%';
+}
+function render(){
+  document.documentElement.lang=state.lang;
+  document.documentElement.dir=state.lang==='ar'?'rtl':'ltr';
+  $('langBtn').textContent = state.lang==='ar'?'English':'العربية';
+  applyTheme();
+  const lects = state.subject?LECT():[];
+  const idx=lects.findIndex(l=>l.id===state.page);
+  let html='', title='';
+  if(state.page==='home'){ html=renderHome(); title=tx(subj().name).replace(/<[^>]+>/g,''); }
+  else if(idx>=0){ html=renderLecture(lects[idx],idx); title=`${u('lecture')} ${lects[idx].n}`; }
+  else if(state.page==='exam'){ html=renderExam(); title=u('exam'); }
+  else if(state.page==='glossary'){ html=renderGlossary(); title='Glossary / قاموس المصطلحات'; }
+  $('app').innerHTML=html; $('topTitle').textContent=title;
+  updateTop(); renderNav(); applyLayout();
+}
+function go(p){
+  state.page=p; state.qz={}; state.decks={}; if(p!=='exam') state.exam=null;
+  if(window.innerWidth<1024) state.sidebar=false;
+  render(); window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ============================================================
+   EVENTS
+   ============================================================ */
+document.addEventListener('click',e=>{
+  const g=e.target.closest('[data-go]'); if(g){ go(g.dataset.go); return; }
+
+  const sz=e.target.closest('[data-size]'); if(sz){ newExam(+sz.dataset.size); render(); window.scrollTo({top:0}); return; }
+
+  const opt=e.target.closest('.opt');
+  if(opt){
+    const box=opt.closest('.qbox'); if(box.dataset.done) return;
+    box.dataset.done='1';
+    const a=+box.dataset.a, i=+opt.dataset.i, ok=(i===a);
+    if(ok) box.dataset.ok='1';
+    box.querySelectorAll('.opt').forEach(b=>{
+      b.disabled=true; b.classList.remove('hover:border-brand-500'); b.classList.add('cursor-not-allowed');
+      if(+b.dataset.i===a) b.classList.add('!bg-green-600/30','!border-green-500');
+    });
+    if(!ok) opt.classList.add('!bg-red-600/30','!border-red-500');
+    const fb=box.querySelector('.fb'); fb.classList.remove('hidden');
+    fb.className='fb mt-3 text-sm font-semibold '+(ok?'text-green-400':'text-red-400');
+    fb.textContent=ok?u('correct'):u('wrong');
+
+    const exam=box.closest('[data-exam]');
+    if(exam){
+      const ex=state.exam, q=ex.qs[ex.i];
+      if(ok) ex.score++; else ex.wrong.push({q:q.q,c:q.o[q.a]});
+      $('examNext').classList.remove('hidden'); return;
+    }
+    const qz=box.closest('[data-quiz]');
+    if(qz){
+      const boxes=[...qz.querySelectorAll('.qbox')];
+      if(boxes.every(b=>b.dataset.done)){
+        const sc=boxes.filter(b=>b.dataset.ok).length, pct=Math.round(sc/boxes.length*100);
+        const sEl=qz.querySelector('.qscore'); sEl.classList.remove('hidden');
+        qz.querySelector('.qs-text').textContent=`${u('score')}: ${sc}/${boxes.length} (${pct}%)`;
+        const d=sd(), id=qz.dataset.quiz;
+        if(d.best[id]==null||pct>d.best[id]){ d.best[id]=pct; save(); }
+        updateTop(); renderNav();
+      }
+    }
+    return;
+  }
+
+  const a=e.target.closest('[data-act]'); if(!a) return;
+  const act=a.dataset.act;
+  if(act.startsWith('dk-')){
+    const id=a.dataset.deck, d=state.decks[id]; if(!d) return;
+    if(act==='dk-flip'){ d.flip=!d.flip; const f=document.querySelector(`#deck-${id} .flip`); if(f) f.classList.toggle('on',d.flip); return; }
+    if(act==='dk-next') d.i=(d.i+1)%d.list.length;
+    if(act==='dk-prev') d.i=(d.i-1+d.list.length)%d.list.length;
+    if(act==='dk-shuf'){ d.list=shuf(d.list); d.i=0; }
+    d.flip=false; redrawDeck(id); return;
+  }
+  if(act==='retryQuiz'){
+    const L=LECT().find(l=>l.id===a.dataset.id); delete state.qz[L.id];
+    $('quiz-'+L.id).innerHTML=quizInner(L); $('quiz-'+L.id).scrollIntoView({behavior:'smooth',block:'start'}); return;
+  }
+  if(act==='examAgain'){ state.exam=null; render(); return; }
+  if(act==='reset'){ state.data[state.subject]={seen:{},best:{},exam:0}; save(); render(); return; }
+});
+document.addEventListener('click',e=>{
+  if(e.target.id==='examNext'){
+    const ex=state.exam;
+    if(ex.i<ex.qs.length-1) ex.i++;
+    else { ex.finished=true; const p=Math.round(ex.score/ex.qs.length*100), d=sd(); if(p>(d.exam||0)){ d.exam=p; save(); } }
+    render(); window.scrollTo({top:0});
+  }
+});
+document.addEventListener('input',e=>{
+  if(e.target.id==='gSearch'){
+    const q=e.target.value.toLowerCase();
+    $('gList').innerHTML=gItems(subj().glossary.filter(g=>(g[0]+' '+g[1]).toLowerCase().includes(q)));
+  }
+});
+$('menuBtn').onclick=()=>{ state.sidebar=!state.sidebar; applyLayout(); };
+$('backdrop').onclick=()=>{ state.sidebar=false; applyLayout(); };
+$('langBtn').onclick=()=>{ state.lang=state.lang==='ar'?'en':'ar'; save(); render(); };
+window.addEventListener('resize',applyLayout);
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Computer Ethics | أخلاقيات الحاسوب</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+/* brand colors default = teal (#14b8a6 / #0d9488). Each subject can switch them through CSS variables. */
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      brand: { 500: 'rgb(var(--b5) / <alpha-value>)', 600: 'rgb(var(--b6) / <alpha-value>)' },
+      dark: { base: '#0b0f17', surface: '#111827', elevated: '#1f2937', border: '#374151', text: '#f3f4f6', muted: '#9ca3af' }
+    },
+    fontFamily: { sans: ['Inter', 'sans-serif'], arabic: ['Cairo', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
+  } }
+}
+</script>
+<style>
+  :root { --b5: 20 184 166; --b6: 13 148 136; }
+  html[lang="en"] body { font-family: 'Inter', sans-serif; }
+  html[lang="ar"] body { font-family: 'Cairo', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #0b0f17; }
+  ::-webkit-scrollbar-thumb { background: #374151; border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgb(var(--b6)); }
+  .fade { animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .flip { perspective: 1000px; }
+  .flip-inner { transition: transform .5s; transform-style: preserve-3d; position: relative; min-height: 230px; }
+  .flip.on .flip-inner { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1.5rem; border-radius: 1rem; overflow: auto; }
+  .back { transform: rotateY(180deg); }
+</style>
+</head>
+<body class="bg-dark-base text-dark-text min-h-screen">
+
+<header class="fixed top-0 inset-x-0 z-40 h-14 bg-dark-surface/95 backdrop-blur border-b border-dark-border flex items-center justify-between px-3">
+  <div class="flex items-center gap-3 min-w-0">
+    <button id="menuBtn" class="p-2 rounded-lg hover:bg-dark-elevated" aria-label="Menu">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <a href="index.html" class="p-2 rounded-lg hover:bg-dark-elevated" title="All subjects">🗂️</a>
+    <span id="topTitle" class="font-bold text-brand-500 truncate"></span>
+  </div>
+  <div class="flex items-center gap-3">
+    <div id="topProgWrap" class="hidden sm:flex items-center gap-2" title="Mastery">
+      <div class="w-28 h-2 bg-dark-base rounded-full overflow-hidden"><div id="topBar" class="h-full bg-brand-500 transition-all" style="width:0%"></div></div>
+      <span id="topPct" class="mono text-xs text-dark-muted w-9"></span>
+    </div>
+    <button id="langBtn" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold"></button>
+  </div>
+</header>
+
+<div id="backdrop" class="fixed inset-0 bg-black/60 z-30 hidden lg:hidden"></div>
+
+<aside id="sidebar" class="fixed top-14 bottom-0 start-0 w-72 z-30 bg-dark-surface border-e border-dark-border overflow-y-auto transition-transform duration-300">
+  <nav id="nav" class="p-3 space-y-1"></nav>
+</aside>
+
+<main id="main" class="pt-14 transition-all duration-300">
+  <div id="app" class="max-w-4xl mx-auto p-4 sm:p-6 pb-24"></div>
+</main>
+
+<script>
+/* ============================================================
+   UI LABELS  [English, Arabic]
+   ============================================================ */
+const UI = {
+  hub:["All Subjects","كل المواد"], home:["Subject Home","الصفحة الرئيسية للمادة"], lecture:["Lecture","المحاضرة"],
+  objectives:["Learning Objectives","أهداف التعلم"], def:["Definition","تعريف"], ex:["Example","مثال"], tip:["Exam Tip","نصيحة للامتحان"],
+  take:["Key Takeaways","أهم النقاط"], quiz:["Self-Assessment Quiz","اختبار ذاتي"], flash:["Lecture Flashcards","بطاقات مراجعة المحاضرة"],
+  exam:["Final Exam","الاختبار النهائي"], next:["Next","التالي"], prev:["Previous","السابق"],
+  correct:["Correct! ✔","إجابة صحيحة! ✔"], wrong:["Incorrect ✘ - the correct answer is highlighted","إجابة خاطئة ✘ - الإجابة الصحيحة موضحة"],
+  score:["Your score","نتيجتك"], retry:["Try again","أعد المحاولة"], search:["Search a term...","ابحث عن مصطلح..."],
+  flip:["Tap the card to flip","اضغط على البطاقة لقلبها"], shuffle:["Shuffle","خلط"], start:["Start Exam","ابدأ الاختبار"],
+  mastery:["Mastery","مستوى الإتقان"], best:["Best","الأفضل"], plan:["How to score 100%","كيف تحصل على 100%"],
+  finish:["Finish","إنهاء"], reset:["Reset progress of this subject","إعادة ضبط تقدم هذه المادة"], read:["Read","تمت القراءة"],
+  soon:["Coming soon","قريبًا"], open:["Open","فتح"], subjects:["Subjects","المواد"], tools:["Study Tools","أدوات المراجعة"],
+  lectures:["Lectures","المحاضرات"], mistakes:["Questions you missed","الأسئلة التي أخطأت فيها"], yourAns:["Correct answer","الإجابة الصحيحة"],
+  glossFlash:["Term Flashcards","بطاقات المصطلحات"], glossList:["All Terms","كل المصطلحات"], questions:["questions","سؤالًا"],
+  question:["Question","السؤال"],
+  chooseSize:["Choose the number of questions","اختر عدد الأسئلة"], all:["All","الكل"], answerEN:["English","English"],
+  masteryHow:["Mastery = average of your best score in each lecture quiz and your best final exam score. Reading lectures does not raise it.","الإتقان = متوسط أفضل نتيجة لك في اختبار كل محاضرة وأفضل نتيجة في الاختبار النهائي. قراءة المحاضرات وحدها لا ترفعه."]
+};
+const LECTURES = [];
+
+LECTURES.push({ id:'l1', n:1,
+  title:["Foundations of Ethics","أسس الأخلاق (Foundations of Ethics)"],
+  obj:[
+    ["Define moral code, morality, ethics, virtues, and vices.","تعريف المدونة الأخلاقية والأخلاق والأخلاقيات والفضائل والرذائل."],
+    ["Identify the factors that can cause morality to vary between people and groups.","تحديد العوامل التي قد تجعل الأخلاق تتفاوت بين الأفراد والجماعات."],
+    ["Explain why integrity is considered a cornerstone of ethical behavior.","توضيح سبب اعتبار النزاهة حجر الزاوية في السلوك الأخلاقي."],
+    ["Distinguish between morals, ethics, and law.","التمييز بين المبادئ الأخلاقية الشخصية والأخلاقيات والقانون."]
+  ],
+  sec:[
+   {t:["Basic Definitions: Moral Code and Morality","تعريفات أساسية: المدونة الأخلاقية والأخلاق"], b:[
+     {k:'def', x:["Moral code: a set of rules that establishes the boundaries of generally accepted behavior. Different moral codes often have contradictions.","المدونة الأخلاقية (Moral Code): مجموعة من القواعد تحدد حدود السلوك المقبول عمومًا. وغالبًا ما تتضارب المدونات الأخلاقية المختلفة فيما بينها."]},
+     {k:'def', x:["Morality: social conventions about right and wrong that are widely shared and form the basis for an established consensus.","الأخلاق (Morality): أعراف اجتماعية حول الصواب والخطأ، تكون واسعة الانتشار وتشكل أساس توافق راسخ."]},
+     {k:'ul', h:["Morality may vary by:","قد تتفاوت الأخلاق حسب:"], x:[
+       ["Age","العمر"],["Cultural group","الجماعة الثقافية"],["Ethnic background","الخلفية العرقية"],["Religion","الدين"],
+       ["Life experiences","التجارب الحياتية"],["Education","التعليم"],["Gender","النوع الاجتماعي"]]}
+   ]},
+   {t:["Basic Definitions: Ethics, Virtues, and Vices","تعريفات أساسية: الأخلاقيات والفضائل والرذائل"], b:[
+     {k:'def', x:["Ethics: a set of beliefs about right and wrong behavior.","الأخلاقيات (Ethics): مجموعة من المعتقدات حول السلوك الصائب والخاطئ."]},
+     {k:'def', x:["Virtues: habits that incline people to do what is acceptable.","الفضائل (Virtues): عادات تميل بالأفراد نحو فعل ما هو مقبول."]},
+     {k:'def', x:["Vices: habits of unacceptable behavior.","الرذائل (Vices): عادات السلوك غير المقبول."]},
+     {k:'p', x:["Virtues and vices together define a person's personal value system — a scheme of moral values.","تُشكّل الفضائل والرذائل معًا منظومة القيم الشخصية للفرد — وهي مخطط لقيمه الأخلاقية."]}
+   ]},
+   {t:["The Importance of Integrity","أهمية النزاهة"], b:[
+     {k:'p', x:["Integrity is a cornerstone of ethical behavior.","النزاهة هي حجر الزاوية في السلوك الأخلاقي."]},
+     {k:'cards', c:[
+       {t:["People with integrity","أصحاب النزاهة"], l:[
+         ["Act in accordance with a personal code of principles.","يتصرفون وفقًا لمدونة مبادئ شخصية."],
+         ["Extend to all the same respect and consideration.","يمنحون الجميع القدر نفسه من الاحترام والاعتبار."],
+         ["Apply the same moral standards in all situations.","يطبّقون المعايير الأخلاقية نفسها في جميع المواقف."]
+       ]}
+     ]},
+     {k:'tip', x:["A lack of integrity emerges if you apply moral standards differently according to the situation or the people involved. Many ethical dilemmas are not as simple as right versus wrong.","يظهر غياب النزاهة عندما يطبّق الشخص المعايير الأخلاقية بشكل مختلف حسب الموقف أو الأشخاص المعنيين. والعديد من المعضلات الأخلاقية ليست بسيطة بقدر كونها صوابًا مقابل خطأ."]}
+   ]},
+   {t:["Morals vs. Ethics vs. Law","المبادئ الأخلاقية الشخصية مقابل الأخلاقيات مقابل القانون"], b:[
+     {k:'tbl', h:[["Term","المصطلح"],["Definition","التعريف"]],
+      r:[
+        [["Morals","المبادئ الأخلاقية الشخصية"],["One's personal beliefs about right and wrong.","معتقدات الفرد الشخصية حول الصواب والخطأ."]],
+        [["Ethics","الأخلاقيات"],["Standards or codes of behavior expected of an individual by a group.","معايير أو مدونات سلوك تتوقعها جماعة ما من الفرد."]],
+        [["Law","القانون"],["A system of rules that tells us what we can and cannot do; enforced by a set of institutions.","نظام من القواعد يحدد لنا ما يمكننا وما لا يمكننا فعله؛ وتُنفّذه مجموعة من المؤسسات."]]
+      ]},
+     {k:'p', x:["Legal acts conform to the law. Moral acts conform to what an individual believes is the right choice between right and wrong.","الأفعال القانونية تتوافق مع القانون. أما الأفعال الأخلاقية فتتوافق مع ما يعتقد الفرد أنه الخيار الصائب بين الصواب والخطأ."]}
+   ]}
+  ],
+  take:[
+   ["Moral code = rules that set boundaries of accepted behavior; morality = widely shared social conventions about right and wrong.","المدونة الأخلاقية = قواعد تحدد حدود السلوك المقبول؛ الأخلاق = أعراف اجتماعية واسعة الانتشار حول الصواب والخطأ."],
+   ["Morality varies by age, cultural group, ethnic background, religion, life experiences, education, and gender.","تتفاوت الأخلاق حسب العمر والجماعة الثقافية والخلفية العرقية والدين والتجارب الحياتية والتعليم والنوع الاجتماعي."],
+   ["Ethics = beliefs about right/wrong behavior; virtues = acceptable habits; vices = unacceptable habits.","الأخلاقيات = معتقدات حول السلوك الصائب/الخاطئ؛ الفضائل = عادات مقبولة؛ الرذائل = عادات غير مقبولة."],
+   ["People with integrity apply the same moral standards consistently, to everyone, in every situation.","أصحاب النزاهة يطبّقون المعايير الأخلاقية نفسها باستمرار، على الجميع، وفي كل موقف."],
+   ["Morals are personal, ethics are group-expected standards, and law is an institutionally enforced rule system.","المبادئ الأخلاقية شخصية، والأخلاقيات معايير تتوقعها الجماعة، والقانون نظام قواعد تفرضه المؤسسات."]
+  ],
+  fc:[
+   [["What is a moral code?","ما هي المدونة الأخلاقية؟"],["A set of rules that establishes the boundaries of generally accepted behavior.","مجموعة من القواعد تحدد حدود السلوك المقبول عمومًا."]],
+   [["What is morality?","ما هي الأخلاق؟"],["Social conventions about right and wrong that are widely shared and form the basis for an established consensus.","أعراف اجتماعية حول الصواب والخطأ، واسعة الانتشار وتشكل أساس توافق راسخ."]],
+   [["List four factors that can cause morality to vary.","اذكر أربعة عوامل قد تجعل الأخلاق تتفاوت."],["Any four of: age, cultural group, ethnic background, religion, life experiences, education, gender.","أي أربعة من: العمر، الجماعة الثقافية، الخلفية العرقية، الدين، التجارب الحياتية، التعليم، النوع الاجتماعي."]],
+   [["What is ethics?","ما هي الأخلاقيات؟"],["A set of beliefs about right and wrong behavior.","مجموعة من المعتقدات حول السلوك الصائب والخاطئ."]],
+   [["What are virtues?","ما هي الفضائل؟"],["Habits that incline people to do what is acceptable.","عادات تميل بالأفراد نحو فعل ما هو مقبول."]],
+   [["What are vices?","ما هي الرذائل؟"],["Habits of unacceptable behavior.","عادات السلوك غير المقبول."]],
+   [["What do virtues and vices together define?","ماذا تُشكّل الفضائل والرذائل معًا؟"],["A personal value system — a scheme of moral values.","منظومة القيم الشخصية — مخطط للقيم الأخلاقية."]],
+   [["What are the three behaviors of a person with integrity?","ما السلوكيات الثلاثة لصاحب النزاهة؟"],["Acting by a personal code of principles, extending equal respect to all, and applying the same moral standards in every situation.","التصرف وفق مدونة مبادئ شخصية، ومنح احترام متساوٍ للجميع، وتطبيق المعايير الأخلاقية نفسها في كل موقف."]],
+   [["When does a lack of integrity emerge?","متى يظهر غياب النزاهة؟"],["When someone applies moral standards differently depending on the situation or the people involved.","عندما يطبّق الشخص المعايير الأخلاقية بشكل مختلف حسب الموقف أو الأشخاص المعنيين."]],
+   [["Define morals, ethics, and law in one line each.","عرّف المبادئ الأخلاقية الشخصية والأخلاقيات والقانون بسطر واحد لكل منها."],["Morals: one's personal beliefs about right/wrong. Ethics: standards of behavior a group expects of an individual. Law: a system of rules telling us what we can/cannot do.","المبادئ الأخلاقية الشخصية: معتقدات الفرد حول الصواب/الخطأ. الأخلاقيات: معايير سلوك تتوقعها جماعة من الفرد. القانون: نظام قواعد يحدد ما يمكننا وما لا يمكننا فعله."]],
+   [["Who enforces laws?","من يُنفّذ القوانين؟"],["A set of institutions.","مجموعة من المؤسسات."]],
+   [["What do moral acts conform to, versus legal acts?","بماذا تتوافق الأفعال الأخلاقية، مقارنة بالأفعال القانونية؟"],["Moral acts conform to what an individual believes is right; legal acts conform to the law.","الأفعال الأخلاقية تتوافق مع ما يعتقد الفرد أنه صائب؛ والأفعال القانونية تتوافق مع القانون."]]
+  ],
+  quiz:[
+   {q:["Which best defines a moral code?","أي تعريف هو الأنسب للمدونة الأخلاقية؟"], o:[["A set of rules establishing the boundaries of generally accepted behavior","مجموعة من القواعد تحدد حدود السلوك المقبول عمومًا"],["A government-issued law","قانون صادر عن الحكومة"],["A single person's private opinion","رأي شخصي واحد"],["A company's marketing slogan","شعار تسويقي لشركة"]], a:0},
+   {q:["Morality is best described as:","الأخلاق تُوصف على أفضل وجه بأنها:"], o:[["A legal contract between two parties","عقد قانوني بين طرفين"],["Social conventions about right and wrong, widely shared","أعراف اجتماعية حول الصواب والخطأ، واسعة الانتشار"],["A company's annual report","تقرير سنوي لشركة"],["A single religious text","نص ديني واحد"]], a:1},
+   {q:["Which of these is NOT listed as a factor that morality may vary by?","أي مما يلي لم يُذكر كعامل قد تتفاوت الأخلاق بحسبه؟"], o:[["Religion","الدين"],["Age","العمر"],["Favorite color","اللون المفضل"],["Education","التعليم"]], a:2},
+   {q:["Ethics is defined as:","تُعرَّف الأخلاقيات بأنها:"], o:[["A set of beliefs about right and wrong behavior","مجموعة من المعتقدات حول السلوك الصائب والخاطئ"],["A government agency","جهة حكومية"],["A type of software license","نوع من تراخيص البرمجيات"],["A financial audit","تدقيق مالي"]], a:0},
+   {q:["Virtues are:","الفضائل هي:"], o:[["Habits of unacceptable behavior","عادات السلوك غير المقبول"],["Laws enforced by institutions","قوانين تُنفّذها المؤسسات"],["Habits that incline people to do what is acceptable","عادات تميل بالأفراد نحو فعل ما هو مقبول"],["Religious rituals only","طقوس دينية فقط"]], a:2},
+   {q:["Vices are:","الرذائل هي:"], o:[["Habits of unacceptable behavior","عادات السلوك غير المقبول"],["Habits that incline people to do what is acceptable","عادات تميل بالأفراد نحو فعل ما هو مقبول"],["Legal requirements","متطلبات قانونية"],["Cultural celebrations","احتفالات ثقافية"]], a:0},
+   {q:["Virtues and vices together define:","تُشكّل الفضائل والرذائل معًا:"], o:[["A code of law","مدونة قانونية"],["A personal value system","منظومة قيم شخصية"],["A corporate policy manual","دليل سياسات الشركة"],["A religious institution","مؤسسة دينية"]], a:1},
+   {q:["Which of these is NOT one of the three behaviors of a person with integrity?","أي مما يلي ليس من السلوكيات الثلاثة لصاحب النزاهة؟"], o:[["Acting by a personal code of principles","التصرف وفق مدونة مبادئ شخصية"],["Applying the same moral standards in all situations","تطبيق المعايير الأخلاقية نفسها في كل المواقف"],["Extending equal respect to all","منح احترام متساوٍ للجميع"],["Changing moral standards depending on who is involved","تغيير المعايير الأخلاقية حسب الأشخاص المعنيين"]], a:3},
+   {q:["A lack of integrity emerges when:","يظهر غياب النزاهة عندما:"], o:[["Moral standards are applied consistently","تُطبَّق المعايير الأخلاقية باستمرار"],["Moral standards are applied differently depending on the situation or people involved","تُطبَّق المعايير الأخلاقية بشكل مختلف حسب الموقف أو الأشخاص المعنيين"],["A person follows the law exactly","يتبع الشخص القانون بدقة"],["A person has strong religious beliefs","يملك الشخص معتقدات دينية قوية"]], a:1},
+   {q:["Which best defines \"law\"?","أي تعريف هو الأنسب لـ \"القانون\"؟"], o:[["A personal belief about right and wrong","معتقد شخصي حول الصواب والخطأ"],["A standard expected by a small group","معيار تتوقعه جماعة صغيرة"],["A system of rules enforced by institutions, telling us what we can and cannot do","نظام قواعد تُنفّذه المؤسسات، يحدد ما يمكننا وما لا يمكننا فعله"],["A personal habit","عادة شخصية"]], a:2},
+   {q:["Moral acts conform to:","تتوافق الأفعال الأخلاقية مع:"], o:[["The law only","القانون فقط"],["What an individual believes is right","ما يعتقد الفرد أنه صائب"],["Company policy only","سياسة الشركة فقط"],["Government regulation only","التنظيم الحكومي فقط"]], a:1}
+  ]
+});
+
+LECTURES.push({ id:'l2', n:2,
+  title:["Business Ethics and Why It Matters","أخلاقيات الأعمال ولماذا تهم"],
+  obj:[
+    ["Explain why both the likelihood and impact of unethical behavior have increased in business.","توضيح سبب تزايد احتمالية وتأثير السلوك غير الأخلاقي في بيئة الأعمال."],
+    ["Name the five main reasons organizations foster good business ethics.","ذكر الأسباب الخمسة الرئيسية التي تدفع المؤسسات لتعزيز أخلاقيات الأعمال الجيدة."],
+    ["Explain the doctrine of respondeat superior and its relevance to corporate liability.","توضيح مبدأ respondeat superior وصلته بالمسؤولية القانونية للشركات."],
+    ["Describe how reputation and publicity are affected by an organization's ethics.","وصف كيفية تأثر سمعة المؤسسة وصورتها الإعلامية بأخلاقياتها."]
+  ],
+  sec:[
+   {t:["Ethics in the Business World","الأخلاقيات في عالم الأعمال"], b:[
+     {k:'p', x:["Both the likelihood and the negative impact of inappropriate behavior have increased in the business world.","تزايدت في عالم الأعمال كل من احتمالية السلوك غير اللائق وتأثيره السلبي."]},
+     {k:'ul', h:["Trends that have increased the likelihood of unethical behavior","اتجاهات زادت من احتمالية السلوك غير الأخلاقي"], x:[
+       ["Globalization, creating complex work environments.","العولمة، التي خلقت بيئات عمل معقدة."],
+       ["Organizations challenged to maintain profits and revenue.","تحدي المؤسسات في الحفاظ على الأرباح والإيرادات."],
+       ["Heightened vigilance by employees, shareholders, and regulatory agencies.","تزايد اليقظة من قِبل الموظفين والمساهمين والجهات التنظيمية."]]}
+   ]},
+   {t:["Recent Scandals in IT Companies","فضائح حديثة في شركات تقنية المعلومات"], b:[
+     {k:'ul', h:["Companies involved in recent scandals","شركات شهدت فضائح حديثة"], x:[
+       ["Satyam Computer Services (India)","Satyam Computer Services (الهند)"],
+       ["Hewlett Packard","Hewlett Packard"],
+       ["Computer Associates International","Computer Associates International"],
+       ["IBM","IBM"]]},
+     {k:'tip', x:["Not just executives, but even lower-level employees, can find themselves in the middle of an ethical dilemma.","ليس المسؤولون التنفيذيون وحدهم مَن قد يجدون أنفسهم في قلب معضلة أخلاقية، بل حتى الموظفون في المستويات الأدنى."]}
+   ]},
+   {t:["Why Fostering Good Business Ethics Is Important","لماذا يُعد تعزيز أخلاقيات الأعمال الجيدة مهمًا"], b:[
+     {k:'ul', h:["Five main reasons","خمسة أسباب رئيسية"], x:[
+       ["1. To gain the good will of the community.","1. لكسب حسن نية المجتمع."],
+       ["2. To create an organization that operates consistently.","2. لإنشاء مؤسسة تعمل بشكل متسق."],
+       ["3. To foster good business practices.","3. لتعزيز ممارسات الأعمال الجيدة."],
+       ["4. To protect the organization and employees from legal action.","4. لحماية المؤسسة وموظفيها من الإجراءات القانونية."],
+       ["5. To avoid unfavourable publicity.","5. لتجنب الدعاية السلبية."]]}
+   ]},
+   {t:["Reason 1: Gaining the Good Will of the Community","السبب الأول: كسب حسن نية المجتمع"], b:[
+     {k:'p', x:["Organizations have fundamental responsibilities to society, usually declared in a formal statement of the company's principles or beliefs.","تتحمل المؤسسات مسؤوليات أساسية تجاه المجتمع، وعادة ما تُعلن في بيان رسمي لمبادئ الشركة أو معتقداتها."]},
+     {k:'ul', h:["Examples of socially responsible activity","أمثلة على الأنشطة ذات المسؤولية الاجتماعية"], x:[
+       ["Making contributions to charitable organizations and non-profit institutions.","تقديم تبرعات للمؤسسات الخيرية وغير الربحية."],
+       ["Providing benefits for employees in excess of legal requirements.","تقديم مزايا للموظفين تتجاوز المتطلبات القانونية."],
+       ["Choosing economic opportunities that might be more socially desirable than profitable.","اختيار فرص اقتصادية قد تكون مرغوبة اجتماعيًا أكثر من كونها مربحة."]]},
+     {k:'tip', x:["Socially responsible activities create good will, and good will makes it easier for corporations to conduct business.","تخلق الأنشطة ذات المسؤولية الاجتماعية حسن النية، وحسن النية يُسهّل على الشركات ممارسة أعمالها."]}
+   ]},
+   {t:["Reason 2: Creating an Organization that Operates Consistently","السبب الثاني: إنشاء مؤسسة تعمل بشكل متسق"], b:[
+     {k:'p', x:["Consistency ensures that employees know what is expected of them and can employ the organization's values to help them in decision making. It also means shareholders, customers, suppliers, and the community know what to expect of the organization.","يضمن الاتساق أن يعرف الموظفون ما هو متوقع منهم وأن يستخدموا قيم المؤسسة لمساعدتهم في اتخاذ القرارات. كما يعني أن يعرف المساهمون والعملاء والموردون والمجتمع ما يمكن توقعه من المؤسسة."]},
+     {k:'ul', h:["Values many companies share","قيم تشترك فيها العديد من الشركات"], x:[
+       ["Operate with honesty and integrity, staying true to organizational principles.","العمل بصدق ونزاهة، والبقاء وفيًا لمبادئ المؤسسة."],
+       ["Operate according to standards of ethical conduct, in words and action.","العمل وفق معايير السلوك الأخلاقي، قولًا وفعلًا."],
+       ["Treat colleagues, customers, and consumers with respect.","معاملة الزملاء والعملاء والمستهلكين باحترام."],
+       ["Strive to be the best at what matters to the company.","السعي ليكون الأفضل فيما يهم الشركة."],
+       ["Value diversity.","تقدير التنوع."],
+       ["Make decisions based on facts and principles.","اتخاذ القرارات استنادًا إلى الحقائق والمبادئ."]]}
+   ]},
+   {t:["Reason 3: Fostering Good Business Practices","السبب الثالث: تعزيز ممارسات الأعمال الجيدة"], b:[
+     {k:'p', x:["Good ethics means good business and improved profits.","الأخلاق الجيدة تعني أعمالًا جيدة وأرباحًا محسّنة."]},
+     {k:'cards', c:[
+       {t:["Companies that behave ethically...","الشركات التي تتصرف أخلاقيًا..."], l:[
+         ["Produce safe and effective products, avoiding costly recalls and lawsuits.","تُنتج منتجات آمنة وفعالة، متجنبة عمليات الاستدعاء والدعاوى القضائية المكلفة."],
+         ["Provide excellent service that retains customers.","تقدم خدمة ممتازة تحافظ على العملاء."],
+         ["Develop and maintain strong employee relations, suffering lower turnover and enjoying better morale.","تبني علاقات قوية مع الموظفين، فتعاني من معدل دوران وظيفي أقل وتتمتع بروح معنوية أفضل."]
+       ]}
+     ]},
+     {k:'tip', x:["Suppliers and business partners also place priority on working with companies that operate fairly and ethically. Conversely, bad ethics means bad business and waning profits, and can negatively affect employees as well.","يُعطي الموردون والشركاء التجاريون أيضًا الأولوية للعمل مع الشركات التي تعمل بإنصاف وأخلاقية. وفي المقابل، فإن الأخلاق السيئة تعني أعمالًا سيئة وأرباحًا متناقصة، وقد تؤثر سلبًا على الموظفين أيضًا."]}
+   ]},
+   {t:["Reason 4: Protecting the Organization and Its Employees from Legal Action","السبب الرابع: حماية المؤسسة وموظفيها من الإجراءات القانونية"], b:[
+     {k:'def', x:["The U.S. Supreme Court established that an employer can be held responsible for the acts of its employees — a principle called respondeat superior.","أقرت المحكمة العليا الأمريكية أن صاحب العمل يمكن أن يُحمَّل مسؤولية أفعال موظفيه — وهو مبدأ يُعرف باسم respondeat superior."]},
+     {k:'p', x:["A coalition of several legal organizations argues that establishing ethics and compliance programs should reduce an organization's criminal liability. Others argue that company officers should not be given light sentences if their ethics programs are ineffective.","يرى تحالف من عدة منظمات قانونية أن إنشاء برامج أخلاقية وبرامج امتثال يجب أن يُخفّض المسؤولية الجنائية للمؤسسة. بينما يرى آخرون أنه لا ينبغي منح مسؤولي الشركة أحكامًا مخففة إذا كانت برامجهم الأخلاقية غير فعّالة."]}
+   ]},
+   {t:["Reason 5: Avoiding Unfavourable Publicity","السبب الخامس: تجنب الدعاية السلبية"], b:[
+     {k:'p', x:["A company's public reputation strongly influences several things.","تؤثر السمعة العامة للشركة بقوة في عدة أمور."]},
+     {k:'ul', x:[
+       ["The value of its stock.","قيمة أسهمها."],
+       ["How consumers regard its products and services.","نظرة المستهلكين لمنتجاتها وخدماتها."],
+       ["The degree of oversight received from government.","درجة الرقابة التي تتلقاها من الحكومة."],
+       ["The amount of support and cooperation it receives.","مقدار الدعم والتعاون الذي تحصل عليه."]]},
+     {k:'tip', x:["Organizations are motivated to build strong ethics programs specifically to avoid negative publicity.","تُحفَّز المؤسسات على بناء برامج أخلاقية قوية تحديدًا لتجنب الدعاية السلبية."]}
+   ]}
+  ],
+  take:[
+   ["Both the likelihood and impact of unethical behavior have grown, driven by globalization, profit pressure, and heightened vigilance.","تزايدت احتمالية وتأثير السلوك غير الأخلاقي، مدفوعةً بالعولمة وضغط الربحية وزيادة اليقظة."],
+   ["The five reasons to foster good ethics: good will, consistency, good business practices, legal protection, and avoiding bad publicity.","الأسباب الخمسة لتعزيز الأخلاق الجيدة: حسن النية، الاتساق، ممارسات الأعمال الجيدة، الحماية القانونية، وتجنب الدعاية السلبية."],
+   ["Respondeat superior: an employer can be held responsible for the acts of its employees.","respondeat superior: يمكن تحميل صاحب العمل مسؤولية أفعال موظفيه."],
+   ["Good ethics generally means good business (higher profits, lower turnover); bad ethics means bad business.","الأخلاق الجيدة تعني عمومًا أعمالًا جيدة (أرباح أعلى، دوران وظيفي أقل)؛ والأخلاق السيئة تعني أعمالًا سيئة."],
+   ["Public reputation affects stock value, consumer perception, government oversight, and the support a company receives.","تؤثر السمعة العامة على قيمة الأسهم، ونظرة المستهلكين، والرقابة الحكومية، والدعم الذي تحصل عليه الشركة."]
+  ],
+  fc:[
+   [["What two things have increased regarding unethical behavior in business?","ما الأمران اللذان تزايدا فيما يخص السلوك غير الأخلاقي في الأعمال؟"],["Both the likelihood and the negative impact of inappropriate behavior.","احتمالية السلوك غير اللائق وتأثيره السلبي، كلاهما."]],
+   [["Name the three trends that have increased the likelihood of unethical behavior.","اذكر الاتجاهات الثلاثة التي زادت احتمالية السلوك غير الأخلاقي."],["Globalization, pressure to maintain profits/revenue, and heightened vigilance by employees, shareholders, and regulators.","العولمة، والضغط للحفاظ على الأرباح/الإيرادات، وتزايد اليقظة من الموظفين والمساهمين والجهات التنظيمية."]],
+   [["Name two IT companies mentioned as involved in recent scandals.","اذكر شركتين من شركات تقنية المعلومات المذكورتين كمتورطتين في فضائح حديثة."],["Any two of: Satyam Computer Services, Hewlett Packard, Computer Associates International, IBM.","أي شركتين من: Satyam Computer Services، Hewlett Packard، Computer Associates International، IBM."]],
+   [["List the five main reasons organizations foster good business ethics.","اذكر الأسباب الخمسة الرئيسية التي تدفع المؤسسات لتعزيز أخلاقيات الأعمال الجيدة."],["Gaining good will, operating consistently, fostering good practices, legal protection, and avoiding unfavourable publicity.","كسب حسن النية، العمل بشكل متسق، تعزيز الممارسات الجيدة، الحماية القانونية، وتجنب الدعاية السلبية."]],
+   [["Give an example of a socially responsible activity that builds good will.","اذكر مثالًا على نشاط ذي مسؤولية اجتماعية يبني حسن النية."],["Making contributions to charitable organizations, or providing employee benefits beyond legal requirements.","تقديم تبرعات للمؤسسات الخيرية، أو تقديم مزايا للموظفين تتجاوز المتطلبات القانونية."]],
+   [["What does consistency ensure for employees?","ماذا يضمن الاتساق للموظفين؟"],["That they know what is expected of them and can use the organization's values to guide decision making.","أن يعرفوا ما هو متوقع منهم وأن يستخدموا قيم المؤسسة لتوجيه اتخاذ القرار."]],
+   [["Name three values that many companies share, according to the lecture.","اذكر ثلاث قيم تشترك فيها العديد من الشركات، وفق المحاضرة."],["Any three of: honesty/integrity, ethical conduct in words/action, respect for colleagues/customers, striving to be the best, valuing diversity, fact-based decisions.","أي ثلاث من: الصدق والنزاهة، السلوك الأخلاقي قولًا وفعلًا، احترام الزملاء/العملاء، السعي ليكون الأفضل، تقدير التنوع، القرارات المبنية على الحقائق."]],
+   [["What happens to companies that produce safe, effective products?","ماذا يحدث للشركات التي تُنتج منتجات آمنة وفعالة؟"],["They avoid costly recalls and lawsuits.","تتجنب عمليات الاستدعاء والدعاوى القضائية المكلفة."]],
+   [["What is respondeat superior?","ما هو مبدأ respondeat superior؟"],["The legal principle, established by the U.S. Supreme Court, that an employer can be held responsible for the acts of its employees.","المبدأ القانوني، الذي أقرته المحكمة العليا الأمريكية، بأن صاحب العمل يمكن تحميله مسؤولية أفعال موظفيه."]],
+   [["What do some argue regarding ethics programs and criminal liability?","بماذا يجادل البعض فيما يخص البرامج الأخلاقية والمسؤولية الجنائية؟"],["A coalition of legal organizations argues establishing ethics/compliance programs should reduce an organization's criminal liability; others argue officers shouldn't get light sentences if those programs are ineffective.","يرى تحالف من المنظمات القانونية أن إنشاء برامج أخلاقية/امتثال يجب أن يُخفّض المسؤولية الجنائية؛ ويرى آخرون أنه لا ينبغي منح المسؤولين أحكامًا مخففة إذا كانت برامجهم غير فعّالة."]],
+   [["Name four things a company's public reputation influences.","اذكر أربعة أمور تؤثر فيها سمعة الشركة العامة."],["The value of its stock, consumer regard for products/services, degree of government oversight, and amount of support/cooperation received.","قيمة أسهمها، ونظرة المستهلكين لمنتجاتها/خدماتها، ودرجة الرقابة الحكومية، ومقدار الدعم/التعاون الذي تحصل عليه."]],
+   [["Why are organizations motivated to build strong ethics programs?","لماذا تُحفَّز المؤسسات على بناء برامج أخلاقية قوية؟"],["To avoid negative/unfavourable publicity.","لتجنب الدعاية السلبية."]],
+   [["True or false: only executives find themselves in ethical dilemmas.","صح أم خطأ: المسؤولون التنفيذيون فقط هم من يجدون أنفسهم في معضلات أخلاقية."],["False — even lower-level employees can find themselves in the middle of an ethical dilemma.","خطأ — حتى الموظفون في المستويات الأدنى قد يجدون أنفسهم في قلب معضلة أخلاقية."]]
+  ],
+  quiz:[
+   {q:["What two things have increased regarding inappropriate behavior in business?","ما الأمران اللذان تزايدا فيما يخص السلوك غير اللائق في الأعمال؟"], o:[["Only its likelihood","احتماليته فقط"],["Only its negative impact","تأثيره السلبي فقط"],["Both its likelihood and its negative impact","احتماليته وتأثيره السلبي، كلاهما"],["Neither has changed","لم يتغير أي منهما"]], a:2},
+   {q:["Which of these is NOT listed as a trend increasing unethical behavior?","أي مما يلي لم يُذكر كاتجاه يزيد السلوك غير الأخلاقي؟"], o:[["Globalization","العولمة"],["Pressure to maintain profits","الضغط للحفاظ على الأرباح"],["Heightened vigilance by shareholders","تزايد اليقظة من المساهمين"],["Decreasing company size","تقلص حجم الشركات"]], a:3},
+   {q:["Which company is mentioned as involved in a recent IT scandal?","أي شركة ذُكرت كمتورطة في فضيحة حديثة في تقنية المعلومات؟"], o:[["Satyam Computer Services","Satyam Computer Services"],["Tesla","Tesla"],["Amazon","Amazon"],["Netflix","Netflix"]], a:0},
+   {q:["Who can find themselves in the middle of an ethical dilemma, according to the lecture?","مَن يمكن أن يجد نفسه في قلب معضلة أخلاقية، وفق المحاضرة؟"], o:[["Only executives","المسؤولون التنفيذيون فقط"],["Only shareholders","المساهمون فقط"],["Executives and lower-level employees alike","المسؤولون التنفيذيون والموظفون من المستويات الأدنى على حد سواء"],["Only external auditors","المدققون الخارجيون فقط"]], a:2},
+   {q:["Which of these is NOT one of the five reasons to foster good business ethics?","أي مما يلي ليس من الأسباب الخمسة لتعزيز أخلاقيات الأعمال الجيدة؟"], o:[["Gaining good will of the community","كسب حسن نية المجتمع"],["Avoiding unfavourable publicity","تجنب الدعاية السلبية"],["Increasing executive salaries","زيادة رواتب المسؤولين التنفيذيين"],["Fostering good business practices","تعزيز ممارسات الأعمال الجيدة"]], a:2},
+   {q:["Socially responsible activities (like charitable giving) primarily help a company:","تساعد الأنشطة ذات المسؤولية الاجتماعية (مثل التبرعات الخيرية) الشركة بشكل أساسي على:"], o:[["Avoid all taxes","تجنب جميع الضرائب"],["Gain good will, making it easier to conduct business","كسب حسن النية، مما يُسهّل ممارسة الأعمال"],["Eliminate all competitors","القضاء على جميع المنافسين"],["Reduce the number of employees","تقليل عدد الموظفين"]], a:1},
+   {q:["What does consistency allow shareholders, customers, and suppliers to do?","ماذا يتيح الاتساق للمساهمين والعملاء والموردين؟"], o:[["Ignore the organization's values","تجاهل قيم المؤسسة"],["Know what they can expect of the organization","معرفة ما يمكنهم توقعه من المؤسسة"],["Avoid paying for products","تجنب دفع ثمن المنتجات"],["Replace company management","استبدال إدارة الشركة"]], a:1},
+   {q:["According to the lecture, good ethics generally leads to:","وفق المحاضرة، تؤدي الأخلاق الجيدة عمومًا إلى:"], o:[["Bad business and declining profits","أعمال سيئة وأرباح متراجعة"],["Good business and improved profits","أعمال جيدة وأرباح محسّنة"],["No change in business performance","لا تغيير في أداء الأعمال"],["Higher employee turnover","دوران وظيفي أعلى"]], a:1},
+   {q:["What is respondeat superior?","ما هو مبدأ respondeat superior؟"], o:[["A tax law for small businesses","قانون ضريبي للشركات الصغيرة"],["The principle that an employer can be held responsible for employees' acts","مبدأ أن صاحب العمل يمكن تحميله مسؤولية أفعال موظفيه"],["A type of software license","نوع من تراخيص البرمجيات"],["A code of ethics template","نموذج لمدونة أخلاقيات"]], a:1},
+   {q:["Which U.S. institution established the principle of respondeat superior?","أي مؤسسة أمريكية أقرت مبدأ respondeat superior؟"], o:[["The Federal Trade Commission","لجنة التجارة الفيدرالية"],["The U.S. Supreme Court","المحكمة العليا الأمريكية"],["The Securities and Exchange Commission","هيئة الأوراق المالية والبورصات"],["Congress","الكونغرس"]], a:1},
+   {q:["Which of these is NOT listed as something a company's reputation influences?","أي مما يلي لم يُذكر كأمر تؤثر فيه سمعة الشركة؟"], o:[["The value of its stock","قيمة أسهمها"],["Degree of government oversight","درجة الرقابة الحكومية"],["The weather in its headquarters city","الطقس في مدينة مقرها الرئيسي"],["Consumer regard for its products","نظرة المستهلكين لمنتجاتها"]], a:2},
+   {q:["Why do organizations build strong ethics programs, per this section?","لماذا تبني المؤسسات برامج أخلاقية قوية، وفق هذا الجزء؟"], o:[["To increase government taxes on themselves","لزيادة الضرائب الحكومية على أنفسها"],["To avoid negative publicity","لتجنب الدعاية السلبية"],["To reduce product quality","لتقليل جودة المنتجات"],["To eliminate customer service","للتخلص من خدمة العملاء"]], a:1}
+  ]
+});
+
+LECTURES.push({ id:'l3', n:3,
+  title:["Building a Corporate Ethics Program","بناء برنامج أخلاقي مؤسسي"],
+  obj:[
+    ["List the five characteristics of a successful corporate ethics program.","سرد الخصائص الخمس لبرنامج أخلاقي مؤسسي ناجح."],
+    ["Describe the ethical responsibilities of a board of directors and the purpose of a code of ethics.","وصف المسؤوليات الأخلاقية لمجلس الإدارة والغرض من مدونة الأخلاقيات."],
+    ["Summarize the key requirements of the Sarbanes-Oxley Act of 2002 (Sections 404 and 406).","تلخيص المتطلبات الرئيسية لقانون ساربينز-أوكسلي لعام 2002 (المادتان 404 و406)."],
+    ["Identify the practical tools organizations use to build and sustain an ethical culture: social audits, training, appraisals, and reporting channels.","تحديد الأدوات العملية التي تستخدمها المؤسسات لبناء ثقافة أخلاقية مستدامة: التدقيق الاجتماعي، والتدريب، والتقييمات، وقنوات الإبلاغ."]
+  ],
+  sec:[
+   {t:["Improving Corporate Ethics","تحسين الأخلاقيات المؤسسية"], b:[
+     {k:'p', x:["A successful ethics program tends to share the following characteristics.","يميل البرنامج الأخلاقي الناجح إلى مشاركة الخصائص التالية."]},
+     {k:'ul', h:["Characteristics of a successful ethics program","خصائص البرنامج الأخلاقي الناجح"], x:[
+       ["Employees are willing to seek advice about ethical issues.","الموظفون على استعداد لطلب المشورة بشأن القضايا الأخلاقية."],
+       ["Employees feel prepared to handle situations that could lead to misconduct.","يشعر الموظفون بالاستعداد للتعامل مع المواقف التي قد تؤدي إلى سوء سلوك."],
+       ["Employees are rewarded for ethical behavior.","يُكافأ الموظفون على السلوك الأخلاقي."],
+       ["Employees are not rewarded for success obtained through questionable means.","لا يُكافأ الموظفون على النجاح الذي يتحقق بوسائل مشبوهة."],
+       ["Employees feel positive about their company.","يشعر الموظفون بإيجابية تجاه شركتهم."]]}
+   ]},
+   {t:["Ethical Standards Set by the Board of Directors","المعايير الأخلاقية التي يضعها مجلس الإدارة"], b:[
+     {k:'p', x:["The board oversees the organization's business activities and management.","يُشرف مجلس الإدارة على الأنشطة التجارية للمؤسسة وإدارتها."]},
+     {k:'ul', h:["Board members are expected to:","يُتوقع من أعضاء مجلس الإدارة أن:"], x:[
+       ["Conduct themselves according to the highest standards of personal and professional integrity.","يتصرفوا وفق أعلى معايير النزاهة الشخصية والمهنية."],
+       ["Set the standard for company-wide ethical conduct.","يضعوا المعيار للسلوك الأخلاقي على مستوى الشركة بأكملها."],
+       ["Ensure compliance with laws and regulations.","يضمنوا الامتثال للقوانين واللوائح."],
+       ["Create an environment in which employees can seek advice about business conduct, raise issues, and report misconduct.","يهيّئوا بيئة يمكن فيها للموظفين طلب المشورة حول السلوك المهني، وإثارة القضايا، والإبلاغ عن سوء السلوك."]]}
+   ]},
+   {t:["Establishing a Corporate Code of Ethics","وضع مدونة أخلاقيات مؤسسية"], b:[
+     {k:'def', x:["A code of ethics highlights an organization's key ethical issues and identifies its overarching values and important principles.","مدونة الأخلاقيات تُبرز القضايا الأخلاقية الرئيسية للمؤسسة وتحدد قيمها الشاملة ومبادئها المهمة."]},
+     {k:'ul', x:[
+       ["Focuses employees on areas of ethical risk.","تُركّز انتباه الموظفين على مجالات الخطر الأخلاقي."],
+       ["Offers guidance for employees to recognize and deal with ethical issues.","تقدم إرشادات للموظفين للتعرف على القضايا الأخلاقية والتعامل معها."],
+       ["Provides mechanisms to report unethical conduct.","توفر آليات للإبلاغ عن السلوك غير الأخلاقي."],
+       ["Helps employees abide by the law, follow necessary regulations, and behave in an ethical manner.","تساعد الموظفين على الالتزام بالقانون واتباع اللوائح اللازمة والتصرف بطريقة أخلاقية."]]}
+   ]},
+   {t:["Sarbanes-Oxley Act of 2002","قانون ساربينز-أوكسلي لعام 2002"], b:[
+     {k:'def', x:["The Sarbanes-Oxley Act of 2002 was enacted in response to public outrage over several major accounting scandals.","سُنّ قانون ساربينز-أوكسلي لعام 2002 استجابةً للسخط العام الناتج عن عدة فضائح محاسبية كبرى."]},
+     {k:'tbl', h:[["Section","المادة"],["Requirement","المتطلب"]],
+      r:[
+       [["Section 404","المادة 404"],["Requires the CEO and CFO to sign any SEC filing, attesting to its accuracy.","تُلزم الرئيس التنفيذي والمدير المالي بالتوقيع على أي ملف يُقدَّم لهيئة الأوراق المالية والبورصات (SEC)، إقرارًا بدقته."]],
+       [["Section 406","المادة 406"],["Requires public companies to disclose whether they have a code of ethics, and whether any waivers to it have been granted.","تُلزم الشركات العامة بالإفصاح عمّا إذا كانت لديها مدونة أخلاقيات، وعمّا إذا مُنحت أي استثناءات منها."]]
+      ]},
+     {k:'p', x:["A code of ethics cannot gain company-wide acceptance unless it is developed with employee participation and fully endorsed by the organization's leadership. It must continually be applied to the company's decision making and emphasized as part of its culture, and breaches must be identified and dealt with appropriately.","لا يمكن لمدونة الأخلاقيات أن تحظى بقبول على مستوى الشركة بأكملها إلا إذا طُوّرت بمشاركة الموظفين وحظيت بتأييد كامل من قيادة المؤسسة. ويجب تطبيقها باستمرار في اتخاذ قرارات الشركة والتأكيد عليها كجزء من ثقافتها، كما يجب تحديد الخروقات والتعامل معها بشكل مناسب."]}
+   ]},
+   {t:["Conducting Social Audits","إجراء التدقيق الاجتماعي"], b:[
+     {k:'def', x:["A social audit reviews how well an organization is meeting its ethical and social responsibility goals, and communicates new goals for the upcoming year.","التدقيق الاجتماعي يراجع مدى تحقيق المؤسسة لأهدافها الأخلاقية ومسؤوليتها الاجتماعية، ويُعلن عن أهداف جديدة للعام المقبل."]},
+     {k:'p', x:["It is shared broadly with employees, shareholders, investors, market analysts, customers, suppliers, government agencies, and local communities.","يُشارَك على نطاق واسع مع الموظفين والمساهمين والمستثمرين ومحللي السوق والعملاء والموردين والجهات الحكومية والمجتمعات المحلية."]}
+   ]},
+   {t:["Requiring Employees to Take Ethics Training","إلزام الموظفين بحضور التدريب الأخلاقي"], b:[
+     {k:'p', x:["Personal convictions can be improved through education. A comprehensive ethics education program encourages employees to act responsibly and ethically.","يمكن تحسين القناعات الشخصية من خلال التعليم. ويُشجّع برنامج التثقيف الأخلاقي الشامل الموظفين على التصرف بمسؤولية وأخلاقية."]},
+     {k:'ul', x:[
+       ["Often presented in small workshop formats.","غالبًا ما يُقدَّم في شكل ورش عمل صغيرة."],
+       ["Employees apply the code of ethics to hypothetical but realistic case studies.","يطبّق الموظفون مدونة الأخلاقيات على دراسات حالة افتراضية لكنها واقعية."],
+       ["Includes demonstration of recent company decisions based on principles from the code of ethics.","تتضمن عرض قرارات حديثة اتخذتها الشركة بناءً على مبادئ مدونة الأخلاقيات."]]},
+     {k:'tip', x:["It is critical that training increase the percentage of employees who report incidents of misconduct. Employees must learn effective ways of reporting incidents and be reassured their feedback will be acted on without retaliation.","من الضروري أن يزيد التدريب من نسبة الموظفين الذين يُبلّغون عن حوادث سوء السلوك. ويجب أن يتعلّم الموظفون طرقًا فعّالة للإبلاغ عن الحوادث، وأن يُطمأَنوا إلى أن ملاحظاتهم ستُعالَج دون انتقام."]}
+   ]},
+   {t:["Including Ethical Criteria in Employee Appraisals","تضمين معايير أخلاقية في تقييمات الموظفين"], b:[
+     {k:'p', x:["Only 43% of companies include ethical conduct in an employee's performance appraisal.","43% فقط من الشركات تُضمّن السلوك الأخلاقي في تقييم أداء الموظف."]},
+     {k:'ul', h:["Ethical criteria can include:","قد تشمل المعايير الأخلاقية:"], x:[
+       ["Treating others fairly and with respect.","معاملة الآخرين بإنصاف واحترام."],
+       ["Operating effectively in a multicultural environment.","العمل بفعالية في بيئة متعددة الثقافات."],
+       ["Accepting personal accountability.","قبول المساءلة الشخصية."],
+       ["Continually developing themselves and others.","تطوير الذات والآخرين باستمرار."],
+       ["Operating openly and honestly with all.","التعامل بانفتاح وصدق مع الجميع."]]}
+   ]},
+   {t:["Creating an Ethical Work Environment","تهيئة بيئة عمل أخلاقية"], b:[
+     {k:'p', x:["Good employees may make bad ethical choices — they may be encouraged to do 'whatever it takes' to get the job done.","قد يتخذ الموظفون الجيدون خيارات أخلاقية سيئة — إذ قد يُشجَّعون على فعل 'كل ما يلزم' لإنجاز العمل."]},
+     {k:'ul', h:["Employees need a knowledgeable resource to discuss perceived unethical practices, such as:","يحتاج الموظفون إلى جهة مطّلعة لمناقشة الممارسات التي يرونها غير أخلاقية، مثل:"], x:[
+       ["A manager.","مدير مباشر."],
+       ["The Legal or Internal Audit Department.","إدارة الشؤون القانونية أو التدقيق الداخلي."],
+       ["The Business Unit's legal counsel.","المستشار القانوني لوحدة الأعمال."],
+       ["Anonymously, through an internal website.","بشكل مجهول، عبر موقع إلكتروني داخلي."]]}
+   ]}
+  ],
+  take:[
+   ["A successful ethics program rewards ethical behavior, not success achieved through questionable means.","البرنامج الأخلاقي الناجح يكافئ السلوك الأخلاقي، لا النجاح المحقق بوسائل مشبوهة."],
+   ["The board of directors sets company-wide ethical standards and must ensure compliance with laws and regulations.","يضع مجلس الإدارة المعايير الأخلاقية على مستوى الشركة ويجب أن يضمن الامتثال للقوانين واللوائح."],
+   ["Sarbanes-Oxley Section 404 requires CEO/CFO sign-off on SEC filings; Section 406 requires disclosure of a code of ethics.","المادة 404 من قانون ساربينز-أوكسلي تُلزم الرئيس التنفيذي والمدير المالي بالتوقيع على ملفات SEC؛ والمادة 406 تُلزم بالإفصاح عن مدونة الأخلاقيات."],
+   ["A code of ethics only works if developed with employee input and fully backed by leadership.","لا تنجح مدونة الأخلاقيات إلا إذا طُوّرت بمشاركة الموظفين وبدعم كامل من القيادة."],
+   ["Only 43% of companies include ethical conduct in performance appraisals — a surprisingly low figure.","43% فقط من الشركات تُدرج السلوك الأخلاقي في تقييمات الأداء — وهي نسبة منخفضة بشكل لافت."]
+  ],
+  fc:[
+   [["List two characteristics of a successful ethics program.","اذكر خاصيتين لبرنامج أخلاقي ناجح."],["Any two of: employees seek advice willingly, feel prepared to handle misconduct situations, are rewarded for ethical behavior, are not rewarded for success via questionable means, feel positive about the company.","أي خاصيتين من: الموظفون يطلبون المشورة بإرادتهم، يشعرون بالاستعداد للتعامل مع سوء السلوك، يُكافؤون على السلوك الأخلاقي، لا يُكافؤون على النجاح بوسائل مشبوهة، يشعرون بإيجابية تجاه الشركة."]],
+   [["What does the board of directors oversee?","ماذا يُشرف عليه مجلس الإدارة؟"],["The organization's business activities and management.","الأنشطة التجارية للمؤسسة وإدارتها."]],
+   [["Name two things board members are expected to do.","اذكر أمرين يُتوقع من أعضاء مجلس الإدارة فعلهما."],["Any two of: act with highest integrity, set the standard for ethical conduct, ensure legal compliance, create an environment for raising issues.","أي أمرين من: التصرف بأعلى درجات النزاهة، وضع معيار السلوك الأخلاقي، ضمان الامتثال القانوني، تهيئة بيئة لإثارة القضايا."]],
+   [["What does a code of ethics do?","ماذا تفعل مدونة الأخلاقيات؟"],["Highlights key ethical issues, identifies core values/principles, focuses employees on risk areas, and provides reporting mechanisms.","تُبرز القضايا الأخلاقية الرئيسية، وتحدد القيم/المبادئ الأساسية، وتُركّز انتباه الموظفين على مجالات الخطر، وتوفر آليات للإبلاغ."]],
+   [["Why was the Sarbanes-Oxley Act of 2002 enacted?","لماذا سُنّ قانون ساربينز-أوكسلي لعام 2002؟"],["In response to public outrage over several major accounting scandals.","استجابةً للسخط العام الناتج عن عدة فضائح محاسبية كبرى."]],
+   [["What does Section 404 of Sarbanes-Oxley require?","ماذا تتطلب المادة 404 من قانون ساربينز-أوكسلي؟"],["That the CEO and CFO sign any SEC filing to attest to its accuracy.","أن يوقّع الرئيس التنفيذي والمدير المالي على أي ملف يُقدَّم لهيئة SEC إقرارًا بدقته."]],
+   [["What does Section 406 of Sarbanes-Oxley require?","ماذا تتطلب المادة 406 من قانون ساربينز-أوكسلي؟"],["That public companies disclose whether they have a code of ethics, and whether waivers have been granted.","أن تُفصح الشركات العامة عمّا إذا كانت لديها مدونة أخلاقيات، وعمّا إذا مُنحت أي استثناءات منها."]],
+   [["What two conditions must be met for a code of ethics to gain company-wide acceptance?","ما الشرطان اللازمان لتحظى مدونة الأخلاقيات بقبول على مستوى الشركة؟"],["It must be developed with employee participation and fully endorsed by the organization's leadership.","يجب أن تُطوَّر بمشاركة الموظفين وأن تحظى بتأييد كامل من قيادة المؤسسة."]],
+   [["What does a social audit review?","ماذا يراجع التدقيق الاجتماعي؟"],["How well the organization is meeting its ethical and social responsibility goals.","مدى تحقيق المؤسسة لأهدافها الأخلاقية ومسؤوليتها الاجتماعية."]],
+   [["Why is it critical that ethics training increase misconduct reporting?","لماذا من الضروري أن يزيد التدريب الأخلاقي من الإبلاغ عن سوء السلوك؟"],["So employees learn effective ways to report incidents and are reassured feedback is acted on without retaliation.","حتى يتعلّم الموظفون طرقًا فعّالة للإبلاغ عن الحوادث ويُطمأَنوا إلى معالجة ملاحظاتهم دون انتقام."]],
+   [["What percentage of companies include ethical conduct in performance appraisals?","ما النسبة المئوية للشركات التي تُدرج السلوك الأخلاقي في تقييمات الأداء؟"],["Only 43%.","43% فقط."]],
+   [["Name two resources employees can use to discuss perceived unethical practices.","اذكر جهتين يمكن للموظفين استخدامهما لمناقشة الممارسات غير الأخلاقية."],["Any two of: a manager, the Legal/Internal Audit Department, the Business Unit's legal counsel, an anonymous internal website.","أي جهتين من: مدير مباشر، إدارة الشؤون القانونية/التدقيق الداخلي، المستشار القانوني لوحدة الأعمال، موقع إلكتروني داخلي مجهول."]],
+   [["Why might good employees make bad ethical choices?","لماذا قد يتخذ الموظفون الجيدون خيارات أخلاقية سيئة؟"],["They may be encouraged to do 'whatever it takes' to get the job done.","قد يُشجَّعون على فعل 'كل ما يلزم' لإنجاز العمل."]]
+  ],
+  quiz:[
+   {q:["Which of these is NOT a characteristic of a successful ethics program?","أي مما يلي ليس خاصية لبرنامج أخلاقي ناجح؟"], o:[["Employees are rewarded for ethical behavior","يُكافأ الموظفون على السلوك الأخلاقي"],["Employees are rewarded for success via questionable means","يُكافأ الموظفون على النجاح بوسائل مشبوهة"],["Employees feel prepared to handle misconduct situations","يشعر الموظفون بالاستعداد للتعامل مع مواقف سوء السلوك"],["Employees feel positive about their company","يشعر الموظفون بإيجابية تجاه شركتهم"]], a:1},
+   {q:["What does the board of directors oversee?","ماذا يُشرف عليه مجلس الإدارة؟"], o:[["Only the marketing department","قسم التسويق فقط"],["The organization's business activities and management","الأنشطة التجارية للمؤسسة وإدارتها"],["Only shareholder dividends","توزيعات أرباح المساهمين فقط"],["Only IT infrastructure","البنية التحتية لتقنية المعلومات فقط"]], a:1},
+   {q:["Which is NOT something board members are expected to do?","أي مما يلي ليس مما يُتوقع من أعضاء مجلس الإدارة فعله؟"], o:[["Set the standard for company-wide ethical conduct","وضع معيار السلوك الأخلاقي على مستوى الشركة"],["Ensure compliance with laws and regulations","ضمان الامتثال للقوانين واللوائح"],["Avoid creating channels for employees to raise issues","تجنب إنشاء قنوات للموظفين لإثارة القضايا"],["Conduct themselves with the highest integrity","التصرف بأعلى درجات النزاهة"]], a:2},
+   {q:["A code of ethics does all of the following EXCEPT:","تقوم مدونة الأخلاقيات بكل ما يلي باستثناء:"], o:[["Highlighting key ethical issues","إبراز القضايا الأخلاقية الرئيسية"],["Providing mechanisms to report unethical conduct","توفير آليات للإبلاغ عن السلوك غير الأخلاقي"],["Guaranteeing company profits","ضمان أرباح الشركة"],["Offering guidance to recognize ethical issues","تقديم إرشادات للتعرف على القضايا الأخلاقية"]], a:2},
+   {q:["Why was the Sarbanes-Oxley Act of 2002 enacted?","لماذا سُنّ قانون ساربينز-أوكسلي لعام 2002؟"], o:[["To reduce corporate taxes","لتقليل الضرائب على الشركات"],["In response to public outrage over major accounting scandals","استجابةً للسخط العام الناتج عن فضائح محاسبية كبرى"],["To regulate software piracy","لتنظيم قرصنة البرمجيات"],["To create the SEC","لإنشاء هيئة الأوراق المالية والبورصات"]], a:1},
+   {q:["Section 404 of Sarbanes-Oxley requires:","تتطلب المادة 404 من قانون ساربينز-أوكسلي:"], o:[["Employees to sign a code of conduct","توقيع الموظفين على مدونة سلوك"],["The CEO and CFO to sign SEC filings, attesting to accuracy","توقيع الرئيس التنفيذي والمدير المالي على ملفات SEC إقرارًا بدقتها"],["Annual employee ethics training","تدريب أخلاقي سنوي للموظفين"],["Public disclosure of executive salaries","الإفصاح العلني عن رواتب المسؤولين التنفيذيين"]], a:1},
+   {q:["Section 406 of Sarbanes-Oxley requires companies to disclose:","تتطلب المادة 406 من قانون ساربينز-أوكسلي أن تُفصح الشركات عن:"], o:[["Their stock price history","تاريخ سعر أسهمها"],["Whether they have a code of ethics and any waivers granted","ما إذا كانت لديها مدونة أخلاقيات وأي استثناءات مُنحت"],["Employee salaries","رواتب الموظفين"],["Their supplier list","قائمة مورديها"]], a:1},
+   {q:["For a code of ethics to gain company-wide acceptance, it must be:","لكي تحظى مدونة الأخلاقيات بقبول على مستوى الشركة، يجب أن:"], o:[["Written only by external lawyers","تُكتب فقط من قِبل محامين خارجيين"],["Developed with employee participation and endorsed by leadership","تُطوَّر بمشاركة الموظفين وتحظى بتأييد القيادة"],["Kept confidential from employees","تبقى سرية عن الموظفين"],["Updated only once per decade","تُحدَّث مرة كل عقد فقط"]], a:1},
+   {q:["What does a social audit communicate?","ماذا يُعلن التدقيق الاجتماعي؟"], o:[["Only financial profit targets","أهداف الربح المالي فقط"],["New ethical and social responsibility goals for the upcoming year","أهدافًا أخلاقية واجتماعية جديدة للعام المقبل"],["Employee salary increases","زيادات رواتب الموظفين"],["Stock buyback plans","خطط إعادة شراء الأسهم"]], a:1},
+   {q:["What percentage of companies include ethical conduct in employee performance appraisals?","ما نسبة الشركات التي تُدرج السلوك الأخلاقي في تقييمات أداء الموظفين؟"], o:[["43%","43%"],["85%","85%"],["12%","12%"],["100%","100%"]], a:0},
+   {q:["Which is NOT listed as an ethical criterion for employee appraisals?","أي مما يلي لم يُذكر كمعيار أخلاقي في تقييمات الموظفين؟"], o:[["Treating others fairly and with respect","معاملة الآخرين بإنصاف واحترام"],["Accepting personal accountability","قبول المساءلة الشخصية"],["Years of seniority in the company","سنوات الأقدمية في الشركة"],["Operating openly and honestly with all","التعامل بانفتاح وصدق مع الجميع"]], a:2},
+   {q:["Why might good employees make bad ethical choices?","لماذا قد يتخذ الموظفون الجيدون خيارات أخلاقية سيئة؟"], o:[["They lack education entirely","لأنهم يفتقرون للتعليم تمامًا"],["They may be encouraged to do 'whatever it takes' to get the job done","قد يُشجَّعون على فعل 'كل ما يلزم' لإنجاز العمل"],["They are always unethical by nature","لأنهم غير أخلاقيين بطبعهم دائمًا"],["Ethics programs make them worse","البرامج الأخلاقية تجعلهم أسوأ"]], a:1}
+  ]
+});
+
+LECTURES.push({ id:'l4', n:4,
+  title:["Ethical Decision-Making","اتخاذ القرار الأخلاقي"],
+  obj:[
+    ["List the steps in an ethical decision-making process.","سرد خطوات عملية اتخاذ القرار الأخلاقي."],
+    ["Write an effective problem statement and distinguish it from a proposed solution.","كتابة بيان مشكلة فعّال والتمييز بينه وبين الحل المقترح."],
+    ["Compare the four common approaches to ethical decision making and their main drawbacks.","المقارنة بين المناهج الأربعة الشائعة لاتخاذ القرار الأخلاقي وأبرز عيوب كل منها."],
+    ["Identify the public's main ethical concerns about information technology.","تحديد أبرز المخاوف الأخلاقية العامة المتعلقة بتقنية المعلومات."]
+  ],
+  sec:[
+   {t:["Steps in the Decision-Making Process","خطوات عملية اتخاذ القرار"], b:[
+     {k:'ul', h:["Steps in a decision-making process","خطوات عملية اتخاذ القرار"], x:[
+       ["1. Develop a problem statement.","1. صياغة بيان المشكلة."],
+       ["2. Identify alternatives.","2. تحديد البدائل."],
+       ["3. Evaluate and choose an alternative.","3. تقييم واختيار بديل."],
+       ["4. Implement the decision.","4. تنفيذ القرار."],
+       ["5. Evaluate the results.","5. تقييم النتائج."],
+       ["6. Success.","6. النجاح."]]}
+   ]},
+   {t:["Developing a Problem Statement","صياغة بيان المشكلة"], b:[
+     {k:'def', x:["A problem statement is a clear, concise description of the issue.","بيان المشكلة هو وصف واضح ومختصر للقضية."]},
+     {k:'ul', h:["It should answer these questions:","يجب أن يُجيب على هذه الأسئلة:"], x:[
+       ["What causes people to think there is a problem?","ما الذي يجعل الناس يظنون أن هناك مشكلة؟"],
+       ["Who is directly affected by the problem?","مَن المتأثر مباشرة بالمشكلة؟"],
+       ["Is there anyone else affected?","هل هناك أي طرف آخر متأثر؟"],
+       ["How often does it occur?","كم مرة تحدث؟"],
+       ["What is the impact of the problem?","ما تأثير المشكلة؟"],
+       ["How serious is the problem?","ما مدى خطورة المشكلة؟"]]},
+     {k:'tip', x:["Developing a problem statement is the most critical step in the decision-making process.","صياغة بيان المشكلة هي الخطوة الأكثر أهمية في عملية اتخاذ القرار."]},
+     {k:'ex', x:["Example of a GOOD problem statement:\n\"Our product supply organization is continually running out of stock of finished products, creating an out-of-stock situation on over 15 percent of our customer orders, resulting in over $300,000 in lost sales per month.\"\n\nExamples of POOR problem statements:\n\"We need to implement a new inventory control system.\" (this is a possible solution, not a problem statement)\n\"We have a problem with finished product inventory.\" (not specific enough)","مثال على بيان مشكلة جيد:\n\"مؤسسة توريد منتجاتنا تنفد مخزونها باستمرار من المنتجات الجاهزة، مما يخلق حالة نفاد مخزون في أكثر من 15 بالمئة من طلبات عملائنا، ويؤدي إلى خسارة مبيعات تتجاوز 300,000 دولار شهريًا.\"\n\nأمثلة على بيانات مشكلة ضعيفة:\n\"نحتاج إلى تطبيق نظام جديد لإدارة المخزون.\" (هذا حل محتمل، وليس بيان مشكلة)\n\"لدينا مشكلة في مخزون المنتجات الجاهزة.\" (غير محدد بما فيه الكفاية)"]}
+   ]},
+   {t:["Identifying, Evaluating, and Choosing an Alternative","تحديد وتقييم واختيار بديل"], b:[
+     {k:'ul', x:[
+       ["Enlist help to brainstorm alternative solutions.","الاستعانة بالآخرين لطرح أفكار لحلول بديلة."],
+       ["Evaluate by weighing laws, guidelines, and principles.","التقييم من خلال موازنة القوانين والإرشادات والمبادئ."],
+       ["Consider the likely consequences of each alternative.","مراعاة العواقب المحتملة لكل بديل."]]},
+     {k:'p', x:["The alternative selected must meet several conditions.","يجب أن يستوفي البديل المختار عدة شروط."]},
+     {k:'cards', c:[
+       {t:["The selected alternative must:","يجب أن يكون البديل المختار:"], l:[
+         ["Be ethically and legally defensible.","مبررًا أخلاقيًا وقانونيًا."],
+         ["Be consistent with policies and the code of ethics.","متسقًا مع السياسات ومدونة الأخلاقيات."],
+         ["Take into account the impact on others.","مراعيًا لتأثيره على الآخرين."],
+         ["Provide a good solution to the problem.","حلًا جيدًا للمشكلة."]
+       ]}
+     ]}
+   ]},
+   {t:["Common Approaches to Ethical Decision Making","المناهج الشائعة لاتخاذ القرار الأخلاقي"], b:[
+     {k:'tbl', h:[["Approach","المنهج"],["Core Idea","الفكرة الأساسية"],["Main Problems","أبرز المشكلات"]],
+      r:[
+       [["Virtue Ethics","أخلاقيات الفضيلة"],
+        ["Focuses on daily life in a community; people are guided by virtues to reach the 'right' decision — more effective than following a set of principles/rules.","تُركّز على الحياة اليومية داخل المجتمع؛ ويسترشد الناس بالفضائل للوصول إلى القرار 'الصائب' — وهي أكثر فعالية من اتباع مجموعة مبادئ/قواعد."],
+        ["Does not provide a guide for action; virtue cannot be worked out objectively, since it depends on circumstances.","لا تقدم دليلًا للفعل؛ ولا يمكن تحديد الفضيلة بشكل موضوعي، لأنها تعتمد على الظروف."]],
+       [["Utilitarian Approach","المنهج النفعي"],
+        ["Chooses the action with the best overall consequences, finding the greatest good by balancing all interests — fits the economic concept of value and cost-benefit analysis.","يختار الفعل ذا أفضل العواقب الإجمالية، موازنًا بين كل المصالح لإيجاد أعظم خير — وينسجم مع مفهوم القيمة الاقتصادية وتحليل التكلفة والعائد."],
+        ["Measuring and comparing values is often difficult; predicting resulting benefits and harm is difficult.","قياس القيم ومقارنتها غالبًا ما يكون صعبًا؛ والتنبؤ بالمنافع والأضرار الناتجة أمر صعب."]],
+       [["Fairness Approach","منهج الإنصاف"],
+        ["Focuses on the fair distribution of benefits and burdens; the guiding principle is to treat all people the same.","يُركّز على التوزيع العادل للمنافع والأعباء؛ والمبدأ الموجّه هو معاملة الجميع بالتساوي."],
+        ["Decisions can be influenced by personal bias; others may consider the decision unfair.","قد تتأثر القرارات بالتحيز الشخصي؛ وقد يرى آخرون أن القرار غير عادل."]],
+       [["Common Good Approach","منهج الصالح العام"],
+        ["People work together for a common set of values and goals, implementing systems that benefit all people.","يعمل الناس معًا لتحقيق مجموعة مشتركة من القيم والأهداف، وتطبيق أنظمة تفيد جميع الناس."],
+        ["Reaching consensus is difficult; some people are required to bear greater costs than others.","الوصول إلى توافق أمر صعب؛ ويُطلب من بعض الناس تحمّل تكاليف أكبر من غيرهم."]]
+      ]}
+   ]},
+   {t:["Implementing the Decision and Evaluating the Results","تنفيذ القرار وتقييم النتائج"], b:[
+     {k:'ul', h:["Implement the decision","تنفيذ القرار"], x:[
+       ["Aim for efficient, effective, and timely implementation.","السعي لتنفيذ فعّال وكفؤ وفي الوقت المناسب."],
+       ["Communication is key for people to accept change.","التواصل أساسي لتقبّل الناس للتغيير."],
+       ["Make the transition plan easy and pain-free.","جعل خطة الانتقال سهلة وخالية من المتاعب."]]},
+     {k:'ul', h:["Evaluate the results","تقييم النتائج"], x:[
+       ["Monitor results for the desired effect.","مراقبة النتائج للتأكد من تحقق الأثر المرغوب."],
+       ["Observe the impact on the organization and its stakeholders.","ملاحظة التأثير على المؤسسة وأصحاب المصلحة فيها."],
+       ["Return to the 'develop problem statement' step if further refinements may be needed.","العودة إلى خطوة 'صياغة بيان المشكلة' إذا لزم مزيد من التحسين."]]}
+   ]},
+   {t:["Ethics in Information Technology","الأخلاقيات في تقنية المعلومات"], b:[
+     {k:'ul', h:["Public concern about the ethical use of IT includes:","تشمل المخاوف العامة بشأن الاستخدام الأخلاقي لتقنية المعلومات:"], x:[
+       ["E-mail and Internet access monitoring.","مراقبة البريد الإلكتروني والوصول إلى الإنترنت."],
+       ["Downloading in violation of copyright laws.","التنزيل بما يخالف قوانين حقوق النشر."],
+       ["Unsolicited e-mail (spam).","البريد الإلكتروني غير المرغوب فيه (السبام)."],
+       ["Hackers and identity theft.","القراصنة وسرقة الهوية."],
+       ["Students and plagiarism.","الطلاب والانتحال العلمي."],
+       ["Cookies and spyware.","ملفات تعريف الارتباط وبرامج التجسس."]]},
+     {k:'p', x:["The general public does not understand the critical importance of ethics as applied to IT, and important decisions are often left to technical experts.","لا يُدرك عامة الناس الأهمية الحاسمة للأخلاقيات المطبّقة على تقنية المعلومات، وغالبًا ما تُترك القرارات المهمة للخبراء التقنيين."]},
+     {k:'ul', h:["General business managers must assume greater responsibility for these decisions by:","يجب أن يتحمل مديرو الأعمال العامون مسؤولية أكبر عن هذه القرارات من خلال:"], x:[
+       ["Making decisions based on technical savvy, business know-how, and a sense of ethics.","اتخاذ قرارات مبنية على الدراية التقنية والمعرفة التجارية والحس الأخلاقي."],
+       ["Creating an environment where ethical dilemmas can be discussed openly, objectively, and constructively.","تهيئة بيئة يمكن فيها مناقشة المعضلات الأخلاقية بانفتاح وموضوعية وبنّاءً."]]}
+   ]},
+   {t:["Goals of This Course","أهداف هذا المقرر"], b:[
+     {k:'ul', x:[
+       ["To educate people about the tremendous impact of ethical issues in the successful and secure use of information technology.","تثقيف الناس حول التأثير الهائل للقضايا الأخلاقية في الاستخدام الناجح والآمن لتقنية المعلومات."],
+       ["To motivate people to recognize these issues when making business decisions.","تحفيز الناس على إدراك هذه القضايا عند اتخاذ قرارات الأعمال."],
+       ["To provide tools, approaches, and useful insights for making ethical decisions.","توفير أدوات ومناهج ورؤى مفيدة لاتخاذ القرارات الأخلاقية."]]}
+   ]}
+  ],
+  take:[
+   ["The decision-making process: develop problem statement → identify alternatives → evaluate/choose → implement → evaluate results.","عملية اتخاذ القرار: صياغة بيان المشكلة ← تحديد البدائل ← التقييم/الاختيار ← التنفيذ ← تقييم النتائج."],
+   ["A good problem statement is specific and quantified (e.g., '15% of orders, $300,000/month'); a solution disguised as a problem statement is a common mistake.","بيان المشكلة الجيد محدد وكمّي (مثل '15% من الطلبات، 300,000 دولار شهريًا')؛ والخلط بين الحل وبيان المشكلة خطأ شائع."],
+   ["A chosen alternative must be ethically/legally defensible, policy-consistent, mindful of impact on others, and actually solve the problem.","يجب أن يكون البديل المختار مبررًا أخلاقيًا/قانونيًا، ومتسقًا مع السياسات، ومراعيًا لتأثيره على الآخرين، وحلًا فعليًا للمشكلة."],
+   ["Four approaches — virtue ethics, utilitarian, fairness, common good — each has a distinct focus and a distinct weakness.","أربعة مناهج — أخلاقيات الفضيلة، النفعي، الإنصاف، الصالح العام — لكل منها تركيز مختلف وضعف مختلف."],
+   ["Public IT ethics concerns include monitoring, piracy, spam, hacking/identity theft, plagiarism, and spyware/cookies.","تشمل المخاوف الأخلاقية العامة بشأن تقنية المعلومات المراقبة والقرصنة والسبام والقرصنة الإلكترونية/سرقة الهوية والانتحال العلمي وبرامج التجسس/ملفات تعريف الارتباط."]
+  ],
+  fc:[
+   [["List the steps in the decision-making process.","اذكر خطوات عملية اتخاذ القرار."],["Develop problem statement, identify alternatives, evaluate and choose alternative, implement decision, evaluate results, success.","صياغة بيان المشكلة، تحديد البدائل، تقييم واختيار بديل، تنفيذ القرار، تقييم النتائج، النجاح."]],
+   [["What is a problem statement?","ما هو بيان المشكلة؟"],["A clear, concise description of the issue.","وصف واضح ومختصر للقضية."]],
+   [["Name three questions a problem statement should answer.","اذكر ثلاثة أسئلة يجب أن يُجيب عليها بيان المشكلة."],["Any three of: what causes people to think there's a problem, who is affected, how often it occurs, what the impact is, how serious it is.","أي ثلاثة من: ما الذي يجعل الناس يظنون وجود مشكلة، من المتأثر، كم مرة تحدث، ما تأثيرها، ما مدى خطورتها."]],
+   [["Why is 'We need to implement a new inventory control system' a POOR problem statement?","لماذا يُعد 'نحتاج إلى تطبيق نظام جديد لإدارة المخزون' بيان مشكلة ضعيفًا؟"],["It's a possible solution, not a problem statement.","لأنه حل محتمل، وليس بيان مشكلة."]],
+   [["In the good problem statement example, what percentage of orders are affected, and what is the monthly cost?","في مثال بيان المشكلة الجيد، ما نسبة الطلبات المتأثرة، وما التكلفة الشهرية؟"],["Over 15 percent of customer orders, resulting in over $300,000 in lost sales per month.","أكثر من 15 بالمئة من طلبات العملاء، بخسارة تتجاوز 300,000 دولار شهريًا."]],
+   [["Name two conditions a selected alternative must satisfy.","اذكر شرطين يجب أن يستوفيهما البديل المختار."],["Any two of: ethically/legally defensible, consistent with policies/code of ethics, accounts for impact on others, solves the problem well.","أي شرطين من: مبرر أخلاقيًا/قانونيًا، متسق مع السياسات/مدونة الأخلاقيات، يراعي التأثير على الآخرين، يحل المشكلة جيدًا."]],
+   [["What does the virtue ethics approach focus on, and what is its main problem?","على ماذا يُركّز منهج أخلاقيات الفضيلة، وما مشكلته الرئيسية؟"],["Focuses on daily life in a community, guided by virtues; its problem is that virtue can't be worked out objectively.","يُركّز على الحياة اليومية في المجتمع، مسترشدًا بالفضائل؛ ومشكلته أن الفضيلة لا يمكن تحديدها بشكل موضوعي."]],
+   [["What does the utilitarian approach choose, and what is its main problem?","ماذا يختار المنهج النفعي، وما مشكلته الرئيسية؟"],["The action with the best overall consequences; its problem is that measuring and comparing values is often difficult.","الفعل ذا أفضل العواقب الإجمالية؛ ومشكلته أن قياس القيم ومقارنتها غالبًا ما يكون صعبًا."]],
+   [["What is the guiding principle of the fairness approach, and its main problem?","ما المبدأ الموجّه لمنهج الإنصاف، وما مشكلته الرئيسية؟"],["Treat all people the same; its problem is that decisions can be influenced by personal bias.","معاملة الجميع بالتساوي؛ ومشكلته أن القرارات قد تتأثر بالتحيز الشخصي."]],
+   [["What does the common good approach aim for, and its main problem?","ماذا يهدف إليه منهج الصالح العام، وما مشكلته الرئيسية؟"],["Working together for shared values/goals that benefit all; its problem is that consensus is difficult.","العمل معًا لتحقيق قيم/أهداف مشتركة تفيد الجميع؛ ومشكلته أن التوافق صعب."]],
+   [["Name three public concerns about the ethical use of IT.","اذكر ثلاث مخاوف عامة بشأن الاستخدام الأخلاقي لتقنية المعلومات."],["Any three of: e-mail/Internet monitoring, copyright-violating downloads, spam, hacking/identity theft, plagiarism, cookies/spyware.","أي ثلاث من: مراقبة البريد الإلكتروني/الإنترنت، التنزيل المخالف لحقوق النشر، السبام، القرصنة/سرقة الهوية، الانتحال العلمي، ملفات تعريف الارتباط/برامج التجسس."]],
+   [["What are the three goals of this course, as stated in the lecture?","ما الأهداف الثلاثة لهذا المقرر، كما وردت في المحاضرة؟"],["To educate about ethics' impact on IT, to motivate recognizing these issues in business decisions, and to provide tools for ethical decision-making.","تثقيف حول تأثير الأخلاقيات على تقنية المعلومات، تحفيز إدراك هذه القضايا في قرارات الأعمال، وتوفير أدوات لاتخاذ القرار الأخلاقي."]]
+  ],
+  quiz:[
+   {q:["Which is the FIRST step in the decision-making process?","ما الخطوة الأولى في عملية اتخاذ القرار؟"], o:[["Implement the decision","تنفيذ القرار"],["Develop a problem statement","صياغة بيان المشكلة"],["Evaluate the results","تقييم النتائج"],["Identify alternatives","تحديد البدائل"]], a:1},
+   {q:["A problem statement should be:","يجب أن يكون بيان المشكلة:"], o:[["Vague and general","غامضًا وعامًا"],["A proposed solution","حلًا مقترحًا"],["Clear and concise","واضحًا ومختصرًا"],["Written only by executives","مكتوبًا من قِبل المسؤولين التنفيذيين فقط"]], a:2},
+   {q:["Why is \"We need to implement a new inventory control system\" a poor problem statement?","لماذا يُعد \"نحتاج إلى تطبيق نظام جديد لإدارة المخزون\" بيان مشكلة ضعيفًا؟"], o:[["It's too long","لأنه طويل جدًا"],["It's a possible solution, not a problem statement","لأنه حل محتمل، وليس بيان مشكلة"],["It uses no numbers","لأنه لا يستخدم أرقامًا"],["It's grammatically incorrect","لأنه غير صحيح نحويًا"]], a:1},
+   {q:["In the example of a good problem statement, what is the monthly financial impact?","في مثال بيان المشكلة الجيد، ما الأثر المالي الشهري؟"], o:[["$15,000","15,000 دولار"],["$300,000 in lost sales","300,000 دولار من المبيعات المفقودة"],["$3,000","3,000 دولار"],["$30,000","30,000 دولار"]], a:1},
+   {q:["Which is NOT a required condition for a selected alternative?","أي مما يلي ليس شرطًا مطلوبًا في البديل المختار؟"], o:[["Ethically and legally defensible","مبررًا أخلاقيًا وقانونيًا"],["Consistent with policies and code of ethics","متسقًا مع السياسات ومدونة الأخلاقيات"],["The cheapest option regardless of consequences","الخيار الأرخص بصرف النظر عن العواقب"],["Takes into account impact on others","مراعيًا لتأثيره على الآخرين"]], a:2},
+   {q:["The virtue ethics approach is guided primarily by:","يسترشد منهج أخلاقيات الفضيلة بشكل أساسي بـ:"], o:[["Cost-benefit analysis","تحليل التكلفة والعائد"],["Virtues, to reach the 'right' decision","الفضائل، للوصول إلى القرار 'الصائب'"],["Majority vote","تصويت الأغلبية"],["Legal precedent only","السوابق القانونية فقط"]], a:1},
+   {q:["What is the main problem with the utilitarian approach?","ما المشكلة الرئيسية في المنهج النفعي؟"], o:[["It ignores consequences entirely","يتجاهل العواقب تمامًا"],["Measuring and comparing values is often difficult","قياس القيم ومقارنتها غالبًا ما يكون صعبًا"],["It only applies to religious questions","لا يُطبَّق إلا على المسائل الدينية"],["It has no connection to economics","لا علاقة له بالاقتصاد"]], a:1},
+   {q:["The fairness approach's guiding principle is to:","المبدأ الموجّه لمنهج الإنصاف هو:"], o:[["Maximize company profit","تعظيم ربح الشركة"],["Treat all people the same","معاملة جميع الناس بالتساوي"],["Follow the CEO's personal preference","اتباع التفضيل الشخصي للرئيس التنفيذي"],["Reward only top performers","مكافأة أصحاب الأداء الأعلى فقط"]], a:1},
+   {q:["What is the main problem with the common good approach?","ما المشكلة الرئيسية في منهج الصالح العام؟"], o:[["It requires no cooperation","لا يتطلب أي تعاون"],["Reaching consensus is difficult","الوصول إلى توافق أمر صعب"],["It ignores values entirely","يتجاهل القيم تمامًا"],["It only works for small groups","لا يعمل إلا مع المجموعات الصغيرة"]], a:1},
+   {q:["Which is NOT listed as a public concern about IT ethics?","أي مما يلي لم يُذكر كمخاوف عامة بشأن أخلاقيات تقنية المعلومات؟"], o:[["Spam","السبام"],["Students and plagiarism","الطلاب والانتحال العلمي"],["The price of computer hardware","سعر العتاد الحاسوبي"],["Hackers and identity theft","القراصنة وسرقة الهوية"]], a:2},
+   {q:["According to the lecture, who are important IT decisions often left to?","وفق المحاضرة، لمن تُترك غالبًا القرارات المهمة في تقنية المعلومات؟"], o:[["General business managers","مديرو الأعمال العامون"],["Technical experts","الخبراء التقنيون"],["Customers","العملاء"],["Government regulators only","الجهات التنظيمية الحكومية فقط"]], a:1},
+   {q:["Which is one of the three stated goals of this course?","أي مما يلي أحد الأهداف الثلاثة المعلنة لهذا المقرر؟"], o:[["To eliminate all use of IT","القضاء على جميع استخدامات تقنية المعلومات"],["To provide tools and insights for making ethical decisions","توفير أدوات ورؤى لاتخاذ القرارات الأخلاقية"],["To increase software sales","زيادة مبيعات البرمجيات"],["To replace business managers with AI","استبدال مديري الأعمال بالذكاء الاصطناعي"]], a:1}
+  ]
+});
+
+LECTURES.push({ id:'l5', n:5,
+  title:["Accountability, Responsibility, and Liability","المساءلة والمسؤولية والمسؤولية القانونية"],
+  obj:[
+    ["Define accountability and explain why laws alone are insufficient to ensure it.","تعريف المساءلة وتوضيح سبب عدم كفاية القوانين وحدها لضمانها."],
+    ["Distinguish between role responsibility, causal responsibility, and blameworthy responsibility.","التمييز بين مسؤولية الدور والمسؤولية السببية والمسؤولية المستوجبة للّوم."],
+    ["Explain the difference between liability and blame.","توضيح الفرق بين المسؤولية القانونية واللوم."],
+    ["Describe the factors behind diffusion of responsibility, and summarize the THERAC-25 case.","وصف العوامل الكامنة وراء تشتت المسؤولية، وتلخيص قضية ثيراك-25."]
+  ],
+  sec:[
+   {t:["Introduction: What Is Accountability?","مقدمة: ما هي المساءلة؟"], b:[
+     {k:'def', x:["Accountability is the means of ensuring that, despite the complexity of the work and the context in which it exists, individuals, groups, and ultimately the organization as a whole will understand their part in accomplishing goals.","المساءلة (Accountability) هي الوسيلة التي تضمن أنه، رغم تعقيد العمل والسياق الذي يجري فيه، سيفهم الأفراد والجماعات، وفي النهاية المؤسسة ككل، دورهم في تحقيق الأهداف."]},
+     {k:'tip', x:["Accountability is the flip side of delegation: when authority is delegated, accountability for how it is used follows along with it.","المساءلة هي الوجه الآخر للتفويض: فعندما تُفوَّض السلطة، تنتقل معها المساءلة عن كيفية استخدامها."]}
+   ]},
+   {t:["Ensuring Accountability","ضمان المساءلة"], b:[
+     {k:'p', x:["Computer systems are powerful and can cause harm financially, physically, or psychologically. Being mindful of this is one of the professional duties identified in most codes of ethics and/or conduct. One approach is to find appropriate laws and use them.","الأنظمة الحاسوبية قوية ويمكن أن تُسبب ضررًا ماليًا أو جسديًا أو نفسيًا. والانتباه لذلك هو أحد الواجبات المهنية التي تُحددها معظم مدونات الأخلاقيات و/أو السلوك. ويتمثل أحد المناهج في إيجاد القوانين المناسبة واستخدامها."]},
+     {k:'p', x:["However, different laws apply in different situations — for example, one law might apply to a defective product, while another applies to negligence. Another factor is the rate of change of technology: it typically takes a long time to pass a piece of legislation, by which time the technology might have evolved.","لكن قوانين مختلفة تُطبَّق في مواقف مختلفة — فمثلًا، قد يُطبَّق قانون معين على منتج معيب، بينما يُطبَّق آخر على الإهمال. وهناك عامل آخر هو معدل تغيّر التقنية: فعادة ما يستغرق سنّ تشريع ما وقتًا طويلًا، وقد تكون التقنية قد تطورت بحلول ذلك الوقت."]},
+     {k:'tip', x:["In addition to relying on legislation, a mixed approach can be used in terms of accountability, responsibility, liability, and blame.","بالإضافة إلى الاعتماد على التشريعات، يمكن استخدام منهج مختلط يشمل المساءلة والمسؤولية والمسؤولية القانونية واللوم."]}
+   ]},
+   {t:["a. Accountability","أ. المساءلة"], b:[
+     {k:'def', x:["Accountability, used in its broadest meaning, refers to the appropriate agent to respond, and depends on various factors. For example, in a company department, the head of department might be held accountable. Accountability rests with whoever holds the ultimate responsibility.","المساءلة (Accountability)، بمعناها الأوسع، تشير إلى الجهة المناسبة للاستجابة، وتعتمد على عوامل متعددة. فمثلًا، في قسم داخل شركة، قد يُساءَل رئيس القسم. وتقع المساءلة على عاتق مَن يحمل المسؤولية النهائية."]}
+   ]},
+   {t:["b. Responsibility: Three Types","ب. المسؤولية: ثلاثة أنواع"], b:[
+     {k:'def', x:["Role Responsibility: analogous to duty — it is what people are expected to do within their role. For example, in the LambdaMOO scenario, players are expected to play by the rules even if unstated; most players assume this means not taking over another player's character.","مسؤولية الدور (Role Responsibility): تشبه الواجب — وهي ما يُتوقع من الأفراد فعله ضمن دورهم. فمثلًا، في سيناريو LambdaMOO، يُتوقع من اللاعبين الالتزام بالقواعد حتى لو لم تُذكر صراحة؛ ويفترض معظم اللاعبين أن ذلك يعني عدم الاستيلاء على شخصية لاعب آخر."]},
+     {k:'def', x:["Causal Responsibility: responsibility as a result of causality — X did something and caused an event to happen. For example, Kim invests a large amount of money in the market and causes the company to lose money, even though she might have done everything required of her duty.","المسؤولية السببية (Causal Responsibility): مسؤولية ناتجة عن علاقة سببية — حيث يفعل X شيئًا يتسبب في وقوع حدث. فمثلًا، تستثمر كيم مبلغًا كبيرًا من المال في السوق فتتسبب في خسارة الشركة للمال، حتى لو كانت قد أدت كل ما يتطلبه واجبها."]},
+     {k:'def', x:["Blameworthy Responsibility: Kim may or may not be (causally) responsible, but she is not necessarily blameworthy. Perhaps the software was faulty — in that case, the software designer might be blameworthy if they failed to fulfil a role responsibility.","المسؤولية المستوجبة للّوم (Blameworthy Responsibility): قد تكون كيم مسؤولة (سببيًا) أو لا، لكنها ليست بالضرورة مستوجبة للّوم. فربما كان البرنامج معيبًا — وفي هذه الحالة، قد يكون مصمم البرنامج مستوجبًا للّوم إذا أخفق في أداء مسؤولية دوره."]},
+     {k:'tip', x:["These three types are independent: you can be causally responsible without being blameworthy, as Kim's example shows.","هذه الأنواع الثلاثة مستقلة عن بعضها: فقد تكون مسؤولًا سببيًا دون أن تكون مستوجبًا للّوم، كما يُظهر مثال كيم."]}
+   ]},
+   {t:["c. Liability","ج. المسؤولية القانونية"], b:[
+     {k:'def', x:["Liability is a legal obligation to compensate for harm, which can exist independently of blame.","المسؤولية القانونية (Liability) هي التزام قانوني بتعويض الضرر، ويمكن أن توجد بشكل مستقل عن اللوم."]},
+     {k:'ex', x:["A friend slips on the polished floor of your house and breaks a leg. You might be held liable, but you may not be blameworthy.","ينزلق صديق على أرضية منزلك المصقولة ويكسر ساقه. قد تُحمَّل المسؤولية القانونية، لكنك قد لا تكون مستوجبًا للّوم."]}
+   ]},
+   {t:["f. Diffusion of Responsibility","و. تشتت المسؤولية"], b:[
+     {k:'p', x:["In creating a computer system, we should appreciate the following.","عند إنشاء نظام حاسوبي، يجب تقدير ما يلي."]},
+     {k:'ul', x:[
+       ["The scale and complexity of the system.","حجم النظام وتعقيده."],
+       ["The number of people involved in its development, distribution, training, and use.","عدد الأشخاص المشاركين في تطويره وتوزيعه والتدريب عليه واستخدامه."],
+       ["What the system will be involved in — many systems are involved in important decision making.","ما الذي سيشارك فيه النظام — إذ تشارك أنظمة كثيرة في اتخاذ قرارات مهمة."]]},
+     {k:'tip', x:["Kant: humans are responsible for their actions because they have the capacity to control their actions.","كانط: الإنسان مسؤول عن أفعاله لأنه يملك القدرة على التحكم فيها."]}
+   ]},
+   {t:["Example: THERAC-25","مثال: ثيراك-25 (THERAC-25)"], b:[
+     {k:'p', x:["THERAC-25 is a computer-controlled system that gives radiation treatments to patients. Several patients received massive doses, resulting in at least three fatalities.","ثيراك-25 هو نظام يتحكم فيه الحاسوب يُستخدم لإعطاء علاجات إشعاعية للمرضى. تلقى عدة مرضى جرعات هائلة، مما أدى إلى ثلاث وفيات على الأقل."]},
+     {k:'p', x:["It was difficult to discover who was responsible, but Therac was found liable and paid compensation to the victims' families. Eventually, it was found that the operator's actions caused the accidents. However, it was also found that if an operator entered an incorrect mode, noticed it, and corrected the error (within the 8 seconds specified), the system still went wrong and the patient was killed. So while the operator caused the accident, they were not to blame.","كان من الصعب تحديد المسؤول، لكن ثيراك وُجدت مسؤولة قانونيًا ودفعت تعويضات لعائلات الضحايا. وتبيّن في النهاية أن تصرفات المشغّل تسببت في الحوادث. لكن تبيّن أيضًا أنه حتى لو أدخل المشغّل وضعًا خاطئًا، ولاحظ ذلك، وصحّح الخطأ (خلال الثواني الثماني المحددة)، كان النظام لا يزال يخطئ ويودي بحياة المريض. لذا، رغم أن المشغّل تسبب في الحادث، فإنه لم يكن مستوجبًا للّوم."]},
+     {k:'cards', c:[
+       {t:["Open questions this case raises","أسئلة مفتوحة تطرحها هذه القضية"], l:[
+         ["The same error existed in a previous software version but caused no problems there, because that version had only one mode. Was the designer or the tester at fault?","كان نفس الخطأ موجودًا في نسخة سابقة من البرنامج لكنه لم يُسبب مشاكل هناك، لأن تلك النسخة كانت تحتوي على وضع واحد فقط. فهل كان الخطأ خطأ المصمم أم المختبِر؟"],
+         ["The case illustrates the difficulty of testing real-time systems.","توضح القضية صعوبة اختبار الأنظمة اللحظية (Real-Time Systems)."],
+         ["Should there have been a feature limiting the radiation dose to some maximum, regardless of everything else? If so, should this have been specified by the clients? Are they also partially to blame?","هل كان ينبغي وجود خاصية تحد من جرعة الإشعاع بحد أقصى معين، بصرف النظر عن أي شيء آخر؟ وإن كان الأمر كذلك، ألم يكن ينبغي أن يحدد العملاء ذلك؟ وهل يتحملون جزءًا من اللوم أيضًا؟"]
+       ]}
+     ]}
+   ]}
+  ],
+  take:[
+   ["Accountability ensures individuals, groups, and organizations understand their part in accomplishing goals; it's the flip side of delegation.","تضمن المساءلة أن يفهم الأفراد والجماعات والمؤسسات دورهم في تحقيق الأهداف؛ وهي الوجه الآخر للتفويض."],
+   ["Laws alone aren't enough: different laws apply to different situations, and technology changes faster than legislation.","القوانين وحدها لا تكفي: فقوانين مختلفة تُطبَّق على مواقف مختلفة، والتقنية تتغير أسرع من التشريعات."],
+   ["Role responsibility = expected duty; causal responsibility = you caused it; blameworthy responsibility = you're at fault — these are independent.","مسؤولية الدور = الواجب المتوقع؛ المسؤولية السببية = أنت تسببت فيه؛ المسؤولية المستوجبة للّوم = أنت المخطئ — وهذه الأنواع مستقلة عن بعضها."],
+   ["Liability can exist without blame, as the slip-and-fall example shows.","يمكن أن توجد المسؤولية القانونية دون لوم، كما يوضح مثال الانزلاق والسقوط."],
+   ["THERAC-25: the operator caused the accident but was not to blame — the real fault traced back to the software design/testing.","ثيراك-25: تسبب المشغّل في الحادث لكنه لم يكن مستوجبًا للّوم — إذ يعود الخطأ الحقيقي إلى تصميم البرنامج أو اختباره."]
+  ],
+  fc:[
+   [["What is accountability?","ما هي المساءلة؟"],["The means of ensuring individuals, groups, and the organization understand their part in accomplishing goals.","الوسيلة التي تضمن فهم الأفراد والجماعات والمؤسسة لدورهم في تحقيق الأهداف."]],
+   [["Accountability is the flip side of what?","المساءلة هي الوجه الآخر لماذا؟"],["Delegation.","التفويض."]],
+   [["Why aren't laws alone sufficient to ensure accountability?","لماذا لا تكفي القوانين وحدها لضمان المساءلة؟"],["Different laws apply to different situations, and technology changes faster than legislation can be passed.","قوانين مختلفة تُطبَّق على مواقف مختلفة، والتقنية تتغير أسرع من إمكانية سنّ التشريعات."]],
+   [["Define role responsibility, with its example.","عرّف مسؤولية الدور، مع مثالها."],["What people are expected to do within their role — e.g., LambdaMOO players expected to follow unstated rules.","ما يُتوقع من الأفراد فعله ضمن دورهم — مثل لاعبي LambdaMOO المتوقع منهم اتباع قواعد غير مذكورة."]],
+   [["Define causal responsibility, with its example.","عرّف المسؤولية السببية، مع مثالها."],["Responsibility resulting from causality — e.g., Kim's investment causes the company to lose money.","مسؤولية ناتجة عن علاقة سببية — مثل استثمار كيم الذي يتسبب في خسارة الشركة."]],
+   [["Define blameworthy responsibility, with its example.","عرّف المسؤولية المستوجبة للّوم، مع مثالها."],["Being at fault — e.g., the software designer may be blameworthy if faulty software, not Kim, caused the loss.","أن تكون مخطئًا — مثل مصمم البرنامج الذي قد يكون مستوجبًا للّوم إذا كان البرنامج المعيب، لا كيم، هو سبب الخسارة."]],
+   [["Give the example illustrating liability without blame.","اذكر المثال الذي يوضح المسؤولية القانونية دون لوم."],["A friend slips on your polished floor and breaks a leg — you may be liable but not blameworthy.","ينزلق صديق على أرضيتك المصقولة ويكسر ساقه — قد تُحمَّل المسؤولية القانونية دون أن تكون مستوجبًا للّوم."]],
+   [["Name three things to appreciate regarding diffusion of responsibility in system creation.","اذكر ثلاثة أمور يجب تقديرها بخصوص تشتت المسؤولية عند إنشاء الأنظمة."],["Scale/complexity of the system, the number of people involved, and what the system will be involved in (e.g. decision making).","حجم النظام وتعقيده، وعدد الأشخاص المشاركين، وما سيشارك فيه النظام (مثل اتخاذ القرار)."]],
+   [["What does Kant say about human responsibility?","ماذا يقول كانط عن مسؤولية الإنسان؟"],["Humans are responsible for their actions because they have the capacity to control their actions.","الإنسان مسؤول عن أفعاله لأنه يملك القدرة على التحكم فيها."]],
+   [["What was THERAC-25, and what was the outcome?","ما هو ثيراك-25، وما كانت النتيجة؟"],["A computer-controlled radiation therapy system; several patients received massive doses, resulting in at least three fatalities.","نظام علاج إشعاعي يتحكم فيه الحاسوب؛ تلقى عدة مرضى جرعات هائلة، مما أدى إلى ثلاث وفيات على الأقل."]],
+   [["In THERAC-25, why wasn't the operator to blame even though they caused the accident?","في قضية ثيراك-25، لماذا لم يكن المشغّل مستوجبًا للّوم رغم تسببه في الحادث؟"],["Even when the operator corrected an entry error within the specified 8 seconds, the system still malfunctioned and killed the patient.","حتى عندما صحّح المشغّل خطأ الإدخال خلال الثواني الثماني المحددة، كان النظام لا يزال يتعطل ويودي بحياة المريض."]],
+   [["What open question does THERAC-25 raise about dose limits?","ما السؤال المفتوح الذي تطرحه قضية ثيراك-25 حول حدود الجرعات؟"],["Should there have been a feature capping the radiation dose at some maximum regardless of everything else, and should clients have specified this?","هل كان ينبغي وجود خاصية تحد من الجرعة الإشعاعية بحد أقصى بصرف النظر عن أي شيء آخر، وهل كان ينبغي أن يحدد العملاء ذلك؟"]]
+  ],
+  quiz:[
+   {q:["What is accountability the flip side of?","المساءلة هي الوجه الآخر لماذا؟"], o:[["Punishment","العقاب"],["Delegation","التفويض"],["Negligence","الإهمال"],["Bribery","الرشوة"]], a:1},
+   {q:["Why can't we rely on legislation alone for accountability?","لماذا لا يمكننا الاعتماد على التشريعات وحدها للمساءلة؟"], o:[["Laws never change","القوانين لا تتغير أبدًا"],["Different laws apply to different situations, and tech changes faster than laws","قوانين مختلفة تُطبَّق على مواقف مختلفة، والتقنية تتغير أسرع من القوانين"],["Laws are always perfectly enforced","القوانين تُطبَّق دائمًا بشكل مثالي"],["There are no computer-related laws","لا توجد قوانين متعلقة بالحاسوب"]], a:1},
+   {q:["Role responsibility is best described as:","أفضل وصف لمسؤولية الدور هو:"], o:[["What people are expected to do within their role","ما يُتوقع من الأفراد فعله ضمن دورهم"],["A legal punishment","عقوبة قانونية"],["Responsibility resulting from causality","مسؤولية ناتجة عن علاقة سببية"],["A type of software license","نوع من تراخيص البرمجيات"]], a:0},
+   {q:["In the Kim example, what type of responsibility does Kim have for the company's loss?","في مثال كيم، أي نوع من المسؤولية تتحملها كيم عن خسارة الشركة؟"], o:[["No responsibility at all","لا مسؤولية على الإطلاق"],["Causal responsibility (even though she may not be blameworthy)","مسؤولية سببية (رغم أنها قد لا تكون مستوجبة للّوم)"],["Criminal liability","مسؤولية جنائية"],["Blameworthy responsibility only","مسؤولية مستوجبة للّوم فقط"]], a:1},
+   {q:["In the floor-slip example, what are you held, even if you're not blameworthy?","في مثال الانزلاق على الأرضية، بماذا تُحمَّل حتى لو لم تكن مستوجبًا للّوم؟"], o:[["Nothing at all","لا شيء على الإطلاق"],["Criminally guilty","مذنبًا جنائيًا"],["Liable","مسؤولًا قانونيًا"],["A professional, by law","محترفًا، بحكم القانون"]], a:2},
+   {q:["Which is NOT listed as a factor behind diffusion of responsibility?","أي مما يلي لم يُذكر كعامل وراء تشتت المسؤولية؟"], o:[["Scale and complexity of the system","حجم النظام وتعقيده"],["Number of people involved","عدد الأشخاص المشاركين"],["The system's physical color","لون النظام الفيزيائي"],["What important decisions the system will be involved in","القرارات المهمة التي سيشارك فيها النظام"]], a:2},
+   {q:["According to Kant (as cited in the lecture), humans are responsible for their actions because:","وفق كانط (كما وردت الإشارة إليه في المحاضرة)، الإنسان مسؤول عن أفعاله لأنه:"], o:[["They are always supervised","دائمًا تحت الإشراف"],["They have the capacity to control their actions","يملك القدرة على التحكم في أفعاله"],["Laws require it","القوانين تتطلب ذلك"],["Society punishes them otherwise","المجتمع يعاقبه لولا ذلك"]], a:1},
+   {q:["What was THERAC-25?","ما هو ثيراك-25؟"], o:[["A software license agreement","اتفاقية ترخيص برمجيات"],["A computer-controlled radiation treatment system","نظام علاج إشعاعي يتحكم فيه الحاسوب"],["An accounting scandal","فضيحة محاسبية"],["A type of firewall","نوع من الجدران النارية"]], a:1},
+   {q:["In THERAC-25, what was the specified time window for an operator to correct a mode error?","في قضية ثيراك-25، ما المدة الزمنية المحددة لتصحيح المشغّل لخطأ في الوضع؟"], o:[["8 seconds","8 ثوانٍ"],["8 minutes","8 دقائق"],["80 seconds","80 ثانية"],["1 second","ثانية واحدة"]], a:0},
+   {q:["Even when the THERAC-25 operator corrected the error in time, what still happened?","حتى عندما صحّح مشغّل ثيراك-25 الخطأ في الوقت المحدد، ماذا حدث مع ذلك؟"], o:[["The patient was unaffected","لم يتأثر المريض"],["The system still malfunctioned and the patient was killed","لا يزال النظام يتعطل وقُتل المريض"],["The machine shut down safely","توقفت الآلة بأمان"],["The operator was fired immediately","طُرد المشغّل على الفور"]], a:1},
+   {q:["Who was ultimately found liable and paid compensation in the THERAC-25 case?","من وُجد مسؤولًا قانونيًا ودفع التعويضات في نهاية المطاف في قضية ثيراك-25؟"], o:[["The individual operator only","المشغّل الفرد فقط"],["Therac (the company)","ثيراك (الشركة)"],["The hospital's cleaning staff","طاقم النظافة في المستشفى"],["No one was found liable","لم يُحمَّل أحد المسؤولية"]], a:1}
+  ]
+});
+
+LECTURES.push({ id:'l6', n:6,
+  title:["Software Liability and Case Studies","المسؤولية القانونية للبرمجيات ودراسات حالة"],
+  obj:[
+    ["Describe the ethical responsibilities of software sellers and buyers, including the disclosure dilemma.","وصف المسؤوليات الأخلاقية لبائعي ومشتري البرمجيات، بما في ذلك معضلة الإفصاح."],
+    ["Distinguish mass-market, customized, and mixed software in terms of liability.","التمييز بين برمجيات السوق الجماهيري والبرمجيات المُخصَّصة والحالات المختلطة من حيث المسؤولية القانونية."],
+    ["Define negligence and apply it to a concrete example.","تعريف الإهمال وتطبيقه على مثال واقعي."],
+    ["Summarize the Y2K case study and the Stratton v. Prodigy ISP liability case.","تلخيص دراسة حالة مشكلة الألفية (Y2K) وقضية Stratton v. Prodigy الخاصة بمسؤولية مزودي خدمة الإنترنت."]
+  ],
+  sec:[
+   {t:["Buying and Selling Software: The Seller's Responsibilities","شراء وبيع البرمجيات: مسؤوليات البائع"], b:[
+     {k:'p', x:["What are the various responsibilities of the different role players — buyer and seller? The seller:","ما هي المسؤوليات المختلفة لأصحاب الأدوار المختلفين — المشتري والبائع؟ البائع:"]},
+     {k:'ul', x:[
+       ["Has the right to sell.","يملك الحق في البيع."],
+       ["Has a duty to be honest.","يتحمل واجب الصدق."],
+       ["Has a duty not to coerce a client.","يتحمل واجب عدم إكراه العميل."],
+       ["Is expected to emphasize the good aspects of the product.","يُتوقع منه إبراز الجوانب الجيدة للمنتج."],
+       ["Is expected to answer questions honestly.","يُتوقع منه الإجابة بصدق عن الأسئلة."]]}
+   ]},
+   {t:["The Disclosure Dilemma","معضلة الإفصاح"], b:[
+     {k:'p', x:["Is a seller being dishonest if they do not disclose a problem area not asked about? This is probably the case, but it is very difficult to say — especially if the user's needs are varied and complex, since it's unclear how the salesperson could know what those needs are. To a naïve user, the answer might be yes, but it is difficult to compel this.","هل يكون البائع غير صادق إذا لم يُفصح عن مشكلة لم يُسأل عنها؟ على الأرجح نعم، لكن من الصعب جدًا الجزم بذلك — خصوصًا إذا كانت احتياجات المستخدم متنوعة ومعقدة، إذ ليس واضحًا كيف يمكن لمندوب المبيعات معرفة تلك الاحتياجات. وبالنسبة للمستخدم غير المطّلع، قد تكون الإجابة نعم، لكن يصعب إلزام البائع بذلك."]},
+     {k:'p', x:["Usually, the product itself (either its packaging or license agreement) will contain all the necessary information. A contract can be voided if all relevant information is not given.","عادة ما يحتوي المنتج نفسه (سواء عبوته أو اتفاقية الترخيص) على كل المعلومات اللازمة. ويمكن إبطال العقد إذا لم تُقدَّم كل المعلومات ذات الصلة."]},
+     {k:'tip', x:["The buyer also has the responsibility to find out all the necessary information and ask the right questions if there is a lack of it.","يتحمل المشتري أيضًا مسؤولية البحث عن كل المعلومات اللازمة وطرح الأسئلة الصحيحة إذا كانت ناقصة."]}
+   ]},
+   {t:["a. Software: Product or Service?","أ. البرمجيات: منتج أم خدمة؟"], b:[
+     {k:'p', x:["This depends on the circumstances of how the software is produced and/or sold. A comparison can be made between software and buying a suit (Prince, 1980). There are three types of suit purchase.","يعتمد ذلك على ظروف إنتاج البرنامج و/أو بيعه. ويمكن عمل مقارنة بين البرمجيات وشراء بدلة (Prince، 1980). وهناك ثلاثة أنواع لشراء البدلة."]},
+     {k:'tbl', h:[["Suit Analogy","تشبيه البدلة"],["Software Equivalent","المقابل في البرمجيات"]],
+      r:[
+       [["Off the peg / ready to wear (no alteration)","جاهزة للارتداء (بدون تعديل)"],["Mass market (a product)","السوق الجماهيري (منتج)"]],
+       [["Tailor-made to the person's specific requirements","مُفصَّلة حسب متطلبات الشخص المحددة"],["Customized software (a service)","برمجيات مُخصَّصة (خدمة)"]],
+       [["In between (ready to wear + alterations)","بينهما (جاهزة + تعديلات)"],["Mixed (product + service)","حالة مختلطة (منتج + خدمة)"]]
+      ]}
+   ]},
+   {t:["b. Mass Market Software","ب. برمجيات السوق الجماهيري"], b:[
+     {k:'def', x:["With mass market products, strict liability can be imposed. Producers can be sued for errors or malfunctions causing damage.","في منتجات السوق الجماهيري، يمكن فرض المسؤولية المشددة (Strict Liability). ويمكن مقاضاة المنتِجين عن الأخطاء أو الأعطال التي تُسبب ضررًا."]},
+     {k:'ul', h:["Why strict liability applies here","لماذا تُطبَّق المسؤولية المشددة هنا"], x:[
+       ["The producer puts the product in the public domain and invites people to buy or use it.","يضع المنتِج المنتج في متناول العامة ويدعو الناس لشرائه أو استخدامه."],
+       ["The producer earns profit and should bear the risks.","يحقق المنتِج أرباحًا وينبغي أن يتحمل المخاطر."],
+       ["The producer is in the best position to anticipate and control the risks associated with the product, so the onus is on the producer to get it right.","المنتِج في أفضل موقع لتوقّع المخاطر المرتبطة بالمنتج والتحكم بها، لذا يقع عليه عبء إتقانه."],
+       ["The producer can spread the cost of injury and insurance over all clients.","يمكن للمنتِج توزيع تكلفة الضرر والتأمين على جميع العملاء."]]},
+     {k:'tip', x:["The reasoning here is utilitarian: placing the onus on the producer has positive overall effects.","المنطق هنا نفعي: فوضع العبء على المنتِج له آثار إيجابية إجمالية."]}
+   ]},
+   {t:["c. Customized Software","ج. البرمجيات المُخصَّصة"], b:[
+     {k:'p', x:["Strict liability does not make sense here, since the software is created and designed specifically for the client. The client knows the context in which the software will be used and specifies what is required, so the client must take on part of the risk. This type of software should be considered a service.","لا معنى للمسؤولية المشددة هنا، لأن البرنامج صُمم وأُنشئ خصيصًا للعميل. فالعميل يعرف السياق الذي سيُستخدم فيه البرنامج ويحدد المطلوب، لذا يجب أن يتحمل جزءًا من المخاطرة. ويُعتبر هذا النوع من البرمجيات خدمة."]}
+   ]},
+   {t:["d. Mixed Case","د. الحالة المختلطة"], b:[
+     {k:'p', x:["The product and the service parts should each be treated on their own.","يجب التعامل مع جزء المنتج وجزء الخدمة كل على حدة."]}
+   ]},
+   {t:["e. Negligence","هـ. الإهمال"], b:[
+     {k:'def', x:["Negligence is a failure to do something that is expected of a reasonable and prudent person.","الإهمال (Negligence) هو التقصير في فعل ما يُتوقع من شخص عاقل وحصيف."]},
+     {k:'ex', x:["If a security guard is knocked unconscious, he cannot be blamed. But if he is drunk, he might be considered negligent. There is always a presumption of a reasonable standard of behavior.","إذا فُقد حارس الأمن وعيه بالضرب، فلا يمكن لومه. لكن إذا كان ثملًا، فقد يُعتبر مهملًا. وهناك دائمًا افتراض بوجود معيار معقول للسلوك."]},
+     {k:'p', x:["This concept is often used to describe blameworthy behavior of professionals. The definition of the standard applicable to the offence is often quite difficult to arrive at, and is often best judged by other professionals — which raises possible conflict-of-interest issues.","يُستخدم هذا المفهوم غالبًا لوصف السلوك المستوجب للّوم لدى المهنيين. وغالبًا ما يصعب تحديد المعيار المنطبق على المخالفة، وغالبًا ما يُحكَم عليه بشكل أفضل من قِبل مهنيين آخرين — مما يثير احتمال تضارب المصالح."]}
+   ]},
+   {t:["Case Study: Who Was Responsible? (The Y2K Problem)","دراسة حالة: من كان المسؤول؟ (مشكلة الألفية Y2K)"], b:[
+     {k:'p', x:["Systems stored the year using 2 digits to save expensive storage space. Was that a good decision?","خزّنت الأنظمة السنة باستخدام رقمين فقط لتوفير مساحة تخزين باهظة التكلفة. فهل كان هذا قرارًا جيدًا؟"]},
+     {k:'formula', x:"1970: 2-byte year storage saved expensive space — the professionals did a good job.\n1980: Same answer.\n1990: Same answer? Were the systems expected to last 10 years? What was the cost of storage then? What was the cost of upgrading an old system?\n1995: Same answer? Were the systems expected to last 5 more years? What about storage/upgrade cost? Should professionals have warned companies of the Y2K problem? Should there have been a recommended code of practice on this issue?\n1998: Same question, different answer? Client companies all had policies by now, communicated to shareholders, and everyone accepted their responsibilities."},
+     {k:'p', x:["So it has been a chapter of evolving answers. The best strategy is:","لقد كان هذا فصلًا من الإجابات المتطورة. وأفضل استراتيجية هي:"]},
+     {k:'ul', x:[
+       ["State clearly the role responsibilities of all concerned — professionals needed to explain and document the problem, then offer options.","توضيح مسؤوليات الدور لجميع الأطراف المعنية بوضوح — إذ احتاج المهنيون لشرح المشكلة وتوثيقها، ثم تقديم خيارات."],
+       ["Make sure all involved understood the effect of their work on people — clients needed to understand the available options, realizing that staying with 2 digits was a short-term, unsafe choice.","التأكد من فهم جميع المعنيين لتأثير عملهم على الناس — إذ احتاج العملاء لفهم الخيارات المتاحة، وإدراك أن البقاء على رقمين كان خيارًا قصير الأجل وغير آمن."],
+       ["Hold those responsible who fail to live up to their responsibility.","محاسبة من يُخفق في الوفاء بمسؤوليته."]]}
+   ]},
+   {t:["Example: ISP Responsibility (Stratton v. Prodigy)","مثال: مسؤولية مزود خدمة الإنترنت (Stratton v. Prodigy)"], b:[
+     {k:'p', x:["Recall the scenario with Milo: a service provider gives him chat room and forum facilities. Milo was defamed by another user and has the right of recourse. The obvious route is to hold the individual responsible — but the problem is that the individual is anonymous.","لنتذكر سيناريو ميلو: يزوّده مزود خدمة بغرف دردشة ومنتديات. تعرّض ميلو للتشهير من مستخدم آخر وله الحق في التظلم. والمسار الواضح هو تحميل الفرد المسؤولية — لكن المشكلة أن ذلك الفرد مجهول الهوية."]},
+     {k:'ex', x:["Stratton v. ISP Prodigy (1995): Prodigy was sued by users regarding content in its online forums, over which Prodigy had advertised that it exercised editorial control. The court applied the law governing newspapers and found Prodigy guilty. Prodigy claimed it was more like a telephone company than a newspaper company. The following year, the U.S. Communications Decency Act reversed this, on the basis that ISPs are closer to telephone companies. The act also introduced Good Samaritan immunity, under which an entity can exercise some control without liability, and is encouraged to do so.","قضية Stratton ضد مزود خدمة الإنترنت Prodigy (1995): رفع مستخدمون دعوى ضد Prodigy بخصوص محتوى في منتدياتها الإلكترونية، التي أعلنت Prodigy أنها تمارس عليها رقابة تحريرية. طبّقت المحكمة القانون المُطبَّق على الصحف ووجدت Prodigy مذنبة. ادّعت Prodigy أنها أشبه بشركة هاتف منها بشركة صحافة. وفي العام التالي، ألغى قانون آداب الاتصالات الأمريكي (Communications Decency Act) هذا الحكم، على أساس أن مزودي خدمة الإنترنت أقرب إلى شركات الهاتف. كما أدخل القانون حصانة 'السامري الصالح' (Good Samaritan Immunity)، التي بموجبها يمكن لجهة ما ممارسة بعض الرقابة دون تحمل مسؤولية قانونية، بل تُشجَّع على ذلك."]}
+   ]}
+  ],
+  take:[
+   ["Sellers must be honest, not coerce clients, and answer questions honestly; buyers must also seek out the information they need.","يجب أن يكون البائعون صادقين، وألا يُكرهوا العملاء، وأن يجيبوا عن الأسئلة بصدق؛ ويجب على المشترين أيضًا البحث عن المعلومات التي يحتاجونها."],
+   ["Mass-market software = product (strict liability); customized software = service (client shares risk); mixed case = treat each part separately.","برمجيات السوق الجماهيري = منتج (مسؤولية مشددة)؛ البرمجيات المُخصَّصة = خدمة (يشارك العميل في المخاطرة)؛ الحالة المختلطة = يُعامل كل جزء على حدة."],
+   ["Negligence = failing to do what a reasonable, prudent person would do (e.g., a drunk guard vs. one who was knocked unconscious).","الإهمال = التقصير في فعل ما يفعله شخص عاقل وحصيف (مثل حارس ثمل مقارنة بآخر فُقد وعيه بالضرب)."],
+   ["The Y2K case shows that 'who was responsible?' changes over time as costs, risks, and available information evolve.","توضح قضية Y2K أن إجابة 'من كان المسؤول؟' تتغير مع الوقت مع تطور التكاليف والمخاطر والمعلومات المتاحة."],
+   ["Stratton v. Prodigy initially held the ISP liable like a newspaper; the Communications Decency Act later introduced Good Samaritan immunity.","حمّلت قضية Stratton v. Prodigy في البداية مزود خدمة الإنترنت المسؤولية مثل صحيفة؛ لاحقًا أدخل قانون آداب الاتصالات حصانة 'السامري الصالح'."]
+  ],
+  fc:[
+   [["List two of the seller's responsibilities when selling software.","اذكر اثنتين من مسؤوليات البائع عند بيع البرمجيات."],["Any two of: right to sell, duty to be honest, duty not to coerce, emphasize good aspects, answer questions honestly.","أي اثنتين من: الحق في البيع، واجب الصدق، واجب عدم الإكراه، إبراز الجوانب الجيدة، الإجابة بصدق."]],
+   [["What is the buyer's responsibility in a software purchase?","ما مسؤولية المشتري في عملية شراء البرنامج؟"],["To find out all necessary information and ask the right questions if information is lacking.","البحث عن كل المعلومات اللازمة وطرح الأسئلة الصحيحة إذا كانت المعلومات ناقصة."]],
+   [["What three types of suit purchase does software liability get compared to?","بأي ثلاثة أنواع من شراء البدلات تُقارَن مسؤولية البرمجيات؟"],["Off the peg (ready-to-wear), tailor-made, and in-between.","جاهزة للارتداء، مُفصَّلة حسب الطلب، وبينهما."]],
+   [["Which software grouping matches 'off the peg', and is it a product or a service?","أي تصنيف للبرمجيات يقابل 'جاهزة للارتداء'، وهل هو منتج أم خدمة؟"],["Mass market software — a product.","برمجيات السوق الجماهيري — منتج."]],
+   [["Name two reasons strict liability is imposed on mass market software producers.","اذكر سببين لفرض المسؤولية المشددة على منتجي برمجيات السوق الجماهيري."],["Any two of: puts product in public domain, earns profit so bears risk, best positioned to control risk, can spread injury/insurance cost over clients.","أي سببين من: يضع المنتج في متناول العامة، يحقق أرباحًا فيتحمل المخاطر، في أفضل موقع للتحكم بالمخاطر، يمكنه توزيع تكلفة الضرر/التأمين على العملاء."]],
+   [["Why doesn't strict liability apply to customized software?","لماذا لا تُطبَّق المسؤولية المشددة على البرمجيات المُخصَّصة؟"],["The client specifies the requirements and knows the context of use, so the client must share the risk — it's treated as a service.","يحدد العميل المتطلبات ويعرف سياق الاستخدام، لذا يجب أن يشارك في المخاطرة — وتُعامَل كخدمة."]],
+   [["Define negligence.","عرّف الإهمال."],["A failure to do something that is expected of a reasonable and prudent person.","التقصير في فعل ما يُتوقع من شخص عاقل وحصيف."]],
+   [["In the security guard example, when is he NOT negligent, and when might he be?","في مثال حارس الأمن، متى لا يُعتبر مهملًا، ومتى قد يكون كذلك؟"],["Not negligent if knocked unconscious; might be considered negligent if he was drunk.","لا يُعتبر مهملًا إذا فُقد وعيه بالضرب؛ وقد يُعتبر مهملًا إذا كان ثملًا."]],
+   [["Who is often best positioned to judge the standard of negligence for a professional, and what issue can this raise?","من غالبًا ما يكون في أفضل موقع للحكم على معيار الإهمال لمهني، وما المشكلة التي قد يثيرها ذلك؟"],["Other professionals — which can raise conflict-of-interest issues.","مهنيون آخرون — مما قد يثير مشكلات تضارب المصالح."]],
+   [["In the Y2K case study, what changed between 1970 and 1998 regarding the 2-digit year decision?","في دراسة حالة Y2K، ماذا تغيّر بين عامي 1970 و1998 بخصوص قرار تخزين السنة برقمين؟"],["The justification shifted over time as storage costs fell and systems lasted longer, until by 1998 companies had policies and accepted responsibility.","تغيّر المبرر مع الوقت مع انخفاض تكاليف التخزين وطول عمر الأنظمة، حتى أصبح لدى الشركات بحلول 1998 سياسات وقبلت بمسؤولياتها."]],
+   [["What is the obvious (but problematic) route to deal with defamation in ISP forums?","ما المسار الواضح (لكن الإشكالي) للتعامل مع التشهير في منتديات مزودي خدمة الإنترنت؟"],["Hold the individual responsible — the problem is the individual is often anonymous.","تحميل الفرد المسؤولية — والمشكلة أن الفرد غالبًا ما يكون مجهول الهوية."]],
+   [["What did the court initially rule in Stratton v. Prodigy, and why?","بماذا حكمت المحكمة ابتداءً في قضية Stratton v. Prodigy، ولماذا؟"],["It found Prodigy guilty, applying the law governing newspapers, since Prodigy advertised editorial control over its forums.","وجدت Prodigy مذنبة، مُطبِّقةً القانون المنطبق على الصحف، لأن Prodigy أعلنت ممارستها رقابة تحريرية على منتدياتها."]],
+   [["What did the Communications Decency Act introduce the following year?","ماذا أدخل قانون آداب الاتصالات في العام التالي؟"],["Good Samaritan immunity, allowing an entity to exercise some control without liability.","حصانة 'السامري الصالح'، التي تسمح لجهة ما بممارسة بعض الرقابة دون تحمل مسؤولية قانونية."]]
+  ],
+  quiz:[
+   {q:["Which is NOT one of the seller's responsibilities listed?","أي مما يلي ليس من مسؤوليات البائع المذكورة؟"], o:[["Duty to be honest","واجب الصدق"],["Duty not to coerce a client","واجب عدم إكراه العميل"],["Duty to guarantee the client's business success","واجب ضمان نجاح أعمال العميل"],["Right to sell","الحق في البيع"]], a:2},
+   {q:["In the suit analogy, which type matches 'tailor-made to specific requirements'?","في تشبيه البدلة، أي نوع يقابل 'مُفصَّلة حسب متطلبات محددة'؟"], o:[["Mass market software","برمجيات السوق الجماهيري"],["Customized software","البرمجيات المُخصَّصة"],["Mixed case","الحالة المختلطة"],["None of the above","لا شيء مما سبق"]], a:1},
+   {q:["Mass-market software is generally treated, for liability purposes, as a:","تُعامَل برمجيات السوق الجماهيري عمومًا، لأغراض المسؤولية القانونية، باعتبارها:"], o:[["Service","خدمة"],["Product","منتجًا"],["Gift","هدية"],["Charity","عملًا خيريًا"]], a:1},
+   {q:["Which is NOT one of the reasons strict liability applies to mass-market software?","أي مما يلي ليس من أسباب تطبيق المسؤولية المشددة على برمجيات السوق الجماهيري؟"], o:[["Producer earns profit and should bear the risks","المنتِج يحقق أرباحًا وينبغي أن يتحمل المخاطر"],["Producer is best positioned to control the risks","المنتِج في أفضل موقع للتحكم بالمخاطر"],["Producer can spread injury/insurance cost over clients","يمكن للمنتِج توزيع تكلفة الضرر/التأمين على العملاء"],["Producer has no relationship to the product once sold","لا علاقة للمنتِج بالمنتج بعد بيعه"]], a:3},
+   {q:["Why is customized software treated as a service rather than a product?","لماذا تُعامَل البرمجيات المُخصَّصة كخدمة لا كمنتج؟"], o:[["It is always free of charge","لأنها دائمًا مجانية"],["The client specifies requirements and shares part of the risk","العميل يحدد المتطلبات ويشارك في جزء من المخاطرة"],["It is illegal to sell as a product","يُحظر قانونيًا بيعها كمنتج"],["It never contains errors","لأنها لا تحتوي أخطاءً أبدًا"]], a:1},
+   {q:["Negligence is best defined as:","يُعرَّف الإهمال على أفضل وجه بأنه:"], o:[["Any accident, regardless of fault","أي حادث، بصرف النظر عن الخطأ"],["A failure to do something expected of a reasonable, prudent person","التقصير في فعل ما يُتوقع من شخص عاقل وحصيف"],["A type of software bug","نوع من أخطاء البرمجيات"],["A criminal offense only","جريمة جنائية فقط"]], a:1},
+   {q:["In the security guard example, when might he be considered negligent?","في مثال حارس الأمن، متى قد يُعتبر مهملًا؟"], o:[["If he was knocked unconscious","إذا فُقد وعيه بالضرب"],["If he was drunk","إذا كان ثملًا"],["If he was on vacation","إذا كان في إجازة"],["Never, under any circumstance","أبدًا، تحت أي ظرف"]], a:1},
+   {q:["Who is often best placed to judge the standard applicable to professional negligence?","من غالبًا ما يكون في أفضل موقع للحكم على المعيار المنطبق على إهمال المهنيين؟"], o:[["The general public","عامة الناس"],["Other professionals","مهنيون آخرون"],["The media","وسائل الإعلام"],["No one can judge this","لا أحد يستطيع الحكم على ذلك"]], a:1},
+   {q:["In the Y2K case study, what was the ORIGINAL justification (1970) for using 2-digit years?","في دراسة حالة Y2K، ما كان المبرر الأصلي (1970) لاستخدام رقمين لتخزين السنة؟"], o:[["It was required by law","كان مطلوبًا بموجب القانون"],["It saved expensive storage space","وفّر مساحة تخزين باهظة التكلفة"],["No one thought of an alternative","لم يفكر أحد ببديل"],["Computers could not handle 4 digits at all","لم تكن الحواسيب قادرة على التعامل مع أربعة أرقام إطلاقًا"]], a:1},
+   {q:["What was the obvious but problematic route to resolve the Milo defamation scenario?","ما المسار الواضح لكن الإشكالي لحل سيناريو تشهير ميلو؟"], o:[["Suing the ISP directly, with no other option considered","مقاضاة مزود خدمة الإنترنت مباشرة، دون اعتبار أي خيار آخر"],["Holding the individual responsible, but they are usually anonymous","تحميل الفرد المسؤولية، لكنه غالبًا ما يكون مجهول الهوية"],["Ignoring the incident entirely","تجاهل الحادثة تمامًا"],["Shutting down the entire forum","إغلاق المنتدى بأكمله"]], a:1},
+   {q:["In Stratton v. Prodigy (1995), the court initially applied the law governing:","في قضية Stratton v. Prodigy (1995)، طبّقت المحكمة ابتداءً القانون المنطبق على:"], o:[["Telephone companies","شركات الهاتف"],["Newspapers","الصحف"],["Banks","البنوك"],["Universities","الجامعات"]], a:1},
+   {q:["What did the Good Samaritan immunity (from the Communications Decency Act) allow?","ماذا سمحت به حصانة 'السامري الصالح' (من قانون آداب الاتصالات)؟"], o:[["An entity to exercise some control without liability","لجهة ما ممارسة بعض الرقابة دون تحمل مسؤولية قانونية"],["Complete immunity from all laws","حصانة كاملة من جميع القوانين"],["ISPs to be classified exactly like newspapers","تصنيف مزودي خدمة الإنترنت تمامًا مثل الصحف"],["Users to remain anonymous forever","بقاء المستخدمين مجهولي الهوية إلى الأبد"]], a:0}
+  ]
+});
+
+LECTURES.push({ id:'l7', n:7,
+  title:["IT Professionals and Relationships with Employers and Clients","أخصائيو تقنية المعلومات وعلاقاتهم بأصحاب العمل والعملاء"],
+  obj:[
+    ["Define what makes an occupation a 'profession' and explain why IT workers do not meet the legal definition.","تعريف ما يجعل المهنة 'مهنة احترافية' وتوضيح سبب عدم استيفاء أخصائيي تقنية المعلومات للتعريف القانوني."],
+    ["Name the seven forces changing the professional services industry.","ذكر القوى السبع التي تُغيّر صناعة الخدمات المهنية."],
+    ["Describe IT workers' ethical obligations to employers, including software piracy, trade secrets, and whistle-blowing.","وصف الالتزامات الأخلاقية لأخصائيي تقنية المعلومات تجاه أصحاب العمل، بما في ذلك قرصنة البرمجيات والأسرار التجارية والإبلاغ عن المخالفات."],
+    ["Describe IT workers' ethical obligations to clients, including conflict of interest, fraud, misrepresentation, and breach of contract.","وصف الالتزامات الأخلاقية لأخصائيي تقنية المعلومات تجاه العملاء، بما في ذلك تضارب المصالح والاحتيال والتحريف والإخلال بالعقد."]
+  ],
+  sec:[
+   {t:["What Makes Someone a Professional?","ما الذي يجعل الشخص محترفًا؟"], b:[
+     {k:'def', x:["A profession is a calling that requires specialized knowledge and long, intensive academic preparation.","المهنة الاحترافية (Profession) هي دعوة تتطلب معرفة متخصصة وإعدادًا أكاديميًا طويلًا ومكثفًا."]},
+     {k:'ul', h:["Professionals:","المحترفون:"], x:[
+       ["Require advanced training and experience.","يحتاجون إلى تدريب وخبرة متقدمين."],
+       ["Must exercise discretion and judgment in their work.","يجب أن يمارسوا التقدير والحكم في عملهم."],
+       ["Have work that cannot be standardized.","يقومون بعمل لا يمكن توحيده قياسيًا."],
+       ["Contribute to society, participate in lifelong training, and assist other professionals.","يساهمون في المجتمع، ويشاركون في تدريب مستمر مدى الحياة، ويساعدون محترفين آخرين."],
+       ["Carry special rights and responsibilities.","يحملون حقوقًا ومسؤوليات خاصة."]]}
+   ]},
+   {t:["IT Workers as Professionals","أخصائيو تقنية المعلومات كمحترفين"], b:[
+     {k:'ul', h:["Partial list of IT specialists","قائمة جزئية بأخصائيي تقنية المعلومات"], x:[
+       ["Programmers","المبرمجون"],["Systems analysts","محللو الأنظمة"],["Software engineers","مهندسو البرمجيات"],
+       ["Database administrators","مديرو قواعد البيانات"],["Local area network (LAN) administrators","مديرو الشبكات المحلية (LAN)"],["Chief information officers (CIOs)","كبار مسؤولي المعلومات (CIOs)"]]},
+     {k:'def', x:["Legal perspective: IT workers do not meet the legal definition of a professional. They are not licensed by state or federal government, and are not liable for malpractice.","المنظور القانوني: لا يستوفي أخصائيو تقنية المعلومات التعريف القانوني للمحترف. فهم غير مرخصين من قِبل الحكومة الفيدرالية أو حكومة الولاية، وغير مسؤولين قانونيًا عن سوء الممارسة المهنية."]}
+   ]},
+   {t:["The Changing Professional Services Industry","صناعة الخدمات المهنية المتغيرة"], b:[
+     {k:'p', x:["IT workers are considered part of the professional services industry. Seven forces are changing professional services.","يُعتبر أخصائيو تقنية المعلومات جزءًا من صناعة الخدمات المهنية. وهناك سبع قوى تُغيّر الخدمات المهنية."]},
+     {k:'ul', x:[
+       ["Client sophistication — clients are able to drive hard bargains.","تطور العملاء — القدرة على المساومة بقوة."],
+       ["Governance — due to major scandals.","الحوكمة — بسبب الفضائح الكبرى."],
+       ["Connectivity — instant communications.","الاتصال — التواصل الفوري."],
+       ["Transparency — ability to view work-in-progress in real time.","الشفافية — إمكانية متابعة العمل الجاري آنيًا."],
+       ["Modularization — able to outsource modules.","التجزئة — إمكانية إسناد وحدات العمل لجهات خارجية."],
+       ["Globalization — worldwide sourcing.","العولمة — الاستعانة بمصادر حول العالم."],
+       ["Commoditization — for low-end services.","التسليع — بالنسبة للخدمات المتدنية الجودة."]]}
+   ]},
+   {t:["Professional Relationships IT Workers Must Manage","العلاقات المهنية التي يجب على أخصائيي تقنية المعلومات إدارتها"], b:[
+     {k:'p', x:["IT workers are involved in relationships with six groups.","يرتبط أخصائيو تقنية المعلومات بعلاقات مع ست جهات."]},
+     {k:'ul', x:[
+       ["1. Employers.","1. أصحاب العمل."],
+       ["2. Clients.","2. العملاء."],
+       ["3. Suppliers.","3. الموردون."],
+       ["4. Other professionals.","4. المحترفون الآخرون."],
+       ["5. IT users.","5. مستخدمو تقنية المعلومات."],
+       ["6. Society at large.","6. المجتمع عمومًا."]]}
+   ]},
+   {t:["1. Relationships Between IT Workers and Employers","1. العلاقات بين أخصائيي تقنية المعلومات وأصحاب العمل"], b:[
+     {k:'p', x:["IT workers agree on many aspects of the work relationship before accepting a job offer. Other aspects are defined in the company's policy and procedure manual or code of conduct, and some aspects develop over time. As stewards of the organization's IT resources, IT workers must set an example and enforce policies regarding the ethical use of IT.","يتفق أخصائيو تقنية المعلومات على كثير من جوانب علاقة العمل قبل قبول عرض الوظيفة. وتُحدَّد جوانب أخرى في دليل سياسات وإجراءات الشركة أو مدونة السلوك، بينما تتطور جوانب أخرى بمرور الوقت. وبصفتهم أمناء على موارد تقنية المعلومات بالمؤسسة، يجب أن يكونوا قدوة وأن يُطبّقوا السياسات المتعلقة بالاستخدام الأخلاقي لتقنية المعلومات."]},
+     {k:'def', x:["Software piracy: the act of illegally making copies of software, or enabling access to software to which one is not entitled. This is an area in which IT workers can be tempted to violate laws and policies.","قرصنة البرمجيات (Software Piracy): فعل نسخ البرمجيات بشكل غير قانوني، أو تمكين الوصول إلى برمجيات لا يحق للشخص الوصول إليها. وهذا مجال قد يُغري أخصائيي تقنية المعلومات بمخالفة القوانين والسياسات."]},
+     {k:'p', x:["The Business Software Alliance (BSA) is a trade group representing the world's largest software and hardware manufacturers, with a mission to stop the unauthorized copying of software. Thousands of cases are prosecuted each year.","تحالف البرمجيات التجارية (Business Software Alliance - BSA) هو مجموعة تجارية تمثل أكبر مصنّعي البرمجيات والأجهزة في العالم، ومهمته وقف النسخ غير المصرح به للبرمجيات. وتُلاحَق آلاف القضايا قضائيًا كل عام."]},
+     {k:'def', x:["Trade secrets: business information that is generally unknown to the public, which the company takes action to keep confidential, requires cost or effort to develop, and has some degree of uniqueness or novelty.","الأسرار التجارية (Trade Secrets): معلومات تجارية غير معروفة عمومًا للجمهور، وتتخذ الشركة إجراءات للحفاظ على سريتها، وتتطلب تكلفة أو جهدًا لتطويرها، ولها درجة من التفرد أو الحداثة."]},
+     {k:'def', x:["Whistle-blowing: when an employee attracts attention to a negligent, illegal, unethical, abusive, or dangerous act that threatens the public interest.","الإبلاغ عن المخالفات (Whistle-Blowing): عندما يلفت موظف الانتباه إلى فعل مهمل أو غير قانوني أو غير أخلاقي أو مسيء أو خطير يهدد المصلحة العامة."]}
+   ]},
+   {t:["2. Relationships Between IT Workers and Clients","2. العلاقات بين أخصائيي تقنية المعلومات والعملاء"], b:[
+     {k:'p', x:["The IT worker provides hardware, software, or services at a certain cost and within a given time frame. The client provides compensation, access to key contacts, and work space. The relationship is usually documented in contractual terms.","يقدّم أخصائي تقنية المعلومات العتاد أو البرمجيات أو الخدمات بتكلفة محددة وضمن إطار زمني معين. ويقدّم العميل التعويض المالي، وإمكانية الوصول إلى جهات الاتصال الرئيسية، ومساحة العمل. وعادة ما تُوثَّق العلاقة بشروط تعاقدية."]},
+     {k:'p', x:["The client makes decisions about a project based on information, alternatives, and recommendations provided by the IT worker, and trusts the IT worker to act in the client's best interests. The IT worker, in turn, trusts that the client will provide relevant information, listen to and understand what the IT worker says, ask questions to understand the impact of key decisions, and use the information to make wise choices.","يتخذ العميل قرارات بشأن المشروع بناءً على المعلومات والبدائل والتوصيات التي يقدمها أخصائي تقنية المعلومات، ويثق في أنه يعمل لمصلحته الفضلى. ويثق أخصائي تقنية المعلومات بدوره في أن العميل سيقدم المعلومات ذات الصلة، وسيستمع إلى ما يقوله ويفهمه، وسيطرح أسئلة لفهم تأثير القرارات المهمة، وسيستخدم المعلومات لاتخاذ خيارات حكيمة."]},
+     {k:'tip', x:["Ethical problems arise if a company recommends its own products and services to remedy problems it has detected — this creates a conflict of interest. Problems also arise if IT workers are unable to provide full and accurate reporting of a project's status, which can lead to finger-pointing and heated discussions.","تنشأ مشكلات أخلاقية إذا أوصت شركة بمنتجاتها أو خدماتها الخاصة لمعالجة مشكلات اكتشفتها هي نفسها — مما يخلق تضارب مصالح. كما تنشأ مشكلات إذا عجز أخصائيو تقنية المعلومات عن تقديم تقارير كاملة ودقيقة عن حالة المشروع، مما قد يؤدي إلى تبادل الاتهامات ونقاشات حادة."]},
+     {k:'def', x:["Fraud: the crime of obtaining goods, services, or property through deception or trickery.","الاحتيال (Fraud): جريمة الحصول على سلع أو خدمات أو ممتلكات عن طريق الخداع أو التحايل."]},
+     {k:'def', x:["Misrepresentation: a misstatement or incomplete statement of a material fact. If misrepresentation causes a party to enter into a contract, that party may have the right to cancel the contract or seek reimbursement for damages.","التحريف (Misrepresentation): تصريح خاطئ أو غير مكتمل بحقيقة جوهرية. وإذا تسبب التحريف في دخول طرف ما في عقد، فقد يحق لذلك الطرف إلغاء العقد أو طلب تعويض عن الأضرار."]},
+     {k:'def', x:["Breach of contract: when one party fails to meet the terms of a contract. When there is a material breach, the non-breaching party may rescind the contract, seek restitution of any compensation already paid, and be discharged from any further performance under the contract.","الإخلال بالعقد (Breach of Contract): عندما يُخفق أحد الطرفين في الوفاء بشروط العقد. وفي حال الإخلال الجوهري، يجوز للطرف غير المُخِلّ فسخ العقد، وطلب استرداد أي تعويض دُفع، والإعفاء من أي أداء إضافي بموجب العقد."]},
+     {k:'tip', x:["IT projects are joint efforts in which vendors and customers work together, so when problems arise, it is often difficult to assign who is at fault.","مشاريع تقنية المعلومات جهود مشتركة يعمل فيها الموردون والعملاء معًا، لذا عندما تنشأ مشكلات، يصعب غالبًا تحديد المسؤول عنها."]}
+   ]}
+  ],
+  take:[
+   ["A profession requires specialized knowledge, long academic preparation, and work that can't be standardized.","تتطلب المهنة الاحترافية معرفة متخصصة، وإعدادًا أكاديميًا طويلًا، وعملًا لا يمكن توحيده قياسيًا."],
+   ["IT workers do NOT meet the legal definition of 'professional' — they are unlicensed and not liable for malpractice.","لا يستوفي أخصائيو تقنية المعلومات التعريف القانوني لـ'المحترف' — فهم غير مرخصين وغير مسؤولين قانونيًا عن سوء الممارسة."],
+   ["Seven forces reshaping professional services: client sophistication, governance, connectivity, transparency, modularization, globalization, commoditization.","سبع قوى تُعيد تشكيل الخدمات المهنية: تطور العملاء، الحوكمة، الاتصال، الشفافية، التجزئة، العولمة، التسليع."],
+   ["As stewards of IT resources, IT workers must guard against software piracy, protect trade secrets, and support whistle-blowing when needed.","بصفتهم أمناء على موارد تقنية المعلومات، يجب أن يحذر أخصائيو تقنية المعلومات من قرصنة البرمجيات، ويحموا الأسرار التجارية، ويدعموا الإبلاغ عن المخالفات عند الحاجة."],
+   ["Recommending your own product to fix a problem you found creates a conflict of interest; fraud, misrepresentation, and breach of contract are distinct legal wrongs in client relationships.","التوصية بمنتجك الخاص لحل مشكلة اكتشفتها أنت يخلق تضارب مصالح؛ والاحتيال والتحريف والإخلال بالعقد مخالفات قانونية متمايزة في علاقات العملاء."]
+  ],
+  fc:[
+   [["What is a profession?","ما هي المهنة الاحترافية؟"],["A calling that requires specialized knowledge and long, intensive academic preparation.","دعوة تتطلب معرفة متخصصة وإعدادًا أكاديميًا طويلًا ومكثفًا."]],
+   [["Name two qualities professionals are expected to have.","اذكر صفتين يُتوقع أن يتحلى بهما المحترفون."],["Any two of: advanced training/experience, exercise discretion/judgment, non-standardized work, contribute to society, carry special rights/responsibilities.","أي صفتين من: تدريب/خبرة متقدمين، ممارسة التقدير/الحكم، عمل غير موحّد قياسيًا، المساهمة في المجتمع، حمل حقوق/مسؤوليات خاصة."]],
+   [["Why do IT workers not meet the LEGAL definition of 'professional'?","لماذا لا يستوفي أخصائيو تقنية المعلومات التعريف القانوني لـ'المحترف'؟"],["They are not licensed by state or federal government, and are not liable for malpractice.","لأنهم غير مرخصين من حكومة الولاية أو الحكومة الفيدرالية، وغير مسؤولين قانونيًا عن سوء الممارسة."]],
+   [["List the seven forces changing the professional services industry.","اذكر القوى السبع التي تُغيّر صناعة الخدمات المهنية."],["Client sophistication, governance, connectivity, transparency, modularization, globalization, commoditization.","تطور العملاء، الحوكمة، الاتصال، الشفافية، التجزئة، العولمة، التسليع."]],
+   [["List the six groups IT workers have professional relationships with.","اذكر الجهات الست التي يرتبط معها أخصائيو تقنية المعلومات بعلاقات مهنية."],["Employers, clients, suppliers, other professionals, IT users, and society at large.","أصحاب العمل، العملاء، الموردون، المحترفون الآخرون، مستخدمو تقنية المعلومات، والمجتمع عمومًا."]],
+   [["Define software piracy.","عرّف قرصنة البرمجيات."],["Illegally making copies of software, or enabling access to software one is not entitled to.","نسخ البرمجيات بشكل غير قانوني، أو تمكين الوصول إلى برمجيات لا يحق للشخص الوصول إليها."]],
+   [["What is the BSA, and what is its mission?","ما هو تحالف BSA، وما مهمته؟"],["The Business Software Alliance — a trade group representing major software/hardware manufacturers, whose mission is to stop unauthorized copying of software.","تحالف البرمجيات التجارية — مجموعة تجارية تمثل كبار مصنّعي البرمجيات/الأجهزة، ومهمته وقف النسخ غير المصرح به للبرمجيات."]],
+   [["Define trade secrets.","عرّف الأسرار التجارية."],["Business information generally unknown to the public, kept confidential, requiring cost/effort to develop, with some uniqueness or novelty.","معلومات تجارية غير معروفة عمومًا للجمهور، تُبقى سرية، وتتطلب تكلفة/جهدًا لتطويرها، ولها درجة من التفرد أو الحداثة."]],
+   [["Define whistle-blowing.","عرّف الإبلاغ عن المخالفات."],["An employee attracting attention to a negligent, illegal, unethical, abusive, or dangerous act that threatens the public interest.","لفت موظف الانتباه إلى فعل مهمل أو غير قانوني أو غير أخلاقي أو مسيء أو خطير يهدد المصلحة العامة."]],
+   [["What does a client provide in the IT worker-client relationship?","ماذا يقدّم العميل في علاقة أخصائي تقنية المعلومات بالعميل؟"],["Compensation, access to key contacts, and work space.","التعويض المالي، وإمكانية الوصول إلى جهات الاتصال الرئيسية، ومساحة العمل."]],
+   [["Why does recommending your own product to fix a detected problem create an ethical issue?","لماذا تخلق التوصية بمنتجك الخاص لحل مشكلة مكتشفة مشكلة أخلاقية؟"],["It creates a conflict of interest.","لأنها تخلق تضارب مصالح."]],
+   [["Define fraud and misrepresentation.","عرّف الاحتيال والتحريف."],["Fraud: obtaining goods/services/property through deception. Misrepresentation: a misstatement or incomplete statement of a material fact.","الاحتيال: الحصول على سلع/خدمات/ممتلكات عن طريق الخداع. التحريف: تصريح خاطئ أو غير مكتمل بحقيقة جوهرية."]]
+  ],
+  quiz:[
+   {q:["A profession is defined as a calling requiring:","تُعرَّف المهنة الاحترافية بأنها دعوة تتطلب:"], o:[["No training at all","لا تدريب على الإطلاق"],["Specialized knowledge and long academic preparation","معرفة متخصصة وإعدادًا أكاديميًا طويلًا"],["Only a high school diploma","شهادة ثانوية فقط"],["Physical strength only","القوة البدنية فقط"]], a:1},
+   {q:["Why do IT workers not meet the legal definition of 'professional'?","لماذا لا يستوفي أخصائيو تقنية المعلومات التعريف القانوني لـ'المحترف'؟"], o:[["They earn too little money","لأنهم يكسبون قليلًا من المال"],["They are not licensed by government and not liable for malpractice","لأنهم غير مرخصين من الحكومة وغير مسؤولين قانونيًا عن سوء الممارسة"],["They don't use computers","لأنهم لا يستخدمون الحواسيب"],["They work only part-time","لأنهم يعملون بدوام جزئي فقط"]], a:1},
+   {q:["Which is NOT one of the seven forces changing the professional services industry?","أي مما يلي ليس من القوى السبع التي تُغيّر صناعة الخدمات المهنية؟"], o:[["Globalization","العولمة"],["Transparency","الشفافية"],["Decreasing internet usage","تراجع استخدام الإنترنت"],["Connectivity","الاتصال"]], a:2},
+   {q:["Which of these is NOT one of the six groups IT workers have professional relationships with?","أي مما يلي ليس من الجهات الست التي يرتبط معها أخصائيو تقنية المعلومات بعلاقات مهنية؟"], o:[["Suppliers","الموردون"],["IT users","مستخدمو تقنية المعلومات"],["Competing nations' governments","حكومات الدول المنافسة"],["Society at large","المجتمع عمومًا"]], a:2},
+   {q:["Software piracy is defined as:","تُعرَّف قرصنة البرمجيات بأنها:"], o:[["Writing original code","كتابة شيفرة أصلية"],["Illegally copying software or enabling unauthorized access to it","نسخ البرمجيات بشكل غير قانوني أو تمكين الوصول غير المصرح به إليها"],["Buying a software license","شراء ترخيص برمجي"],["Reporting a software bug","الإبلاغ عن خطأ برمجي"]], a:1},
+   {q:["What is the BSA's mission?","ما مهمة تحالف BSA؟"], o:[["To promote free, unrestricted software copying","الترويج لنسخ البرمجيات بحرية ودون قيود"],["To stop unauthorized copying of software","وقف النسخ غير المصرح به للبرمجيات"],["To sell hardware directly to consumers","بيع الأجهزة مباشرة للمستهلكين"],["To regulate internet pricing","تنظيم تسعير الإنترنت"]], a:1},
+   {q:["Trade secrets require all of the following EXCEPT:","تتطلب الأسرار التجارية كل ما يلي باستثناء:"], o:[["Being generally unknown to the public","أن تكون غير معروفة عمومًا للجمهور"],["Requiring cost or effort to develop","أن تتطلب تكلفة أو جهدًا لتطويرها"],["Being published in a public journal","أن تُنشر في مجلة عامة"],["Having some degree of uniqueness or novelty","أن تتمتع بدرجة من التفرد أو الحداثة"]], a:2},
+   {q:["Whistle-blowing refers to:","يشير الإبلاغ عن المخالفات إلى:"], o:[["Keeping quiet about company problems","التزام الصمت حيال مشكلات الشركة"],["Attracting attention to a negligent, illegal, or dangerous act threatening the public interest","لفت الانتباه إلى فعل مهمل أو غير قانوني أو خطير يهدد المصلحة العامة"],["Reporting a colleague for being late to work","الإبلاغ عن زميل لتأخره عن العمل"],["A type of software license violation only","نوعًا من مخالفة ترخيص البرمجيات فقط"]], a:1},
+   {q:["Recommending your own company's product to fix a problem you detected creates:","التوصية بمنتج شركتك لحل مشكلة اكتشفتها أنت تخلق:"], o:[["A conflict of interest","تضارب مصالح"],["A software patent","براءة اختراع برمجية"],["Automatic breach of contract","إخلالًا تلقائيًا بالعقد"],["No ethical concern at all","لا قلق أخلاقي على الإطلاق"]], a:0},
+   {q:["Fraud is best defined as:","يُعرَّف الاحتيال على أفضل وجه بأنه:"], o:[["A civil misunderstanding","سوء فهم مدني"],["Obtaining goods, services, or property through deception or trickery","الحصول على سلع أو خدمات أو ممتلكات عن طريق الخداع أو التحايل"],["A type of whistle-blowing","نوع من الإبلاغ عن المخالفات"],["A legal form of negotiation","شكل قانوني من التفاوض"]], a:1},
+   {q:["In a material breach of contract, what may the non-breaching party do?","في حالة الإخلال الجوهري بالعقد، ماذا يجوز للطرف غير المُخِلّ أن يفعل؟"], o:[["Nothing at all","لا شيء على الإطلاق"],["Rescind the contract and seek restitution","فسخ العقد وطلب الاسترداد"],["Only apologize","الاعتذار فقط"],["Automatically go to prison","الذهاب للسجن تلقائيًا"]], a:1}
+  ]
+});
+
+LECTURES.push({ id:'l8', n:8,
+  title:["Relationships with Suppliers, Peers, Users, and Society","العلاقات مع الموردين والزملاء والمستخدمين والمجتمع"],
+  obj:[
+    ["Describe how IT workers should manage relationships with suppliers, including the definition of bribery and relevant anti-corruption laws.","وصف كيفية إدارة أخصائيي تقنية المعلومات لعلاقاتهم مع الموردين، بما في ذلك تعريف الرشوة وقوانين مكافحة الفساد ذات الصلة."],
+    ["Explain the ethical obligations IT workers have toward other professionals.","شرح الالتزامات الأخلاقية لأخصائيي تقنية المعلومات تجاه المحترفين الآخرين."],
+    ["Define 'IT user' and list the duties IT workers owe to them.","تعريف 'مستخدم تقنية المعلومات' وسرد الواجبات التي يدين بها أخصائيو تقنية المعلومات له."],
+    ["Explain what society expects of IT professionals and how codes of ethics support this.","شرح ما يتوقعه المجتمع من أخصائيي تقنية المعلومات وكيف تدعم مدونات الأخلاقيات ذلك."]
+  ],
+  sec:[
+   {t:["3. Relationships Between IT Workers and Suppliers","3. العلاقات بين أخصائيي تقنية المعلومات والموردين"], b:[
+     {k:'p', x:["Good working relationships with suppliers should be developed to encourage the flow of useful information and ideas, helping develop innovative and cost-effective ways of using the supplier that the IT worker may not have considered.","يجب تطوير علاقات عمل جيدة مع الموردين لتشجيع تدفق المعلومات والأفكار المفيدة، مما يساعد على تطوير طرق مبتكرة وفعّالة من حيث التكلفة للاستفادة من المورد قد لا يكون أخصائي تقنية المعلومات قد فكر فيها."]},
+     {k:'ul', h:["This is achieved by:","ويتحقق ذلك من خلال:"], x:[
+       ["Dealing fairly with suppliers.","التعامل بإنصاف مع الموردين."],
+       ["Not making unreasonable demands of them.","عدم فرض مطالب غير معقولة عليهم."]]},
+     {k:'def', x:["Bribery: providing money, property, or favors to obtain a business advantage.","الرشوة (Bribery): تقديم المال أو الممتلكات أو الخدمات للحصول على ميزة تجارية."]},
+     {k:'p', x:["The U.S. Foreign Corrupt Practices Act (FCPA) makes it a crime to bribe a foreign official, a foreign political party official, or a candidate for foreign political office.","يُجرّم قانون الممارسات الفاسدة الأجنبية الأمريكي (FCPA) رشوة مسؤول أجنبي، أو مسؤول في حزب سياسي أجنبي، أو مرشح لمنصب سياسي أجنبي."]},
+     {k:'tip', x:["At what point does a gift become a bribe? No gift should be hidden, and the perceptions of the donor and the recipient can differ.","متى تتحول الهدية إلى رشوة؟ لا ينبغي إخفاء أي هدية، وقد تختلف تصورات المُهدي والمُهدى إليه."]},
+     {k:'def', x:["The United Nations Convention against Corruption is a global treaty to fight bribery and corruption.","اتفاقية الأمم المتحدة لمكافحة الفساد هي معاهدة عالمية لمكافحة الرشوة والفساد."]}
+   ]},
+   {t:["4. Relationships Between IT Workers and Other Professionals","4. العلاقات بين أخصائيي تقنية المعلومات والمحترفين الآخرين"], b:[
+     {k:'p', x:["Professionals feel a degree of loyalty to other members of their profession, and owe each other adherence to their profession's code of conduct.","يشعر المحترفون بدرجة من الولاء لزملائهم في المهنة، ويدين بعضهم لبعض بالالتزام بمدونة سلوك المهنة."]},
+     {k:'ul', h:["Ethical problems within the IT profession","مشكلات أخلاقية داخل مهنة تقنية المعلومات"], x:[
+       ["Résumé inflation appears on 30% of U.S. job applications.","تضخيم السيرة الذاتية يظهر في 30% من طلبات التوظيف الأمريكية."],
+       ["Inappropriate sharing of corporate information — it might be sold intentionally, or shared informally with those who have no need to know.","المشاركة غير اللائقة للمعلومات المؤسسية — فقد تُباع عمدًا، أو تُشارَك بشكل غير رسمي مع من لا حاجة لهم بمعرفتها."]]}
+   ]},
+   {t:["5. Relationships Between IT Workers and IT Users","5. العلاقات بين أخصائيي تقنية المعلومات ومستخدمي تقنية المعلومات"], b:[
+     {k:'def', x:["An IT user is a person using a hardware or software product.","مستخدم تقنية المعلومات (IT User) هو الشخص الذي يستخدم منتجًا من العتاد أو البرمجيات."]},
+     {k:'ul', h:["IT workers' duties toward IT users","واجبات أخصائيي تقنية المعلومات تجاه المستخدمين"], x:[
+       ["Understand users' needs and capabilities.","فهم احتياجات المستخدمين وقدراتهم."],
+       ["Deliver products and services that meet those needs.","تقديم منتجات وخدمات تلبي تلك الاحتياجات."]]},
+     {k:'p', x:["IT workers must also establish an environment that supports ethical behavior, by:","يجب على أخصائيي تقنية المعلومات أيضًا تهيئة بيئة تدعم السلوك الأخلاقي، من خلال:"]},
+     {k:'ul', x:[
+       ["Discouraging software piracy.","عدم تشجيع قرصنة البرمجيات."],
+       ["Minimizing inappropriate use of corporate computing resources.","تقليل الاستخدام غير اللائق لموارد الحوسبة المؤسسية."],
+       ["Avoiding inappropriate sharing of information.","تجنب المشاركة غير اللائقة للمعلومات."]]}
+   ]},
+   {t:["6. Relationships Between IT Workers and Society","6. العلاقات بين أخصائيي تقنية المعلومات والمجتمع"], b:[
+     {k:'ul', h:["Society expects members of a profession to:","يتوقع المجتمع من أعضاء المهنة أن:"], x:[
+       ["Provide significant benefits.","يقدموا منافع جوهرية."],
+       ["Not cause harm through their actions.","ألا يتسببوا في ضرر من خلال أفعالهم."]]},
+     {k:'p', x:["The actions of an IT worker can affect society. Professional organizations provide codes of ethics to guide IT workers' actions.","يمكن أن تؤثر أفعال أخصائي تقنية المعلومات على المجتمع. وتوفر المنظمات المهنية مدونات أخلاقيات لتوجيه أفعال أخصائيي تقنية المعلومات."]}
+   ]}
+  ],
+  take:[
+   ["Good supplier relationships come from fair dealing and avoiding unreasonable demands.","تنبع علاقات الموردين الجيدة من التعامل العادل وتجنب المطالب غير المعقولة."],
+   ["Bribery = money/property/favors for business advantage; the FCPA criminalizes bribing foreign officials; the UN Convention against Corruption fights this globally.","الرشوة = مال/ممتلكات/خدمات لقاء ميزة تجارية؛ ويُجرّم قانون FCPA رشوة المسؤولين الأجانب؛ وتكافح اتفاقية الأمم المتحدة لمكافحة الفساد هذا الأمر عالميًا."],
+   ["Résumé inflation appears on 30% of U.S. job applications — a notable ethical problem among professional peers.","يظهر تضخيم السيرة الذاتية في 30% من طلبات التوظيف الأمريكية — وهي مشكلة أخلاقية ملحوظة بين الزملاء المحترفين."],
+   ["IT workers owe IT users an understanding of their needs, products that meet those needs, and an ethical computing environment.","يدين أخصائيو تقنية المعلومات لمستخدميها بفهم احتياجاتهم، ومنتجات تلبي تلك الاحتياجات، وبيئة حوسبة أخلاقية."],
+   ["Society expects IT professionals to provide benefits and avoid harm; codes of ethics from professional organizations guide this.","يتوقع المجتمع من أخصائيي تقنية المعلومات تقديم منافع وتجنب الضرر؛ وتوجه مدونات الأخلاقيات من المنظمات المهنية ذلك."]
+  ],
+  fc:[
+   [["How should IT workers develop good relationships with suppliers?","كيف يجب أن يطور أخصائيو تقنية المعلومات علاقات جيدة مع الموردين؟"],["By dealing fairly with them and not making unreasonable demands.","من خلال التعامل بإنصاف معهم وعدم فرض مطالب غير معقولة عليهم."]],
+   [["Define bribery.","عرّف الرشوة."],["Providing money, property, or favors to obtain a business advantage.","تقديم المال أو الممتلكات أو الخدمات للحصول على ميزة تجارية."]],
+   [["What does the U.S. FCPA criminalize?","ماذا يُجرّم قانون FCPA الأمريكي؟"],["Bribing a foreign official, a foreign political party official, or a candidate for foreign political office.","رشوة مسؤول أجنبي، أو مسؤول في حزب سياسي أجنبي، أو مرشح لمنصب سياسي أجنبي."]],
+   [["What is the United Nations Convention against Corruption?","ما هي اتفاقية الأمم المتحدة لمكافحة الفساد؟"],["A global treaty to fight bribery and corruption.","معاهدة عالمية لمكافحة الرشوة والفساد."]],
+   [["What do professionals owe each other, regarding their profession?","بماذا يدين المحترفون لبعضهم البعض فيما يخص مهنتهم؟"],["Loyalty, and adherence to their profession's code of conduct.","الولاء، والالتزام بمدونة سلوك مهنتهم."]],
+   [["What percentage of U.S. job applications show résumé inflation?","ما نسبة طلبات التوظيف الأمريكية التي تُظهر تضخيم السيرة الذاتية؟"],["30%.","30%."]],
+   [["Define an IT user.","عرّف مستخدم تقنية المعلومات."],["A person using a hardware or software product.","الشخص الذي يستخدم منتجًا من العتاد أو البرمجيات."]],
+   [["Name two duties IT workers owe to IT users.","اذكر واجبين يدين بهما أخصائيو تقنية المعلومات لمستخدميها."],["Understand users' needs/capabilities, and deliver products/services that meet those needs.","فهم احتياجات المستخدمين/قدراتهم، وتقديم منتجات/خدمات تلبي تلك الاحتياجات."]],
+   [["Name the three ways IT workers establish an ethical environment for users.","اذكر الطرق الثلاث التي يُهيّئ بها أخصائيو تقنية المعلومات بيئة أخلاقية للمستخدمين."],["Discourage software piracy, minimize inappropriate use of corporate computing resources, and avoid inappropriate information sharing.","عدم تشجيع قرصنة البرمجيات، تقليل الاستخدام غير اللائق لموارد الحوسبة المؤسسية، وتجنب المشاركة غير اللائقة للمعلومات."]],
+   [["What two things does society expect of members of a profession?","ما الأمران اللذان يتوقعهما المجتمع من أعضاء المهنة؟"],["To provide significant benefits and to not cause harm through their actions.","تقديم منافع جوهرية وعدم التسبب في ضرر من خلال أفعالهم."]],
+   [["What do professional organizations provide to guide IT workers' actions toward society?","ماذا تقدّم المنظمات المهنية لتوجيه أفعال أخصائيي تقنية المعلومات تجاه المجتمع؟"],["Codes of ethics.","مدونات الأخلاقيات."]]
+  ],
+  quiz:[
+   {q:["Good supplier relationships are built by:","تُبنى علاقات الموردين الجيدة من خلال:"], o:[["Making unreasonable demands to test them","فرض مطالب غير معقولة لاختبارهم"],["Dealing fairly and avoiding unreasonable demands","التعامل بإنصاف وتجنب المطالب غير المعقولة"],["Avoiding all communication","تجنب كل تواصل"],["Only communicating through lawyers","التواصل فقط عبر المحامين"]], a:1},
+   {q:["Bribery is defined as:","تُعرَّف الرشوة بأنها:"], o:[["Any gift given to a client","أي هدية تُقدَّم لعميل"],["Providing money, property, or favors to obtain a business advantage","تقديم المال أو الممتلكات أو الخدمات للحصول على ميزة تجارية"],["A type of software contract","نوع من عقود البرمجيات"],["A legal negotiation tactic","تكتيك تفاوض قانوني"]], a:1},
+   {q:["The U.S. Foreign Corrupt Practices Act (FCPA) makes it a crime to:","يُجرّم قانون الممارسات الفاسدة الأجنبية الأمريكي (FCPA):"], o:[["Hire foreign employees","توظيف موظفين أجانب"],["Bribe a foreign official or political candidate","رشوة مسؤول أجنبي أو مرشح سياسي"],["Sell software internationally","بيع البرمجيات دوليًا"],["Open an office abroad","فتح مكتب في الخارج"]], a:1},
+   {q:["The United Nations Convention against Corruption is:","اتفاقية الأمم المتحدة لمكافحة الفساد هي:"], o:[["A U.S.-only law","قانون أمريكي فقط"],["A global treaty to fight bribery and corruption","معاهدة عالمية لمكافحة الرشوة والفساد"],["A software licensing standard","معيار لترخيص البرمجيات"],["A corporate code of ethics template","نموذج لمدونة أخلاقيات مؤسسية"]], a:1},
+   {q:["What percentage of U.S. job applications show résumé inflation, per the lecture?","ما نسبة طلبات التوظيف الأمريكية التي تُظهر تضخيم السيرة الذاتية، وفق المحاضرة؟"], o:[["3%","3%"],["30%","30%"],["75%","75%"],["10%","10%"]], a:1},
+   {q:["Which is an ethical problem among IT professionals, according to the lecture?","أي مما يلي مشكلة أخلاقية بين أخصائيي تقنية المعلومات، وفق المحاضرة؟"], o:[["Attending conferences","حضور المؤتمرات"],["Inappropriate sharing of corporate information","المشاركة غير اللائقة للمعلومات المؤسسية"],["Using open-source software","استخدام برمجيات مفتوحة المصدر"],["Working remotely","العمل عن بُعد"]], a:1},
+   {q:["An IT user is defined as:","يُعرَّف مستخدم تقنية المعلومات بأنه:"], o:[["Only a programmer","مبرمج فقط"],["A person using a hardware or software product","شخص يستخدم منتجًا من العتاد أو البرمجيات"],["Only a company's CEO","الرئيس التنفيذي للشركة فقط"],["A government regulator","جهة تنظيمية حكومية"]], a:1},
+   {q:["Which is NOT one of the IT worker's duties toward IT users?","أي مما يلي ليس من واجبات أخصائي تقنية المعلومات تجاه المستخدمين؟"], o:[["Understand users' needs and capabilities","فهم احتياجات المستخدمين وقدراتهم"],["Deliver products/services that meet users' needs","تقديم منتجات/خدمات تلبي احتياجات المستخدمين"],["Maximize software piracy","تعظيم قرصنة البرمجيات"],["Minimize inappropriate use of corporate computing resources","تقليل الاستخدام غير اللائق لموارد الحوسبة المؤسسية"]], a:2},
+   {q:["What does society expect of members of a profession?","ماذا يتوقع المجتمع من أعضاء المهنة؟"], o:[["To provide significant benefits and avoid causing harm","تقديم منافع جوهرية وتجنب التسبب في ضرر"],["To maximize personal profit only","تعظيم الربح الشخصي فقط"],["To avoid all public accountability","تجنب أي مساءلة عامة"],["To work in complete secrecy","العمل بسرية تامة"]], a:0},
+   {q:["What do professional organizations provide to guide IT workers' actions toward society?","ماذا تقدّم المنظمات المهنية لتوجيه أفعال أخصائيي تقنية المعلومات تجاه المجتمع؟"], o:[["Stock options","خيارات أسهم"],["Codes of ethics","مدونات الأخلاقيات"],["Free hardware","عتادًا مجانيًا"],["Tax exemptions","إعفاءات ضريبية"]], a:1}
+  ]
+});
+
+const GLOSSARY = [
+  ["Moral code","المدونة الأخلاقية (Moral Code)"],
+  ["Morality","الأخلاق (Morality)"],
+  ["Ethics","الأخلاقيات (Ethics)"],
+  ["Virtues","الفضائل (Virtues)"],
+  ["Vices","الرذائل (Vices)"],
+  ["Personal value system","منظومة القيم الشخصية (Personal Value System)"],
+  ["Integrity","النزاهة (Integrity)"],
+  ["Morals","المبادئ الأخلاقية الشخصية (Morals)"],
+  ["Law","القانون (Law)"],
+  ["Business ethics","أخلاقيات الأعمال (Business Ethics)"],
+  ["Globalization","العولمة (Globalization)"],
+  ["Shareholder","المساهم (Shareholder)"],
+  ["Regulatory agency","الجهة التنظيمية (Regulatory Agency)"],
+  ["Good will","حسن النية (Good Will)"],
+  ["Respondeat superior","مبدأ Respondeat Superior (تحمّل صاحب العمل مسؤولية موظفيه)"],
+  ["Code of ethics","مدونة الأخلاقيات (Code of Ethics)"],
+  ["Board of directors","مجلس الإدارة (Board of Directors)"],
+  ["Sarbanes-Oxley Act","قانون ساربينز-أوكسلي (Sarbanes-Oxley Act)"],
+  ["Section 404 (Sarbanes-Oxley)","المادة 404 من قانون ساربينز-أوكسلي (Section 404)"],
+  ["Section 406 (Sarbanes-Oxley)","المادة 406 من قانون ساربينز-أوكسلي (Section 406)"],
+  ["Social audit","التدقيق الاجتماعي (Social Audit)"],
+  ["Ethics training","التدريب الأخلاقي (Ethics Training)"],
+  ["Problem statement","بيان المشكلة (Problem Statement)"],
+  ["Virtue ethics approach","منهج أخلاقيات الفضيلة (Virtue Ethics Approach)"],
+  ["Utilitarian approach","المنهج النفعي (Utilitarian Approach)"],
+  ["Fairness approach","منهج الإنصاف (Fairness Approach)"],
+  ["Common good approach","منهج الصالح العام (Common Good Approach)"],
+  ["Accountability","المساءلة (Accountability)"],
+  ["Responsibility","المسؤولية (Responsibility)"],
+  ["Role responsibility","مسؤولية الدور (Role Responsibility)"],
+  ["Causal responsibility","المسؤولية السببية (Causal Responsibility)"],
+  ["Blameworthy responsibility","المسؤولية المستوجبة للّوم (Blameworthy Responsibility)"],
+  ["Liability","المسؤولية القانونية (Liability)"],
+  ["Diffusion of responsibility","تشتت المسؤولية (Diffusion of Responsibility)"],
+  ["THERAC-25","ثيراك-25 (THERAC-25)"],
+  ["Negligence","الإهمال (Negligence)"],
+  ["Strict liability","المسؤولية المشددة (Strict Liability)"],
+  ["Mass market software","برمجيات السوق الجماهيري (Mass Market Software)"],
+  ["Customized software","البرمجيات المُخصَّصة (Customized Software)"],
+  ["Y2K problem","مشكلة الألفية (Y2K Problem)"],
+  ["ISP (Internet Service Provider)","مزود خدمة الإنترنت (ISP)"],
+  ["Defamation","التشهير (Defamation)"],
+  ["Good Samaritan immunity","حصانة السامري الصالح (Good Samaritan Immunity)"],
+  ["Communications Decency Act","قانون آداب الاتصالات (Communications Decency Act)"],
+  ["Stratton v. Prodigy","قضية Stratton v. Prodigy"],
+  ["Profession","المهنة الاحترافية (Profession)"],
+  ["IT professional","أخصائي تقنية المعلومات (IT Professional)"],
+  ["Chief Information Officer (CIO)","كبير مسؤولي المعلومات (Chief Information Officer)"],
+  ["Commoditization","التسليع (Commoditization)"],
+  ["Modularization","التجزئة (Modularization)"],
+  ["Trade secrets","الأسرار التجارية (Trade Secrets)"],
+  ["Whistle-blowing","الإبلاغ عن المخالفات (Whistle-Blowing)"],
+  ["Software piracy","قرصنة البرمجيات (Software Piracy)"],
+  ["Business Software Alliance (BSA)","تحالف البرمجيات التجارية (Business Software Alliance)"],
+  ["Fraud","الاحتيال (Fraud)"],
+  ["Misrepresentation","التحريف (Misrepresentation)"],
+  ["Breach of contract","الإخلال بالعقد (Breach of Contract)"],
+  ["Conflict of interest","تضارب المصالح (Conflict of Interest)"],
+  ["Bribery","الرشوة (Bribery)"],
+  ["Foreign Corrupt Practices Act (FCPA)","قانون الممارسات الفاسدة الأجنبية (Foreign Corrupt Practices Act)"],
+  ["United Nations Convention against Corruption","اتفاقية الأمم المتحدة لمكافحة الفساد (UN Convention against Corruption)"],
+  ["Résumé inflation","تضخيم السيرة الذاتية (Résumé Inflation)"],
+  ["IT user","مستخدم تقنية المعلومات (IT User)"]
+].sort((a,b)=>a[0].localeCompare(b[0]));
+
+/* ============================================================
+   SUBJECTS + THEMES  (8 subjects, each with its own color)
+   To add a subject: set ready:true and give it lectures + glossary.
+   ============================================================ */
+const THEMES = {
+  teal:['20 184 166','13 148 136'], pink:['236 72 153','219 39 119'], purple:['168 85 247','147 51 234'],
+  blue:['59 130 246','37 99 235'], orange:['249 115 22','234 88 12'], green:['34 197 94','22 163 74'],
+  yellow:['234 179 8','202 138 4'], red:['239 68 68','220 38 38']
+};
+/* ----- THIS PAGE'S SUBJECT (edit when copying this file to make a new subject) ----- */
+const SUBJECT = {id:'ethics', color:'purple', ready:true, icon:'⚖️', name:["Computer Ethics","أخلاقيات الحاسوب (Computer Ethics)"], lectures:LECTURES, glossary:GLOSSARY};
+const SUBJECTS = [SUBJECT];
+
+/* ============================================================
+   STATE + STORAGE
+   ============================================================ */
+const KEY = 'studyHubV2';
+const store = (()=>{ try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ return {}; } })();
+const state = { lang: store.lang||'en', subject:SUBJECT.id, page:'home', sidebar: window.innerWidth>=1024, data: store.data||{}, decks:{}, qz:{}, exam:null };
+function save(){
+  try{
+    const cur=JSON.parse(localStorage.getItem(KEY)||'{}'); cur.data=cur.data||{};
+    cur.lang=state.lang;
+    const d=sd(SUBJECT.id); d.mastery=mastery(SUBJECT); d.n=SUBJECT.lectures.length;
+    cur.data[SUBJECT.id]=d;
+    localStorage.setItem(KEY, JSON.stringify(cur));
+  }catch(e){}
+}
+const subj = () => SUBJECTS.find(s=>s.id===state.subject);
+const LECT = () => subj().lectures;
+function sd(id){ id=id||state.subject; return state.data[id]||(state.data[id]={seen:{},best:{},exam:0}); }
+function mastery(s){
+  if(!s.ready) return 0;
+  const d=sd(s.id); let sum=0;
+  s.lectures.forEach(l=>{ sum += (d.best[l.id]||0)/100; });
+  sum += (d.exam||0)/100;
+  return Math.round(sum/(s.lectures.length+1)*100);
+}
+
+/* ============================================================
+   HELPERS  (invisible citation handling + XSS protection)
+   ============================================================ */
+const clean = s => String(s)
+  .replace(/<\/?(antml:)?cite[^>]*>/gi,'')
+  .replace(/\[cite[^\]]*\]/gi,'')
+  .replace(/\[(source|ref)[^\]]*\]/gi,'')
+  .replace(/[ \t]{2,}/g,' ').trim();
+const esc = s => clean(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const fmt = s => esc(s).replace(/(\$?\d[\d,.]*\d|\$?\d)/g,'<span class="mono">$1</span>');
+const li = () => state.lang==='ar'?1:0;
+const tx = a => fmt(a[li()]);
+const u = k => UI[k][li()];
+const $ = id => document.getElementById(id);
+function shuf(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function mixQ(q){ const idx=shuf(q.o.map((_,i)=>i)); return {q:q.q, o:idx.map(i=>q.o[i]), a:idx.indexOf(q.a)}; }
+function applyTheme(){
+  const t = THEMES[(state.subject&&subj().color)||'teal'];
+  document.documentElement.style.setProperty('--b5',t[0]);
+  document.documentElement.style.setProperty('--b6',t[1]);
+}
+
+/* ============================================================
+   BLOCK RENDERERS
+   ============================================================ */
+const labelColors = {
+  def:['border-brand-500 bg-brand-500/10','text-brand-500'],
+  ex:['border-amber-400 bg-amber-400/10','text-amber-400'],
+  tip:['border-violet-400 bg-violet-400/10','text-violet-400']
+};
+function renderBlock(b){
+  if(b.k==='p') return `<p class="leading-relaxed text-dark-text/90 my-3">${tx(b.x)}</p>`;
+  if(labelColors[b.k]){
+    const c=labelColors[b.k];
+    return `<div class="border-s-4 ${c[0]} rounded-e-xl p-4 my-3"><div class="text-xs font-bold uppercase tracking-wide ${c[1]} mb-1">${u(b.k)}</div><div class="leading-relaxed whitespace-pre-line">${tx(b.x)}</div></div>`;
+  }
+  if(b.k==='formula') return `<pre class="mono bg-dark-base border border-dark-border rounded-xl p-4 my-3 text-brand-500 overflow-x-auto" dir="ltr"><code>${esc(b.x)}</code></pre>`;
+  if(b.k==='ul') return `<div class="my-3">${b.h?`<div class="font-semibold text-brand-500 mb-1">${tx(b.h)}</div>`:''}<ul class="space-y-1.5">${b.x.map(i=>`<li class="flex gap-2 leading-relaxed"><span class="text-brand-500 mt-1.5 shrink-0">●</span><span>${tx(i)}</span></li>`).join('')}</ul></div>`;
+  if(b.k==='cards') return `<div class="grid gap-3 sm:grid-cols-2 my-3">${b.c.map(c=>`<div class="bg-dark-surface border border-dark-border rounded-xl p-4"><div class="font-bold text-brand-500 mb-2">${tx(c.t)}</div><ul class="space-y-1 text-sm leading-relaxed">${c.l.map(i=>`<li class="flex gap-2"><span class="text-dark-muted shrink-0">▪</span><span>${tx(i)}</span></li>`).join('')}</ul></div>`).join('')}</div>`;
+  if(b.k==='tbl') return `<div class="overflow-x-auto my-3 rounded-xl border border-dark-border"><table class="w-full text-sm"><thead class="bg-brand-600 text-white"><tr>${b.h.map(h=>`<th class="p-3 text-start font-semibold">${tx(h)}</th>`).join('')}</tr></thead><tbody>${b.r.map((r,i)=>`<tr class="${i%2?'bg-dark-surface':'bg-dark-elevated'}">${r.map((c,j)=>`<td class="p-3 border-t border-dark-border ${j===0?'font-semibold':''}">${tx(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  return '';
+}
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+function optHTML(o,i){
+  return `<button class="opt w-full text-start p-3 rounded-lg border border-dark-border bg-dark-surface hover:border-brand-500 transition flex gap-3 items-start" data-i="${i}"><span class="mono text-dark-muted shrink-0">${'ABCD'[i]}.</span><span>${tx(o)}</span></button>`;
+}
+function qHTML(q,idx,total){
+  return `<div class="qbox bg-dark-elevated border border-dark-border rounded-xl p-4 mb-4" data-a="${q.a}">
+    <div class="font-semibold mb-3"><span class="mono text-brand-500">${idx}/${total}</span> ${tx(q.q)}</div>
+    <div class="space-y-2">${q.o.map(optHTML).join('')}</div>
+    <div class="fb mt-3 text-sm font-semibold hidden"></div></div>`;
+}
+function getQz(L){ return state.qz[L.id] || (state.qz[L.id]=L.quiz.map(mixQ)); }
+function quizInner(L){
+  const qs=getQz(L), best=sd().best[L.id];
+  return `<div class="flex justify-between items-center mb-3"><h2 class="font-bold text-lg">📝 ${u('quiz')} <span class="mono text-sm text-dark-muted">(${qs.length})</span></h2>${best!=null?`<span class="mono text-xs text-dark-muted">${u('best')}: ${best}%</span>`:''}</div>
+    ${qs.map((q,i)=>qHTML(q,i+1,qs.length)).join('')}
+    <div class="qscore hidden mt-2 p-3 rounded-lg bg-dark-surface border border-brand-500 flex flex-wrap items-center justify-between gap-2"><b class="qs-text"></b><button data-act="retryQuiz" data-id="${L.id}" class="px-4 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm">${u('retry')}</button></div>`;
+}
+
+/* ============================================================
+   FLASHCARD DECKS (shared by lectures and glossary)
+   ============================================================ */
+function getDeck(id,kind,list){
+  if(!state.decks[id]) state.decks[id]={kind,list:list.slice(),i:0,flip:false};
+  return state.decks[id];
+}
+function deckHTML(id){
+  const d=state.decks[id], c=d.list[d.i], l=li();
+  let front, back;
+  if(d.kind==='g'){
+    front=`<div class="mono text-2xl text-brand-500 font-bold" dir="ltr">${esc(c[0])}</div>`;
+    back=`<div class="text-2xl font-bold text-white" dir="rtl" style="font-family:Cairo">${esc(c[1])}</div>`;
+  } else {
+    front=`<div class="text-xs mono text-dark-muted mb-2">${u('question')}</div><div class="text-lg font-bold">${esc(c[0][l])}</div>`;
+    back=`<div class="text-base font-semibold text-white leading-relaxed">${esc(c[1][l])}</div><div class="text-xs text-white/70 mt-3 leading-relaxed" dir="${l?'ltr':'rtl'}">${esc(c[1][1-l])}</div>`;
+  }
+  return `<p class="text-dark-muted mb-3 text-sm">${u('flip')} • <span class="mono">${d.i+1}/${d.list.length}</span></p>
+    <div class="flip ${d.flip?'on':''} cursor-pointer mb-3" data-act="dk-flip" data-deck="${id}"><div class="flip-inner">
+      <div class="face bg-dark-elevated border border-brand-500">${front}</div>
+      <div class="face back bg-brand-600">${back}</div></div></div>
+    <div class="flex justify-between gap-2">
+      <button data-act="dk-prev" data-deck="${id}" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500">${u('prev')}</button>
+      <button data-act="dk-shuf" data-deck="${id}" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500">🔀 ${u('shuffle')}</button>
+      <button data-act="dk-next" data-deck="${id}" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white">${u('next')}</button>
+    </div>`;
+}
+function deckBox(id,kind,list){ getDeck(id,kind,list); return `<div id="deck-${id}">${deckHTML(id)}</div>`; }
+function redrawDeck(id){ const el=$('deck-'+id); if(el) el.innerHTML=deckHTML(id); }
+
+/* ============================================================
+   PAGES
+   ============================================================ */
+function renderHome(){
+  const s=subj(), d=sd(), m=mastery(s), n=s.lectures.length;
+  const steps = [
+    ["Read each lecture slowly, then read the Key Takeaways.","اقرأ كل محاضرة ببطء ثم اقرأ أهم النقاط."],
+    ["Go through the lecture flashcards, then do the quiz until you get 100%.","راجع بطاقات المحاضرة ثم حل الاختبار حتى تحصل على 100%."],
+    ["Use the term flashcards in the Glossary page for 10 minutes every day.","استخدم بطاقات المصطلحات في صفحة القاموس 10 دقائق يوميًا."],
+    ["Take the Final Exam again and again until you score 90% or more. Read the mistakes list after each try.","أدِّ الاختبار النهائي مرارًا حتى تحصل على 90% أو أكثر. اقرأ قائمة الأخطاء بعد كل محاولة."],
+    ["Memorize the lists: 4 ownership forms, 4 CSR types, 4 functions of management (P-O-L-C), 4Ps.","احفظ القوائم: 4 أشكال ملكية، 4 أنواع CSR، 4 وظائف إدارية (P-O-L-C)، الـ 4Ps."],
+    ["Know the formulas: Profit = Revenue - Expenses and Value = Benefits - Cost.","اعرف المعادلات: الربح = الإيرادات - المصروفات والقيمة = الفوائد - التكلفة."]
+  ];
+  return `<div class="fade">
+    <div class="rounded-2xl bg-gradient-to-br from-brand-600 to-dark-elevated p-6 mb-6 border border-dark-border">
+      <div class="text-3xl mb-1">${s.icon}</div>
+      <h1 class="text-3xl font-extrabold mb-1">${tx(s.name)}</h1>
+      <p class="text-white/80">${n} ${u('lectures').toLowerCase()} • ${state.lang==='ar'?'اختبارات • بطاقات • اختبار نهائي • قاموس':'quizzes • flashcards • final exam • glossary'}</p>
+    </div>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-6">
+      <div class="flex justify-between mb-2"><b>${u('mastery')}</b><span class="mono text-brand-500">${m}%</span></div>
+      <div class="h-3 bg-dark-base rounded-full overflow-hidden"><div class="h-full bg-brand-500 transition-all" style="width:${m}%"></div></div>
+      <p class="text-xs text-dark-muted mt-2">${u('masteryHow')}</p>
+    </div>
+    <div class="grid gap-3 sm:grid-cols-2 mb-6">
+      ${s.lectures.map(l=>{ const b=d.best[l.id]; return `<button data-go="${l.id}" class="text-start bg-dark-elevated border border-dark-border hover:border-brand-500 rounded-xl p-4 transition">
+        <div class="flex justify-between"><span class="mono text-brand-500 text-sm">${u('lecture')} ${l.n}</span>${d.seen[l.id]?`<span class="text-dark-muted text-xs">📖 ${u('read')}</span>`:''}</div>
+        <div class="font-semibold mt-1">${tx(l.title)}</div>
+        <div class="h-1.5 bg-dark-base rounded-full overflow-hidden mt-3"><div class="h-full bg-brand-500" style="width:${b||0}%"></div></div>
+        <div class="mono text-xs text-dark-muted mt-1">${u('quiz')}: ${b!=null?b+'%':'—'}</div></button>`; }).join('')}
+    </div>
+    <div class="grid gap-3 sm:grid-cols-2 mb-6">
+      <button data-go="exam" class="bg-dark-elevated border border-dark-border hover:border-brand-500 rounded-xl p-4 font-semibold text-start">🏆 ${u('exam')}<div class="mono text-xs text-dark-muted mt-1">${u('best')}: ${d.exam?d.exam+'%':'—'}</div></button>
+      <button data-go="glossary" class="bg-dark-elevated border border-dark-border hover:border-brand-500 rounded-xl p-4 font-semibold text-start">📖 Glossary / قاموس المصطلحات<div class="mono text-xs text-dark-muted mt-1">${s.glossary.length} • ${u('glossFlash')}</div></button>
+    </div>
+    <div class="border-s-4 border-violet-400 bg-violet-400/10 rounded-e-xl p-5">
+      <h2 class="font-bold text-violet-400 mb-2">🚀 ${u('plan')}</h2>
+      <ol class="space-y-1.5 list-decimal ps-5">${steps.map(x=>`<li>${tx(x)}</li>`).join('')}</ol>
+    </div>
+    <button data-act="reset" class="mt-6 text-xs text-dark-muted underline">${u('reset')}</button>
+  </div>`;
+}
+
+function renderLecture(L, idx){
+  const d=sd(); d.seen[L.id]=true; save();
+  const lects=LECT(), prev=lects[idx-1], next=lects[idx+1], ar=state.lang==='ar';
+  return `<div class="fade">
+    <div class="mono text-brand-500 text-sm mb-1">${u('lecture')} ${L.n}</div>
+    <h1 class="text-2xl sm:text-3xl font-extrabold mb-4">${tx(L.title)}</h1>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-5">
+      <h2 class="font-bold text-lg mb-2">🎯 ${u('objectives')}</h2>
+      <ul class="space-y-1">${L.obj.map(o=>`<li class="flex gap-2"><span class="text-brand-500">✓</span><span>${tx(o)}</span></li>`).join('')}</ul>
+    </div>
+    ${L.sec.map((s,i)=>`<section class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-5">
+        <h2 class="text-xl font-bold mb-2 flex items-center gap-2"><span class="mono text-sm bg-brand-600 text-white rounded-md px-2 py-0.5">${i+1}</span>${tx(s.t)}</h2>
+        ${s.b.map(renderBlock).join('')}</section>`).join('')}
+    <div class="bg-brand-500/10 border border-brand-500 rounded-2xl p-5 mb-5">
+      <h2 class="font-bold text-lg mb-2 text-brand-500">⭐ ${u('take')}</h2>
+      <ul class="space-y-1">${L.take.map(t=>`<li class="flex gap-2"><span class="text-brand-500">★</span><span>${tx(t)}</span></li>`).join('')}</ul>
+    </div>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-5">
+      <h2 class="font-bold text-lg mb-3">🃏 ${u('flash')}</h2>
+      ${deckBox('fc-'+L.id,'l',L.fc)}
+    </div>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-5" data-quiz="${L.id}" id="quiz-${L.id}">${quizInner(L)}</div>
+    <div class="flex justify-between gap-3">
+      ${prev?`<button data-go="${prev.id}" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500">${ar?'→':'←'} ${u('prev')}</button>`:'<span></span>'}
+      ${next?`<button data-go="${next.id}" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white">${u('next')} ${ar?'←':'→'}</button>`:`<button data-go="exam" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white">${u('exam')} ${ar?'←':'→'}</button>`}
+    </div></div>`;
+}
+
+function gItems(list){
+  return list.map(g=>`<div class="bg-dark-elevated border border-dark-border rounded-xl p-3 flex flex-wrap justify-between gap-2"><span class="mono text-brand-500 font-semibold" dir="ltr">${esc(g[0])}</span><span class="font-semibold" dir="rtl" style="font-family:Cairo">${esc(g[1])}</span></div>`).join('') || '<div class="text-dark-muted">—</div>';
+}
+function renderGlossary(){
+  const G=subj().glossary;
+  return `<div class="fade">
+    <h1 class="text-3xl font-extrabold mb-1">Glossary / قاموس المصطلحات</h1>
+    <p class="text-dark-muted mb-5 mono text-sm">${G.length} terms</p>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-6">
+      <h2 class="font-bold text-lg mb-3">🃏 ${u('glossFlash')}</h2>
+      ${deckBox('gl','g',shuf(G))}
+    </div>
+    <h2 class="font-bold text-lg mb-2">📖 ${u('glossList')}</h2>
+    <input id="gSearch" placeholder="${u('search')}" class="w-full p-3 rounded-xl bg-dark-elevated border border-dark-border focus:border-brand-500 outline-none mb-4">
+    <div id="gList" class="grid gap-2">${gItems(G)}</div></div>`;
+}
+
+/* ---------- FINAL EXAM ---------- */
+function pool(){ const p=[]; LECT().forEach(l=>l.quiz.forEach(q=>p.push(q))); return p; }
+function newExam(size){
+  const qs=shuf(pool()).slice(0,size).map(mixQ);
+  state.exam={qs,i:0,score:0,wrong:[],finished:false,size};
+}
+function renderExam(){
+  const e=state.exam, total=pool().length, d=sd();
+  if(!e){
+    const sizes=[20,40,total];
+    return `<div class="fade text-center py-8"><h1 class="text-3xl font-extrabold mb-2">🏆 ${u('exam')}</h1>
+      <p class="text-dark-muted mb-1">${state.lang==='ar'?`بنك الأسئلة: ${total} سؤالًا من كل المحاضرات. تتغير الأسئلة وترتيب الخيارات في كل مرة.`:`Question bank: ${total} questions from all lectures. Questions and answer order change every time.`}</p>
+      <p class="mono text-sm text-dark-muted mb-6">${u('best')}: ${d.exam?d.exam+'%':'—'}</p>
+      <p class="font-semibold mb-3">${u('chooseSize')}</p>
+      <div class="flex flex-wrap justify-center gap-3">${sizes.map((n,i)=>`<button data-size="${n}" class="px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold"><span class="mono">${n}</span> ${i===2?`(${u('all')})`:u('questions')}</button>`).join('')}</div></div>`;
+  }
+  if(e.finished){
+    const p=Math.round(e.score/e.qs.length*100);
+    return `<div class="fade py-6"><div class="text-center">
+      <h1 class="text-3xl font-extrabold mb-3">🏆 ${u('exam')}</h1>
+      <div class="mono text-5xl font-extrabold ${p>=90?'text-green-400':p>=60?'text-amber-400':'text-red-400'} mb-2">${e.score}/${e.qs.length}</div>
+      <div class="mono text-xl mb-4">${p}%</div>
+      <p class="mb-6">${p>=90?(state.lang==='ar'?'ممتاز! أنت جاهز للامتحان 🎉':'Excellent! You are ready 🎉'):(state.lang==='ar'?'راجع المحاضرات وأعد المحاولة للوصول إلى 90%+':'Review the lectures and try again to reach 90%+')}</p>
+      <button data-act="examAgain" class="px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold">${u('retry')}</button></div>
+      ${e.wrong.length?`<h2 class="font-bold text-lg mt-8 mb-3">❌ ${u('mistakes')} (${e.wrong.length})</h2>
+      ${e.wrong.map(w=>`<div class="bg-dark-elevated border border-dark-border border-s-4 border-s-red-500 rounded-xl p-4 mb-3"><div class="font-semibold mb-1">${tx(w.q)}</div><div class="text-sm text-green-400">${u('yourAns')}: ${tx(w.c)}</div></div>`).join('')}`:''}
+    </div>`;
+  }
+  const q=e.qs[e.i];
+  return `<div class="fade"><h1 class="text-2xl font-extrabold mb-3">🏆 ${u('exam')}</h1>
+    <div class="h-2 bg-dark-surface rounded-full mb-4 overflow-hidden"><div class="h-full bg-brand-500" style="width:${e.i/e.qs.length*100}%"></div></div>
+    <div data-exam="1">${qHTML(q,e.i+1,e.qs.length)}</div>
+    <div class="flex justify-between items-center"><span class="mono text-sm text-dark-muted">${u('score')}: ${e.score}</span>
+    <button id="examNext" class="hidden px-5 py-2 rounded-lg bg-brand-600 text-white">${e.i===e.qs.length-1?u('finish'):u('next')}</button></div></div>`;
+}
+
+/* ============================================================
+   SHELL: nav, layout, render
+   ============================================================ */
+function renderNav(){
+  const item=(id,icon,label,extra='')=>`<button data-go="${id}" class="w-full flex items-center gap-3 text-start px-3 py-2.5 rounded-lg transition ${state.page===id?'bg-brand-600 text-white':'hover:bg-dark-elevated text-dark-text'}"><span>${icon}</span><span class="flex-1 text-sm">${label}</span>${extra}</button>`;
+  const head=t=>`<div class="px-3 pt-3 pb-1 text-xs uppercase tracking-wider text-dark-muted">${t}</div>`;
+  const s=subj(), d=sd();
+  let h=`<a href="index.html" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-dark-elevated text-dark-text"><span>🗂️</span><span class="flex-1 text-sm">${u('hub')}</span></a>`;
+  h += `<div class="px-3 pt-3 pb-1 text-sm font-bold text-brand-500">${s.icon} ${tx(s.name)}</div>`;
+  h += item('home','🏠',u('home'));
+  h += head(u('lectures')) + s.lectures.map(l=>item(l.id,`<span class="mono text-xs">${l.n}</span>`,tx(l.title),d.best[l.id]!=null?`<span class="mono text-[10px] opacity-80">${d.best[l.id]}%</span>`:'')).join('');
+  h += head(u('tools')) + item('exam','🏆',u('exam'),d.exam?`<span class="mono text-[10px] opacity-80">${d.exam}%</span>`:'') + item('glossary','📖','Glossary / قاموس المصطلحات');
+  $('nav').innerHTML=h;
+}
+function applyLayout(){
+  const sb=$('sidebar'), main=$('main'), bd=$('backdrop');
+  sb.classList.toggle('ltr:-translate-x-full',!state.sidebar);
+  sb.classList.toggle('rtl:translate-x-full',!state.sidebar);
+  main.classList.toggle('lg:ps-72',state.sidebar);
+  bd.classList.toggle('hidden',!(state.sidebar && window.innerWidth<1024));
+}
+function updateTop(){
+  const show=!!state.subject, m=show?mastery(subj()):0;
+  $('topProgWrap').classList.toggle('hidden',!show); $('topProgWrap').classList.toggle('sm:flex',show);
+  $('topBar').style.width=m+'%'; $('topPct').textContent=m+'%';
+}
+function render(){
+  document.documentElement.lang=state.lang;
+  document.documentElement.dir=state.lang==='ar'?'rtl':'ltr';
+  $('langBtn').textContent = state.lang==='ar'?'English':'العربية';
+  applyTheme();
+  const lects = state.subject?LECT():[];
+  const idx=lects.findIndex(l=>l.id===state.page);
+  let html='', title='';
+  if(state.page==='home'){ html=renderHome(); title=tx(subj().name).replace(/<[^>]+>/g,''); }
+  else if(idx>=0){ html=renderLecture(lects[idx],idx); title=`${u('lecture')} ${lects[idx].n}`; }
+  else if(state.page==='exam'){ html=renderExam(); title=u('exam'); }
+  else if(state.page==='glossary'){ html=renderGlossary(); title='Glossary / قاموس المصطلحات'; }
+  $('app').innerHTML=html; $('topTitle').textContent=title;
+  updateTop(); renderNav(); applyLayout();
+}
+function go(p){
+  state.page=p; state.qz={}; state.decks={}; if(p!=='exam') state.exam=null;
+  if(window.innerWidth<1024) state.sidebar=false;
+  render(); window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ============================================================
+   EVENTS
+   ============================================================ */
+document.addEventListener('click',e=>{
+  const g=e.target.closest('[data-go]'); if(g){ go(g.dataset.go); return; }
+
+  const sz=e.target.closest('[data-size]'); if(sz){ newExam(+sz.dataset.size); render(); window.scrollTo({top:0}); return; }
+
+  const opt=e.target.closest('.opt');
+  if(opt){
+    const box=opt.closest('.qbox'); if(box.dataset.done) return;
+    box.dataset.done='1';
+    const a=+box.dataset.a, i=+opt.dataset.i, ok=(i===a);
+    if(ok) box.dataset.ok='1';
+    box.querySelectorAll('.opt').forEach(b=>{
+      b.disabled=true; b.classList.remove('hover:border-brand-500'); b.classList.add('cursor-not-allowed');
+      if(+b.dataset.i===a) b.classList.add('!bg-green-600/30','!border-green-500');
+    });
+    if(!ok) opt.classList.add('!bg-red-600/30','!border-red-500');
+    const fb=box.querySelector('.fb'); fb.classList.remove('hidden');
+    fb.className='fb mt-3 text-sm font-semibold '+(ok?'text-green-400':'text-red-400');
+    fb.textContent=ok?u('correct'):u('wrong');
+
+    const exam=box.closest('[data-exam]');
+    if(exam){
+      const ex=state.exam, q=ex.qs[ex.i];
+      if(ok) ex.score++; else ex.wrong.push({q:q.q,c:q.o[q.a]});
+      $('examNext').classList.remove('hidden'); return;
+    }
+    const qz=box.closest('[data-quiz]');
+    if(qz){
+      const boxes=[...qz.querySelectorAll('.qbox')];
+      if(boxes.every(b=>b.dataset.done)){
+        const sc=boxes.filter(b=>b.dataset.ok).length, pct=Math.round(sc/boxes.length*100);
+        const sEl=qz.querySelector('.qscore'); sEl.classList.remove('hidden');
+        qz.querySelector('.qs-text').textContent=`${u('score')}: ${sc}/${boxes.length} (${pct}%)`;
+        const d=sd(), id=qz.dataset.quiz;
+        if(d.best[id]==null||pct>d.best[id]){ d.best[id]=pct; save(); }
+        updateTop(); renderNav();
+      }
+    }
+    return;
+  }
+
+  const a=e.target.closest('[data-act]'); if(!a) return;
+  const act=a.dataset.act;
+  if(act.startsWith('dk-')){
+    const id=a.dataset.deck, d=state.decks[id]; if(!d) return;
+    if(act==='dk-flip'){ d.flip=!d.flip; const f=document.querySelector(`#deck-${id} .flip`); if(f) f.classList.toggle('on',d.flip); return; }
+    if(act==='dk-next') d.i=(d.i+1)%d.list.length;
+    if(act==='dk-prev') d.i=(d.i-1+d.list.length)%d.list.length;
+    if(act==='dk-shuf'){ d.list=shuf(d.list); d.i=0; }
+    d.flip=false; redrawDeck(id); return;
+  }
+  if(act==='retryQuiz'){
+    const L=LECT().find(l=>l.id===a.dataset.id); delete state.qz[L.id];
+    $('quiz-'+L.id).innerHTML=quizInner(L); $('quiz-'+L.id).scrollIntoView({behavior:'smooth',block:'start'}); return;
+  }
+  if(act==='examAgain'){ state.exam=null; render(); return; }
+  if(act==='reset'){ state.data[state.subject]={seen:{},best:{},exam:0}; save(); render(); return; }
+});
+document.addEventListener('click',e=>{
+  if(e.target.id==='examNext'){
+    const ex=state.exam;
+    if(ex.i<ex.qs.length-1) ex.i++;
+    else { ex.finished=true; const p=Math.round(ex.score/ex.qs.length*100), d=sd(); if(p>(d.exam||0)){ d.exam=p; save(); } }
+    render(); window.scrollTo({top:0});
+  }
+});
+document.addEventListener('input',e=>{
+  if(e.target.id==='gSearch'){
+    const q=e.target.value.toLowerCase();
+    $('gList').innerHTML=gItems(subj().glossary.filter(g=>(g[0]+' '+g[1]).toLowerCase().includes(q)));
+  }
+});
+$('menuBtn').onclick=()=>{ state.sidebar=!state.sidebar; applyLayout(); };
+$('backdrop').onclick=()=>{ state.sidebar=false; applyLayout(); };
+$('langBtn').onclick=()=>{ state.lang=state.lang==='ar'?'en':'ar'; save(); render(); };
+window.addEventListener('resize',applyLayout);
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Principles of Accounting | مبادئ المحاسبة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+/* brand colors default = teal (#14b8a6 / #0d9488). Each subject can switch them through CSS variables. */
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      brand: { 500: 'rgb(var(--b5) / <alpha-value>)', 600: 'rgb(var(--b6) / <alpha-value>)' },
+      dark: { base: '#0b0f17', surface: '#111827', elevated: '#1f2937', border: '#374151', text: '#f3f4f6', muted: '#9ca3af' }
+    },
+    fontFamily: { sans: ['Inter', 'sans-serif'], arabic: ['Cairo', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
+  } }
+}
+</script>
+<style>
+  :root { --b5: 20 184 166; --b6: 13 148 136; }
+  html[lang="en"] body { font-family: 'Inter', sans-serif; }
+  html[lang="ar"] body { font-family: 'Cairo', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #0b0f17; }
+  ::-webkit-scrollbar-thumb { background: #374151; border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgb(var(--b6)); }
+  .fade { animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .flip { perspective: 1000px; }
+  .flip-inner { transition: transform .5s; transform-style: preserve-3d; position: relative; min-height: 230px; }
+  .flip.on .flip-inner { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1.5rem; border-radius: 1rem; overflow: auto; }
+  .back { transform: rotateY(180deg); }
+</style>
+</head>
+<body class="bg-dark-base text-dark-text min-h-screen">
+
+<header class="fixed top-0 inset-x-0 z-40 h-14 bg-dark-surface/95 backdrop-blur border-b border-dark-border flex items-center justify-between px-3">
+  <div class="flex items-center gap-3 min-w-0">
+    <button id="menuBtn" class="p-2 rounded-lg hover:bg-dark-elevated" aria-label="Menu">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <a href="index.html" class="p-2 rounded-lg hover:bg-dark-elevated" title="All subjects">🗂️</a>
+    <span id="topTitle" class="font-bold text-brand-500 truncate"></span>
+  </div>
+  <div class="flex items-center gap-3">
+    <div id="topProgWrap" class="hidden sm:flex items-center gap-2" title="Mastery">
+      <div class="w-28 h-2 bg-dark-base rounded-full overflow-hidden"><div id="topBar" class="h-full bg-brand-500 transition-all" style="width:0%"></div></div>
+      <span id="topPct" class="mono text-xs text-dark-muted w-9"></span>
+    </div>
+    <button id="langBtn" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold"></button>
+  </div>
+</header>
+
+<div id="backdrop" class="fixed inset-0 bg-black/60 z-30 hidden lg:hidden"></div>
+
+<aside id="sidebar" class="fixed top-14 bottom-0 start-0 w-72 z-30 bg-dark-surface border-e border-dark-border overflow-y-auto transition-transform duration-300">
+  <nav id="nav" class="p-3 space-y-1"></nav>
+</aside>
+
+<main id="main" class="pt-14 transition-all duration-300">
+  <div id="app" class="max-w-4xl mx-auto p-4 sm:p-6 pb-24"></div>
+</main>
+
+<script>
+/* ============================================================
+   UI LABELS  [English, Arabic]
+   ============================================================ */
+const UI = {
+  hub:["All Subjects","كل المواد"], home:["Subject Home","الصفحة الرئيسية للمادة"], lecture:["Lecture","المحاضرة"],
+  objectives:["Learning Objectives","أهداف التعلم"], def:["Definition","تعريف"], ex:["Example","مثال"], tip:["Exam Tip","نصيحة للامتحان"],
+  take:["Key Takeaways","أهم النقاط"], quiz:["Self-Assessment Quiz","اختبار ذاتي"], flash:["Lecture Flashcards","بطاقات مراجعة المحاضرة"],
+  exam:["Final Exam","الاختبار النهائي"], next:["Next","التالي"], prev:["Previous","السابق"],
+  correct:["Correct! ✔","إجابة صحيحة! ✔"], wrong:["Incorrect ✘ - the correct answer is highlighted","إجابة خاطئة ✘ - الإجابة الصحيحة موضحة"],
+  score:["Your score","نتيجتك"], retry:["Try again","أعد المحاولة"], search:["Search a term...","ابحث عن مصطلح..."],
+  flip:["Tap the card to flip","اضغط على البطاقة لقلبها"], shuffle:["Shuffle","خلط"], start:["Start Exam","ابدأ الاختبار"],
+  mastery:["Mastery","مستوى الإتقان"], best:["Best","الأفضل"], plan:["How to score 100%","كيف تحصل على 100%"],
+  finish:["Finish","إنهاء"], reset:["Reset progress of this subject","إعادة ضبط تقدم هذه المادة"], read:["Read","تمت القراءة"],
+  soon:["Coming soon","قريبًا"], open:["Open","فتح"], subjects:["Subjects","المواد"], tools:["Study Tools","أدوات المراجعة"],
+  lectures:["Lectures","المحاضرات"], mistakes:["Questions you missed","الأسئلة التي أخطأت فيها"], yourAns:["Correct answer","الإجابة الصحيحة"],
+  glossFlash:["Term Flashcards","بطاقات المصطلحات"], glossList:["All Terms","كل المصطلحات"], questions:["questions","سؤالًا"],
+  question:["Question","السؤال"],
+  chooseSize:["Choose the number of questions","اختر عدد الأسئلة"], all:["All","الكل"], answerEN:["English","English"],
+  masteryHow:["Mastery = average of your best score in each lecture quiz and your best final exam score. Reading lectures does not raise it.","الإتقان = متوسط أفضل نتيجة لك في اختبار كل محاضرة وأفضل نتيجة في الاختبار النهائي. قراءة المحاضرات وحدها لا ترفعه."]
+};
+const LECTURES = [];
+
+LECTURES.push({ id:'l1', n:1,
+  title:["Introduction to Accounting and Business","مقدمة في المحاسبة والأعمال (Accounting and Business)"],
+  obj:[
+    ["Know what a business is.","معرفة ما هو النشاط التجاري (Business)."],
+    ["Know the role of accounting in relation to a business.","معرفة دور المحاسبة (Accounting) في علاقتها بالنشاط التجاري."],
+    ["Distinguish the different types and forms of business organization.","التمييز بين الأنواع والأشكال المختلفة لتنظيم الأعمال (Business organization)."],
+    ["Know the characteristics of the different forms of business organization.","معرفة خصائص الأشكال المختلفة لتنظيم الأعمال."],
+    ["Learn the nature, definition, and functions of accounting.","تعلم طبيعة المحاسبة وتعريفها ووظائفها."],
+    ["Know how to journalize a transaction and post it in the general ledger.","معرفة كيفية تسجيل المعاملة في اليومية (Journalize) وترحيلها إلى دفتر الأستاذ العام (General ledger)."],
+    ["Know how to prepare the Trial Balance.","معرفة كيفية إعداد ميزان المراجعة (Trial Balance)."],
+    ["Know what the Financial Reports are and how to prepare them.","معرفة ما هي التقارير المالية (Financial Reports) وكيفية إعدادها."]
+  ],
+  sec:[
+   {t:["Course Overview","نظرة عامة على المقرر"], b:[
+     {k:'p', x:["This course is an introduction to accounting concepts and the operating characteristics of accounting systems. It focuses on the definition and concepts of accounting.","هذا المقرر مقدمة في مفاهيم المحاسبة (Accounting) والخصائص التشغيلية للنظم المحاسبية (Accounting systems). ويركز على تعريف المحاسبة ومفاهيمها."]},
+     {k:'ul', h:["The course teaches the student:","يعلّم المقرر الطالب:"], x:[["the proper and correct way of journalizing and posting transactions in the books of accounts","الطريقة الصحيحة لتسجيل المعاملات في اليومية (Journalizing) وترحيلها (Posting) في الدفاتر المحاسبية"],["the preparation of financial statements","إعداد القوائم المالية (Financial statements)"],["how to interpret these financial reports or statements","كيفية تفسير هذه التقارير أو القوائم المالية"]]}
+   ]},
+   {t:["Introduction to Business: Accounting and the Business","مقدمة عن النشاط التجاري: المحاسبة والنشاط التجاري"], b:[
+     {k:'def', x:["A business is an organization or economic system where goods and services are exchanged for one another or for money.","النشاط التجاري (Business) هو منظمة أو نظام اقتصادي تُتبادل فيه السلع والخدمات (Goods and services) مع بعضها أو مقابل المال."]},
+     {k:'cards', c:[
+       {t:["1. Buyer","1. المشتري (Buyer)"], l:[["The person who buys or purchases products/commodities and services from the seller.","الشخص الذي يشتري المنتجات/السلع والخدمات من البائع."]]},
+       {t:["2. Seller","2. البائع (Seller)"], l:[["The person who sells or offers products/commodities or services to buyers.","الشخص الذي يبيع أو يعرض المنتجات/السلع أو الخدمات على المشترين."]]}
+     ]},
+     {k:'tip', x:["Every business requires some form of investment and enough customers to whom its output can be sold on a consistent basis in order to make a profit.","كل نشاط تجاري يحتاج إلى شكل من أشكال الاستثمار (Investment) وعدد كافٍ من العملاء يمكن أن يُباع لهم إنتاجه بصورة منتظمة لكي يحقق ربحًا (Profit)."]}
+   ]},
+   {t:["Legal Forms of Business Organization","الأشكال القانونية لتنظيم الأعمال"], b:[
+     {k:'cards', c:[
+       {t:["1. Sole Proprietorship","1. المنشأة الفردية (Sole Proprietorship)"], l:[["This business is owned and run by only one (1) person.","هذا النشاط يملكه ويديره شخص واحد فقط."],["It is the most common form of business organization since there are so few legal requirements to set it up.","وهو أكثر أشكال تنظيم الأعمال شيوعًا لأن متطلباته القانونية قليلة جدًا."],["The owner of the business is called the Sole Proprietor.","يسمى مالك النشاط المالك الوحيد (Sole Proprietor)."]]},
+       {t:["2. Partnership","2. الشراكة (Partnership)"], l:[["This form of business is a group consisting of two or more people who run and own a business together.","هذا الشكل مجموعة من شخصين أو أكثر يديرون ويملكون النشاط معًا."],["The owners are called partners.","يسمى المالكون شركاء (Partners)."]]},
+       {t:["3. Corporation","3. الشركة المساهمة (Corporation)"], l:[["This form of business has a separate legal identity from its owners, and thus its owners have limited liability.","لهذا الشكل كيان قانوني منفصل عن مالكيه، ولذلك تكون مسؤولية المالكين محدودة (Limited liability)."],["There is no limit on the number of owners.","لا يوجد حد لعدد المالكين."],["The owners' proof of ownership in a corporation is the stock.","دليل ملكية المالكين في الشركة هو الأسهم (Stock)."],["The owners are called Stockholders or Shareholders.","يسمى المالكون مساهمين (Stockholders / Shareholders)."]]}
+     ]},
+     {k:'tbl', h:[["Form","الشكل"],["Owners","المالكون"],["Owner's name","اسم المالك"],["Liability / identity","المسؤولية / الكيان"]],
+      r:[
+       [["Sole Proprietorship","منشأة فردية"],["1 person","شخص واحد"],["Sole Proprietor","المالك الوحيد"],["Few legal requirements to set up","متطلبات قانونية قليلة"]],
+       [["Partnership","شراكة"],["2 or more people","شخصان أو أكثر"],["Partners","الشركاء"],["Run and owned together","يُدار ويُملك بالاشتراك"]],
+       [["Corporation","شركة مساهمة"],["No limit on number","بلا حد للعدد"],["Stockholders / Shareholders","المساهمون"],["Separate legal identity, limited liability","كيان قانوني منفصل ومسؤولية محدودة"]]
+      ]}
+   ]},
+   {t:["Extra: Kinds of Business","إضافة: أنواع الأعمال (Kinds of Business)"], b:[
+     {k:'tip', x:["Extra explanation: the slides ask about the 3 kinds of business (Exercise 2 and Exercise 3) but do not list them. This is the standard answer.","شرح إضافي: الشرائح تسأل عن أنواع الأعمال الثلاثة (التمرين 2 والتمرين 3) لكنها لا تذكرها. هذه هي الإجابة القياسية."]},
+     {k:'cards', c:[
+       {t:["Service Business","أعمال الخدمات (Service Business)"], l:[["Provides services to customers.","تقدم خدمات للعملاء."],["Examples: hospitals, schools, law firms, barber shops","أمثلة: المستشفيات والمدارس ومكاتب المحاماة وصالونات الحلاقة"]]},
+       {t:["Merchandising Business","الأعمال التجارية (Merchandising Business)"], l:[["Buys finished goods and sells them at a higher price.","تشتري سلعًا جاهزة وتبيعها بسعر أعلى."],["Examples: supermarkets, jewelry stores, bookstores","أمثلة: السوبرماركت ومحلات المجوهرات والمكتبات"]]},
+       {t:["Manufacturing Business","الأعمال الصناعية (Manufacturing Business)"], l:[["Turns raw materials into finished products and sells them.","تحوّل المواد الخام إلى منتجات جاهزة وتبيعها."],["Examples: car makers, furniture factories, food factories","أمثلة: مصنعو السيارات ومصانع الأثاث ومصانع الأغذية"]]}
+     ]}
+   ]},
+   {t:["Exercise 1: Match the Form of Business","التمرين 1: طابق شكل النشاط"], b:[
+     {k:'p', x:["The three forms are: a. Sole Proprietorship  b. Partnership  c. Corporation. Match each advantage or disadvantage with its form.","الأشكال الثلاثة هي: a. المنشأة الفردية  b. الشراكة  c. الشركة المساهمة. طابق كل ميزة أو عيب مع شكله."]},
+     {k:'tbl', h:[["Statement","العبارة"],["Answer","الإجابة"]],
+      r:[
+       [["1. Easy to dissolve","1. سهلة الحل (Dissolve)"],["a. Sole proprietorship","a. منشأة فردية"]],
+       [["2. Few government regulations","2. لوائح حكومية قليلة"],["a. Sole proprietorship","a. منشأة فردية"]],
+       [["3. Greater government regulations","3. لوائح حكومية أكبر"],["c. Corporation","c. شركة مساهمة"]],
+       [["4. Easy and inexpensive to establish","4. سهلة وغير مكلفة في التأسيس"],["a. Sole proprietorship","a. منشأة فردية"]],
+       [["5. Greater access to capital","5. فرصة أكبر للحصول على رأس المال (Capital)"],["c. Corporation","c. شركة مساهمة"]],
+       [["6. Easy transfer of ownership","6. سهولة نقل الملكية"],["c. Corporation","c. شركة مساهمة"]],
+       [["7. Greater business continuity, often difficult to dissolve","7. استمرارية أكبر للنشاط وغالبًا يصعب حلها"],["c. Corporation","c. شركة مساهمة"]],
+       [["8. Must share profits","8. يجب تقاسم الأرباح"],["b. Partnership","b. شراكة"]],
+       [["9. Greater tax burden","9. عبء ضريبي أكبر"],["c. Corporation","c. شركة مساهمة"]],
+       [["10. Easy to organize","10. سهلة التنظيم"],["a. Sole proprietorship (a partnership is also fairly easy)","a. منشأة فردية (والشراكة أيضًا سهلة نسبيًا)"]]
+      ]},
+     {k:'tip', x:["These are suggested answers. The slides give the questions only.","هذه إجابات مقترحة. الشرائح تعطي الأسئلة فقط."]}
+   ]},
+   {t:["Exercise 2: Awab's Jewelry Store","التمرين 2: محل مجوهرات عواب"], b:[
+     {k:'ex', x:["Awab owns and operates a jewelry store. During the past month, she sold a necklace to a customer worth 135,000 pounds. Awab paid 85,000 pounds for the necklace.\nRequirement: What type of business does Awab own? (Manufacturing, Merchandising or Service Business). Explain.","عواب تملك وتدير محل مجوهرات. خلال الشهر الماضي باعت عقدًا لعميل بقيمة 135,000 جنيه. وقد دفعت عواب 85,000 جنيه ثمنًا للعقد.\nالمطلوب: ما نوع النشاط الذي تملكه عواب؟ (صناعي Manufacturing أم تجاري Merchandising أم خدمي Service). اشرح."]},
+     {k:'p', x:["Answer: a Merchandising business, because she buys a finished product (the necklace) and resells it at a higher price. She does not make the necklace, and she does not sell a service.","الإجابة: نشاط تجاري (Merchandising)، لأنها تشتري منتجًا جاهزًا (العقد) وتعيد بيعه بسعر أعلى. وهي لا تصنع العقد ولا تبيع خدمة."]},
+     {k:'formula', x:"Gross profit = Selling price - Cost\n135,000 - 85,000 = 50,000 pounds"}
+   ]},
+   {t:["Exercise 3: Essay Questions","التمرين 3: أسئلة مقالية"], b:[
+     {k:'ul', h:["Essay questions in the slides:","الأسئلة المقالية في الشرائح:"], x:[["What is the relationship of business to accounting?","ما علاقة النشاط التجاري بالمحاسبة؟"],["List down the 3 kinds of business and give examples of each.","اذكر أنواع الأعمال الثلاثة مع أمثلة لكل نوع."],["Which of the kinds of business organization has the most capital needed?","أي أشكال تنظيم الأعمال يحتاج إلى أكبر رأس مال؟"]]},
+     {k:'ul', h:["Suggested answers:","إجابات مقترحة:"], x:[["Every business needs accounting. Accounting records and reports the business's transactions, helps the owner or managers plan and decide, and tells interested parties how the business is doing.","كل نشاط تجاري يحتاج إلى المحاسبة. فالمحاسبة تسجل معاملات النشاط وتبلغ عنها، وتساعد المالك أو المديرين على التخطيط واتخاذ القرارات، وتخبر الأطراف المهتمة بحال النشاط."],["Kinds of business: service, merchandising and manufacturing (see the Extra section).","أنواع الأعمال: خدمي وتجاري وصناعي (انظر قسم الإضافة)."],["The corporation needs the most capital, since it has no limit on the number of owners and can raise capital from many shareholders.","الشركة المساهمة تحتاج إلى أكبر رأس مال، لأنه لا حد لعدد مالكيها ويمكنها جمع رأس المال من مساهمين كثيرين."]]}
+   ]}
+  ],
+  take:[
+    ["A business is an organization or economic system where goods and services are exchanged for one another or for money.","النشاط التجاري منظمة أو نظام اقتصادي تُتبادل فيه السلع والخدمات مع بعضها أو مقابل المال."],
+    ["The two people in business are the buyer and the seller.","الطرفان في النشاط التجاري هما المشتري والبائع."],
+    ["Every business needs investment and enough regular customers to make a profit.","كل نشاط يحتاج إلى استثمار وعملاء كافين بانتظام لتحقيق الربح."],
+    ["Three legal forms: sole proprietorship (1 owner), partnership (2 or more partners), corporation (separate legal identity, limited liability, owners hold stock).","ثلاثة أشكال قانونية: المنشأة الفردية (مالك واحد)، والشراكة (شريكان أو أكثر)، والشركة المساهمة (كيان قانوني منفصل ومسؤولية محدودة وملكية بالأسهم)."],
+    ["The sole proprietorship is the most common form because it has so few legal requirements.","المنشأة الفردية هي الأكثر شيوعًا لأن متطلباتها القانونية قليلة جدًا."],
+    ["The corporation needs the most capital and has greater regulation and taxes.","الشركة المساهمة تحتاج إلى أكبر رأس مال ولها لوائح وضرائب أكثر."]
+  ],
+  fc:[
+   [["What is a business?","ما هو النشاط التجاري (Business)؟"],["An organization or economic system where goods and services are exchanged for one another or for money.","منظمة أو نظام اقتصادي تُتبادل فيه السلع والخدمات مع بعضها أو مقابل المال."]],
+   [["Who are the two people involved in business?","من هما الطرفان في النشاط التجاري؟"],["The buyer (purchases products and services) and the seller (sells or offers them).","المشتري (يشتري المنتجات والخدمات) والبائع (يبيعها أو يعرضها)."]],
+   [["What does every business need in order to make a profit?","ماذا يحتاج كل نشاط تجاري ليحقق ربحًا؟"],["Some form of investment and enough customers to whom its output can be sold on a consistent basis.","شكلًا من الاستثمار وعددًا كافيًا من العملاء يُباع لهم إنتاجه بانتظام."]],
+   [["Name the three legal forms of business organization.","اذكر الأشكال القانونية الثلاثة لتنظيم الأعمال."],["Sole proprietorship, partnership, corporation.","المنشأة الفردية، الشراكة، الشركة المساهمة."]],
+   [["What is a sole proprietorship?","ما هي المنشأة الفردية؟"],["A business owned and run by only one person. The owner is called the sole proprietor.","نشاط يملكه ويديره شخص واحد فقط. ويسمى المالك المالك الوحيد (Sole Proprietor)."]],
+   [["Why is the sole proprietorship the most common form?","لماذا المنشأة الفردية هي الأكثر شيوعًا؟"],["Because there are so few legal requirements to set it up.","لأن متطلبات تأسيسها القانونية قليلة جدًا."]],
+   [["What is a partnership? What are the owners called?","ما هي الشراكة؟ وماذا يسمى المالكون؟"],["A group of two or more people who run and own a business together. The owners are called partners.","مجموعة من شخصين أو أكثر يديرون ويملكون النشاط معًا. ويسمى المالكون شركاء (Partners)."]],
+   [["What is a corporation?","ما هي الشركة المساهمة (Corporation)؟"],["A business with a separate legal identity from its owners, so the owners have limited liability.","نشاط له كيان قانوني منفصل عن مالكيه، لذلك تكون مسؤولية المالكين محدودة."]],
+   [["What is the proof of ownership in a corporation?","ما دليل الملكية في الشركة المساهمة؟"],["The stock.","الأسهم (Stock)."]],
+   [["What are the owners of a corporation called?","ماذا يسمى مالكو الشركة المساهمة؟"],["Stockholders or shareholders.","المساهمون (Stockholders أو Shareholders)."]],
+   [["Is there a limit on the number of owners of a corporation?","هل هناك حد لعدد مالكي الشركة المساهمة؟"],["No, there is no limit.","لا، لا يوجد حد."]],
+   [["What are the three kinds of business (from the exercises)?","ما هي أنواع الأعمال الثلاثة (من التمارين)؟"],["Service, merchandising and manufacturing.","خدمي (Service)، وتجاري (Merchandising)، وصناعي (Manufacturing)."]]
+  ],
+  quiz:[
+   {q:["A business is an organization where goods and services are exchanged:","النشاط التجاري منظمة تُتبادل فيها السلع والخدمات:"], o:[["only for money","مقابل المال فقط"],["for one another or for money","مع بعضها أو مقابل المال"],["only for other goods","مقابل سلع أخرى فقط"],["only between governments","بين الحكومات فقط"]], a:1},
+   {q:["The person who sells or offers products or services to buyers is the:","الشخص الذي يبيع أو يعرض المنتجات أو الخدمات للمشترين هو:"], o:[["Seller","البائع"],["Buyer","المشتري"],["Partner","الشريك"],["Stockholder","المساهم"]], a:0},
+   {q:["Which form of business is owned and run by only one person?","أي شكل من الأعمال يملكه ويديره شخص واحد فقط؟"], o:[["Partnership","الشراكة"],["Corporation","الشركة المساهمة"],["Cooperative","التعاونية"],["Sole proprietorship","المنشأة الفردية"]], a:3},
+   {q:["Why is the sole proprietorship the most common form of business organization?","لماذا المنشأة الفردية هي أكثر أشكال الأعمال شيوعًا؟"], o:[["It has the most government regulations","لها أكثر اللوائح الحكومية"],["It has so few legal requirements to set up","متطلباتها القانونية قليلة جدًا"],["It always earns the highest profit","تحقق دائمًا أعلى ربح"],["It has unlimited number of owners","عدد مالكيها غير محدود"]], a:1},
+   {q:["The owners of a partnership are called:","يسمى مالكو الشراكة:"], o:[["Stockholders","مساهمين"],["Sole proprietors","ملاكًا وحيدين"],["Partners","شركاء"],["Creditors","دائنين"]], a:2},
+   {q:["A partnership consists of:","تتكون الشراكة من:"], o:[["One person","شخص واحد"],["Two or more people","شخصين أو أكثر"],["Only the government","الحكومة فقط"],["Only banks","البنوك فقط"]], a:1},
+   {q:["Which form of business has a separate legal identity from its owners?","أي شكل من الأعمال له كيان قانوني منفصل عن مالكيه؟"], o:[["Sole proprietorship","المنشأة الفردية"],["Partnership","الشراكة"],["Corporation","الشركة المساهمة"],["All of them","جميعها"]], a:2},
+   {q:["The owners' proof of ownership in a corporation is the:","دليل ملكية المالكين في الشركة المساهمة هو:"], o:[["Stock","الأسهم"],["Loan","القرض"],["Receipt","الإيصال"],["Bank account","الحساب البنكي"]], a:0},
+   {q:["Owners of a corporation have:","مالكو الشركة المساهمة لهم:"], o:[["Unlimited liability","مسؤولية غير محدودة"],["No ownership at all","لا ملكية على الإطلاق"],["Limited liability","مسؤولية محدودة"],["Only one owner is allowed","يُسمح بمالك واحد فقط"]], a:2},
+   {q:["In Exercise 1, which form has the 'greater access to capital' advantage?","في التمرين 1، أي شكل له ميزة 'فرصة أكبر للحصول على رأس المال'؟"], o:[["Sole proprietorship","المنشأة الفردية"],["Partnership","الشراكة"],["Corporation","الشركة المساهمة"],["None","لا شيء"]], a:2},
+   {q:["Awab buys a necklace for 85,000 and sells it for 135,000 pounds. Her business is a:","اشترت عواب عقدًا بـ 85,000 وباعته بـ 135,000 جنيه. نشاطها:"], o:[["Manufacturing business","نشاط صناعي"],["Service business","نشاط خدمي"],["Merchandising business","نشاط تجاري (Merchandising)"],["Non-profit organization","منظمة غير ربحية"]], a:2},
+   {q:["How much did Awab earn on the necklace (selling price minus cost)?","كم ربحت عواب من العقد (سعر البيع ناقص التكلفة)؟"], o:[["220,000 pounds","220,000 جنيه"],["85,000 pounds","85,000 جنيه"],["135,000 pounds","135,000 جنيه"],["50,000 pounds","50,000 جنيه"]], a:3}
+  ]
+});
+
+LECTURES.push({ id:'l2', n:2,
+  title:["Nature of Accounting","طبيعة المحاسبة (Nature of Accounting)"],
+  obj:[
+    ["Define accounting using the different definitions.","تعريف المحاسبة (Accounting) باستخدام التعريفات المختلفة."],
+    ["Know who Luca Pacioli was and why he matters.","معرفة من هو لوكا باتشولي (Luca Pacioli) ولماذا هو مهم."],
+    ["List and explain the five functions of accounting.","ذكر وشرح الوظائف الخمس للمحاسبة (Functions of accounting)."],
+    ["Explain the role and importance of accounting in business.","شرح دور المحاسبة وأهميتها في النشاط التجاري."],
+    ["Identify the six users of accounting information and what each one wants.","تحديد مستخدمي المعلومات المحاسبية الستة وما يريده كل منهم."],
+    ["Know what GAAP is and who developed it (FASB).","معرفة ما هي مبادئ المحاسبة المتعارف عليها (GAAP) ومن وضعها (FASB)."]
+  ],
+  sec:[
+   {t:["Nature of Accounting","طبيعة المحاسبة"], b:[
+     {k:'def', x:["Accounting is a service activity whose function is to provide quantitative information, primarily financial in nature, about economic entities that is intended to be useful in making economic decisions.","المحاسبة نشاط خدمي وظيفته تقديم معلومات كمية (Quantitative information)، مالية في طبيعتها بالدرجة الأولى، عن الوحدات الاقتصادية (Economic entities) بهدف أن تكون مفيدة في اتخاذ القرارات الاقتصادية."]},
+     {k:'tip', x:["The term \"financial in nature\" means that the necessary financial information provided is expressed in monetary terms.","عبارة \"مالية في طبيعتها\" تعني أن المعلومات المالية المقدمة تُعبَّر عنها بوحدات نقدية (Monetary terms)."]}
+   ]},
+   {t:["Definitions of Accounting","تعريفات المحاسبة"], b:[
+     {k:'cards', c:[
+       {t:["Definition 1: the recording process","التعريف 1: عملية التسجيل"], l:[["Accounting is the process of recording financial transactions pertaining to a business.","المحاسبة هي عملية تسجيل المعاملات المالية الخاصة بنشاط تجاري."],["The accounting process includes summarizing, analyzing, and reporting these transactions to oversight agencies, regulators, and tax collection entities.","تشمل العملية المحاسبية تلخيص هذه المعاملات وتحليلها والإبلاغ عنها إلى الجهات الرقابية والمنظمين وجهات تحصيل الضرائب."],["The financial statements used in accounting are a concise summary of financial transactions over an accounting period, summarizing a company's operations, financial position, and cash flows.","القوائم المالية المستخدمة في المحاسبة ملخص موجز للمعاملات المالية خلال فترة محاسبية، تلخص عمليات الشركة ومركزها المالي (Financial position) وتدفقاتها النقدية (Cash flows)."]]},
+       {t:["Definition 2: systematic recording","التعريف 2: التسجيل المنتظم"], l:[["Accounting is the process of systematically recording, measuring, and communicating information about financial transactions.","المحاسبة هي عملية تسجيل وقياس وإيصال المعلومات عن المعاملات المالية بصورة منتظمة (Systematically)."],["Accounting is a practice and body of knowledge concerned primarily with methods for recording transactions, keeping financial records, performing internal audits, reporting and analyzing financial information to the management, and advising on taxation matters.","المحاسبة ممارسة ومجموعة معارف تهتم أساسًا بطرق تسجيل المعاملات، وحفظ السجلات المالية، وإجراء المراجعة الداخلية (Internal audits)، ورفع تقارير عن المعلومات المالية وتحليلها للإدارة، وتقديم المشورة في الأمور الضريبية."]]}
+     ]},
+     {k:'def', x:["The most complete definition is the one pronounced by the Committee on Terminology of the American Institute of Certified Public Accountants: Accounting is the art of recording, classifying, summarizing, in a significant manner and in terms of money, transactions and events which are in part at least of a financial character, and interpreting the results thereof.","أكمل تعريف هو الذي أصدرته لجنة المصطلحات في المعهد الأمريكي للمحاسبين القانونيين (AICPA): المحاسبة هي فن تسجيل وتصنيف وتلخيص المعاملات والأحداث التي لها طابع مالي، ولو جزئيًا، بطريقة ذات معنى وبوحدات نقدية، وتفسير نتائجها."]},
+     {k:'tip', x:["Key words of the AICPA definition: recording, classifying, summarizing, interpreting, in terms of money.","الكلمات المفتاحية في تعريف AICPA: التسجيل، التصنيف، التلخيص، التفسير، بوحدات نقدية."]}
+   ]},
+   {t:["Luca Pacioli","لوكا باتشولي (Luca Pacioli)"], b:[
+     {k:'ul', x:[["In 1494, the first book on double-entry accounting was published by Luca Pacioli.","في عام 1494 نشر لوكا باتشولي أول كتاب عن المحاسبة بالقيد المزدوج (Double-entry accounting)."],["Since Pacioli was a Franciscan friar, he might be referred to simply as Friar Luca.","لأن باتشولي كان راهبًا فرنسيسكانيًا، يمكن أن يُشار إليه ببساطة بالراهب لوكا (Friar Luca)."],["While Friar Luca is regarded as the \"Father of Accounting\", he did not invent the system.","ورغم أن الراهب لوكا يُعتبر \"أبا المحاسبة\" (Father of Accounting)، فإنه لم يخترع النظام."]]}
+   ]},
+   {t:["Functions of Accounting","وظائف المحاسبة (Functions of Accounting)"], b:[
+     {k:'ul', h:["The five functions:","الوظائف الخمس:"], x:[["1. Analyzing","1. التحليل (Analyzing)"],["2. Recording","2. التسجيل (Recording)"],["3. Classifying","3. التصنيف (Classifying)"],["4. Summarizing","4. التلخيص (Summarizing)"],["5. Interpreting","5. التفسير (Interpreting)"]]},
+     {k:'def', x:["Bookkeeping is the activity or occupation of keeping records of the financial affairs of a business. (It is the Recording function.)","مسك الدفاتر (Bookkeeping) هو نشاط أو مهنة حفظ سجلات الشؤون المالية للنشاط التجاري. (وهو وظيفة التسجيل.)"]},
+     {k:'tip', x:["Extra explanation (the slides only list the functions): Analyzing = study each transaction to know whether it is a business transaction and what it affects. Recording = write it in the books in order. Classifying = group similar items together (such as all cash items). Summarizing = prepare reports and statements. Interpreting = explain what the results mean.","شرح إضافي (الشرائح تذكر الوظائف فقط): التحليل = دراسة كل معاملة لمعرفة هل هي معاملة تجارية وماذا تؤثر فيه. التسجيل = كتابتها في الدفاتر بالترتيب. التصنيف = تجميع البنود المتشابهة معًا (مثل كل بنود النقدية). التلخيص = إعداد التقارير والقوائم. التفسير = شرح معنى النتائج."]}
+   ]},
+   {t:["Role and Importance of Accounting in Business","دور المحاسبة وأهميتها في النشاط التجاري"], b:[
+     {k:'ul', h:["Role of accounting in business:","دور المحاسبة في النشاط التجاري:"], x:[["1. It helps the owner/s or managers make plans and decisions.","1. تساعد المالك/الملاك أو المديرين على وضع الخطط واتخاذ القرارات."],["2. It reports and analyzes business transactions through the financial statements.","2. تُبلّغ عن المعاملات التجارية وتحللها من خلال القوائم المالية."],["3. It communicates financial information to all interested parties.","3. تنقل المعلومات المالية إلى جميع الأطراف المهتمة."]]},
+     {k:'def', x:["Importance: the primary purpose of accounting is to provide the financial information needed for the efficient operation of an economic unit.","الأهمية: الغرض الأساسي من المحاسبة هو توفير المعلومات المالية اللازمة للتشغيل الكفء للوحدة الاقتصادية (Economic unit)."]}
+   ]},
+   {t:["Users of Accounting Information","مستخدمو المعلومات المحاسبية"], b:[
+     {k:'cards', c:[
+       {t:["1. Owners","1. الملاك (Owners)"], l:[["Have invested their money or goods in a business organization.","استثمروا أموالهم أو بضائعهم في المنظمة."],["They want information regarding the company's earnings, its prospects for future earnings, and its ability to pay its debts.","يريدون معلومات عن أرباح الشركة وفرص أرباحها المستقبلية وقدرتها على سداد ديونها."]]},
+       {t:["2. Managers and supervisors","2. المديرون والمشرفون (Managers)"], l:[["Have to prepare financial reports, understand accounting data contained in reports and budgets, and express future plans in financial terms.","عليهم إعداد التقارير المالية وفهم البيانات المحاسبية في التقارير والموازنات (Budgets) والتعبير عن الخطط المستقبلية بلغة مالية."],["People with management jobs must know how accounting information is developed in order to evaluate performance in meeting goals.","على من يشغلون وظائف إدارية أن يعرفوا كيف تُعدّ المعلومات المحاسبية ليقيّموا الأداء في تحقيق الأهداف."]]},
+       {t:["3. Creditors","3. الدائنون (Creditors)"], l:[["Lend money or extend credit to the company for the purchase of goods and services.","يقرضون المال أو يمنحون الائتمان للشركة لشراء السلع والخدمات."],["They include suppliers, banks, and other lending institutions, such as loan companies.","ويشملون الموردين والبنوك ومؤسسات الإقراض الأخرى مثل شركات القروض."],["Creditors are interested in the firm's ability to pay its debts.","يهتم الدائنون بقدرة الشركة على سداد ديونها."]]},
+       {t:["4. Government agencies","4. الجهات الحكومية (Government Agencies)"], l:[["Taxing authorities verify information submitted by companies concerning a variety of taxes, such as income taxes, sales taxes, and employment taxes.","تتحقق السلطات الضريبية من المعلومات التي تقدمها الشركات عن ضرائب مختلفة مثل ضرائب الدخل وضرائب المبيعات وضرائب التوظيف."]]},
+       {t:["5. Financial analysts","5. المحللون الماليون (Financial Analysts)"], l:[["Use accounting data to form opinions on which they base investment recommendations.","يستخدمون البيانات المحاسبية لتكوين آراء يبنون عليها توصيات الاستثمار."]]},
+       {t:["6. Employees","6. الموظفون (Employees)"], l:[["Want to work for successful companies to further their individual careers, and they often have bonuses or options tied to enterprise performance.","يريدون العمل في شركات ناجحة لتطوير مسيرتهم المهنية، وغالبًا ما ترتبط مكافآتهم أو خياراتهم بأداء المنشأة."]]}
+     ]}
+   ]},
+   {t:["GAAP and FASB","مبادئ GAAP ومجلس FASB"], b:[
+     {k:'def', x:["Generally Accepted Accounting Principles (GAAP): rules or guidelines in the accounting process developed by the Financial Accounting Standards Board (FASB).","مبادئ المحاسبة المتعارف عليها (GAAP): قواعد أو إرشادات في العملية المحاسبية وضعها مجلس معايير المحاسبة المالية (FASB)."]},
+     {k:'p', x:["Professional accountants follow a set of standards known as GAAP when preparing financial statements.","يتبع المحاسبون المهنيون مجموعة من المعايير تُعرف بـ GAAP عند إعداد القوائم المالية."]},
+     {k:'tip', x:["FASB = Financial Accounting Standards Board. It developed the rules or guidelines in the accounting process.","FASB = مجلس معايير المحاسبة المالية. هو الذي وضع القواعد والإرشادات في العملية المحاسبية."]}
+   ]},
+   {t:["Exercise: Questions and Suggested Answers","التمرين: الأسئلة وإجابات مقترحة"], b:[
+     {k:'ul', h:["Q1. List down the different functions of accounting. Explain each.","س1. اذكر وظائف المحاسبة المختلفة. اشرح كلًا منها."], x:[["Analyzing, recording (bookkeeping), classifying, summarizing and interpreting. See the Functions section for the explanation.","التحليل والتسجيل (مسك الدفاتر) والتصنيف والتلخيص والتفسير. انظر قسم الوظائف للشرح."]]},
+     {k:'ul', h:["Q2. What is meant by systematic recording of business transactions?","س2. ما المقصود بالتسجيل المنتظم للمعاملات التجارية؟"], x:[["Recording every transaction in an orderly, consistent way using the same rules and the same books, so records are complete and easy to check.","تسجيل كل معاملة بطريقة منظمة ومتسقة وفق القواعد نفسها وفي الدفاتر نفسها، بحيث تكون السجلات كاملة وسهلة المراجعة."]]},
+     {k:'ul', h:["Q3. What is the primary purpose of accounting?","س3. ما الغرض الأساسي من المحاسبة؟"], x:[["To provide the financial information needed for the efficient operation of an economic unit.","توفير المعلومات المالية اللازمة للتشغيل الكفء للوحدة الاقتصادية."]]},
+     {k:'ul', h:["Q4. Who developed the rules or guidelines in the accounting process?","س4. من وضع القواعد أو الإرشادات في العملية المحاسبية؟"], x:[["The Financial Accounting Standards Board (FASB).","مجلس معايير المحاسبة المالية (FASB)."]]}
+   ]}
+  ],
+  take:[
+    ["Accounting is a service activity that provides quantitative, mainly financial, information to help in economic decisions.","المحاسبة نشاط خدمي يوفر معلومات كمية، مالية في الأساس، للمساعدة في اتخاذ القرارات الاقتصادية."],
+    ["\"Financial in nature\" means expressed in money.","\"مالية في طبيعتها\" تعني معبَّرًا عنها بالنقود."],
+    ["AICPA definition: the art of recording, classifying, summarizing and interpreting financial transactions in terms of money.","تعريف AICPA: فن تسجيل وتصنيف وتلخيص وتفسير المعاملات المالية بوحدات نقدية."],
+    ["Luca Pacioli published the first book on double-entry accounting in 1494, but he did not invent the system.","نشر لوكا باتشولي أول كتاب عن القيد المزدوج عام 1494 لكنه لم يخترع النظام."],
+    ["Five functions: analyzing, recording, classifying, summarizing, interpreting.","خمس وظائف: التحليل، التسجيل، التصنيف، التلخيص، التفسير."],
+    ["Six users: owners, managers, creditors, government agencies, financial analysts, employees.","ستة مستخدمين: الملاك، المديرون، الدائنون، الجهات الحكومية، المحللون الماليون، الموظفون."],
+    ["GAAP are the accounting rules developed by FASB.","GAAP هي القواعد المحاسبية التي وضعها FASB."]
+  ],
+  fc:[
+   [["What is accounting (first definition)?","ما هي المحاسبة (التعريف الأول)؟"],["A service activity whose function is to provide quantitative information, primarily financial, about economic entities, to help in making economic decisions.","نشاط خدمي وظيفته تقديم معلومات كمية، مالية بالدرجة الأولى، عن الوحدات الاقتصادية للمساعدة في اتخاذ القرارات الاقتصادية."]],
+   [["What does \"financial in nature\" mean?","ماذا تعني عبارة \"مالية في طبيعتها\"؟"],["The information is expressed in monetary terms.","أن المعلومات مُعبَّر عنها بوحدات نقدية."]],
+   [["What do the financial statements summarize?","ماذا تلخص القوائم المالية؟"],["A company's operations, financial position, and cash flows over an accounting period.","عمليات الشركة ومركزها المالي وتدفقاتها النقدية خلال فترة محاسبية."]],
+   [["Give the AICPA (most complete) definition of accounting.","اذكر تعريف AICPA (الأكمل) للمحاسبة."],["The art of recording, classifying, summarizing, in a significant manner and in terms of money, transactions and events which are at least in part of a financial character, and interpreting the results.","فن تسجيل وتصنيف وتلخيص المعاملات والأحداث ذات الطابع المالي، ولو جزئيًا، بطريقة ذات معنى وبوحدات نقدية، وتفسير نتائجها."]],
+   [["Who is the \"Father of Accounting\"?","من هو \"أبو المحاسبة\"؟"],["Luca Pacioli (Friar Luca). He published the first book on double-entry accounting in 1494, but he did not invent the system.","لوكا باتشولي (الراهب لوكا). نشر أول كتاب عن القيد المزدوج عام 1494 لكنه لم يخترع النظام."]],
+   [["Why is Pacioli called Friar Luca?","لماذا يُسمى باتشولي الراهب لوكا؟"],["Because he was a Franciscan friar.","لأنه كان راهبًا فرنسيسكانيًا."]],
+   [["List the five functions of accounting.","اذكر الوظائف الخمس للمحاسبة."],["Analyzing, recording, classifying, summarizing, interpreting.","التحليل، التسجيل، التصنيف، التلخيص، التفسير."]],
+   [["What is bookkeeping?","ما هو مسك الدفاتر (Bookkeeping)؟"],["The activity or occupation of keeping records of the financial affairs of a business.","نشاط أو مهنة حفظ سجلات الشؤون المالية للنشاط التجاري."]],
+   [["Give the three roles of accounting in business.","اذكر الأدوار الثلاثة للمحاسبة في النشاط التجاري."],["1) Helps owners/managers plan and decide. 2) Reports and analyzes transactions through financial statements. 3) Communicates financial information to all interested parties.","1) تساعد الملاك/المديرين على التخطيط واتخاذ القرار. 2) تُبلّغ عن المعاملات وتحللها عبر القوائم المالية. 3) تنقل المعلومات المالية إلى جميع الأطراف المهتمة."]],
+   [["What is the primary purpose of accounting?","ما الغرض الأساسي من المحاسبة؟"],["To provide the financial information needed for the efficient operation of an economic unit.","توفير المعلومات المالية اللازمة للتشغيل الكفء للوحدة الاقتصادية."]],
+   [["What do owners want to know from accounting information?","ماذا يريد الملاك معرفته من المعلومات المحاسبية؟"],["The company's earnings, prospects for future earnings, and ability to pay its debts.","أرباح الشركة وفرص أرباحها المستقبلية وقدرتها على سداد ديونها."]],
+   [["Who are creditors? What are they interested in?","من هم الدائنون؟ وبماذا يهتمون؟"],["Suppliers, banks and other lenders who lend money or extend credit. They are interested in the firm's ability to pay its debts.","الموردون والبنوك والمقرضون الآخرون الذين يقرضون المال أو يمنحون ائتمانًا. يهتمون بقدرة الشركة على سداد ديونها."]],
+   [["Why do government agencies use accounting information?","لماذا تستخدم الجهات الحكومية المعلومات المحاسبية؟"],["Taxing authorities verify the information submitted about income, sales and employment taxes.","تتحقق السلطات الضريبية من المعلومات المقدمة عن ضرائب الدخل والمبيعات والتوظيف."]],
+   [["What do financial analysts do with accounting data?","ماذا يفعل المحللون الماليون بالبيانات المحاسبية؟"],["Form opinions on which they base investment recommendations.","يكوّنون آراء يبنون عليها توصيات الاستثمار."]],
+   [["What are GAAP and who developed them?","ما هي GAAP ومن وضعها؟"],["Generally Accepted Accounting Principles: rules or guidelines for the accounting process, developed by the Financial Accounting Standards Board (FASB).","مبادئ المحاسبة المتعارف عليها: قواعد وإرشادات للعملية المحاسبية، وضعها مجلس معايير المحاسبة المالية (FASB)."]]
+  ],
+  quiz:[
+   {q:["Accounting is a service activity that mainly provides:","المحاسبة نشاط خدمي يقدم أساسًا:"], o:[["Legal advice","مشورة قانونية"],["Quantitative, mainly financial information","معلومات كمية مالية في الأساس"],["Only tax forms","نماذج ضريبية فقط"],["Only marketing plans","خطط تسويق فقط"]], a:1},
+   {q:["\"Financial in nature\" means that the information is:","\"مالية في طبيعتها\" تعني أن المعلومات:"], o:[["Expressed in monetary terms","مُعبَّر عنها بوحدات نقدية"],["Secret","سرية"],["Written only by banks","يكتبها البنوك فقط"],["Only about taxes","عن الضرائب فقط"]], a:0},
+   {q:["Which function of accounting is also called bookkeeping?","أي وظيفة محاسبية تسمى أيضًا مسك الدفاتر؟"], o:[["Interpreting","التفسير"],["Summarizing","التلخيص"],["Recording","التسجيل"],["Classifying","التصنيف"]], a:2},
+   {q:["Who published the first book on double-entry accounting in 1494?","من نشر أول كتاب عن القيد المزدوج عام 1494؟"], o:[["John N. Myer","جون مايرز"],["Luca Pacioli","لوكا باتشولي"],["The FASB","FASB"],["Adam Smith","آدم سميث"]], a:1},
+   {q:["Luca Pacioli is regarded as the Father of Accounting, but he:","يُعتبر لوكا باتشولي أبا المحاسبة، لكنه:"], o:[["Wrote no book","لم يكتب كتابًا"],["Was a banker","كان مصرفيًا"],["Did not invent the system","لم يخترع النظام"],["Lived in 1994","عاش في 1994"]], a:2},
+   {q:["Which is NOT one of the five functions of accounting?","أي مما يلي ليس من الوظائف الخمس للمحاسبة؟"], o:[["Analyzing","التحليل"],["Advertising","الإعلان"],["Classifying","التصنيف"],["Interpreting","التفسير"]], a:1},
+   {q:["The most complete definition of accounting was pronounced by the:","أكمل تعريف للمحاسبة أصدرته:"], o:[["Committee on Terminology of the AICPA","لجنة المصطلحات في AICPA"],["Local bank","مصرف محلي"],["Tax office","مصلحة الضرائب"],["Stock market","سوق الأسهم"]], a:0},
+   {q:["Which user lends money or extends credit to the company?","أي مستخدم يقرض المال أو يمنح الائتمان للشركة؟"], o:[["Employees","الموظفون"],["Creditors","الدائنون"],["Owners","الملاك"],["Financial analysts","المحللون الماليون"]], a:1},
+   {q:["Taxing authorities that verify income, sales and employment taxes belong to which user group?","السلطات الضريبية التي تتحقق من ضرائب الدخل والمبيعات والتوظيف تنتمي لأي مجموعة مستخدمين؟"], o:[["Owners","الملاك"],["Managers","المديرون"],["Employees","الموظفون"],["Government agencies","الجهات الحكومية"]], a:3},
+   {q:["Which users use accounting data to form opinions for investment recommendations?","أي مستخدمين يستخدمون البيانات المحاسبية لتكوين آراء لتوصيات الاستثمار؟"], o:[["Financial analysts","المحللون الماليون"],["Creditors","الدائنون"],["Suppliers","الموردون"],["Customers","العملاء"]], a:0},
+   {q:["Employees are interested in accounting information because:","يهتم الموظفون بالمعلومات المحاسبية لأن:"], o:[["They set the taxes","هم من يضعون الضرائب"],["They want to work for successful companies and may have bonuses tied to performance","يريدون العمل في شركات ناجحة وقد ترتبط مكافآتهم بالأداء"],["They lend money","هم من يقرضون المال"],["They develop GAAP","هم من يضعون GAAP"]], a:1},
+   {q:["Which of these is NOT a role of accounting in business?","أي مما يلي ليس دورًا للمحاسبة في النشاط التجاري؟"], o:[["Helps owners or managers make plans and decisions","تساعد الملاك أو المديرين على التخطيط واتخاذ القرارات"],["Reports and analyzes transactions through financial statements","تبلّغ عن المعاملات وتحللها عبر القوائم المالية"],["Communicates financial information to interested parties","تنقل المعلومات المالية للأطراف المهتمة"],["Manufactures the products to be sold","تصنّع المنتجات التي تُباع"]], a:3},
+   {q:["GAAP stands for:","GAAP هي اختصار:"], o:[["General Accounting and Auditing Practice","General Accounting and Auditing Practice"],["Generally Accepted Accounting Principles","Generally Accepted Accounting Principles"],["Government Approved Accounting Plans","Government Approved Accounting Plans"],["Global Annual Accounts Policy","Global Annual Accounts Policy"]], a:1},
+   {q:["Which body developed the rules or guidelines used in the accounting process (GAAP)?","أي جهة وضعت القواعد المستخدمة في العملية المحاسبية (GAAP)؟"], o:[["The FASB","FASB"],["The World Bank","البنك الدولي"],["The stock exchange","البورصة"],["The creditors","الدائنون"]], a:0}
+  ]
+});
+
+LECTURES.push({ id:'l3', n:3,
+  title:["Basic Accounting Elements","العناصر المحاسبية الأساسية (Basic Accounting Elements)"],
+  obj:[
+    ["Define the three basic accounting elements: assets, liabilities and capital.","تعريف العناصر المحاسبية الأساسية الثلاثة: الأصول (Assets) والخصوم (Liabilities) ورأس المال (Capital)."],
+    ["Differentiate creditor and debtor.","التمييز بين الدائن (Creditor) والمدين (Debtor)."],
+    ["Define the additional elements: revenue, expense and drawing.","تعريف العناصر الإضافية: الإيراد (Revenue) والمصروف (Expense) والمسحوبات (Drawing)."],
+    ["Differentiate tangible and intangible assets.","التمييز بين الأصول الملموسة وغير الملموسة."],
+    ["Understand the accounting equation: Assets = Liabilities + Capital.","فهم المعادلة المحاسبية (Accounting equation): الأصول = الخصوم + رأس المال."]
+  ],
+  sec:[
+   {t:["A. Basic Accounting Elements or Values: 1. Assets","أ. العناصر أو القيم المحاسبية الأساسية: 1. الأصول (Assets)"], b:[
+     {k:'def', x:["Assets are the properties or the economic resources of the entity or business enterprise. They may also refer to all properties, belongings or ownership which have value.","الأصول هي ممتلكات أو موارد اقتصادية للكيان أو المنشأة. وقد تشير أيضًا إلى كل الممتلكات أو المقتنيات أو الملكيات التي لها قيمة (Value)."]},
+     {k:'ul', h:["Characteristics of assets","خصائص الأصول"], x:[["Assets entail probable future economic benefits to the owner.","الأصول تنطوي على منافع اقتصادية مستقبلية محتملة للمالك."],["Assets may be tangible and intangible.","قد تكون الأصول ملموسة (Tangible) وغير ملموسة (Intangible)."],["Assets are always affected by the transactions of the business.","الأصول تتأثر دائمًا بمعاملات النشاط."],["Assets may be increased or decreased depending on what kind of transaction the business incurred.","قد تزيد الأصول أو تنقص حسب نوع المعاملة التي أجراها النشاط."]]},
+     {k:'ul', h:["Examples of assets","أمثلة على الأصول"], x:[["Cash","النقدية (Cash)"],["Accounts Receivables","الذمم المدينة (Accounts Receivable)"],["Inventories","المخزون (Inventories)"],["Office Supplies","مستلزمات المكتب (Office Supplies)"],["Equipment","المعدات (Equipment)"],["Land and Buildings","الأراضي والمباني (Land and Buildings)"]]}
+   ]},
+   {t:["2. Liability","2. الخصوم / الالتزامات (Liability)"], b:[
+     {k:'def', x:["A liability is the amount of money owed or borrowed to or from others (people or business enterprises) relating to loans, extension of credit and other obligations arising in the course of business. It may also be called Borrowings, Loans, or Debt.","الخصم (Liability) هو مبلغ المال المستحق أو المقترض لأو من الآخرين (أشخاص أو منشآت) فيما يتعلق بالقروض ومنح الائتمان والالتزامات الأخرى الناشئة في سياق النشاط. ويسمى أيضًا الاقتراض (Borrowings) أو القروض (Loans) أو الدين (Debt)."]},
+     {k:'p', x:["In a transaction involving borrowings or loans, there will always be two (2) parties involved: the creditor and the debtor.","في المعاملة التي تتضمن اقتراضًا أو قروضًا، يوجد دائمًا طرفان: الدائن والمدين."]},
+     {k:'cards', c:[
+       {t:["Creditor","الدائن (Creditor)"], l:[["The one who gives or extends money or other things to the borrower.","من يعطي أو يقدم المال أو أشياء أخرى للمقترض."]]},
+       {t:["Debtor","المدين (Debtor)"], l:[["The one who borrows money or other things from the creditor. He/she is the borrower.","من يقترض المال أو أشياء أخرى من الدائن. هو المقترض."]]}
+     ]},
+     {k:'ex', x:["Example of a liability: Accounts Payable.","مثال على الخصوم: الذمم الدائنة (Accounts Payable)."]}
+   ]},
+   {t:["3. Capital (Owner's Equity)","3. رأس المال (حقوق الملكية)"], b:[
+     {k:'def', x:["Capital, also called Owner's Equity, is the owner's interest in the business. It is sometimes called net assets because it is equivalent to assets minus liabilities for a particular business.","رأس المال (Capital)، ويسمى أيضًا حقوق الملكية (Owner's Equity)، هو حق المالك في النشاط. ويسمى أحيانًا صافي الأصول (Net assets) لأنه يساوي الأصول ناقص الخصوم لنشاط معين."]},
+     {k:'formula', x:"Capital = Assets - Liabilities"}
+   ]},
+   {t:["Additional Accounting Elements or Values","عناصر أو قيم محاسبية إضافية"], b:[
+     {k:'cards', c:[
+       {t:["4. Revenue","4. الإيراد (Revenue)"], l:[["All sales or income coming in to the company from clients or customers as a result of business transactions.","كل المبيعات أو الدخل الداخل إلى الشركة من العملاء نتيجة المعاملات التجارية."],["This increases assets of the company.","وهذا يزيد أصول الشركة."]]},
+       {t:["5. Expense","5. المصروف (Expense)"], l:[["The cost of doing the business.","تكلفة ممارسة النشاط."],["Also refers to all payments made by the business.","ويشير أيضًا إلى كل المدفوعات التي يسددها النشاط."],["Refers to transactions that decrease assets of the company.","يشير إلى المعاملات التي تقلل أصول الشركة."]]},
+       {t:["6. Drawing (Personal)","6. المسحوبات الشخصية (Drawing / Personal)"], l:[["The withdrawal made by the owner from the business.","ما يسحبه المالك من النشاط."]]}
+     ]}
+   ]},
+   {t:["Extra: The Accounting Equation","إضافة: المعادلة المحاسبية (Accounting Equation)"], b:[
+     {k:'tip', x:["Extra explanation (not in the slide text): the three basic elements are tied together by the accounting equation. Capital = Assets - Liabilities is the same equation written another way.","شرح إضافي (غير موجود في نص الشرائح): العناصر الأساسية الثلاثة مرتبطة بالمعادلة المحاسبية. المعادلة رأس المال = الأصول - الخصوم هي نفس المعادلة مكتوبة بصيغة أخرى."]},
+     {k:'formula', x:"Assets = Liabilities + Capital (Owner's Equity)"},
+     {k:'formula', x:"Expanded: Assets = Liabilities + Capital + Revenue - Expenses - Drawings"},
+     {k:'ex', x:["The owner invests 100,000 in cash: Assets 100,000 = Liabilities 0 + Capital 100,000.\nThe business buys equipment for 30,000 on credit: Assets 130,000 = Liabilities 30,000 + Capital 100,000.\nCheck: 130,000 = 30,000 + 100,000.","يستثمر المالك 100,000 نقدًا: الأصول 100,000 = الخصوم 0 + رأس المال 100,000.\nيشتري النشاط معدات بـ 30,000 بالأجل: الأصول 130,000 = الخصوم 30,000 + رأس المال 100,000.\nالتحقق: 130,000 = 30,000 + 100,000."]}
+   ]},
+   {t:["Exercises and Suggested Answers","التمارين وإجابات مقترحة"], b:[
+     {k:'tbl', h:[["Item","البند"],["Tangible asset","أصل ملموس (Tangible)"],["Intangible asset","أصل غير ملموس (Intangible)"]],
+      r:[
+       [["Meaning","المعنى"],["Has a physical form; it can be seen and touched.","له شكل مادي؛ يمكن رؤيته ولمسه."],["Has no physical form but has value.","ليس له شكل مادي لكن له قيمة."]],
+       [["Examples","أمثلة"],["Cash, inventories, equipment, land, buildings","النقدية والمخزون والمعدات والأراضي والمباني"],["Goodwill, patents, trademarks, copyrights","الشهرة (Goodwill) وبراءات الاختراع والعلامات التجارية وحقوق النشر"]]
+      ]},
+     {k:'ul', h:["What is a long-term liability? Give 5 examples.","ما هو الخصم طويل الأجل؟ اذكر 5 أمثلة."], x:[["A long-term liability is an obligation that is due in more than one year.","الخصم طويل الأجل التزام يستحق السداد بعد أكثر من سنة."],["Examples: long-term bank loan, bonds payable, mortgage payable, long-term notes payable, long-term lease obligations.","أمثلة: قرض بنكي طويل الأجل، سندات مستحقة الدفع، رهن عقاري مستحق، أوراق دفع طويلة الأجل، التزامات إيجار طويلة الأجل."]]},
+     {k:'tip', x:["The slides give the exercise questions only. The answers shown here are standard accounting answers.","الشرائح تعطي أسئلة التمارين فقط. الإجابات الظاهرة هنا إجابات محاسبية قياسية."]}
+   ]},
+   {t:["Extra Slides in the File: Economics Notes (Elasticity)","شرائح إضافية في الملف: ملاحظات اقتصادية (المرونة)"], b:[
+     {k:'tip', x:["These slides are about economics (price elasticity of demand), not accounting. They are kept here so no content from the file is lost.","هذه الشرائح عن الاقتصاد (مرونة الطلب السعرية) وليست عن المحاسبة. تُركت هنا حتى لا يضيع أي محتوى من الملف."]},
+     {k:'ul', h:["Graphs of Perfectly Elastic and Perfectly Inelastic Demand","رسوم الطلب كامل المرونة وكامل عدم المرونة"], x:[["Perfectly Elastic Demand (Graph #1): Elasticity = infinity (∞).","الطلب كامل المرونة (الرسم 1): المرونة = ما لا نهاية (∞)."],["Perfectly Inelastic Demand (Graph #2): Elasticity = 0.","الطلب عديم المرونة تمامًا (الرسم 2): المرونة = 0."]]},
+     {k:'ul', h:["Why consumers may not increase their purchases at once when a price falls","لماذا قد لا يزيد المستهلكون مشترياتهم فورًا عند انخفاض السعر"], x:[["If it is thought that the price is likely to fall further, consumers will not increase their purchase at once.","إذا ساد الاعتقاد بأن السعر سينخفض أكثر، فلن يزيد المستهلكون مشترياتهم فورًا."],["Some goods are durable and consumers will not replace them until they are worn out, even if their price has fallen.","بعض السلع معمرة ولن يستبدلها المستهلكون حتى تبلى، حتى لو انخفض سعرها."]]}
+   ]}
+  ],
+  take:[
+    ["Assets are properties or economic resources that have value and bring probable future benefits.","الأصول ممتلكات أو موارد اقتصادية لها قيمة وتحقق منافع مستقبلية محتملة."],
+    ["Assets can be tangible or intangible. Examples: cash, accounts receivable, inventories, office supplies, equipment, land and buildings.","الأصول قد تكون ملموسة أو غير ملموسة. أمثلة: النقدية والذمم المدينة والمخزون ومستلزمات المكتب والمعدات والأراضي والمباني."],
+    ["A liability is money owed to others (loans, credit, debt). The creditor lends; the debtor borrows. Example: Accounts Payable.","الخصم هو مال مستحق للآخرين (قروض، ائتمان، دين). الدائن يقرض والمدين يقترض. مثال: الذمم الدائنة."],
+    ["Capital (owner's equity) = Assets - Liabilities, so it is also called net assets.","رأس المال (حقوق الملكية) = الأصول - الخصوم، ولذلك يسمى أيضًا صافي الأصول."],
+    ["Revenue increases assets; expense decreases assets; drawing is the owner's withdrawal.","الإيراد يزيد الأصول؛ والمصروف يقلل الأصول؛ والمسحوبات هي ما يسحبه المالك."],
+    ["Accounting equation: Assets = Liabilities + Capital.","المعادلة المحاسبية: الأصول = الخصوم + رأس المال."]
+  ],
+  fc:[
+   [["What are assets?","ما هي الأصول (Assets)؟"],["The properties or economic resources of the entity. All properties, belongings or ownership that have value.","ممتلكات أو موارد اقتصادية للكيان. كل الممتلكات أو المقتنيات أو الملكيات التي لها قيمة."]],
+   [["What do assets entail?","ماذا تنطوي عليه الأصول؟"],["Probable future economic benefits to the owner.","منافع اقتصادية مستقبلية محتملة للمالك."]],
+   [["Give six examples of assets.","اذكر ستة أمثلة على الأصول."],["Cash, accounts receivables, inventories, office supplies, equipment, land and buildings.","النقدية، الذمم المدينة، المخزون، مستلزمات المكتب، المعدات، الأراضي والمباني."]],
+   [["What is a liability?","ما هو الخصم / الالتزام (Liability)؟"],["The amount of money owed or borrowed to or from others relating to loans, extension of credit and other obligations.","مبلغ المال المستحق أو المقترض لأو من الآخرين فيما يتعلق بالقروض ومنح الائتمان والالتزامات الأخرى."]],
+   [["What other names does a liability have?","ما الأسماء الأخرى للخصم؟"],["Borrowings, loans, or debt.","الاقتراض (Borrowings) أو القروض (Loans) أو الدين (Debt)."]],
+   [["Who is the creditor?","من هو الدائن (Creditor)؟"],["The one who gives or extends money or other things to the borrower.","من يعطي أو يقدم المال أو أشياء أخرى للمقترض."]],
+   [["Who is the debtor?","من هو المدين (Debtor)؟"],["The one who borrows money or other things from the creditor. The borrower.","من يقترض المال أو أشياء أخرى من الدائن. المقترض."]],
+   [["Give an example of a liability.","اذكر مثالًا على الخصوم."],["Accounts Payable.","الذمم الدائنة (Accounts Payable)."]],
+   [["What is capital (owner's equity)?","ما هو رأس المال (حقوق الملكية)؟"],["The owner's interest in the business. It equals assets minus liabilities.","حق المالك في النشاط. ويساوي الأصول ناقص الخصوم."]],
+   [["Why is capital sometimes called net assets?","لماذا يسمى رأس المال أحيانًا صافي الأصول؟"],["Because it is equivalent to assets minus liabilities.","لأنه يعادل الأصول ناقص الخصوم."]],
+   [["What is revenue? What does it do to assets?","ما هو الإيراد؟ وماذا يفعل بالأصول؟"],["All sales or income coming in from clients or customers. It increases assets.","كل المبيعات أو الدخل الداخل من العملاء. وهو يزيد الأصول."]],
+   [["What is an expense? What does it do to assets?","ما هو المصروف؟ وماذا يفعل بالأصول؟"],["The cost of doing the business, all payments made by the business. It decreases assets.","تكلفة ممارسة النشاط، وكل المدفوعات التي يسددها النشاط. وهو يقلل الأصول."]],
+   [["What is drawing?","ما هي المسحوبات (Drawing)؟"],["The withdrawal made by the owner from the business. Sometimes called Personal.","ما يسحبه المالك من النشاط. وتسمى أحيانًا الشخصية (Personal)."]],
+   [["State the accounting equation.","اذكر المعادلة المحاسبية."],["Assets = Liabilities + Capital.","الأصول = الخصوم + رأس المال."]],
+   [["What is the elasticity of a perfectly elastic demand? Perfectly inelastic?","ما مرونة الطلب كامل المرونة؟ وعديم المرونة تمامًا؟"],["Perfectly elastic: infinity (∞). Perfectly inelastic: 0.","كامل المرونة: ما لا نهاية (∞). عديم المرونة تمامًا: 0."]]
+  ],
+  quiz:[
+   {q:["Which element means the properties or economic resources of a business that have value?","أي عنصر يعني ممتلكات أو موارد النشاط الاقتصادية التي لها قيمة؟"], o:[["Liabilities","الخصوم"],["Assets","الأصول"],["Expenses","المصروفات"],["Drawings","المسحوبات"]], a:1},
+   {q:["Which of these is an asset?","أي مما يلي أصل؟"], o:[["Accounts Payable","الذمم الدائنة"],["Bank loan","قرض بنكي"],["Equipment","المعدات"],["Owner's drawings","مسحوبات المالك"]], a:2},
+   {q:["Assets entail:","تنطوي الأصول على:"], o:[["Probable future economic benefits to the owner","منافع اقتصادية مستقبلية محتملة للمالك"],["Only past losses","خسائر سابقة فقط"],["No value","لا قيمة"],["Only taxes","ضرائب فقط"]], a:0},
+   {q:["Which is another name for a liability?","أي مما يلي اسم آخر للخصم؟"], o:[["Revenue","الإيراد"],["Capital","رأس المال"],["Debt","الدين"],["Inventory","المخزون"]], a:2},
+   {q:["In a loan transaction, the one who gives or extends money is the:","في معاملة القرض، من يعطي المال أو يقدمه هو:"], o:[["Debtor","المدين"],["Creditor","الدائن"],["Owner","المالك"],["Partner","الشريك"]], a:1},
+   {q:["The borrower is called the:","يسمى المقترض:"], o:[["Creditor","الدائن"],["Stockholder","المساهم"],["Supplier","المورد"],["Debtor","المدين"]], a:3},
+   {q:["Which is an example of a liability?","أي مما يلي مثال على الخصوم؟"], o:[["Accounts Payable","الذمم الدائنة"],["Cash","النقدية"],["Office supplies","مستلزمات المكتب"],["Land","الأرض"]], a:0},
+   {q:["Capital (owner's equity) is equal to:","رأس المال (حقوق الملكية) يساوي:"], o:[["Assets plus liabilities","الأصول زائد الخصوم"],["Assets minus liabilities","الأصول ناقص الخصوم"],["Revenue minus drawings","الإيراد ناقص المسحوبات"],["Liabilities minus assets","الخصوم ناقص الأصول"]], a:1},
+   {q:["Capital is sometimes called:","يسمى رأس المال أحيانًا:"], o:[["Gross sales","إجمالي المبيعات"],["Net assets","صافي الأصول"],["Accounts payable","الذمم الدائنة"],["Expense","المصروف"]], a:1},
+   {q:["Revenue refers to all sales or income coming in from customers. What does it do to assets?","الإيراد هو كل المبيعات أو الدخل الداخل من العملاء. ماذا يفعل بالأصول؟"], o:[["Decreases them","يقللها"],["Has no effect","لا يؤثر"],["Increases them","يزيدها"],["Cancels them","يلغيها"]], a:2},
+   {q:["Expenses refer to transactions that:","المصروفات تشير إلى معاملات:"], o:[["Increase assets","تزيد الأصول"],["Decrease assets","تقلل الأصول"],["Create capital","تنشئ رأس المال"],["Remove all liabilities","تزيل كل الخصوم"]], a:1},
+   {q:["The withdrawal made by the owner from the business is called:","ما يسحبه المالك من النشاط يسمى:"], o:[["Revenue","الإيراد"],["Drawing","المسحوبات"],["Asset","الأصل"],["Credit","الائتمان"]], a:1},
+   {q:["The accounting equation is:","المعادلة المحاسبية هي:"], o:[["Assets = Liabilities - Capital","الأصول = الخصوم - رأس المال"],["Capital = Assets + Liabilities","رأس المال = الأصول + الخصوم"],["Assets = Liabilities + Capital","الأصول = الخصوم + رأس المال"],["Liabilities = Assets + Capital","الخصوم = الأصول + رأس المال"]], a:2},
+   {q:["A business has assets of 130,000 and liabilities of 30,000. Its capital is:","نشاط أصوله 130,000 وخصومه 30,000. رأس ماله:"], o:[["160,000","160,000"],["100,000","100,000"],["30,000","30,000"],["130,000","130,000"]], a:1},
+   {q:["The elasticity of a perfectly inelastic demand is:","مرونة الطلب عديم المرونة تمامًا هي:"], o:[["Infinity","ما لا نهاية"],["1","1"],["0","0"],["-1","-1"]], a:2}
+  ]
+});
+
+LECTURES.push({ id:'l4', n:4,
+  title:["Chart of Accounts and Types of Accounts","دليل الحسابات وأنواع الحسابات (Chart of Accounts)"],
+  obj:[
+    ["Define the chart of accounts (COA) and explain its purpose.","تعريف دليل الحسابات (COA) وشرح الغرض منه."],
+    ["Identify the five types of accounts: asset, liability, equity, revenue and expense.","تحديد أنواع الحسابات الخمسة: الأصول والخصوم وحقوق الملكية والإيرادات والمصروفات."],
+    ["Know the categories of assets (current, fixed) and liabilities (short-term, long-term).","معرفة فئات الأصول (متداولة وثابتة) والخصوم (قصيرة الأجل وطويلة الأجل)."],
+    ["Know the rules of debit and credit.","معرفة قواعد المدين والدائن (Debit and Credit)."],
+    ["Know the revenue concepts: total, average, marginal revenue and break-even point.","معرفة مفاهيم الإيراد: الإيراد الكلي والمتوسط والحدي ونقطة التعادل (Break-even point)."]
+  ],
+  sec:[
+   {t:["Chart of Accounts (COA)","دليل الحسابات (Chart of Accounts)"], b:[
+     {k:'def', x:["The Chart of Accounts is a created list of the accounts used by a business entity to define each class of items for which money or the equivalent is spent or received.","دليل الحسابات قائمة مُنشأة بالحسابات التي يستخدمها كيان تجاري لتحديد كل فئة من البنود التي يُنفق أو يُستلم مقابلها مال أو ما يعادله."]},
+     {k:'p', x:["It is used to organize the finances of the entity and to segregate expenditures, revenue, assets and liabilities in order to give interested parties a better understanding of the financial health of the entity.","يُستخدم لتنظيم مالية الكيان وفصل النفقات والإيرادات والأصول والخصوم لإعطاء الأطراف المهتمة فهمًا أفضل للصحة المالية للكيان."]}
+   ]},
+   {t:["Types of Accounts","أنواع الحسابات (Types of Accounts)"], b:[
+     {k:'cards', c:[
+       {t:["Asset accounts","حسابات الأصول (Asset Accounts)"], l:[["Represent the different types of economic resources owned or controlled by the business.","تمثل أنواع الموارد الاقتصادية المختلفة التي يملكها النشاط أو يسيطر عليها."],["Examples: cash, accounts receivables, inventory, machinery, equipment, land, building, prepaid rent, and goodwill.","أمثلة: النقدية، الذمم المدينة، المخزون، الآلات، المعدات، الأرض، المبنى، الإيجار المدفوع مقدمًا (Prepaid rent)، والشهرة (Goodwill)."],["Categories: Current Assets, Fixed Assets.","الفئات: الأصول المتداولة (Current Assets)، الأصول الثابتة (Fixed Assets)."]]},
+       {t:["Liability accounts","حسابات الخصوم (Liability Accounts)"], l:[["Represent the different types of economic obligations of a business.","تمثل أنواع الالتزامات الاقتصادية المختلفة على النشاط."],["Examples: accounts payable, bank loan, bonds payable, accrued interest.","أمثلة: الذمم الدائنة، القرض البنكي، السندات المستحقة (Bonds payable)، الفوائد المستحقة (Accrued interest)."],["Categories: Short-term Liabilities, Long-term Liabilities.","الفئات: الخصوم قصيرة الأجل (Short-term)، الخصوم طويلة الأجل (Long-term)."]]},
+       {t:["Equity accounts","حسابات حقوق الملكية (Equity Accounts)"], l:[["Represent the residual equity of a business (after deducting from assets all the liabilities), including Retained Earnings and Appropriations.","تمثل حقوق الملكية المتبقية في النشاط (بعد طرح كل الخصوم من الأصول)، وتشمل الأرباح المحتجزة (Retained Earnings) والمخصصات (Appropriations)."],["Personal Drawings (as written on the slide): loan by the owner to the business.","المسحوبات الشخصية (كما هي مكتوبة في الشريحة): قرض من المالك إلى النشاط."]]},
+       {t:["Revenue accounts (income)","حسابات الإيرادات (Revenue Accounts)"], l:[["Represent the company's gross earnings.","تمثل إجمالي أرباح الشركة (إيراداتها)."],["Common examples: Sales, Service revenue, and Interest Income.","أمثلة شائعة: المبيعات (Sales)، وإيراد الخدمات (Service revenue)، وإيراد الفوائد (Interest Income)."]]},
+       {t:["Expense accounts","حسابات المصروفات (Expense Accounts)"], l:[["Represent the company's expenditures to enable itself to operate.","تمثل نفقات الشركة اللازمة لتتمكن من العمل."],["Common examples: electricity and water, rentals, depreciation, doubtful accounts, interest, insurance.","أمثلة شائعة: الكهرباء والمياه، الإيجارات، الإهلاك (Depreciation)، الديون المشكوك فيها (Doubtful accounts)، الفوائد، التأمين (Insurance)."]]}
+     ]},
+     {k:'tip', x:["Note: in Chapter 3, drawing is defined as the withdrawal made by the owner from the business. The slide here says \"loan by the owner to the business\", which does not match. In standard accounting, drawings are the owner's withdrawals. Ask your instructor which wording to use in the exam.","ملاحظة: في الفصل 3 تُعرَّف المسحوبات (Drawing) بأنها ما يسحبه المالك من النشاط. أما الشريحة هنا فتقول \"قرض من المالك إلى النشاط\" وهذا لا يتطابق. في المحاسبة القياسية المسحوبات هي سحوبات المالك. اسأل محاضرك أي الصياغتين تعتمد في الامتحان."]}
+   ]},
+   {t:["Extra: Categories Explained","إضافة: شرح الفئات"], b:[
+     {k:'tip', x:["Extra explanation (the slides only list the category names).","شرح إضافي (الشرائح تذكر أسماء الفئات فقط)."]},
+     {k:'tbl', h:[["Category","الفئة"],["Meaning","المعنى"],["Examples","أمثلة"]],
+      r:[
+       [["Current assets","الأصول المتداولة"],["Cash, or expected to become cash or be used up within one year","نقدية أو يُتوقع تحويلها إلى نقدية أو استهلاكها خلال سنة"],["Cash, accounts receivable, inventory, supplies, prepaid rent","النقدية، الذمم المدينة، المخزون، المستلزمات، الإيجار المقدم"]],
+       [["Fixed assets","الأصول الثابتة"],["Long-lived assets used in operations, not for resale","أصول طويلة العمر تُستخدم في التشغيل لا لإعادة البيع"],["Machinery, equipment, land, building","الآلات، المعدات، الأرض، المبنى"]],
+       [["Short-term liabilities","الخصوم قصيرة الأجل"],["Debts due within one year","ديون تستحق خلال سنة"],["Accounts payable, accrued interest","الذمم الدائنة، الفوائد المستحقة"]],
+       [["Long-term liabilities","الخصوم طويلة الأجل"],["Debts due after more than one year","ديون تستحق بعد أكثر من سنة"],["Long-term bank loan, bonds payable","قرض بنكي طويل الأجل، سندات مستحقة"]]
+      ]}
+   ]},
+   {t:["Rules of Debit and Credit","قواعد المدين والدائن (Rules of Debit and Credit)"], b:[
+     {k:'tip', x:["The slide only shows the title \"Rule of Debit & Credit\" (the content was a picture). This is the standard rule.","الشريحة تعرض العنوان فقط \"Rule of Debit & Credit\" (المحتوى كان صورة). هذه هي القاعدة القياسية."]},
+     {k:'tbl', h:[["Account type","نوع الحساب"],["Increase","الزيادة"],["Decrease","النقص"],["Normal balance","الرصيد الطبيعي"]],
+      r:[
+       [["Assets","الأصول"],["Debit","مدين (Debit)"],["Credit","دائن (Credit)"],["Debit","مدين"]],
+       [["Liabilities","الخصوم"],["Credit","دائن"],["Debit","مدين"],["Credit","دائن"]],
+       [["Capital (Equity)","رأس المال (حقوق الملكية)"],["Credit","دائن"],["Debit","مدين"],["Credit","دائن"]],
+       [["Revenue","الإيرادات"],["Credit","دائن"],["Debit","مدين"],["Credit","دائن"]],
+       [["Expenses","المصروفات"],["Debit","مدين"],["Credit","دائن"],["Debit","مدين"]],
+       [["Drawings","المسحوبات"],["Debit","مدين"],["Credit","دائن"],["Debit","مدين"]]
+      ]},
+     {k:'tip', x:["Memory help: Assets, Expenses and Drawings increase with a debit. Liabilities, Capital and Revenue increase with a credit. In every entry, total debits must equal total credits.","للحفظ: الأصول والمصروفات والمسحوبات تزيد بالمدين. الخصوم ورأس المال والإيرادات تزيد بالدائن. وفي كل قيد يجب أن يتساوى مجموع المدين مع مجموع الدائن."]},
+     {k:'tip', x:["Optional numbering used by many charts of accounts: 1 = Assets, 2 = Liabilities, 3 = Equity, 4 = Revenue, 5 = Expenses.","ترقيم شائع في كثير من أدلة الحسابات: 1 = الأصول، 2 = الخصوم، 3 = حقوق الملكية، 4 = الإيرادات، 5 = المصروفات."]}
+   ]},
+   {t:["Revenue Concepts and Break-Even Point","مفاهيم الإيراد ونقطة التعادل"], b:[
+     {k:'cards', c:[
+       {t:["1. Marginal Revenue","1. الإيراد الحدي (Marginal Revenue)"], l:[["Is the change of total revenue.","هو التغير في الإيراد الكلي."],["As a result of sales change of production by one unit value.","نتيجة تغير المبيعات أو الإنتاج بوحدة واحدة."],["Equates the price of the commodity in competition price.","يساوي سعر السلعة في ظل سعر المنافسة."]]},
+       {t:["2. Total Revenue","2. الإيراد الكلي (Total Revenue)"], l:[["Money that comes as a result of selling all sold units.","المال الناتج عن بيع كل الوحدات المباعة."],["Equal price x sold quantity.","يساوي السعر × الكمية المباعة."]]},
+       {t:["3. Average Revenue","3. الإيراد المتوسط (Average Revenue)"], l:[["Rate of money that came to the seller or producer as a result of selling a specific quantity of the commodity.","معدل المال الذي حصل عليه البائع أو المنتج نتيجة بيع كمية محددة من السلعة."],["Equal Total revenue / sold quantity.","يساوي الإيراد الكلي ÷ الكمية المباعة."]]},
+       {t:["4. Break-Even Point","4. نقطة التعادل (Break-Even Point)"], l:[["The point that equates total revenue with total cost.","النقطة التي يتساوى عندها الإيراد الكلي مع التكلفة الكلية."]]}
+     ]},
+     {k:'formula', x:"Total Revenue = Price x Quantity sold\nAverage Revenue = Total Revenue / Quantity sold\nBreak-even point: Total Revenue = Total Cost"},
+     {k:'ex', x:["Price = 50, quantity sold = 200 units.\nTotal Revenue = 50 x 200 = 10,000.\nAverage Revenue = 10,000 / 200 = 50.","السعر = 50، الكمية المباعة = 200 وحدة.\nالإيراد الكلي = 50 × 200 = 10,000.\nالإيراد المتوسط = 10,000 ÷ 200 = 50."]},
+     {k:'tip', x:["The example above is an extra example added for practice; it is not on the slides.","المثال أعلاه مثال إضافي للتدريب؛ وهو غير موجود في الشرائح."]}
+   ]},
+   {t:["Exercise: Questions and Suggested Answers","التمرين: الأسئلة وإجابات مقترحة"], b:[
+     {k:'ul', h:["1. What is an Asset?","1. ما هو الأصل (Asset)؟"], x:[["The properties or economic resources of the business that have value and bring probable future economic benefits to the owner.","ممتلكات أو موارد اقتصادية للنشاط لها قيمة وتحقق منافع اقتصادية مستقبلية محتملة للمالك."]]},
+     {k:'ul', h:["2. Give 5 examples of the following:","2. اذكر 5 أمثلة لكل مما يلي:"], x:[["a. Current assets: cash, accounts receivable, inventory, office supplies, prepaid rent.","a. أصول متداولة: النقدية، الذمم المدينة، المخزون، مستلزمات المكتب، الإيجار المدفوع مقدمًا."],["b. Revenue: sales, service revenue, interest income, commission income, rent income.","b. إيرادات: المبيعات، إيراد الخدمات، إيراد الفوائد، إيراد العمولات، إيراد الإيجار."],["c. Expenses: electricity and water, rentals, depreciation, interest, insurance.","c. مصروفات: الكهرباء والمياه، الإيجارات، الإهلاك، الفوائد، التأمين."]]},
+     {k:'tip', x:["The slides give the exercise questions only; the answers use the account examples listed on the slides plus standard ones.","الشرائح تعطي أسئلة التمرين فقط؛ والإجابات تستخدم أمثلة الحسابات المذكورة في الشرائح بالإضافة إلى أمثلة قياسية."]}
+   ]},
+   {t:["Extra Slides in the File: Forecasting Notes","شرائح إضافية في الملف: ملاحظات عن التنبؤ"], b:[
+     {k:'tip', x:["This slide is about forecasting (operations/economics), not accounting. It is kept so no content from the file is lost.","هذه الشريحة عن التنبؤ (Forecasting) في العمليات/الاقتصاد وليست عن المحاسبة. تُركت حتى لا يضيع أي محتوى من الملف."]},
+     {k:'ul', x:[["Forecasts are always wrong.","التنبؤات خاطئة دائمًا."],["Forecasts are more accurate for groups or families of items.","التنبؤات أدق لمجموعات أو عائلات البنود."],["Forecasts are more accurate for shorter time periods.","التنبؤات أدق للفترات الزمنية الأقصر."],["Every forecast should include an error estimate.","يجب أن يتضمن كل تنبؤ تقديرًا للخطأ."],["Forecasts are no substitute for calculated demand.","التنبؤات ليست بديلًا عن الطلب المحسوب."]]}
+   ]}
+  ],
+  take:[
+    ["The chart of accounts is the list of accounts a business uses to organize its finances.","دليل الحسابات هو قائمة الحسابات التي يستخدمها النشاط لتنظيم أمواله."],
+    ["Five types of accounts: asset, liability, equity, revenue, expense.","خمسة أنواع من الحسابات: أصول، خصوم، حقوق ملكية، إيرادات، مصروفات."],
+    ["Assets: current and fixed. Liabilities: short-term and long-term.","الأصول: متداولة وثابتة. الخصوم: قصيرة الأجل وطويلة الأجل."],
+    ["Equity = assets minus all liabilities, including retained earnings and appropriations.","حقوق الملكية = الأصول ناقص كل الخصوم، وتشمل الأرباح المحتجزة والمخصصات."],
+    ["Debit increases assets, expenses and drawings. Credit increases liabilities, capital and revenue.","المدين يزيد الأصول والمصروفات والمسحوبات. الدائن يزيد الخصوم ورأس المال والإيرادات."],
+    ["Total revenue = price x quantity. Average revenue = total revenue / quantity. Break-even: total revenue = total cost.","الإيراد الكلي = السعر × الكمية. الإيراد المتوسط = الإيراد الكلي ÷ الكمية. التعادل: الإيراد الكلي = التكلفة الكلية."]
+  ],
+  fc:[
+   [["What is the Chart of Accounts (COA)?","ما هو دليل الحسابات (COA)؟"],["A created list of the accounts used by a business to define each class of items for which money or the equivalent is spent or received.","قائمة مُنشأة بالحسابات التي يستخدمها النشاط لتحديد كل فئة من البنود التي يُنفق أو يُستلم مقابلها مال أو ما يعادله."]],
+   [["What is the COA used for?","فيمَ يُستخدم دليل الحسابات؟"],["To organize the finances and separate expenditures, revenue, assets and liabilities, giving interested parties a better understanding of financial health.","لتنظيم المالية وفصل النفقات والإيرادات والأصول والخصوم، مما يعطي الأطراف المهتمة فهمًا أفضل للصحة المالية."]],
+   [["Name the five types of accounts.","اذكر أنواع الحسابات الخمسة."],["Asset, liability, equity, revenue and expense accounts.","حسابات الأصول والخصوم وحقوق الملكية والإيرادات والمصروفات."]],
+   [["What do asset accounts represent? Give examples.","ماذا تمثل حسابات الأصول؟ أعطِ أمثلة."],["Economic resources owned or controlled by the business: cash, accounts receivables, inventory, machinery, equipment, land, building, prepaid rent, goodwill.","موارد اقتصادية يملكها النشاط أو يسيطر عليها: النقدية، الذمم المدينة، المخزون، الآلات، المعدات، الأرض، المبنى، الإيجار المقدم، الشهرة."]],
+   [["What are the two categories of assets?","ما فئتا الأصول؟"],["Current assets and fixed assets.","الأصول المتداولة والأصول الثابتة."]],
+   [["What do liability accounts represent? Give examples.","ماذا تمثل حسابات الخصوم؟ أعطِ أمثلة."],["Economic obligations of the business: accounts payable, bank loan, bonds payable, accrued interest.","التزامات اقتصادية على النشاط: الذمم الدائنة، القرض البنكي، السندات المستحقة، الفوائد المستحقة."]],
+   [["What are the two categories of liabilities?","ما فئتا الخصوم؟"],["Short-term liabilities and long-term liabilities.","الخصوم قصيرة الأجل والخصوم طويلة الأجل."]],
+   [["What do equity accounts represent?","ماذا تمثل حسابات حقوق الملكية؟"],["The residual equity of the business (assets minus all liabilities), including Retained Earnings and Appropriations.","حقوق الملكية المتبقية في النشاط (الأصول ناقص كل الخصوم)، وتشمل الأرباح المحتجزة والمخصصات."]],
+   [["What do revenue accounts represent? Give examples.","ماذا تمثل حسابات الإيرادات؟ أعطِ أمثلة."],["The company's gross earnings: Sales, Service revenue, Interest Income.","إجمالي أرباح الشركة: المبيعات، إيراد الخدمات، إيراد الفوائد."]],
+   [["What do expense accounts represent? Give examples.","ماذا تمثل حسابات المصروفات؟ أعطِ أمثلة."],["The company's expenditures to operate: electricity and water, rentals, depreciation, doubtful accounts, interest, insurance.","نفقات الشركة اللازمة للعمل: الكهرباء والمياه، الإيجارات، الإهلاك، الديون المشكوك فيها، الفوائد، التأمين."]],
+   [["Which accounts increase with a debit?","أي الحسابات تزيد بالمدين؟"],["Assets, expenses and drawings.","الأصول والمصروفات والمسحوبات."]],
+   [["Which accounts increase with a credit?","أي الحسابات تزيد بالدائن؟"],["Liabilities, capital (equity) and revenue.","الخصوم ورأس المال (حقوق الملكية) والإيرادات."]],
+   [["What is Marginal Revenue?","ما هو الإيراد الحدي؟"],["The change in total revenue as a result of changing sales or production by one unit.","التغير في الإيراد الكلي نتيجة تغير المبيعات أو الإنتاج بوحدة واحدة."]],
+   [["How do you calculate Total Revenue?","كيف يُحسب الإيراد الكلي؟"],["Price x sold quantity.","السعر × الكمية المباعة."]],
+   [["How do you calculate Average Revenue?","كيف يُحسب الإيراد المتوسط؟"],["Total revenue / sold quantity.","الإيراد الكلي ÷ الكمية المباعة."]],
+   [["What is the Break-Even Point?","ما هي نقطة التعادل؟"],["The point that equates total revenue with total cost.","النقطة التي يتساوى عندها الإيراد الكلي مع التكلفة الكلية."]]
+  ],
+  quiz:[
+   {q:["The Chart of Accounts is:","دليل الحسابات هو:"], o:[["A list of customers","قائمة بالعملاء"],["A created list of the accounts used by a business entity","قائمة مُنشأة بالحسابات التي يستخدمها الكيان التجاري"],["A tax return","إقرار ضريبي"],["A bank statement","كشف حساب بنكي"]], a:1},
+   {q:["The Chart of Accounts helps to:","يساعد دليل الحسابات على:"], o:[["Hide expenses","إخفاء المصروفات"],["Segregate expenditures, revenue, assets and liabilities","فصل النفقات والإيرادات والأصول والخصوم"],["Print invoices only","طباعة الفواتير فقط"],["Set the tax rate","تحديد معدل الضريبة"]], a:1},
+   {q:["Which account type represents economic resources owned or controlled by the business?","أي نوع حسابات يمثل الموارد الاقتصادية التي يملكها النشاط أو يسيطر عليها؟"], o:[["Asset accounts","حسابات الأصول"],["Liability accounts","حسابات الخصوم"],["Revenue accounts","حسابات الإيرادات"],["Expense accounts","حسابات المصروفات"]], a:0},
+   {q:["The two categories of assets are:","فئتا الأصول هما:"], o:[["Short-term and long-term","قصيرة الأجل وطويلة الأجل"],["Current and fixed","متداولة وثابتة"],["Debit and credit","مدين ودائن"],["Gross and net","إجمالي وصافي"]], a:1},
+   {q:["Which is a liability account?","أي مما يلي حساب خصوم؟"], o:[["Cash","النقدية"],["Sales","المبيعات"],["Bonds payable","السندات المستحقة"],["Equipment","المعدات"]], a:2},
+   {q:["The two categories of liabilities are:","فئتا الخصوم هما:"], o:[["Current and fixed","متداولة وثابتة"],["Short-term and long-term","قصيرة الأجل وطويلة الأجل"],["Tangible and intangible","ملموسة وغير ملموسة"],["Revenue and expense","إيراد ومصروف"]], a:1},
+   {q:["Equity accounts represent:","تمثل حسابات حقوق الملكية:"], o:[["Total assets","إجمالي الأصول"],["Total liabilities","إجمالي الخصوم"],["The residual equity after deducting all liabilities from assets","حقوق الملكية المتبقية بعد طرح كل الخصوم من الأصول"],["Only the expenses","المصروفات فقط"]], a:2},
+   {q:["Which of these is a revenue account?","أي مما يلي حساب إيرادات؟"], o:[["Insurance","التأمين"],["Service revenue","إيراد الخدمات"],["Depreciation","الإهلاك"],["Rentals","الإيجارات"]], a:1},
+   {q:["Which of these is an expense account?","أي مما يلي حساب مصروفات؟"], o:[["Sales","المبيعات"],["Interest income","إيراد الفوائد"],["Accounts receivable","الذمم المدينة"],["Electricity and water","الكهرباء والمياه"]], a:3},
+   {q:["An asset is increased by a:","يزيد الأصل بـ:"], o:[["Debit","مدين"],["Credit","دائن"],["Either one","أيهما"],["Neither","لا شيء منهما"]], a:0},
+   {q:["Which group all increase with a credit?","أي مجموعة تزيد جميعها بالدائن؟"], o:[["Assets, expenses, drawings","الأصول والمصروفات والمسحوبات"],["Liabilities, capital, revenue","الخصوم ورأس المال والإيرادات"],["Assets, liabilities, expenses","الأصول والخصوم والمصروفات"],["Revenue, expenses, assets","الإيرادات والمصروفات والأصول"]], a:1},
+   {q:["Total Revenue equals:","الإيراد الكلي يساوي:"], o:[["Total cost / price","التكلفة الكلية ÷ السعر"],["Price x sold quantity","السعر × الكمية المباعة"],["Price - cost","السعر - التكلفة"],["Quantity / price","الكمية ÷ السعر"]], a:1},
+   {q:["Average Revenue equals:","الإيراد المتوسط يساوي:"], o:[["Total revenue / sold quantity","الإيراد الكلي ÷ الكمية المباعة"],["Total revenue x quantity","الإيراد الكلي × الكمية"],["Total cost - total revenue","التكلفة الكلية - الإيراد الكلي"],["Price + quantity","السعر + الكمية"]], a:0},
+   {q:["The break-even point is where:","نقطة التعادل هي حيث:"], o:[["Total revenue is double total cost","الإيراد الكلي ضعف التكلفة الكلية"],["Total cost is zero","التكلفة الكلية صفر"],["Total revenue equals total cost","الإيراد الكلي يساوي التكلفة الكلية"],["The price is zero","السعر صفر"]], a:2},
+   {q:["Price = 50 and 200 units sold. The total revenue is:","السعر = 50 وبيعت 200 وحدة. الإيراد الكلي:"], o:[["250","250"],["150","150"],["4","4"],["10,000","10,000"]], a:3},
+   {q:["Marginal revenue is the change in total revenue caused by:","الإيراد الحدي هو التغير في الإيراد الكلي الناتج عن:"], o:[["Selling or producing one more unit","بيع أو إنتاج وحدة إضافية واحدة"],["Doubling the price","مضاعفة السعر"],["Closing the business","إغلاق النشاط"],["Paying taxes","دفع الضرائب"]], a:0}
+  ]
+});
+
+LECTURES.push({ id:'l5', n:5,
+  title:["Recording Business Transactions (Bookkeeping)","تسجيل المعاملات التجارية (مسك الدفاتر)"],
+  obj:[
+    ["Name the two books of accounts: the general journal and the general ledger.","ذكر الدفترين المحاسبيين: دفتر اليومية العام (General Journal) ودفتر الأستاذ العام (General Ledger)."],
+    ["Differentiate a simple entry from a compound entry.","التمييز بين القيد البسيط (Simple entry) والقيد المركب (Compound entry)."],
+    ["Journalize business transactions using the rules of debit and credit.","تسجيل المعاملات التجارية في اليومية (Journalizing) باستخدام قواعد المدين والدائن."],
+    ["Post journal entries to the general ledger.","ترحيل قيود اليومية إلى دفتر الأستاذ العام (Posting)."],
+    ["Record transactions in the accounting equation.","تسجيل المعاملات في المعادلة المحاسبية."]
+  ],
+  sec:[
+   {t:["Explanation: The Books of Accounts","شرح: الدفاتر المحاسبية"], b:[
+     {k:'p', x:["Only the business transactions and events affecting the business will be recorded in the two (2) books of accounts:","تُسجَّل فقط المعاملات والأحداث التجارية التي تؤثر في النشاط في الدفترين المحاسبيين:"]},
+     {k:'ul', x:[["(1) the General Journal","(1) دفتر اليومية العام (General Journal)"],["(2) the General Ledger","(2) دفتر الأستاذ العام (General Ledger)"]]},
+     {k:'cards', c:[
+       {t:["Single-entry accounting (slide wording)","القيد البسيط (Single-entry، بصياغة الشريحة)"], l:[["A journal entry wherein there is only one debit entry and one credit entry.","قيد يومية فيه حساب مدين واحد وحساب دائن واحد فقط."]]},
+       {t:["Compound entry","القيد المركب (Compound Entry)"], l:[["A journal entry wherein there are more than one debit or credit entries.","قيد يومية فيه أكثر من حساب مدين أو دائن."]]}
+     ]},
+     {k:'tip', x:["Note: in standard accounting this kind of entry is usually called a simple entry. \"Single-entry accounting\" normally means a different, non-double-entry system. For the exam, use the slide's wording.","ملاحظة: في المحاسبة القياسية يُسمى هذا النوع عادة القيد البسيط. أما \"Single-entry accounting\" فتعني عادة نظامًا آخر غير القيد المزدوج. في الامتحان استخدم صياغة الشريحة."]}
+   ]},
+   {t:["Extra: Journalizing and Posting Step by Step","إضافة: التسجيل في اليومية والترحيل خطوة بخطوة"], b:[
+     {k:'tip', x:["The slides on recording and the ledger were pictures (examples) that cannot be read in the text file. This section is a standard explanation with a worked example.","شرائح التسجيل والأستاذ كانت صورًا (أمثلة) لا يمكن قراءتها في الملف النصي. هذا القسم شرح قياسي مع مثال محلول."]},
+     {k:'ul', h:["The accounting cycle steps covered here","خطوات الدورة المحاسبية المشمولة هنا"], x:[["1. Analyze the transaction: which accounts are affected, and are they increased or decreased?","1. حلل المعاملة: ما الحسابات المتأثرة؟ وهل زادت أم نقصت؟"],["2. Journalize: record the entry in the general journal (date, accounts, debit, credit).","2. سجل القيد في دفتر اليومية العام (التاريخ، الحسابات، المدين، الدائن)."],["3. Post: transfer each amount to the correct account in the general ledger.","3. رحّل: انقل كل مبلغ إلى الحساب الصحيح في دفتر الأستاذ العام."],["4. Prepare the trial balance (next lecture).","4. أعدّ ميزان المراجعة (المحاضرة التالية)."]]},
+     {k:'tbl', h:[["Item","البند"], ["General Journal","دفتر اليومية العام"], ["General Ledger","دفتر الأستاذ العام"]],
+      r:[
+       [["What it is","ما هو"],["Book of original entry","دفتر القيد الأصلي"],["Book of final entry","دفتر القيد النهائي"]],
+       [["Order of records","ترتيب السجلات"],["By date (chronological)","حسب التاريخ (زمنيًا)"],["By account","حسب الحساب"]],
+       [["Shows","يعرض"],["Each whole transaction with its debit and credit","كل معاملة كاملة بمدينها ودائنها"],["All changes in one account and its balance","كل التغيرات في حساب واحد ورصيده"]]
+      ]}
+   ]},
+   {t:["Extra: Worked Example","إضافة: مثال محلول"], b:[
+     {k:'ex', x:["Transactions of a small business:\n1. Owner invests 100,000 cash.\n2. Buys equipment for 30,000 cash.\n3. Buys office supplies on account for 5,000.\n4. Earns service revenue in cash 20,000.\n5. Pays rent 8,000 in cash.\n6. Owner withdraws 4,000 in cash.","معاملات نشاط صغير:\n1. استثمر المالك 100,000 نقدًا.\n2. اشترى معدات بـ 30,000 نقدًا.\n3. اشترى مستلزمات مكتب بالأجل بـ 5,000.\n4. حقق إيراد خدمات نقدًا 20,000.\n5. دفع إيجارًا 8,000 نقدًا.\n6. سحب المالك 4,000 نقدًا."]},
+     {k:'tbl', h:[["No.","الرقم"],["Account","الحساب"],["Debit","مدين"],["Credit","دائن"]],
+      r:[
+       [["1","1"],["Cash","النقدية"],["100,000","100,000"],["-","-"]],
+       [["-","-"],["   Capital","   رأس المال"],["-","-"],["100,000","100,000"]],
+       [["2","2"],["Equipment","المعدات"],["30,000","30,000"],["-","-"]],
+       [["-","-"],["   Cash","   النقدية"],["-","-"],["30,000","30,000"]],
+       [["3","3"],["Office supplies","مستلزمات المكتب"],["5,000","5,000"],["-","-"]],
+       [["-","-"],["   Accounts payable","   الذمم الدائنة"],["-","-"],["5,000","5,000"]],
+       [["4","4"],["Cash","النقدية"],["20,000","20,000"],["-","-"]],
+       [["-","-"],["   Service revenue","   إيراد الخدمات"],["-","-"],["20,000","20,000"]],
+       [["5","5"],["Rent expense","مصروف الإيجار"],["8,000","8,000"],["-","-"]],
+       [["-","-"],["   Cash","   النقدية"],["-","-"],["8,000","8,000"]],
+       [["6","6"],["Drawings","المسحوبات"],["4,000","4,000"],["-","-"]],
+       [["-","-"],["   Cash","   النقدية"],["-","-"],["4,000","4,000"]]
+      ]},
+     {k:'ex', x:["Compound entry example: buy equipment for 40,000, paying 10,000 in cash and the rest on account.\nDebit Equipment 40,000\n   Credit Cash 10,000\n   Credit Accounts payable 30,000\nTotal debit 40,000 = total credit 40,000.","مثال على قيد مركب: شراء معدات بـ 40,000 مع دفع 10,000 نقدًا والباقي بالأجل.\nمن حـ/ المعدات 40,000\n   إلى حـ/ النقدية 10,000\n   إلى حـ/ الذمم الدائنة 30,000\nمجموع المدين 40,000 = مجموع الدائن 40,000."]},
+     {k:'formula', x:"Posting to the ledger: Cash account\nDebit side:  100,000 + 20,000 = 120,000\nCredit side: 30,000 + 8,000 + 4,000 = 42,000\nBalance (debit) = 120,000 - 42,000 = 78,000"},
+     {k:'p', x:["How to post in the General Ledger: (1) open an account for each account used in the journal; (2) copy each debit amount to the debit side of its account and each credit amount to the credit side; (3) write the date and the explanation; (4) find the balance of each account.","كيفية الترحيل إلى دفتر الأستاذ العام: (1) افتح حسابًا لكل حساب مستخدم في اليومية؛ (2) انقل كل مبلغ مدين إلى الجانب المدين من حسابه وكل مبلغ دائن إلى الجانب الدائن؛ (3) اكتب التاريخ والبيان؛ (4) استخرج رصيد كل حساب."]}
+   ]},
+   {t:["Extra: Recording in the Accounting Equation","إضافة: التسجيل في المعادلة المحاسبية"], b:[
+     {k:'tip', x:["The slides \"Record the transactions below in an accounting equation\" were pictures. Here is the same worked example in equation form.","شريحتا \"سجل المعاملات التالية في معادلة محاسبية\" كانتا صورتين. هذا هو المثال نفسه بصيغة المعادلة."]},
+     {k:'tbl', h:[["After transaction","بعد المعاملة"],["Assets","الأصول"],["= Liabilities","= الخصوم"],["+ Capital (and changes)","+ رأس المال (وتغيراته)"]],
+      r:[
+       [["1. Owner invests 100,000","1. استثمار المالك 100,000"],["Cash 100,000","نقدية 100,000"],["0","0"],["Capital 100,000","رأس المال 100,000"]],
+       [["2. Buy equipment 30,000 cash","2. شراء معدات 30,000 نقدًا"],["Cash 70,000 + Equipment 30,000 = 100,000","نقدية 70,000 + معدات 30,000 = 100,000"],["0","0"],["100,000","100,000"]],
+       [["3. Supplies on account 5,000","3. مستلزمات بالأجل 5,000"],["105,000","105,000"],["Payable 5,000","ذمم دائنة 5,000"],["100,000","100,000"]],
+       [["4. Service revenue 20,000 cash","4. إيراد خدمات 20,000 نقدًا"],["125,000","125,000"],["5,000","5,000"],["100,000 + Revenue 20,000","100,000 + إيراد 20,000"]],
+       [["5. Pay rent 8,000","5. دفع إيجار 8,000"],["117,000","117,000"],["5,000","5,000"],["100,000 + 20,000 - Expense 8,000","100,000 + 20,000 - مصروف 8,000"]],
+       [["6. Owner withdraws 4,000","6. سحب المالك 4,000"],["113,000","113,000"],["5,000","5,000"],["100,000 + 20,000 - 8,000 - Drawings 4,000","100,000 + 20,000 - 8,000 - مسحوبات 4,000"]]
+      ]},
+     {k:'formula', x:"Final check: Assets 113,000 = Liabilities 5,000 + (100,000 + 20,000 - 8,000 - 4,000 = 108,000)\n5,000 + 108,000 = 113,000"}
+   ]},
+   {t:["Exercises and Suggested Answers","التمارين وإجابات مقترحة"], b:[
+     {k:'ul', h:["1. How do you post in the General Ledger?","1. كيف ترحّل في دفتر الأستاذ العام؟"], x:[["Transfer every debit amount to the debit side and every credit amount to the credit side of the matching ledger account, then find each account balance (see the worked example).","انقل كل مبلغ مدين إلى الجانب المدين وكل مبلغ دائن إلى الجانب الدائن من حساب الأستاذ المقابل، ثم استخرج رصيد كل حساب (انظر المثال المحلول)."]]},
+     {k:'ul', h:["2. What is the difference between General Journal and General Ledger?","2. ما الفرق بين دفتر اليومية العام ودفتر الأستاذ العام؟"], x:[["The journal records transactions by date as they happen (book of original entry). The ledger groups the amounts by account (book of final entry).","اليومية تسجل المعاملات بتاريخها كما تحدث (دفتر القيد الأصلي). والأستاذ يجمع المبالغ حسب الحساب (دفتر القيد النهائي)."]]},
+     {k:'ul', h:["3. State the Rules of Debit and Credit.","3. اذكر قواعد المدين والدائن."], x:[["Debit increases assets, expenses and drawings; credit increases liabilities, capital and revenue. Total debits must equal total credits.","المدين يزيد الأصول والمصروفات والمسحوبات؛ والدائن يزيد الخصوم ورأس المال والإيرادات. ويجب أن يتساوى مجموع المدين مع مجموع الدائن."]]}
+   ]},
+   {t:["Extra Slides in the File: Economics Summary and Assignment","شرائح إضافية في الملف: ملخص اقتصادي وتكليف"], b:[
+     {k:'tip', x:["These slides are about economics (indifference curves), not accounting. They are kept so no content from the file is lost.","هذه الشرائح عن الاقتصاد (منحنيات السواء) وليست عن المحاسبة. تُركت حتى لا يضيع أي محتوى من الملف."]},
+     {k:'ul', h:["Summary","ملخص"], x:[["An indifference curve is the mixing of two different goods (x, y) that obtain equal satisfaction.","منحنى السواء (Indifference curve) هو مزيج من سلعتين مختلفتين (x, y) يحقق مستوى الإشباع نفسه."],["Marginal Rate of Substitution (MRS; written \"Marginal Revenue Substitute\" on the slide) is the quantity of a specific good that the consumer is ready to give up while increasing consumption of the other good, keeping the same level of satisfaction.","معدل الإحلال الحدي (MRS؛ كُتب في الشريحة \"Marginal Revenue Substitute\") هو الكمية من سلعة معينة التي يكون المستهلك مستعدًا للتخلي عنها مقابل زيادة استهلاك السلعة الأخرى مع بقاء مستوى الإشباع نفسه."]]},
+     {k:'ul', h:["Characteristics of the indifference curve","خصائص منحنى السواء"], x:[["1. Negative (slopes) downward.","1. سالب الميل (ينحدر للأسفل)."],["2. MRS decreases as we go towards the bottom.","2. يتناقص MRS كلما اتجهنا للأسفل."],["3. The more satisfaction as we move away from (0,0).","3. يزداد الإشباع كلما ابتعدنا عن نقطة الأصل (0,0)."],["4. Curves cannot cross each other.","4. لا يمكن أن تتقاطع المنحنيات مع بعضها."]]},
+     {k:'ul', h:["Assignment","التكليف"], x:[["In not less than 2 or 3 pages, write about only one topic of the following: 1) International Trade, 2) National Income, 3) Banks and their different types.","اكتب في صفحتين أو ثلاث على الأقل عن موضوع واحد فقط من التالي: 1) التجارة الدولية، 2) الدخل القومي، 3) البنوك وأنواعها المختلفة."]]}
+   ]}
+  ],
+  take:[
+    ["Only transactions that affect the business are recorded, in two books: the general journal and the general ledger.","تُسجَّل فقط المعاملات التي تؤثر في النشاط في دفترين: اليومية العامة والأستاذ العام."],
+    ["Single-entry (slide wording): one debit and one credit. Compound entry: more than one debit or credit.","القيد البسيط (بصياغة الشريحة): مدين واحد ودائن واحد. القيد المركب: أكثر من مدين أو دائن."],
+    ["Process: analyze, journalize, post, then trial balance.","الخطوات: حلل، سجل في اليومية، رحّل، ثم ميزان المراجعة."],
+    ["In every entry, total debits = total credits.","في كل قيد: مجموع المدين = مجموع الدائن."],
+    ["Journal = by date; ledger = by account.","اليومية = حسب التاريخ؛ الأستاذ = حسب الحساب."],
+    ["The accounting equation must stay balanced after every transaction.","يجب أن تبقى المعادلة المحاسبية متوازنة بعد كل معاملة."]
+  ],
+  fc:[
+   [["In which books are business transactions recorded?","في أي دفاتر تُسجَّل المعاملات التجارية؟"],["In two books of accounts: the General Journal and the General Ledger.","في دفترين محاسبيين: دفتر اليومية العام ودفتر الأستاذ العام."]],
+   [["Which transactions are recorded?","أي المعاملات تُسجَّل؟"],["Only the business transactions and events affecting the business.","فقط المعاملات والأحداث التجارية التي تؤثر في النشاط."]],
+   [["What is single-entry accounting (slide wording)?","ما هو القيد البسيط (Single-entry بصياغة الشريحة)؟"],["A journal entry wherein there is only one debit entry and one credit entry.","قيد يومية فيه حساب مدين واحد وحساب دائن واحد فقط."]],
+   [["What is a compound entry?","ما هو القيد المركب؟"],["A journal entry wherein there are more than one debit or credit entries.","قيد يومية فيه أكثر من حساب مدين أو دائن."]],
+   [["What is journalizing?","ما هو التسجيل في اليومية (Journalizing)؟"],["Recording each transaction in the general journal with its debit and credit.","تسجيل كل معاملة في دفتر اليومية العام بمدينها ودائنها."]],
+   [["What is posting?","ما هو الترحيل (Posting)؟"],["Transferring the journal amounts to the proper accounts in the general ledger.","نقل مبالغ اليومية إلى الحسابات الصحيحة في دفتر الأستاذ العام."]],
+   [["What is the book of original entry?","ما هو دفتر القيد الأصلي؟"],["The general journal.","دفتر اليومية العام."]],
+   [["What is the book of final entry?","ما هو دفتر القيد النهائي؟"],["The general ledger.","دفتر الأستاذ العام."]],
+   [["How is the journal different from the ledger?","كيف تختلف اليومية عن الأستاذ؟"],["The journal records by date; the ledger groups by account.","اليومية تسجل حسب التاريخ؛ والأستاذ يجمع حسب الحساب."]],
+   [["What must be true of every journal entry?","ماذا يجب أن يتحقق في كل قيد يومية؟"],["Total debits equal total credits.","مجموع المدين يساوي مجموع الدائن."]],
+   [["Owner invests 100,000 cash. What is the entry?","استثمر المالك 100,000 نقدًا. ما القيد؟"],["Debit Cash 100,000; credit Capital 100,000.","من حـ/ النقدية 100,000؛ إلى حـ/ رأس المال 100,000."]],
+   [["Pay rent 8,000 in cash. What is the entry?","دفع إيجار 8,000 نقدًا. ما القيد؟"],["Debit Rent expense 8,000; credit Cash 8,000.","من حـ/ مصروف الإيجار 8,000؛ إلى حـ/ النقدية 8,000."]],
+   [["Buy supplies on account 5,000. What is the entry?","شراء مستلزمات بالأجل بـ 5,000. ما القيد؟"],["Debit Office supplies 5,000; credit Accounts payable 5,000.","من حـ/ مستلزمات المكتب 5,000؛ إلى حـ/ الذمم الدائنة 5,000."]],
+   [["Owner withdraws 4,000 cash. What is the entry?","سحب المالك 4,000 نقدًا. ما القيد؟"],["Debit Drawings 4,000; credit Cash 4,000.","من حـ/ المسحوبات 4,000؛ إلى حـ/ النقدية 4,000."]],
+   [["What are the three topics of the assignment on the slide?","ما موضوعات التكليف الثلاثة في الشريحة؟"],["International trade, national income, and banks and their different types (write on one).","التجارة الدولية، والدخل القومي، والبنوك وأنواعها المختلفة (اكتب في واحد)."]]
+  ],
+  quiz:[
+   {q:["The two books of accounts are:","الدفتران المحاسبيان هما:"], o:[["Trial balance and balance sheet","ميزان المراجعة والميزانية"],["General journal and general ledger","دفتر اليومية العام ودفتر الأستاذ العام"],["Cash book and sales book only","دفتر النقدية ودفتر المبيعات فقط"],["Tax book and payroll book","دفتر الضرائب ودفتر الرواتب"]], a:1},
+   {q:["Which transactions are recorded in the books of accounts?","أي المعاملات تُسجَّل في الدفاتر المحاسبية؟"], o:[["All events in the world","كل الأحداث في العالم"],["Only those affecting the business","فقط التي تؤثر في النشاط"],["Only cash sales","المبيعات النقدية فقط"],["Only tax payments","مدفوعات الضرائب فقط"]], a:1},
+   {q:["A journal entry with only one debit and one credit is called (slide wording):","قيد اليومية الذي فيه مدين واحد ودائن واحد يسمى (بصياغة الشريحة):"], o:[["Compound entry","قيد مركب"],["Single-entry accounting","القيد البسيط (Single-entry)"],["Closing entry","قيد إقفال"],["Adjusting entry","قيد تسوية"]], a:1},
+   {q:["A compound entry has:","القيد المركب فيه:"], o:[["No debit","لا مدين"],["Only one debit and one credit","مدين واحد ودائن واحد فقط"],["More than one debit or credit entry","أكثر من حساب مدين أو دائن"],["Only drawings","مسحوبات فقط"]], a:2},
+   {q:["Which book is the book of original entry?","أي دفتر هو دفتر القيد الأصلي؟"], o:[["General ledger","دفتر الأستاذ العام"],["General journal","دفتر اليومية العام"],["Trial balance","ميزان المراجعة"],["Balance sheet","الميزانية"]], a:1},
+   {q:["Transferring amounts from the journal to the ledger is called:","نقل المبالغ من اليومية إلى الأستاذ يسمى:"], o:[["Closing","الإقفال"],["Auditing","المراجعة"],["Posting","الترحيل"],["Forecasting","التنبؤ"]], a:2},
+   {q:["The general ledger groups the amounts by:","يجمع دفتر الأستاذ العام المبالغ حسب:"], o:[["Date only","التاريخ فقط"],["Account","الحساب"],["Customer name","اسم العميل"],["Amount size","حجم المبلغ"]], a:1},
+   {q:["The owner invests 100,000 cash. The journal entry is:","استثمر المالك 100,000 نقدًا. قيد اليومية:"], o:[["Debit Capital, credit Cash","من حـ/ رأس المال إلى حـ/ النقدية"],["Debit Cash, credit Capital","من حـ/ النقدية إلى حـ/ رأس المال"],["Debit Cash, credit Revenue","من حـ/ النقدية إلى حـ/ الإيراد"],["Debit Equipment, credit Capital","من حـ/ المعدات إلى حـ/ رأس المال"]], a:1},
+   {q:["Paying rent of 8,000 in cash is recorded as:","يُسجَّل دفع إيجار 8,000 نقدًا كالتالي:"], o:[["Debit Cash, credit Rent expense","من حـ/ النقدية إلى حـ/ مصروف الإيجار"],["Debit Rent expense, credit Cash","من حـ/ مصروف الإيجار إلى حـ/ النقدية"],["Debit Rent expense, credit Capital","من حـ/ مصروف الإيجار إلى حـ/ رأس المال"],["Debit Drawings, credit Rent expense","من حـ/ المسحوبات إلى حـ/ مصروف الإيجار"]], a:1},
+   {q:["Buying office supplies on account is recorded as:","يُسجَّل شراء مستلزمات مكتب بالأجل كالتالي:"], o:[["Debit Accounts payable, credit Office supplies","من حـ/ الذمم الدائنة إلى حـ/ مستلزمات المكتب"],["Debit Cash, credit Office supplies","من حـ/ النقدية إلى حـ/ مستلزمات المكتب"],["Debit Office supplies, credit Accounts payable","من حـ/ مستلزمات المكتب إلى حـ/ الذمم الدائنة"],["Debit Capital, credit Cash","من حـ/ رأس المال إلى حـ/ النقدية"]], a:2},
+   {q:["In the worked example, what is the final balance of the Cash account?","في المثال المحلول، ما الرصيد النهائي لحساب النقدية؟"], o:[["120,000","120,000"],["42,000","42,000"],["78,000","78,000"],["100,000","100,000"]], a:2},
+   {q:["In the worked example, the total assets at the end are:","في المثال المحلول، إجمالي الأصول في النهاية:"], o:[["113,000","113,000"],["125,000","125,000"],["108,000","108,000"],["78,000","78,000"]], a:0},
+   {q:["In every journal entry:","في كل قيد يومية:"], o:[["Debits are always larger","المدين دائمًا أكبر"],["Credits are always larger","الدائن دائمًا أكبر"],["Total debits equal total credits","مجموع المدين يساوي مجموع الدائن"],["Only one account is used","يُستخدم حساب واحد فقط"]], a:2},
+   {q:["Which accounts increase with a debit?","أي الحسابات تزيد بالمدين؟"], o:[["Liabilities, capital, revenue","الخصوم ورأس المال والإيرادات"],["Assets, expenses, drawings","الأصول والمصروفات والمسحوبات"],["Only revenue","الإيرادات فقط"],["Only liabilities","الخصوم فقط"]], a:1},
+   {q:["The owner withdraws 4,000 cash for personal use. The entry is:","سحب المالك 4,000 نقدًا للاستخدام الشخصي. القيد:"], o:[["Debit Drawings, credit Cash","من حـ/ المسحوبات إلى حـ/ النقدية"],["Debit Cash, credit Drawings","من حـ/ النقدية إلى حـ/ المسحوبات"],["Debit Expense, credit Capital","من حـ/ المصروف إلى حـ/ رأس المال"],["Debit Capital, credit Revenue","من حـ/ رأس المال إلى حـ/ الإيراد"]], a:0}
+  ]
+});
+
+LECTURES.push({ id:'l6', n:6,
+  title:["Trial Balance and Financial Statements","ميزان المراجعة والقوائم المالية (Trial Balance and Financial Statements)"],
+  obj:[
+    ["Define the trial balance and explain its purpose.","تعريف ميزان المراجعة (Trial balance) وشرح الغرض منه."],
+    ["Prepare a trial balance in four steps.","إعداد ميزان المراجعة في أربع خطوات."],
+    ["Define financial statements and name the two main statements.","تعريف القوائم المالية (Financial statements) وذكر القائمتين الرئيسيتين."],
+    ["Prepare a simple income statement and balance sheet.","إعداد قائمة دخل وميزانية عمومية بسيطتين."],
+    ["Explain the purpose of closing entries and what happens without them.","شرح الغرض من قيود الإقفال (Closing entries) وماذا يحدث بدونها."]
+  ],
+  sec:[
+   {t:["The Trial Balance","ميزان المراجعة (Trial Balance)"], b:[
+     {k:'def', x:["A trial balance (called a \"trial balance sheet\" on the slides) is a report that lists the ending balances of each account in the chart of accounts in balance sheet order.","ميزان المراجعة (يسمى \"trial balance sheet\" في الشرائح) تقرير يسرد الأرصدة الختامية لكل حساب في دليل الحسابات بترتيب الميزانية."]},
+     {k:'ul', h:["Bookkeepers and accountants use this report to:","يستخدم مسكو الدفاتر والمحاسبون هذا التقرير من أجل:"], x:[["consolidate all of the T-accounts into one document","تجميع كل حسابات T في مستند واحد"],["double check that all transactions were recorded in proper journal entry format","التأكد مرة أخرى من أن كل المعاملات سُجلت بصيغة قيد اليومية الصحيحة"]]},
+     {k:'tip', x:["Since the debit and credit columns equal each other, totaling a zero balance, we can move on to the year-end financial statement preparation process and finish the accounting cycle for the period.","بما أن عمودي المدين والدائن متساويان (فرقهما صفر)، يمكننا الانتقال إلى إعداد القوائم المالية في نهاية السنة وإنهاء الدورة المحاسبية للفترة."]}
+   ]},
+   {t:["Four Steps to Develop a Trial Balance","أربع خطوات لإعداد ميزان المراجعة"], b:[
+     {k:'ul', x:[["1. Prepare a worksheet with three columns: one column for account titles, another for debits, and the other for credits.","1. جهّز ورقة عمل (Worksheet) من ثلاثة أعمدة: عمود لأسماء الحسابات وآخر للمدين وآخر للدائن."],["2. Fill in all the account titles and record their balances in the appropriate debit or credit columns.","2. اكتب كل أسماء الحسابات وسجل أرصدتها في عمود المدين أو الدائن المناسب."],["3. Total the debit and credit columns.","3. اجمع عمودي المدين والدائن."],["4. Compare the column totals.","4. قارن مجموعي العمودين."]]}
+   ]},
+   {t:["Extra: Trial Balance Example","إضافة: مثال على ميزان المراجعة"], b:[
+     {k:'tip', x:["Extra example (not in the slide text): the same small business from the previous lecture.","مثال إضافي (غير موجود في نص الشرائح): النشاط الصغير نفسه من المحاضرة السابقة."]},
+     {k:'tbl', h:[["Account title","اسم الحساب"],["Debit","مدين"],["Credit","دائن"]],
+      r:[
+       [["Cash","النقدية"],["78,000","78,000"],["-","-"]],
+       [["Office supplies","مستلزمات المكتب"],["5,000","5,000"],["-","-"]],
+       [["Equipment","المعدات"],["30,000","30,000"],["-","-"]],
+       [["Accounts payable","الذمم الدائنة"],["-","-"],["5,000","5,000"]],
+       [["Capital","رأس المال"],["-","-"],["100,000","100,000"]],
+       [["Service revenue","إيراد الخدمات"],["-","-"],["20,000","20,000"]],
+       [["Rent expense","مصروف الإيجار"],["8,000","8,000"],["-","-"]],
+       [["Drawings","المسحوبات"],["4,000","4,000"],["-","-"]],
+       [["Total","المجموع"],["125,000","125,000"],["125,000","125,000"]]
+      ]},
+     {k:'tip', x:["A balanced trial balance does not prove the books are perfect. Errors can remain, such as a transaction that was never recorded, an amount posted to the wrong account, or two equal errors that cancel each other.","ميزان المراجعة المتوازن لا يثبت أن الدفاتر خالية تمامًا من الأخطاء. قد تبقى أخطاء مثل معاملة لم تُسجَّل أصلًا، أو مبلغ رُحِّل إلى حساب خاطئ، أو خطآن متساويان يلغي أحدهما الآخر."]}
+   ]},
+   {t:["Meaning of Financial Statements","معنى القوائم المالية"], b:[
+     {k:'def', x:["A financial statement is a collection of data organized according to logical and consistent accounting procedures. Its purpose is to convey an understanding of some financial aspects of a business firm.","القائمة المالية مجموعة من البيانات منظمة وفق إجراءات محاسبية منطقية ومتسقة. وغرضها نقل فهم لبعض الجوانب المالية للمنشأة."]},
+     {k:'p', x:["It may show a position at a moment in time, as in the case of a balance sheet, or may reveal a series of activities over a given period of time, as in the case of an income statement.","قد تُظهر المركز المالي في لحظة زمنية معينة كما في الميزانية العمومية (Balance sheet)، أو قد تكشف سلسلة من الأنشطة خلال فترة زمنية معينة كما في قائمة الدخل (Income statement)."]}
+   ]},
+   {t:["The Two Main Statements","القائمتان الرئيسيتان"], b:[
+     {k:'p', x:["The term \"financial statements\" generally refers to the two statements:","يشير مصطلح \"القوائم المالية\" عمومًا إلى قائمتين:"]},
+     {k:'cards', c:[
+       {t:["(i) Position statement","(i) قائمة المركز المالي"], l:[["Also called the balance sheet.","وتسمى أيضًا الميزانية العمومية (Balance sheet)."]]},
+       {t:["(ii) Income statement","(ii) قائمة الدخل"], l:[["Also called the profit and loss account.","وتسمى أيضًا حساب الأرباح والخسائر (Profit and loss account)."]]}
+     ]},
+     {k:'ul', x:[["These statements are used to convey to management and other interested outsiders the profitability and financial position of a firm.","تُستخدم هذه القوائم لإبلاغ الإدارة وغيرها من الأطراف الخارجية المهتمة بربحية المنشأة ومركزها المالي."],["Financial statements are the outcome of the summarizing process of accounting.","القوائم المالية هي ناتج عملية التلخيص في المحاسبة."],["Financial statements are prepared as an end result of financial accounting and are the major sources of financial information of an enterprise.","تُعدّ القوائم المالية كنتيجة نهائية للمحاسبة المالية وهي المصادر الرئيسية للمعلومات المالية للمنشأة."]]},
+     {k:'def', x:["In the words of John N. Myer: \"The financial statements provide a summary of the accounts of a business enterprise, the balance sheet reflecting the assets, liabilities and capital as on a certain date and the income statement showing the results of operations during a certain period.\"","على حد قول جون ن. مايرز (John N. Myer): \"تقدم القوائم المالية ملخصًا لحسابات المنشأة التجارية، إذ تعكس الميزانية العمومية الأصول والخصوم ورأس المال في تاريخ معين، وتُظهر قائمة الدخل نتائج العمليات خلال فترة معينة.\""]}
+   ]},
+   {t:["Extra: Income Statement and Balance Sheet Example","إضافة: مثال على قائمة الدخل والميزانية"], b:[
+     {k:'tip', x:["The formats of the statements were pictures in the slides. These examples use the same small business.","صيغ القوائم كانت صورًا في الشرائح. هذه الأمثلة تستخدم النشاط الصغير نفسه."]},
+     {k:'formula', x:"INCOME STATEMENT (for the period)\nService revenue                 20,000\nLess: Rent expense               8,000\nNet income                      12,000"},
+     {k:'formula', x:"BALANCE SHEET (at the end of the period)\nAssets\n  Cash                          78,000\n  Office supplies                5,000\n  Equipment                     30,000\n  Total assets                 113,000\nLiabilities\n  Accounts payable               5,000\nOwner's equity\n  Capital, beginning           100,000\n  Add: Net income               12,000\n  Less: Drawings                (4,000)\n  Capital, ending              108,000\nTotal liabilities and equity   113,000"},
+     {k:'tbl', h:[["Statement","القائمة"],["Shows","تعرض"],["Time","الزمن"]],
+      r:[
+       [["Income statement","قائمة الدخل"],["Revenue, expenses and net income or loss","الإيرادات والمصروفات وصافي الدخل أو الخسارة"],["Over a period of time","خلال فترة زمنية"]],
+       [["Balance sheet","الميزانية العمومية"],["Assets, liabilities and capital","الأصول والخصوم ورأس المال"],["At a moment in time","في لحظة زمنية"]]
+      ]},
+     {k:'formula', x:"Net income = Revenue - Expenses\nEnding capital = Beginning capital + Net income - Drawings"}
+   ]},
+   {t:["Extra: Closing Entries","إضافة: قيود الإقفال (Closing Entries)"], b:[
+     {k:'tip', x:["The slides ask two questions about closing entries but do not explain them. This is the standard explanation.","الشرائح تسأل سؤالين عن قيود الإقفال لكنها لا تشرحها. هذا هو الشرح القياسي."]},
+     {k:'def', x:["Closing entries transfer the balances of the temporary accounts (revenue, expenses and drawings) to the capital account, so the temporary accounts start the next period at zero.","قيود الإقفال تنقل أرصدة الحسابات المؤقتة (الإيرادات والمصروفات والمسحوبات) إلى حساب رأس المال، لتبدأ الحسابات المؤقتة الفترة التالية برصيد صفر."]},
+     {k:'formula', x:"1. Debit Service revenue 20,000  / Credit Income summary 20,000\n2. Debit Income summary 8,000    / Credit Rent expense 8,000\n3. Debit Income summary 12,000   / Credit Capital 12,000\n4. Debit Capital 4,000           / Credit Drawings 4,000\nCapital after closing = 100,000 + 12,000 - 4,000 = 108,000"}
+   ]},
+   {t:["Exercises and Suggested Answers","التمارين وإجابات مقترحة"], b:[
+     {k:'ul', h:["1. What is the main purpose of the closing entry?","1. ما الغرض الرئيسي من قيد الإقفال؟"], x:[["To transfer the balances of revenue, expense and drawing accounts to capital, and to set these accounts to zero for the next period.","نقل أرصدة حسابات الإيرادات والمصروفات والمسحوبات إلى رأس المال، وتصفير هذه الحسابات للفترة التالية."]]},
+     {k:'ul', h:["2. What happens if closing entries are not made?","2. ماذا يحدث إذا لم تُجرَ قيود الإقفال؟"], x:[["The revenue, expense and drawing accounts keep their old balances and mix with the next period. The net income is not added to capital, so the next period's financial statements will be wrong.","تحتفظ حسابات الإيرادات والمصروفات والمسحوبات بأرصدتها القديمة وتختلط بالفترة التالية. ولا يُضاف صافي الدخل إلى رأس المال، فتكون قوائم الفترة التالية خاطئة."]]},
+     {k:'tip', x:["\"Life is like accounting, everything must be balance.\" (Unknown) - the closing quote of the slides.","\"الحياة مثل المحاسبة، كل شيء يجب أن يكون متوازنًا.\" (مجهول) - العبارة الختامية للشرائح."]}
+   ]}
+  ],
+  take:[
+    ["The trial balance lists the ending balance of every account; total debits must equal total credits.","ميزان المراجعة يسرد الرصيد الختامي لكل حساب؛ ويجب أن يتساوى مجموع المدين مع مجموع الدائن."],
+    ["Four steps: three-column worksheet, record balances, total both columns, compare totals.","أربع خطوات: ورقة عمل من ثلاثة أعمدة، سجل الأرصدة، اجمع العمودين، قارن المجموعين."],
+    ["A balanced trial balance does not guarantee there are no errors.","توازن ميزان المراجعة لا يضمن خلو الدفاتر من الأخطاء."],
+    ["Financial statements = balance sheet (position at a date) and income statement (results over a period).","القوائم المالية = الميزانية العمومية (المركز في تاريخ) وقائمة الدخل (النتائج خلال فترة)."],
+    ["Net income = revenue - expenses.","صافي الدخل = الإيرادات - المصروفات."],
+    ["Closing entries move revenue, expense and drawing balances to capital.","قيود الإقفال تنقل أرصدة الإيرادات والمصروفات والمسحوبات إلى رأس المال."]
+  ],
+  fc:[
+   [["What is a trial balance?","ما هو ميزان المراجعة؟"],["A report that lists the ending balances of each account in the chart of accounts in balance sheet order.","تقرير يسرد الأرصدة الختامية لكل حساب في دليل الحسابات بترتيب الميزانية."]],
+   [["Why do accountants prepare a trial balance?","لماذا يعدّ المحاسبون ميزان المراجعة؟"],["To consolidate all T-accounts into one document and double check that all transactions were recorded in proper journal entry format.","لتجميع كل حسابات T في مستند واحد والتأكد من أن كل المعاملات سُجلت بصيغة قيد اليومية الصحيحة."]],
+   [["What should be true about the totals of a trial balance?","ماذا يجب أن يتحقق في مجموعي ميزان المراجعة؟"],["The debit and credit columns must be equal (zero difference).","يجب أن يتساوى عمودا المدين والدائن (الفرق صفر)."]],
+   [["What happens after the trial balance balances?","ماذا يحدث بعد توازن ميزان المراجعة؟"],["We move on to preparing the year-end financial statements and finish the accounting cycle for the period.","ننتقل إلى إعداد القوائم المالية في نهاية السنة وننهي الدورة المحاسبية للفترة."]],
+   [["List the four steps to prepare a trial balance.","اذكر الخطوات الأربع لإعداد ميزان المراجعة."],["1) Worksheet with three columns. 2) Fill in account titles and balances. 3) Total the debit and credit columns. 4) Compare the totals.","1) ورقة عمل من ثلاثة أعمدة. 2) اكتب أسماء الحسابات وأرصدتها. 3) اجمع عمودي المدين والدائن. 4) قارن المجموعين."]],
+   [["What are the three columns of the trial balance worksheet?","ما الأعمدة الثلاثة في ورقة عمل ميزان المراجعة؟"],["Account titles, debits, credits.","أسماء الحسابات، المدين، الدائن."]],
+   [["Can a balanced trial balance still contain errors?","هل يمكن أن يحتوي ميزان مراجعة متوازن على أخطاء؟"],["Yes: an unrecorded transaction, a wrong account, or two equal errors that cancel out.","نعم: معاملة غير مسجلة، أو حساب خاطئ، أو خطآن متساويان يلغيان بعضهما."]],
+   [["What is a financial statement?","ما هي القائمة المالية؟"],["A collection of data organized according to logical and consistent accounting procedures, to convey an understanding of some financial aspects of a business.","مجموعة من البيانات منظمة وفق إجراءات محاسبية منطقية ومتسقة لنقل فهم لبعض الجوانب المالية للمنشأة."]],
+   [["Which statement shows a position at a moment in time?","أي قائمة تُظهر المركز في لحظة زمنية؟"],["The balance sheet.","الميزانية العمومية (Balance sheet)."]],
+   [["Which statement shows activities over a period of time?","أي قائمة تُظهر الأنشطة خلال فترة زمنية؟"],["The income statement.","قائمة الدخل (Income statement)."]],
+   [["What are the two main financial statements?","ما القائمتان الماليتان الرئيسيتان؟"],["The position statement (balance sheet) and the income statement (profit and loss account).","قائمة المركز المالي (الميزانية) وقائمة الدخل (حساب الأرباح والخسائر)."]],
+   [["Who gave the quote about financial statements summarizing the accounts of a business?","من صاحب العبارة عن تلخيص القوائم المالية لحسابات المنشأة؟"],["John N. Myer.","جون ن. مايرز (John N. Myer)."]],
+   [["Financial statements are the end result of what?","القوائم المالية هي النتيجة النهائية لماذا؟"],["Of the summarizing process of financial accounting; they are the major sources of financial information of an enterprise.","لعملية التلخيص في المحاسبة المالية؛ وهي المصادر الرئيسية للمعلومات المالية للمنشأة."]],
+   [["What is the main purpose of closing entries?","ما الغرض الرئيسي من قيود الإقفال؟"],["To transfer revenue, expense and drawing balances to capital and reset them to zero for the next period.","نقل أرصدة الإيرادات والمصروفات والمسحوبات إلى رأس المال وتصفيرها للفترة التالية."]],
+   [["What happens if closing entries are not made?","ماذا يحدث إذا لم تُجرَ قيود الإقفال؟"],["The temporary accounts keep old balances and mix with the next period, so the next statements are wrong.","تحتفظ الحسابات المؤقتة بأرصدتها القديمة وتختلط بالفترة التالية فتكون القوائم التالية خاطئة."]]
+  ],
+  quiz:[
+   {q:["A trial balance lists:","يسرد ميزان المراجعة:"], o:[["Only the revenue accounts","حسابات الإيرادات فقط"],["The ending balances of each account","الأرصدة الختامية لكل حساب"],["Only the customers","العملاء فقط"],["The tax rates","معدلات الضرائب"]], a:1},
+   {q:["In a correct trial balance, the debit and credit columns are:","في ميزان المراجعة الصحيح، عمودا المدين والدائن:"], o:[["Equal","متساويان"],["Debit larger","المدين أكبر"],["Credit larger","الدائن أكبر"],["Not compared","لا يُقارنان"]], a:0},
+   {q:["How many columns does the trial balance worksheet have?","كم عمودًا في ورقة عمل ميزان المراجعة؟"], o:[["Two","اثنان"],["Three","ثلاثة"],["Four","أربعة"],["Five","خمسة"]], a:1},
+   {q:["Which is NOT one of the four steps of a trial balance?","أي مما يلي ليس من خطوات ميزان المراجعة الأربع؟"], o:[["Total the debit and credit columns","اجمع عمودي المدين والدائن"],["Compare the column totals","قارن مجموعي العمودين"],["Prepare a worksheet with three columns","جهّز ورقة عمل بثلاثة أعمدة"],["Sell the assets","بِع الأصول"]], a:3},
+   {q:["When the trial balance balances, the next step is to:","عندما يتوازن ميزان المراجعة، الخطوة التالية:"], o:[["Prepare the financial statements","إعداد القوائم المالية"],["Close the business","إغلاق النشاط"],["Delete the journal","حذف اليومية"],["Start the journal again","بدء اليومية من جديد"]], a:0},
+   {q:["In the example trial balance, total debits are:","في مثال ميزان المراجعة، مجموع المدين:"], o:[["113,000","113,000"],["108,000","108,000"],["125,000","125,000"],["100,000","100,000"]], a:2},
+   {q:["Which error would a balanced trial balance NOT detect?","أي خطأ لا يكشفه ميزان المراجعة المتوازن؟"], o:[["Debits larger than credits","المدين أكبر من الدائن"],["A transaction that was never recorded","معاملة لم تُسجَّل أصلًا"],["A missing debit amount","مبلغ مدين مفقود"],["A credit posted with no matching debit","دائن رُحِّل بلا مدين مقابل"]], a:1},
+   {q:["A financial statement conveys understanding of:","القائمة المالية تنقل فهمًا لـ:"], o:[["Only the weather","الطقس فقط"],["Some financial aspects of a business firm","بعض الجوانب المالية للمنشأة"],["The owner's family","عائلة المالك"],["Only the law","القانون فقط"]], a:1},
+   {q:["The balance sheet shows:","تعرض الميزانية العمومية:"], o:[["A series of activities over a period","سلسلة أنشطة خلال فترة"],["A position at a moment in time","المركز المالي في لحظة زمنية"],["Only cash flows","التدفقات النقدية فقط"],["Only taxes","الضرائب فقط"]], a:1},
+   {q:["The income statement is also called:","تسمى قائمة الدخل أيضًا:"], o:[["Position statement","قائمة المركز المالي"],["Trial balance","ميزان المراجعة"],["Profit and loss account","حساب الأرباح والخسائر"],["General ledger","دفتر الأستاذ العام"]], a:2},
+   {q:["The position statement is the same as the:","قائمة المركز المالي هي نفسها:"], o:[["Income statement","قائمة الدخل"],["Balance sheet","الميزانية العمومية"],["Journal","اليومية"],["Chart of accounts","دليل الحسابات"]], a:1},
+   {q:["Revenue 20,000 and expenses 8,000. The net income is:","الإيرادات 20,000 والمصروفات 8,000. صافي الدخل:"], o:[["28,000","28,000"],["20,000","20,000"],["12,000","12,000"],["8,000","8,000"]], a:2},
+   {q:["Beginning capital 100,000, net income 12,000, drawings 4,000. Ending capital is:","رأس المال في أول الفترة 100,000 وصافي الدخل 12,000 والمسحوبات 4,000. رأس المال في آخر الفترة:"], o:[["116,000","116,000"],["112,000","112,000"],["108,000","108,000"],["88,000","88,000"]], a:2},
+   {q:["The main purpose of closing entries is to:","الغرض الرئيسي من قيود الإقفال:"], o:[["Delete the ledger","حذف الأستاذ"],["Transfer revenue, expense and drawing balances to capital and reset them to zero","نقل أرصدة الإيرادات والمصروفات والمسحوبات إلى رأس المال وتصفيرها"],["Increase the assets","زيادة الأصول"],["Hide the profit","إخفاء الربح"]], a:1},
+   {q:["If closing entries are not made:","إذا لم تُجرَ قيود الإقفال:"], o:[["Nothing changes","لا شيء يتغير"],["The temporary accounts carry old balances into the next period","تنتقل أرصدة الحسابات المؤقتة القديمة إلى الفترة التالية"],["The assets disappear","تختفي الأصول"],["The trial balance is not needed","لا حاجة لميزان المراجعة"]], a:1}
+  ]
+});
+
+const GLOSSARY = [
+// Lecture 1
+["Accounting","المحاسبة"],["Business","نشاط تجاري / أعمال"],["Goods","سلع"],["Services","خدمات"],["Buyer","المشتري"],["Seller","البائع"],["Investment","الاستثمار"],["Profit","الربح"],["Customers","العملاء"],["Sole proprietorship","منشأة فردية"],["Sole proprietor","المالك الوحيد"],["Partnership","شراكة"],["Partners","الشركاء"],["Corporation","شركة مساهمة"],["Legal identity","كيان قانوني"],["Limited liability","مسؤولية محدودة"],["Stock","الأسهم"],["Stockholders","المساهمون"],["Shareholders","المساهمون (حملة الأسهم)"],["Dissolve","حلّ / تصفية"],["Capital","رأس المال"],["Government regulations","اللوائح الحكومية"],["Business continuity","استمرارية الأعمال"],["Manufacturing business","نشاط صناعي"],["Merchandising business","نشاط تجاري (بيع بضائع)"],["Service business","نشاط خدمي"],["Journalizing","التسجيل في اليومية"],["Posting","الترحيل"],["Trial balance","ميزان المراجعة"],["Financial reports","التقارير المالية"],["Financial statements","القوائم المالية"],["Gross profit","مجمل الربح"],
+// Lecture 2
+["Quantitative information","معلومات كمية"],["Economic entities","الوحدات الاقتصادية"],["Economic decision","قرار اقتصادي"],["Monetary terms","وحدات نقدية"],["Accounting period","الفترة المحاسبية"],["Financial position","المركز المالي"],["Cash flows","التدفقات النقدية"],["Operations","العمليات"],["Internal audit","المراجعة الداخلية"],["Taxation","الضرائب"],["AICPA (American Institute of Certified Public Accountants)","المعهد الأمريكي للمحاسبين القانونيين"],["Luca Pacioli","لوكا باتشولي"],["Double-entry accounting","المحاسبة بالقيد المزدوج"],["Analyzing","التحليل"],["Recording","التسجيل"],["Bookkeeping","مسك الدفاتر"],["Classifying","التصنيف"],["Summarizing","التلخيص"],["Interpreting","التفسير"],["Users of accounting information","مستخدمو المعلومات المحاسبية"],["Owners","الملاك"],["Managers","المديرون"],["Budgets","الموازنات"],["Creditors","الدائنون"],["Suppliers","الموردون"],["Government agencies","الجهات الحكومية"],["Financial analysts","المحللون الماليون"],["Employees","الموظفون"],["Generally Accepted Accounting Principles (GAAP)","مبادئ المحاسبة المتعارف عليها"],["Financial Accounting Standards Board (FASB)","مجلس معايير المحاسبة المالية"],["Economic unit","وحدة اقتصادية"],
+// Lecture 3
+["Assets","الأصول"],["Tangible assets","الأصول الملموسة"],["Intangible assets","الأصول غير الملموسة"],["Cash","النقدية"],["Accounts receivable","الذمم المدينة"],["Inventories","المخزون"],["Office supplies","مستلزمات المكتب"],["Equipment","المعدات"],["Land and buildings","الأراضي والمباني"],["Liability","الخصم / الالتزام"],["Borrowings","الاقتراض"],["Loans","القروض"],["Debt","الدين"],["Debtor","المدين (المقترض)"],["Creditor","الدائن (المُقرض)"],["Accounts payable","الذمم الدائنة"],["Owner's equity","حقوق الملكية"],["Net assets","صافي الأصول"],["Accounting equation","المعادلة المحاسبية"],["Revenue","الإيراد"],["Expense","المصروف"],["Drawing","المسحوبات"],["Long-term liability","خصم طويل الأجل"],["Goodwill","الشهرة"],["Price elasticity of demand","مرونة الطلب السعرية"],["Perfectly elastic demand","الطلب كامل المرونة"],["Perfectly inelastic demand","الطلب عديم المرونة تمامًا"],
+// Lecture 4
+["Chart of accounts (COA)","دليل الحسابات"],["Asset accounts","حسابات الأصول"],["Current assets","الأصول المتداولة"],["Fixed assets","الأصول الثابتة"],["Liability accounts","حسابات الخصوم"],["Short-term liabilities","الخصوم قصيرة الأجل"],["Long-term liabilities","الخصوم طويلة الأجل"],["Equity accounts","حسابات حقوق الملكية"],["Retained earnings","الأرباح المحتجزة"],["Appropriations","المخصصات"],["Revenue accounts","حسابات الإيرادات"],["Expense accounts","حسابات المصروفات"],["Sales","المبيعات"],["Service revenue","إيراد الخدمات"],["Interest income","إيراد الفوائد"],["Depreciation","الإهلاك"],["Doubtful accounts","الديون المشكوك فيها"],["Insurance","التأمين"],["Prepaid rent","الإيجار المدفوع مقدمًا"],["Bonds payable","السندات المستحقة"],["Accrued interest","الفوائد المستحقة"],["Debit","مدين"],["Credit","دائن"],["Rules of debit and credit","قواعد المدين والدائن"],["Normal balance","الرصيد الطبيعي"],["Marginal revenue","الإيراد الحدي"],["Total revenue","الإيراد الكلي"],["Average revenue","الإيراد المتوسط"],["Break-even point","نقطة التعادل"],["Total cost","التكلفة الكلية"],["Forecast","التنبؤ"],
+// Lecture 5
+["General journal","دفتر اليومية العام"],["General ledger","دفتر الأستاذ العام"],["Books of accounts","الدفاتر المحاسبية"],["Journal entry","قيد يومية"],["Single-entry accounting","القيد البسيط (بصياغة الشريحة)"],["Compound entry","قيد مركب"],["T-account","حساب T"],["Book of original entry","دفتر القيد الأصلي"],["Book of final entry","دفتر القيد النهائي"],["Transaction","معاملة"],["Indifference curve","منحنى السواء"],["Marginal rate of substitution (MRS)","معدل الإحلال الحدي"],["International trade","التجارة الدولية"],["National income","الدخل القومي"],["Banks","البنوك"],
+// Lecture 6
+["Worksheet","ورقة عمل"],["Account titles","أسماء الحسابات"],["Ending balance","الرصيد الختامي"],["Accounting cycle","الدورة المحاسبية"],["Balance sheet","الميزانية العمومية"],["Income statement","قائمة الدخل"],["Position statement","قائمة المركز المالي"],["Profit and loss account","حساب الأرباح والخسائر"],["Net income","صافي الدخل"],["Net loss","صافي الخسارة"],["Closing entries","قيود الإقفال"],["Temporary accounts","الحسابات المؤقتة"],["Income summary","ملخص الدخل"],["John N. Myer","جون ن. مايرز"]
+].sort((a,b)=>a[0].localeCompare(b[0]));
+
+/* ============================================================
+   SUBJECTS + THEMES  (8 subjects, each with its own color)
+   To add a subject: set ready:true and give it lectures + glossary.
+   ============================================================ */
+const THEMES = {
+  teal:['20 184 166','13 148 136'], pink:['236 72 153','219 39 119'], purple:['168 85 247','147 51 234'],
+  blue:['59 130 246','37 99 235'], orange:['249 115 22','234 88 12'], green:['34 197 94','22 163 74'],
+  yellow:['234 179 8','202 138 4'], red:['239 68 68','220 38 38']
+};
+/* ----- THIS PAGE'S SUBJECT (edit when copying this file to make a new subject) ----- */
+const SUBJECT = {id:'acc', color:'purple', ready:true, icon:'🧮', name:["Principles of Accounting","مبادئ المحاسبة (Principles of Accounting)"], tips:[["Memorize: the accounting equation (Assets = Liabilities + Capital), the 5 functions of accounting, the 6 users of accounting information, and the 5 types of accounts.","احفظ: المعادلة المحاسبية (الأصول = الخصوم + رأس المال)، ووظائف المحاسبة الخمس، ومستخدمي المعلومات المحاسبية الستة، وأنواع الحسابات الخمسة."],["Memorize the debit and credit rules: debit increases assets, expenses and drawings; credit increases liabilities, capital and revenue. Also: Net income = Revenue - Expenses, and total debits = total credits.","احفظ قواعد المدين والدائن: المدين يزيد الأصول والمصروفات والمسحوبات؛ والدائن يزيد الخصوم ورأس المال والإيرادات. وأيضًا: صافي الدخل = الإيرادات - المصروفات، ومجموع المدين = مجموع الدائن."]], lectures:LECTURES, glossary:GLOSSARY};
+const SUBJECTS = [SUBJECT];
+
+/* ============================================================
+   STATE + STORAGE
+   ============================================================ */
+const KEY = 'studyHubV2';
+const store = (()=>{ try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ return {}; } })();
+const state = { lang: store.lang||'en', subject:SUBJECT.id, page:'home', sidebar: window.innerWidth>=1024, data: store.data||{}, decks:{}, qz:{}, exam:null };
+function save(){
+  try{
+    const cur=JSON.parse(localStorage.getItem(KEY)||'{}'); cur.data=cur.data||{};
+    cur.lang=state.lang;
+    const d=sd(SUBJECT.id); d.mastery=mastery(SUBJECT); d.n=SUBJECT.lectures.length;
+    cur.data[SUBJECT.id]=d;
+    localStorage.setItem(KEY, JSON.stringify(cur));
+  }catch(e){}
+}
+const subj = () => SUBJECTS.find(s=>s.id===state.subject);
+const LECT = () => subj().lectures;
+function sd(id){ id=id||state.subject; return state.data[id]||(state.data[id]={seen:{},best:{},exam:0}); }
+function mastery(s){
+  if(!s.ready) return 0;
+  const d=sd(s.id); let sum=0;
+  s.lectures.forEach(l=>{ sum += (d.best[l.id]||0)/100; });
+  sum += (d.exam||0)/100;
+  return Math.round(sum/(s.lectures.length+1)*100);
+}
+
+/* ============================================================
+   HELPERS  (invisible citation handling + XSS protection)
+   ============================================================ */
+const clean = s => String(s)
+  .replace(/<\/?(antml:)?cite[^>]*>/gi,'')
+  .replace(/\[cite[^\]]*\]/gi,'')
+  .replace(/\[(source|ref)[^\]]*\]/gi,'')
+  .replace(/[ \t]{2,}/g,' ').trim();
+const esc = s => clean(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const fmt = s => esc(s).replace(/(\$?\d[\d,.]*\d|\$?\d)/g,'<span class="mono">$1</span>');
+const li = () => state.lang==='ar'?1:0;
+const tx = a => fmt(a[li()]);
+const u = k => UI[k][li()];
+const $ = id => document.getElementById(id);
+function shuf(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function mixQ(q){ const idx=shuf(q.o.map((_,i)=>i)); return {q:q.q, o:idx.map(i=>q.o[i]), a:idx.indexOf(q.a)}; }
+function applyTheme(){
+  const t = THEMES[(state.subject&&subj().color)||'teal'];
+  document.documentElement.style.setProperty('--b5',t[0]);
+  document.documentElement.style.setProperty('--b6',t[1]);
+}
+
+/* ============================================================
+   BLOCK RENDERERS
+   ============================================================ */
+const labelColors = {
+  def:['border-brand-500 bg-brand-500/10','text-brand-500'],
+  ex:['border-amber-400 bg-amber-400/10','text-amber-400'],
+  tip:['border-violet-400 bg-violet-400/10','text-violet-400']
+};
+function renderBlock(b){
+  if(b.k==='p') return `<p class="leading-relaxed text-dark-text/90 my-3">${tx(b.x)}</p>`;
+  if(labelColors[b.k]){
+    const c=labelColors[b.k];
+    return `<div class="border-s-4 ${c[0]} rounded-e-xl p-4 my-3"><div class="text-xs font-bold uppercase tracking-wide ${c[1]} mb-1">${u(b.k)}</div><div class="leading-relaxed whitespace-pre-line">${tx(b.x)}</div></div>`;
+  }
+  if(b.k==='formula') return `<pre class="mono bg-dark-base border border-dark-border rounded-xl p-4 my-3 text-brand-500 overflow-x-auto" dir="ltr"><code>${esc(b.x)}</code></pre>`;
+  if(b.k==='ul') return `<div class="my-3">${b.h?`<div class="font-semibold text-brand-500 mb-1">${tx(b.h)}</div>`:''}<ul class="space-y-1.5">${b.x.map(i=>`<li class="flex gap-2 leading-relaxed"><span class="text-brand-500 mt-1.5 shrink-0">●</span><span>${tx(i)}</span></li>`).join('')}</ul></div>`;
+  if(b.k==='cards') return `<div class="grid gap-3 sm:grid-cols-2 my-3">${b.c.map(c=>`<div class="bg-dark-surface border border-dark-border rounded-xl p-4"><div class="font-bold text-brand-500 mb-2">${tx(c.t)}</div><ul class="space-y-1 text-sm leading-relaxed">${c.l.map(i=>`<li class="flex gap-2"><span class="text-dark-muted shrink-0">▪</span><span>${tx(i)}</span></li>`).join('')}</ul></div>`).join('')}</div>`;
+  if(b.k==='tbl') return `<div class="overflow-x-auto my-3 rounded-xl border border-dark-border"><table class="w-full text-sm"><thead class="bg-brand-600 text-white"><tr>${b.h.map(h=>`<th class="p-3 text-start font-semibold">${tx(h)}</th>`).join('')}</tr></thead><tbody>${b.r.map((r,i)=>`<tr class="${i%2?'bg-dark-surface':'bg-dark-elevated'}">${r.map((c,j)=>`<td class="p-3 border-t border-dark-border ${j===0?'font-semibold':''}">${tx(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  return '';
+}
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+function optHTML(o,i){
+  return `<button class="opt w-full text-start p-3 rounded-lg border border-dark-border bg-dark-surface hover:border-brand-500 transition flex gap-3 items-start" data-i="${i}"><span class="mono text-dark-muted shrink-0">${'ABCD'[i]}.</span><span>${tx(o)}</span></button>`;
+}
+function qHTML(q,idx,total){
+  return `<div class="qbox bg-dark-elevated border border-dark-border rounded-xl p-4 mb-4" data-a="${q.a}">
+    <div class="font-semibold mb-3"><span class="mono text-brand-500">${idx}/${total}</span> ${tx(q.q)}</div>
+    <div class="space-y-2">${q.o.map(optHTML).join('')}</div>
+    <div class="fb mt-3 text-sm font-semibold hidden"></div></div>`;
+}
+function getQz(L){ return state.qz[L.id] || (state.qz[L.id]=L.quiz.map(mixQ)); }
+function quizInner(L){
+  const qs=getQz(L), best=sd().best[L.id];
+  return `<div class="flex justify-between items-center mb-3"><h2 class="font-bold text-lg">📝 ${u('quiz')} <span class="mono text-sm text-dark-muted">(${qs.length})</span></h2>${best!=null?`<span class="mono text-xs text-dark-muted">${u('best')}: ${best}%</span>`:''}</div>
+    ${qs.map((q,i)=>qHTML(q,i+1,qs.length)).join('')}
+    <div class="qscore hidden mt-2 p-3 rounded-lg bg-dark-surface border border-brand-500 flex flex-wrap items-center justify-between gap-2"><b class="qs-text"></b><button data-act="retryQuiz" data-id="${L.id}" class="px-4 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm">${u('retry')}</button></div>`;
+}
+
+/* ============================================================
+   FLASHCARD DECKS (shared by lectures and glossary)
+   ============================================================ */
+function getDeck(id,kind,list){
+  if(!state.decks[id]) state.decks[id]={kind,list:list.slice(),i:0,flip:false};
+  return state.decks[id];
+}
+function deckHTML(id){
+  const d=state.decks[id], c=d.list[d.i], l=li();
+  let front, back;
+  if(d.kind==='g'){
+    front=`<div class="mono text-2xl text-brand-500 font-bold" dir="ltr">${esc(c[0])}</div>`;
+    back=`<div class="text-2xl font-bold text-white" dir="rtl" style="font-family:Cairo">${esc(c[1])}</div>`;
+  } else {
+    front=`<div class="text-xs mono text-dark-muted mb-2">${u('question')}</div><div class="text-lg font-bold">${esc(c[0][l])}</div>`;
+    back=`<div class="text-base font-semibold text-white leading-relaxed">${esc(c[1][l])}</div><div class="text-xs text-white/70 mt-3 leading-relaxed" dir="${l?'ltr':'rtl'}">${esc(c[1][1-l])}</div>`;
+  }
+  return `<p class="text-dark-muted mb-3 text-sm">${u('flip')} • <span class="mono">${d.i+1}/${d.list.length}</span></p>
+    <div class="flip ${d.flip?'on':''} cursor-pointer mb-3" data-act="dk-flip" data-deck="${id}"><div class="flip-inner">
+      <div class="face bg-dark-elevated border border-brand-500">${front}</div>
+      <div class="face back bg-brand-600">${back}</div></div></div>
+    <div class="flex justify-between gap-2">
+      <button data-act="dk-prev" data-deck="${id}" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500">${u('prev')}</button>
+      <button data-act="dk-shuf" data-deck="${id}" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500">🔀 ${u('shuffle')}</button>
+      <button data-act="dk-next" data-deck="${id}" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white">${u('next')}</button>
+    </div>`;
+}
+function deckBox(id,kind,list){ getDeck(id,kind,list); return `<div id="deck-${id}">${deckHTML(id)}</div>`; }
+function redrawDeck(id){ const el=$('deck-'+id); if(el) el.innerHTML=deckHTML(id); }
+
+/* ============================================================
+   PAGES
+   ============================================================ */
+function renderHome(){
+  const s=subj(), d=sd(), m=mastery(s), n=s.lectures.length;
+  const steps = [
+    ["Read each lecture slowly, then read the Key Takeaways.","اقرأ كل محاضرة ببطء ثم اقرأ أهم النقاط."],
+    ["Go through the lecture flashcards, then do the quiz until you get 100%.","راجع بطاقات المحاضرة ثم حل الاختبار حتى تحصل على 100%."],
+    ["Use the term flashcards in the Glossary page for 10 minutes every day.","استخدم بطاقات المصطلحات في صفحة القاموس 10 دقائق يوميًا."],
+    ["Take the Final Exam again and again until you score 90% or more. Read the mistakes list after each try.","أدِّ الاختبار النهائي مرارًا حتى تحصل على 90% أو أكثر. اقرأ قائمة الأخطاء بعد كل محاولة."],
+    ...(s.tips||[])
+  ];
+  return `<div class="fade">
+    <div class="rounded-2xl bg-gradient-to-br from-brand-600 to-dark-elevated p-6 mb-6 border border-dark-border">
+      <div class="text-3xl mb-1">${s.icon}</div>
+      <h1 class="text-3xl font-extrabold mb-1">${tx(s.name)}</h1>
+      <p class="text-white/80">${n} ${u('lectures').toLowerCase()} • ${state.lang==='ar'?'اختبارات • بطاقات • اختبار نهائي • قاموس':'quizzes • flashcards • final exam • glossary'}</p>
+    </div>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-6">
+      <div class="flex justify-between mb-2"><b>${u('mastery')}</b><span class="mono text-brand-500">${m}%</span></div>
+      <div class="h-3 bg-dark-base rounded-full overflow-hidden"><div class="h-full bg-brand-500 transition-all" style="width:${m}%"></div></div>
+      <p class="text-xs text-dark-muted mt-2">${u('masteryHow')}</p>
+    </div>
+    <div class="grid gap-3 sm:grid-cols-2 mb-6">
+      ${s.lectures.map(l=>{ const b=d.best[l.id]; return `<button data-go="${l.id}" class="text-start bg-dark-elevated border border-dark-border hover:border-brand-500 rounded-xl p-4 transition">
+        <div class="flex justify-between"><span class="mono text-brand-500 text-sm">${u('lecture')} ${l.n}</span>${d.seen[l.id]?`<span class="text-dark-muted text-xs">📖 ${u('read')}</span>`:''}</div>
+        <div class="font-semibold mt-1">${tx(l.title)}</div>
+        <div class="h-1.5 bg-dark-base rounded-full overflow-hidden mt-3"><div class="h-full bg-brand-500" style="width:${b||0}%"></div></div>
+        <div class="mono text-xs text-dark-muted mt-1">${u('quiz')}: ${b!=null?b+'%':'—'}</div></button>`; }).join('')}
+    </div>
+    <div class="grid gap-3 sm:grid-cols-2 mb-6">
+      <button data-go="exam" class="bg-dark-elevated border border-dark-border hover:border-brand-500 rounded-xl p-4 font-semibold text-start">🏆 ${u('exam')}<div class="mono text-xs text-dark-muted mt-1">${u('best')}: ${d.exam?d.exam+'%':'—'}</div></button>
+      <button data-go="glossary" class="bg-dark-elevated border border-dark-border hover:border-brand-500 rounded-xl p-4 font-semibold text-start">📖 Glossary / قاموس المصطلحات<div class="mono text-xs text-dark-muted mt-1">${s.glossary.length} • ${u('glossFlash')}</div></button>
+    </div>
+    <div class="border-s-4 border-violet-400 bg-violet-400/10 rounded-e-xl p-5">
+      <h2 class="font-bold text-violet-400 mb-2">🚀 ${u('plan')}</h2>
+      <ol class="space-y-1.5 list-decimal ps-5">${steps.map(x=>`<li>${tx(x)}</li>`).join('')}</ol>
+    </div>
+    <button data-act="reset" class="mt-6 text-xs text-dark-muted underline">${u('reset')}</button>
+  </div>`;
+}
+
+function renderLecture(L, idx){
+  const d=sd(); d.seen[L.id]=true; save();
+  const lects=LECT(), prev=lects[idx-1], next=lects[idx+1], ar=state.lang==='ar';
+  return `<div class="fade">
+    <div class="mono text-brand-500 text-sm mb-1">${u('lecture')} ${L.n}</div>
+    <h1 class="text-2xl sm:text-3xl font-extrabold mb-4">${tx(L.title)}</h1>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-5">
+      <h2 class="font-bold text-lg mb-2">🎯 ${u('objectives')}</h2>
+      <ul class="space-y-1">${L.obj.map(o=>`<li class="flex gap-2"><span class="text-brand-500">✓</span><span>${tx(o)}</span></li>`).join('')}</ul>
+    </div>
+    ${L.sec.map((s,i)=>`<section class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-5">
+        <h2 class="text-xl font-bold mb-2 flex items-center gap-2"><span class="mono text-sm bg-brand-600 text-white rounded-md px-2 py-0.5">${i+1}</span>${tx(s.t)}</h2>
+        ${s.b.map(renderBlock).join('')}</section>`).join('')}
+    <div class="bg-brand-500/10 border border-brand-500 rounded-2xl p-5 mb-5">
+      <h2 class="font-bold text-lg mb-2 text-brand-500">⭐ ${u('take')}</h2>
+      <ul class="space-y-1">${L.take.map(t=>`<li class="flex gap-2"><span class="text-brand-500">★</span><span>${tx(t)}</span></li>`).join('')}</ul>
+    </div>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-5">
+      <h2 class="font-bold text-lg mb-3">🃏 ${u('flash')}</h2>
+      ${deckBox('fc-'+L.id,'l',L.fc)}
+    </div>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-5" data-quiz="${L.id}" id="quiz-${L.id}">${quizInner(L)}</div>
+    <div class="flex justify-between gap-3">
+      ${prev?`<button data-go="${prev.id}" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500">${ar?'→':'←'} ${u('prev')}</button>`:'<span></span>'}
+      ${next?`<button data-go="${next.id}" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white">${u('next')} ${ar?'←':'→'}</button>`:`<button data-go="exam" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white">${u('exam')} ${ar?'←':'→'}</button>`}
+    </div></div>`;
+}
+
+function gItems(list){
+  return list.map(g=>`<div class="bg-dark-elevated border border-dark-border rounded-xl p-3 flex flex-wrap justify-between gap-2"><span class="mono text-brand-500 font-semibold" dir="ltr">${esc(g[0])}</span><span class="font-semibold" dir="rtl" style="font-family:Cairo">${esc(g[1])}</span></div>`).join('') || '<div class="text-dark-muted">—</div>';
+}
+function renderGlossary(){
+  const G=subj().glossary;
+  return `<div class="fade">
+    <h1 class="text-3xl font-extrabold mb-1">Glossary / قاموس المصطلحات</h1>
+    <p class="text-dark-muted mb-5 mono text-sm">${G.length} terms</p>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-6">
+      <h2 class="font-bold text-lg mb-3">🃏 ${u('glossFlash')}</h2>
+      ${deckBox('gl','g',shuf(G))}
+    </div>
+    <h2 class="font-bold text-lg mb-2">📖 ${u('glossList')}</h2>
+    <input id="gSearch" placeholder="${u('search')}" class="w-full p-3 rounded-xl bg-dark-elevated border border-dark-border focus:border-brand-500 outline-none mb-4">
+    <div id="gList" class="grid gap-2">${gItems(G)}</div></div>`;
+}
+
+/* ---------- FINAL EXAM ---------- */
+function pool(){ const p=[]; LECT().forEach(l=>l.quiz.forEach(q=>p.push(q))); return p; }
+function newExam(size){
+  const qs=shuf(pool()).slice(0,size).map(mixQ);
+  state.exam={qs,i:0,score:0,wrong:[],finished:false,size};
+}
+function renderExam(){
+  const e=state.exam, total=pool().length, d=sd();
+  if(!e){
+    const sizes=[20,40,total];
+    return `<div class="fade text-center py-8"><h1 class="text-3xl font-extrabold mb-2">🏆 ${u('exam')}</h1>
+      <p class="text-dark-muted mb-1">${state.lang==='ar'?`بنك الأسئلة: ${total} سؤالًا من كل المحاضرات. تتغير الأسئلة وترتيب الخيارات في كل مرة.`:`Question bank: ${total} questions from all lectures. Questions and answer order change every time.`}</p>
+      <p class="mono text-sm text-dark-muted mb-6">${u('best')}: ${d.exam?d.exam+'%':'—'}</p>
+      <p class="font-semibold mb-3">${u('chooseSize')}</p>
+      <div class="flex flex-wrap justify-center gap-3">${sizes.map((n,i)=>`<button data-size="${n}" class="px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold"><span class="mono">${n}</span> ${i===2?`(${u('all')})`:u('questions')}</button>`).join('')}</div></div>`;
+  }
+  if(e.finished){
+    const p=Math.round(e.score/e.qs.length*100);
+    return `<div class="fade py-6"><div class="text-center">
+      <h1 class="text-3xl font-extrabold mb-3">🏆 ${u('exam')}</h1>
+      <div class="mono text-5xl font-extrabold ${p>=90?'text-green-400':p>=60?'text-amber-400':'text-red-400'} mb-2">${e.score}/${e.qs.length}</div>
+      <div class="mono text-xl mb-4">${p}%</div>
+      <p class="mb-6">${p>=90?(state.lang==='ar'?'ممتاز! أنت جاهز للامتحان 🎉':'Excellent! You are ready 🎉'):(state.lang==='ar'?'راجع المحاضرات وأعد المحاولة للوصول إلى 90%+':'Review the lectures and try again to reach 90%+')}</p>
+      <button data-act="examAgain" class="px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold">${u('retry')}</button></div>
+      ${e.wrong.length?`<h2 class="font-bold text-lg mt-8 mb-3">❌ ${u('mistakes')} (${e.wrong.length})</h2>
+      ${e.wrong.map(w=>`<div class="bg-dark-elevated border border-dark-border border-s-4 border-s-red-500 rounded-xl p-4 mb-3"><div class="font-semibold mb-1">${tx(w.q)}</div><div class="text-sm text-green-400">${u('yourAns')}: ${tx(w.c)}</div></div>`).join('')}`:''}
+    </div>`;
+  }
+  const q=e.qs[e.i];
+  return `<div class="fade"><h1 class="text-2xl font-extrabold mb-3">🏆 ${u('exam')}</h1>
+    <div class="h-2 bg-dark-surface rounded-full mb-4 overflow-hidden"><div class="h-full bg-brand-500" style="width:${e.i/e.qs.length*100}%"></div></div>
+    <div data-exam="1">${qHTML(q,e.i+1,e.qs.length)}</div>
+    <div class="flex justify-between items-center"><span class="mono text-sm text-dark-muted">${u('score')}: ${e.score}</span>
+    <button id="examNext" class="hidden px-5 py-2 rounded-lg bg-brand-600 text-white">${e.i===e.qs.length-1?u('finish'):u('next')}</button></div></div>`;
+}
+
+/* ============================================================
+   SHELL: nav, layout, render
+   ============================================================ */
+function renderNav(){
+  const item=(id,icon,label,extra='')=>`<button data-go="${id}" class="w-full flex items-center gap-3 text-start px-3 py-2.5 rounded-lg transition ${state.page===id?'bg-brand-600 text-white':'hover:bg-dark-elevated text-dark-text'}"><span>${icon}</span><span class="flex-1 text-sm">${label}</span>${extra}</button>`;
+  const head=t=>`<div class="px-3 pt-3 pb-1 text-xs uppercase tracking-wider text-dark-muted">${t}</div>`;
+  const s=subj(), d=sd();
+  let h=`<a href="index.html" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-dark-elevated text-dark-text"><span>🗂️</span><span class="flex-1 text-sm">${u('hub')}</span></a>`;
+  h += `<div class="px-3 pt-3 pb-1 text-sm font-bold text-brand-500">${s.icon} ${tx(s.name)}</div>`;
+  h += item('home','🏠',u('home'));
+  h += head(u('lectures')) + s.lectures.map(l=>item(l.id,`<span class="mono text-xs">${l.n}</span>`,tx(l.title),d.best[l.id]!=null?`<span class="mono text-[10px] opacity-80">${d.best[l.id]}%</span>`:'')).join('');
+  h += head(u('tools')) + item('exam','🏆',u('exam'),d.exam?`<span class="mono text-[10px] opacity-80">${d.exam}%</span>`:'') + item('glossary','📖','Glossary / قاموس المصطلحات');
+  $('nav').innerHTML=h;
+}
+function applyLayout(){
+  const sb=$('sidebar'), main=$('main'), bd=$('backdrop');
+  sb.classList.toggle('ltr:-translate-x-full',!state.sidebar);
+  sb.classList.toggle('rtl:translate-x-full',!state.sidebar);
+  main.classList.toggle('lg:ps-72',state.sidebar);
+  bd.classList.toggle('hidden',!(state.sidebar && window.innerWidth<1024));
+}
+function updateTop(){
+  const show=!!state.subject, m=show?mastery(subj()):0;
+  $('topProgWrap').classList.toggle('hidden',!show); $('topProgWrap').classList.toggle('sm:flex',show);
+  $('topBar').style.width=m+'%'; $('topPct').textContent=m+'%';
+}
+function render(){
+  document.documentElement.lang=state.lang;
+  document.documentElement.dir=state.lang==='ar'?'rtl':'ltr';
+  $('langBtn').textContent = state.lang==='ar'?'English':'العربية';
+  applyTheme();
+  const lects = state.subject?LECT():[];
+  const idx=lects.findIndex(l=>l.id===state.page);
+  let html='', title='';
+  if(state.page==='home'){ html=renderHome(); title=tx(subj().name).replace(/<[^>]+>/g,''); }
+  else if(idx>=0){ html=renderLecture(lects[idx],idx); title=`${u('lecture')} ${lects[idx].n}`; }
+  else if(state.page==='exam'){ html=renderExam(); title=u('exam'); }
+  else if(state.page==='glossary'){ html=renderGlossary(); title='Glossary / قاموس المصطلحات'; }
+  $('app').innerHTML=html; $('topTitle').textContent=title;
+  updateTop(); renderNav(); applyLayout();
+}
+function go(p){
+  state.page=p; state.qz={}; state.decks={}; if(p!=='exam') state.exam=null;
+  if(window.innerWidth<1024) state.sidebar=false;
+  render(); window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ============================================================
+   EVENTS
+   ============================================================ */
+document.addEventListener('click',e=>{
+  const g=e.target.closest('[data-go]'); if(g){ go(g.dataset.go); return; }
+
+  const sz=e.target.closest('[data-size]'); if(sz){ newExam(+sz.dataset.size); render(); window.scrollTo({top:0}); return; }
+
+  const opt=e.target.closest('.opt');
+  if(opt){
+    const box=opt.closest('.qbox'); if(box.dataset.done) return;
+    box.dataset.done='1';
+    const a=+box.dataset.a, i=+opt.dataset.i, ok=(i===a);
+    if(ok) box.dataset.ok='1';
+    box.querySelectorAll('.opt').forEach(b=>{
+      b.disabled=true; b.classList.remove('hover:border-brand-500'); b.classList.add('cursor-not-allowed');
+      if(+b.dataset.i===a) b.classList.add('!bg-green-600/30','!border-green-500');
+    });
+    if(!ok) opt.classList.add('!bg-red-600/30','!border-red-500');
+    const fb=box.querySelector('.fb'); fb.classList.remove('hidden');
+    fb.className='fb mt-3 text-sm font-semibold '+(ok?'text-green-400':'text-red-400');
+    fb.textContent=ok?u('correct'):u('wrong');
+
+    const exam=box.closest('[data-exam]');
+    if(exam){
+      const ex=state.exam, q=ex.qs[ex.i];
+      if(ok) ex.score++; else ex.wrong.push({q:q.q,c:q.o[q.a]});
+      $('examNext').classList.remove('hidden'); return;
+    }
+    const qz=box.closest('[data-quiz]');
+    if(qz){
+      const boxes=[...qz.querySelectorAll('.qbox')];
+      if(boxes.every(b=>b.dataset.done)){
+        const sc=boxes.filter(b=>b.dataset.ok).length, pct=Math.round(sc/boxes.length*100);
+        const sEl=qz.querySelector('.qscore'); sEl.classList.remove('hidden');
+        qz.querySelector('.qs-text').textContent=`${u('score')}: ${sc}/${boxes.length} (${pct}%)`;
+        const d=sd(), id=qz.dataset.quiz;
+        if(d.best[id]==null||pct>d.best[id]){ d.best[id]=pct; save(); }
+        updateTop(); renderNav();
+      }
+    }
+    return;
+  }
+
+  const a=e.target.closest('[data-act]'); if(!a) return;
+  const act=a.dataset.act;
+  if(act.startsWith('dk-')){
+    const id=a.dataset.deck, d=state.decks[id]; if(!d) return;
+    if(act==='dk-flip'){ d.flip=!d.flip; const f=document.querySelector(`#deck-${id} .flip`); if(f) f.classList.toggle('on',d.flip); return; }
+    if(act==='dk-next') d.i=(d.i+1)%d.list.length;
+    if(act==='dk-prev') d.i=(d.i-1+d.list.length)%d.list.length;
+    if(act==='dk-shuf'){ d.list=shuf(d.list); d.i=0; }
+    d.flip=false; redrawDeck(id); return;
+  }
+  if(act==='retryQuiz'){
+    const L=LECT().find(l=>l.id===a.dataset.id); delete state.qz[L.id];
+    $('quiz-'+L.id).innerHTML=quizInner(L); $('quiz-'+L.id).scrollIntoView({behavior:'smooth',block:'start'}); return;
+  }
+  if(act==='examAgain'){ state.exam=null; render(); return; }
+  if(act==='reset'){ state.data[state.subject]={seen:{},best:{},exam:0}; save(); render(); return; }
+});
+document.addEventListener('click',e=>{
+  if(e.target.id==='examNext'){
+    const ex=state.exam;
+    if(ex.i<ex.qs.length-1) ex.i++;
+    else { ex.finished=true; const p=Math.round(ex.score/ex.qs.length*100), d=sd(); if(p>(d.exam||0)){ d.exam=p; save(); } }
+    render(); window.scrollTo({top:0});
+  }
+});
+document.addEventListener('input',e=>{
+  if(e.target.id==='gSearch'){
+    const q=e.target.value.toLowerCase();
+    $('gList').innerHTML=gItems(subj().glossary.filter(g=>(g[0]+' '+g[1]).toLowerCase().includes(q)));
+  }
+});
+$('menuBtn').onclick=()=>{ state.sidebar=!state.sidebar; applyLayout(); };
+$('backdrop').onclick=()=>{ state.sidebar=false; applyLayout(); };
+$('langBtn').onclick=()=>{ state.lang=state.lang==='ar'?'en':'ar'; save(); render(); };
+window.addEventListener('resize',applyLayout);
+
+render();
+</script>
+</body>
+</html>
