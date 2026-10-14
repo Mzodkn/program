@@ -1,188 +1,268 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Technical English II | اللغة الإنجليزية التقنية 2</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<script>
-/* brand colors default = teal (#14b8a6 / #0d9488). Each subject can switch them through CSS variables. */
-tailwind.config = {
-  theme: { extend: {
-    colors: {
-      brand: { 500: 'rgb(var(--b5) / <alpha-value>)', 600: 'rgb(var(--b6) / <alpha-value>)' },
-      dark: { base: '#0b0f17', surface: '#111827', elevated: '#1f2937', border: '#374151', text: '#f3f4f6', muted: '#9ca3af' }
-    },
-    fontFamily: { sans: ['Inter', 'sans-serif'], arabic: ['Cairo', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
-  } }
-}
-</script>
-<style>
-  :root { --b5: 20 184 166; --b6: 13 148 136; }
-  html[lang="en"] body { font-family: 'Inter', sans-serif; }
-  html[lang="ar"] body { font-family: 'Cairo', sans-serif; }
-  .mono { font-family: 'JetBrains Mono', monospace; }
-  ::-webkit-scrollbar { width: 8px; height: 8px; }
-  ::-webkit-scrollbar-track { background: #0b0f17; }
-  ::-webkit-scrollbar-thumb { background: #374151; border-radius: 8px; }
-  ::-webkit-scrollbar-thumb:hover { background: rgb(var(--b6)); }
-  .fade { animation: fade .25s ease; }
-  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-  .flip { perspective: 1000px; }
-  .flip-inner { transition: transform .5s; transform-style: preserve-3d; position: relative; min-height: 230px; }
-  .flip.on .flip-inner { transform: rotateY(180deg); }
-  .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1.5rem; border-radius: 1rem; overflow: auto; }
-  .back { transform: rotateY(180deg); }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technical English II | اللغة الإنجليزية التقنية 2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: { brand: { 500: 'rgb(var(--b5) / 1)', 600: 'rgb(var(--b6) / 1)' }, dark: { base: '#0b0f17', surface: '#111827', elevated: '#1f2937', border: '#374151', text: '#f3f4f6', muted: '#9ca3af' } }, fontFamily: { sans: ['Inter','sans-serif'], arabic: ['Cairo','sans-serif'], mono: ['JetBrains Mono','monospace'] } } } }
+  </script>
+  <style>
+    :root { --b5: 20 184 166; --b6: 13 148 136; }
+    html, body { margin: 0; min-height: 100%; }
+    body { background: #0b0f17; color: #f3f4f6; font-family: 'Cairo','sans-serif'; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .card { background: rgba(17,24,39,0.9); border: 1px solid #374151; border-radius: 1rem; }
+    .nav-btn.active { background: linear-gradient(135deg, #14b8a6, #0d9488); color: white; }
+    .btn { border: 1px solid #374151; background: #111827; border-radius: .75rem; padding: .6rem 1rem; }
+    .btn.primary { background: #0d9488; border-color: #0d9488; color: white; }
+  </style>
 </head>
-<body class="bg-dark-base text-dark-text min-h-screen">
-
-<header class="fixed top-0 inset-x-0 z-40 h-14 bg-dark-surface/95 backdrop-blur border-b border-dark-border flex items-center justify-between px-3">
-  <div class="flex items-center gap-3 min-w-0">
-    <button id="menuBtn" class="p-2 rounded-lg hover:bg-dark-elevated" aria-label="Menu">
-      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-    </button>
-    <a href="index.html" class="p-2 rounded-lg hover:bg-dark-elevated" title="All subjects">🗂️</a>
-    <span id="topTitle" class="font-bold text-brand-500 truncate"></span>
-  </div>
-  <div class="flex items-center gap-3">
-    <div id="topProgWrap" class="hidden sm:flex items-center gap-2" title="Mastery">
-      <div class="w-28 h-2 bg-dark-base rounded-full overflow-hidden"><div id="topBar" class="h-full bg-brand-500 transition-all" style="width:0%"></div></div>
-      <span id="topPct" class="mono text-xs text-dark-muted w-9"></span>
+<body class="min-h-screen">
+  <header class="fixed inset-x-0 top-0 z-30 h-16 border-b border-dark-border bg-dark-surface/95 backdrop-blur">
+    <div class="mx-auto flex h-full max-w-6xl items-center justify-between px-4">
+      <div class="flex items-center gap-3">
+        <button id="menuBtn" class="btn p-2" aria-label="Menu">☰</button>
+        <a href="index.html" class="btn p-2" title="All subjects">🗂️</a>
+        <div id="topTitle" class="text-lg font-bold text-brand-500">Technical English II</div>
+      </div>
+      <button id="langBtn" class="btn primary text-sm font-semibold">English</button>
     </div>
-    <button id="langBtn" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold"></button>
+  </header>
+
+  <div class="mx-auto flex max-w-6xl pt-20">
+    <aside id="sidebar" class="hidden w-72 shrink-0 border-e border-dark-border bg-dark-surface p-4 lg:block">
+      <nav id="nav" class="space-y-2"></nav>
+    </aside>
+
+    <main class="flex-1 p-4 md:p-6">
+      <div id="app"></div>
+    </main>
   </div>
-</header>
 
-<div id="backdrop" class="fixed inset-0 bg-black/60 z-30 hidden lg:hidden"></div>
+  <script>
+    const UI = {
+      home: ['Home', 'الرئيسية'],
+      lecture: ['Lecture', 'المحاضرة'],
+      quiz: ['Quiz', 'اختبار'],
+      glossary: ['Glossary', 'المفردات'],
+      next: ['Next', 'التالي'],
+      previous: ['Previous', 'السابق'],
+      read: ['Read', 'مقروءة']
+    };
 
-<aside id="sidebar" class="fixed top-14 bottom-0 start-0 w-72 z-30 bg-dark-surface border-e border-dark-border overflow-y-auto transition-transform duration-300">
-  <nav id="nav" class="p-3 space-y-1"></nav>
-</aside>
+    const LECTURES = [
+      {
+        id: 'l1',
+        title: ['Technical English II & Voice', 'الإنجليزية التقنية 2 والمبني للمعلوم والمجهول'],
+        sections: [
+          {t: ['Definition & General vs. Technical English', 'التعريف والمقارنة'], b: [
+            'Technical English is the form of English used in science, engineering, and technology.',
+            'General English is used for everyday communication, while Technical English focuses on clarity and precision.',
+            'Examples: database, network, algorithm, interface, protocol.'
+          ]},
+          {t: ['Voice and Tense', 'المبني للمعلوم والمجهول'], b: [
+            'Active voice: The engineer wrote the report.',
+            'Passive voice: The report was written by the engineer.',
+            'Use passive voice in formal reports when the action is more important than the doer.'
+          ]}
+        ],
+        flash: [
+          ['What is Technical English?', 'الإنجليزية التقنية هي اللغة المستخدمة في العلوم والهندسة والتقنية.'],
+          ['When do we use passive voice?', 'نستخدم المبني للمجهول في الكتابات الرسمية عندما يكون الفعل أهم من الفاعل.']
+        ],
+        quiz: [
+          { q: ['Which sentence is active voice?', 'أي جملة مبنية للمعلوم؟'], options: ['The report was written by the engineer.','The engineer wrote the report.','The report is written.','The task was completed.'], answer: 1 },
+          { q: ['Why is technical English important?', 'لماذا أهمية الإنجليزية التقنية؟'], options: ['To read books and technical documents','To avoid studying','To write poems only','It is not useful'], answer: 0 }
+        ]
+      },
+      {
+        id: 'l2',
+        title: ['Word Formation', 'تكوين الكلمات'],
+        sections: [
+          {t: ['Word Formation Methods', 'طرق تكوين الكلمات'], b: [
+            'Derivation: add prefixes or suffixes to change the word form.',
+            'Compounding: combine two words like software + engineer = software engineer.',
+            'Blending: merge parts of two words like smog from smoke + fog.'
+          ]},
+          {t: ['Useful Vocabulary', 'مفردات مفيدة'], b: [
+            'device, network, data, analysis, security, architecture, operation.'
+          ]}
+        ],
+        flash: [
+          ['What is derivation?', 'الاشتقاق هو إضافة بادئة أو لاحقة لتغيير شكل الكلمة.'],
+          ['Give a technical example.', 'network, database, algorithm.']
+        ],
+        quiz: [
+          { q: ['Which method changes the form of a word with affixes?', 'أي طريقة تغير شكل الكلمة بإضافة بادئة أو لاحقة؟'], options: ['Derivation','Compounding','Coinage','Blending'], answer: 0 },
+          { q: ['Which is a technical term?', 'أي كلمة تعتبر مصطلحًا تقنيًا؟'], options: ['algorithm','table','house','sun'], answer: 0 }
+        ]
+      }
+    ];
 
-<main id="main" class="pt-14 transition-all duration-300">
-  <div id="app" class="max-w-4xl mx-auto p-4 sm:p-6 pb-24"></div>
-</main>
+    const GLOSSARY = [
+      ['Active Voice', 'المبني للمعلوم'],
+      ['Algorithm', 'الخوارزمية'],
+      ['Database', 'قاعدة البيانات'],
+      ['Passive Voice', 'المبني للمجهول'],
+      ['Technical English', 'الإنجليزية التقنية']
+    ];
 
-<script>
-/* ============================================================
-   UI LABELS  [English, Arabic]
-   ============================================================ */
-const UI = {
-  hub:["All Subjects","كل المواد"], home:["Subject Home","الصفحة الرئيسية للمادة"], lecture:["Lecture","المحاضرة"],
-  objectives:["Learning Objectives","أهداف التعلم"], def:["Definition","تعريف"], ex:["Example","مثال"], tip:["Exam Tip","نصيحة للامتحان"],
-  take:["Key Takeaways","أهم النقاط"], quiz:["Self-Assessment Quiz","اختبار ذاتي"], flash:["Lecture Flashcards","بطاقات مراجعة المحاضرة"],
-  exam:["Final Exam","الاختبار النهائي"], next:["Next","التالي"], prev:["Previous","السابق"],
-  correct:["Correct! ✔","إجابة صحيحة! ✔"], wrong:["Incorrect ✘ - the correct answer is highlighted","إجابة خاطئة ✘ - الإجابة الصحيحة موضحة"],
-  score:["Your score","نتيجتك"], retry:["Try again","أعد المحاولة"], search:["Search a term...","ابحث عن مصطلح..."],
-  flip:["Tap the card to flip","اضغط على البطاقة لقلبها"], shuffle:["Shuffle","خلط"], start:["Start Exam","ابدأ الاختبار"],
-  mastery:["Mastery","مستوى الإتقان"], best:["Best","الأفضل"], plan:["How to score 100%","كيف تحصل على 100%"],
-  finish:["Finish","إنهاء"], reset:["Reset progress of this subject","إعادة ضبط تقدم هذه المادة"], read:["Read","تمت القراءة"],
-  soon:["Coming soon","قريبًا"], open:["Open","فتح"], subjects:["Subjects","المواد"], tools:["Study Tools","أدوات المراجعة"],
-  lectures:["Lectures","المحاضرات"], mistakes:["Questions you missed","الأسئلة التي أخطأت فيها"], yourAns:["Correct answer","الإجابة الصحيحة"],
-  glossFlash:["Term Flashcards","بطاقات المصطلحات"], glossList:["All Terms","كل المصطلحات"], questions:["questions","سؤالًا"],
-  question:["Question","السؤال"],
-  chooseSize:["Choose the number of questions","اختر عدد الأسئلة"], all:["All","الكل"], answerEN:["English","English"],
-  masteryHow:["Mastery = average of your best score in each lecture quiz and your best final exam score. Reading lectures does not raise it.","الإتقان = متوسط أفضل نتيجة لك في اختبار كل محاضرة وأفضل نتيجة في الاختبار النهائي. قراءة المحاضرات وحدها لا ترفعه."]
-};
-const LECTURES = [];
+    const SUBJECT = {
+      id: 'eng',
+      name: ['Technical English II', 'اللغة الإنجليزية التقنية 2'],
+      icon: '🧠',
+      lectures: LECTURES,
+      glossary: GLOSSARY
+    };
 
-LECTURES.push({ id:'l1', n:1,
-  title:["Introduction to Technical English II & Voice","مقدمة في الإنجليزية التقنية 2 والمبني للمعلوم والمجهول (Voice & Tense)"],
-  obj:[
-    ["Define Technical English and compare it with General English.","تعريف الإنجليزية التقنية (Technical English) ومقارنتها بالإنجليزية العامة (General English)."],
-    ["Explain the importance of English in technical and computing fields.","شرح أهمية اللغة الإنجليزية في المجالات التقنية والحاسوبية."],
-    ["Understand technical vocabulary and word formation methods including derivation and affixes.","فهم المفردات التقنية (Technical Vocabulary) وطرق تكوين الكلمات بما فيها الاشتقاق (Derivation) والزوائد (Affixes)."],
-    ["Differentiate between Active Voice and Passive Voice across tenses and know when to use each.","التمييز بين المبني للمعلوم (Active Voice) والمبني للمجهول (Passive Voice) عبر الأزمنة ومعرفة متى يُستخدم كل منهما."]
-  ],
-  sec:[
-   {t:["Definition & General vs. Technical English","تعريف الإنجليزية التقنية ومقارنتها بالعامة"], b:[
-     {k:'def', x:["Technical English is the form of English used in scientific, engineering, computer science, and technology fields. It emphasizes clarity, accuracy, and technical vocabulary—explaining technical information without ambiguity.","الإنجليزية التقنية (Technical English) هي صيغة اللغة الإنجليزية المستخدمة في المجالات العلمية والهندسية وعلوم الحاسوب والتكنولوجيا. وتركز على الوضوح (Clarity) والدقة (Accuracy) والمفردات التقنية (Technical vocabulary) لشرح المعلومات التقنية دون غموض (Ambiguity)."]},
-     {k:'cards', c:[
-       {t:["General English","الإنجليزية العامة (General English)"], l:[["The English used in daily life communication.","اللغة الإنجليزية المستخدمة في تواصل الحياة اليومية."]]},
-       {t:["Technical English","الإنجليزية التقنية (Technical English)"], l:[["The English used in scientific, engineering, and technical fields.","اللغة الإنجليزية المستخدمة في المجالات العلمية والهندسية والتقنية."]]}
-     ]}
-   ]},
-   {t:["Importance of English in the Technical Field","أهمية الإنجليزية في المجال التقني"], b:[
-     {k:'ul', h:["3 Core Reasons","3 أسباب رئيسية"], x:[
-       ["1. Understanding technical books and references: Most computer science books are written in English. It helps you read textbooks, research papers, and technical documents.","1. فهم الكتب والمراجع التقنية: معظم كتب علوم الحاسوب مكتوبة بالإنجليزية، مما يساعدك على قراءة الكتب الدراسية والأوراق البحثية (Research papers) والمستندات التقنية."],
-       ["2. Using software and applications: Most software interfaces use English. It helps you understand menus, commands, and instructions in programs.","2. استخدام البرمجيات والتطبيقات: معظم واجهات البرمجيات (Software interfaces) تستخدم الإنجليزية، مما يساعدك على فهم القوائم والأوامر والتعليمات."],
-       ["3. Understanding technical terms: Technical fields use many English terms such as database, network, and algorithm.","3. فهم المصطلحات التقنية: تستخدم المجالات التقنية مصطلحات إنجليزية عديدة مثل قاعدة البيانات (Database) والشبكة (Network) والخوارزمية (Algorithm)."]
-     ]}
-   ]},
-   {t:["Technical Vocabulary & Word Formation","المفردات التقنية وتكوين الكلمات (Word Formation)"], b:[
-     {k:'def', x:["Technical Vocabulary is the specialized vocabulary of any field which evolves due to the need for experts in a field to communicate with clarity, precision, relevance, and brevity.","المفردات التقنية (Technical Vocabulary) هي المفردات المتخصصة لأي مجال والتي تتطور لحاجة الخبراء إلى التواصل بوضوح (Clarity) ودقة (Precision) وملاءمة (Relevance) وإيجاز (Brevity)."]},
-     {k:'ul', h:["Strategies for Building Vocabulary","استراتيجيات بناء المفردات"], x:[
-       ["Improve your general vocabulary prior to developing technical vocabulary.","تحسين مفرداتك العامة أولًا كخطوة أساسية قبل تطوير المفردات التقنية."],
-       ["Make learning new words a continuous process and use them while communicating so they register in your mind.","جعل تعلم الكلمات عملية مستمرة واستخدامها أثناء التواصل لترسخ في الذهن."],
-       ["Learn words by knowing their origin and using a dictionary (an invaluable tool).","تعلم الكلمات بمعرفة أصلها واستخدام القاموس (Dictionary) كأداة لا غنى عنها."],
-       ["Infer the meaning of a word from context (though context meaning may not always be exact).","استنتاج معنى الكلمة من السياق (Context)، مع الانتباه إلى أن المعنى المستنتج قد لا يكون دقيقًا تمامًا."]
-     ]},
-     {k:'ul', h:["Methods of Word Formation","طرق تكوين الكلمات (Word Formation)"], x:[
-       ["Blending (مزج الكلمات)","Blending (مزج الكلمات)"],
-       ["Compounding (التركيب)","Compounding (التركيب)"],
-       ["Coinage (صياغة كلمات جديدة)","Coinage (صياغة كلمات جديدة)"],
-       ["Borrowing (الاستعارة اللغوية)","Borrowing (الاستعارة اللغوية)"],
-       ["Clipping (الاقتطاع / الاختصار)","Clipping (الاقتطاع / الاختصار)"],
-       ["Derivation (الاشتقاق)","Derivation (الاشتقاق)"]
-     ]},
-     {k:'def', x:["Derivation is the only word-formation process in which the form of the word changes. It takes place with the help of affixes—small bits of language affixed to root words (such as un-, mis-, pre-, -ful, -less). Affixes are divided into two categories: Prefixes (before the root) and Suffixes (after the root).","الاشتقاق (Derivation) هو العملية الوحيدة التي يتغير فيها شكل الكلمة، ويتم بمساعدة الزوائد اللغوية (Affixes) التي تُضاف إلى جذر الكلمة (Root word) مثل (un, mis, pre, ful, less). وتنقسم الزوائد إلى فئتين: السوابق (Prefixes) واللواحق (Suffixes)."]}
-   ]},
-   {t:["Voice and Tense: Active vs. Passive Voice","المبني للمعلوم والمبني للمجهول والأزمنة (Voice & Tense)"], b:[
-     {k:'def', x:["In grammar, Voice shows the two different ways in which an action can be viewed: (1) Someone or something performing an action (Active Voice), and (2) The action being performed on someone or something (Passive Voice). Tense reflects the time at or during which the action occurs.","في القواعد، يُظهر الصوت النحوي (Voice) طريقتين لعرض الفعل: (1) شخص أو شيء يقوم بالفعل وهو المبني للمعلوم (Active Voice)، و(2) وقوع الفعل على شخص أو شيء وهو المبني للمجهول (Passive Voice). ويعكس الزمن (Tense) وقت حدوث الفعل."]},
-     {k:'ex', x:["1. Active Voice: 'The operators conducted a test on the turbo generator.' (The subject 'the operators' performs the action 'conducted' — focus is on the doer/agent).\n2. Passive Voice: 'A test was conducted on the turbo generator by the operators.' (The subject receives the action; uses auxiliary verb 'was' + past participle 'conducted' — focus is on the action).\n3. Focus Comparison: 'The project was completed on time' (focus on the project) vs. 'Sohan's team completed the project on time' (focus on Sohan's team).","1. مبني للمعلوم (Active): 'The operators conducted a test on the turbo generator.' (الفاعل 'the operators' قام بالفعل — التركيز على الفاعل Agent).\n2. مبني للمجهول (Passive): 'A test was conducted on the turbo generator by the operators.' (استخدم الفعل المساعد 'was' + التصريف الثالث — التركيز على الحدث).\n3. مقارنة التركيز: 'The project was completed on time' (التركيز على المشروع) مقابل 'Sohan's team completed the project on time' (التركيز على فريق سوهان)."]},
-     {k:'tbl', h:[["Tense / Verb","الزمن (Tense)"],["Active Voice","المبني للمعلوم (Active)"],["Passive Voice","المبني للمجهول (Passive)"],["Sentence Example","مثال تطبيقي"]],
-      r:[
-       [["Simple Present","المضارع البسيط"],["Analyses / add","Analyses / add"],["is analysed / is added","is analysed / is added"],["We add water → Water is added to the mixture (by us).","We add water → Water is added to the mixture."]],
-       [["Present Continuous","المضارع المستمر"],["is analyzing / are repairing","is analyzing / are repairing"],["is being analysed / is being repaired","is being analysed / is being repaired"],["They are repairing the road → The road is being repaired.","They are repairing the road → The road is being repaired."]],
-       [["Simple Past","الماضي البسيط"],["Analysed / tried out","Analysed / tried out"],["was analysed / were tried out","was analysed / were tried out"],["The Civil Engineers tried out different layouts → Different layouts were tried out.","Different layouts were tried out by the Civil Engineers."]],
-       [["Past Continuous","الماضي المستمر"],["was analysing","was analysing"],["was being analysed","was being analysed"],["The technician was arranging equipment → Equipment was being arranged.","Equipment was being arranged by the technician."]],
-       [["Present Perfect","المضارع التام"],["has analysed / has approved","has analysed / has approved"],["has been analysed / has been approved","has been analysed / has been approved"],["The Committee has approved the Plan → The Plan has been approved.","The Plan has been approved by the Committee."]],
-       [["Past Perfect","الماضي التام"],["had completed","had completed"],["had been completed","had been completed"],["The Engineers had completed the job → The job had been completed.","The job had been completed in time by the Engineers."]],
-       [["Simple Future","المستقبل البسيط"],["will analyse / will carry out","will analyse / will carry out"],["will be analysed / will be carried out","will be analysed / will be carried out"],["We will not carry out any research → No research will be carried out.","No research will be carried out in this area."]],
-       [["Conditional & Perfect Conditional","الشرطي والشرطي التام"],["would analyse / would have analysed","would analyse / would have analysed"],["would be analysed / would have been analysed","would be analysed / would have been analysed"],["would have analysed → would have been analysed","would have analysed → would have been analysed"]]
-      ]}
-   ]},
-   {t:["Steps to Convert Between Active and Passive Voice","خطوات التحويل بين المبني للمعلوم والمجهول"], b:[
-     {k:'cards', c:[
-       {t:["Changing Active into Passive (6 Steps)","تحويل المعلوم إلى مجهول (6 خطوات)"], l:[
-         ["1. Identify the subject (agent/doer causing the action).","1. حدد الفاعل (Subject / Agent) الذي قام بالفعل."],
-         ["2. Identify the object (what action has been done).","2. حدد المفعول به (Object) الذي وقع عليه الفعل."],
-         ["3. Note the tense of the verb.","3. لاحظ زمن الفعل (Tense)."],
-         ["4. Begin the passive sentence with the object of the active sentence.","4. ابدأ جملة المجهول بالمفعول به."],
-         ["5. Use the third form of the verb (past participle) preceded by the appropriate auxiliary verb and followed by 'by the'.","5. استخدم التصريف الثالث للفعل (Past Participle) مسبوقًا بفعل مساعد مناسب ومتبوعًا بـ 'by the'."],
-         ["6. Complete the sentence with the agent (subject of the active sentence).","6. أكمل الجملة بذكر الفاعل الأصلي (Agent)."]
-       ]},
-       {t:["Changing Passive into Active (5 Steps)","تحويل المجهول إلى معلوم (5 خطوات)"], l:[
-         ["1. Identify the doer/agent following 'by the...'. If not specified, infer the agent from context.","1. حدد الفاعل (Agent) بعد 'by the...'، وإذا لم يُذكر استنتجه من السياق."],
-         ["2. Note down the action performed by the agent.","2. حدد الفعل الذي تم إنجازه."],
-         ["3. Note the tense of the verb.","3. لاحظ زمن الفعل."],
-         ["4. Begin the active sentence with the agent.","4. ابدأ جملة المعلوم بالفاعل (Agent)."],
-         ["5. Choose the appropriate active verb form matching singular/plural agent and tense.","5. اختر صيغة الفعل المناسبة لمفرد/جمع الفاعل والزمن."]
-       ]}
-     ]},
-     {k:'tbl', h:[["Passive Sentence","جملة المبني للمجهول"],["Agent (Doer)","الفاعل (Agent)"],["Active Sentence","جملة المبني للمعلوم"]],
-      r:[
-       [["Multifarious operations are performed by these computers.","Multifarious operations are performed by these computers."],["These computers","These computers"],["These computers perform multifarious operations.","These computers perform multifarious operations."]],
-       [["The equipment for the practical examinations was being arranged by the technician.","The equipment was being arranged by the technician."],["The technician","The technician"],["The technician was arranging the equipment for the practical examinations.","The technician was arranging the equipment."]],
-       [["Results will be published in the next issue of the journal.","Results will be published in the next issue of the journal."],["Not specified (inferred: 'The researchers' or 'association')","غير مذكور (يُستنتج: الباحثون The researchers)"],["The researchers will publish the results in the next issue of the journal.","The researchers will publish the results."]],
-       [["The components were identified by Thomas and his associates.","The components were identified by Thomas and his associates."],["Thomas and his associates","Thomas and his associates"],["Thomas and his associates identified the components.","Thomas and his associates identified the components."]]
-      ]}
-   ]},
-   {t:["When to Use Active vs. Passive Voice","متى نستخدم المبني للمعلوم ومتى نستخدم المبني للمجهول؟"], b:[
-     {k:'cards', c:[
-       {t:["When to Use Active Voice","متى يُستخدم المبني للمعلوم (Active Voice)؟"], l:[
-         ["Gives importance to the doer/agent.","يعطي الأهمية للفاعل (Doer / Agent)."],
-         ["Used for clear, direct, crisp, strong, and unambiguous writing.","يُستخدم للكتابة الواضحة والمباشرة والقوية وغير الغامضة (Crisp, direct, and unambiguous)."],
-         ["Requires active, action-packed verbs.","يتطلب أفعالًا نشطة ومباشرة."]
-       ]},
-       {t:["When to Use Passive Voice","متى يُستخدم المبني للمجهول (Passive Voice)؟"], l:[
-         ["Gives prominence/emphasis to the action rather than the doer.","يعطي الأهمية للحدث/الفعل (Action) وليس الفاعل."],
-         ["Used in most formal writings such as reports, proposals, complaints, or rejection letters.","يُستخدم في الكتابات الرسمية مثل التقارير (Reports) والمقترحات (Proposals) والشكاوى وخطابات الرفض."],
-         ["Passive construction is more verbose than active.","صياغة المبني للمجهول أطول لفظيًا (Verbose) مقارنة بالمعلوم."]
-       ]}
-     ]},
-     {k:'tip', x:["Crucial Ru
+    const state = { lang: localStorage.getItem('studyLang') || 'ar', page: 'home' };
+
+    function t(v) { return Array.isArray(v) ? v[state.lang === 'ar' ? 1 : 0] : v; }
+
+    function renderNav() {
+      const nav = document.getElementById('nav');
+      const items = [];
+      items.push(`<button data-page="home" class="nav-btn ${state.page === 'home' ? 'active' : ''} w-full rounded-lg px-3 py-2 text-start">${UI.home[state.lang === 'ar' ? 1 : 0]}</button>`);
+      SUBJECT.lectures.forEach((lec, i) => {
+        items.push(`<button data-page="lecture:${lec.id}" class="nav-btn ${state.page === 'lecture:' + lec.id ? 'active' : ''} w-full rounded-lg px-3 py-2 text-start">${t(lec.title)}</button>`);
+      });
+      items.push(`<button data-page="glossary" class="nav-btn ${state.page === 'glossary' ? 'active' : ''} w-full rounded-lg px-3 py-2 text-start">${UI.glossary[state.lang === 'ar' ? 1 : 0]}</button>`);
+      nav.innerHTML = items.join('');
+    }
+
+    function renderHome() {
+      const html = `
+        <div class="card p-6">
+          <div class="mb-4 text-4xl">${SUBJECT.icon}</div>
+          <h1 class="text-3xl font-extrabold">${t(SUBJECT.name)}</h1>
+          <p class="mt-3 text-dark-muted">${state.lang === 'ar' ? 'مراجعة مختصرة للإنجليزية التقنية مع شرح ومفردات وأسئلة.' : 'Short revision for technical English with explanations, vocabulary, and quizzes.'}</p>
+        </div>
+        <div class="mt-6 grid gap-4 md:grid-cols-2">
+          ${SUBJECT.lectures.map((lec, idx) => `
+            <button data-page="lecture:${lec.id}" class="card p-4 text-start transition hover:border-brand-500">
+              <div class="mb-2 text-xs font-semibold text-brand-500">${UI.lecture[state.lang === 'ar' ? 1 : 0]} ${idx + 1}</div>
+              <div class="text-xl font-bold">${t(lec.title)}</div>
+            </button>
+          `).join('')}
+        </div>
+      `;
+      document.getElementById('app').innerHTML = html;
+    }
+
+    function renderLecture(id) {
+      const lec = SUBJECT.lectures.find(x => x.id === id);
+      if (!lec) return renderHome();
+
+      const sections = lec.sections.map((s, i) => `
+        <section class="card mb-4 p-4">
+          <h2 class="mb-3 text-xl font-bold">${i + 1}. ${t(s.t)}</h2>
+          <ul class="space-y-2 text-dark-muted">
+            ${s.b.map(item => `<li>• ${item}</li>`).join('')}
+          </ul>
+        </section>
+      `).join('');
+
+      const flashes = lec.flash.map((pair, idx) => `
+        <div class="card mb-3 p-4">
+          <div class="mb-2 text-xs font-semibold text-brand-500">${idx + 1}</div>
+          <div class="font-bold">${pair[0]}</div>
+          <div class="mt-2 text-dark-muted">${pair[1]}</div>
+        </div>
+      `).join('');
+
+      const quiz = lec.quiz.map((item, idx) => `
+        <div class="card mb-4 p-4">
+          <div class="mb-3 font-bold">${idx + 1}. ${t(item.q)}</div>
+          <div class="space-y-2">
+            ${item.options.map((opt, j) => `
+              <button class="answer-btn w-full rounded-lg border border-dark-border px-3 py-2 text-left ${j === item.answer ? 'bg-green-600/20 border-green-500' : 'bg-dark-surface'}" data-correct="${j === item.answer ? '1' : '0'}">
+                ${opt}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('app').innerHTML = `
+        <div class="mb-4 text-sm text-brand-500 font-semibold">${UI.lecture[state.lang === 'ar' ? 1 : 0]} ${lec.id.replace('l','')}</div>
+        <h1 class="mb-6 text-3xl font-extrabold">${t(lec.title)}</h1>
+        ${sections}
+        <div class="card mb-4 p-4">
+          <h2 class="mb-3 text-xl font-bold">${UI.quiz[state.lang === 'ar' ? 1 : 0]}</h2>
+          ${flashes}
+        </div>
+        <div class="mb-4">
+          <h2 class="mb-3 text-xl font-bold">${UI.quiz[state.lang === 'ar' ? 1 : 0]}</h2>
+          ${quiz}
+        </div>
+      `;
+    }
+
+    function renderGlossary() {
+      const html = `
+        <div class="card p-5">
+          <h1 class="mb-4 text-2xl font-extrabold">${UI.glossary[state.lang === 'ar' ? 1 : 0]}</h1>
+          <div class="space-y-3">
+            ${GLOSSARY.map(([en, ar]) => `
+              <div class="rounded-lg border border-dark-border bg-dark-surface p-3">
+                <div class="font-bold text-brand-500">${en}</div>
+                <div class="text-dark-muted">${ar}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      document.getElementById('app').innerHTML = html;
+    }
+
+    function render() {
+      document.documentElement.lang = state.lang;
+      document.documentElement.dir = state.lang === 'ar' ? 'rtl' : 'ltr';
+      document.getElementById('langBtn').textContent = state.lang === 'ar' ? 'English' : 'العربية';
+      document.getElementById('topTitle').textContent = t(SUBJECT.name);
+      renderNav();
+
+      if (state.page === 'home') renderHome();
+      else if (state.page === 'glossary') renderGlossary();
+      else if (state.page.startsWith('lecture:')) renderLecture(state.page.split(':')[1]);
+    }
+
+    document.addEventListener('click', (e) => {
+      const navBtn = e.target.closest('[data-page]');
+      if (navBtn) {
+        state.page = navBtn.dataset.page;
+        render();
+        return;
+      }
+
+      const answer = e.target.closest('.answer-btn');
+      if (answer) {
+        const correct = answer.dataset.correct === '1';
+        answer.style.borderColor = correct ? '#22c55e' : '#ef4444';
+        answer.style.background = correct ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)';
+      }
+
+      const menu = e.target.closest('#menuBtn');
+      if (menu) {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('hidden');
+        sidebar.classList.toggle('lg:block');
+      }
+
+      const langBtn = e.target.closest('#langBtn');
+      if (langBtn) {
+        state.lang = state.lang === 'ar' ? 'en' : 'ar';
+        localStorage.setItem('studyLang', state.lang);
+        render();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
