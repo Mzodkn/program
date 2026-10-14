@@ -806,7 +806,7 @@ function renderBlock(b){
       ${buildRunnerWidget(rid, code, false, false)}
     </div>`;
   }
-  if(b.k==='ul') return `<div class="my-2.5">${b.h?`<div class="font-semibold text-brand-500 mb-1">${tx(b.h)}</div>`:''}<ul class="space-y-1">${b.x.map(i=>`<li class="flex gap-2"><span class="text-brand-500">●</span><span>${tx(i)}</span></li>`).join('')}</ul></div>`;
+if(b.k==='ul') return `<div class="my-2.5">${b.h?`<div class="font-semibold text-brand-500 mb-1">${tx(b.h)}</div>`:''}<ul class="space-y-1">${b.x.map(i=>`<li class="flex gap-2"><span class="text-brand-500">●</span><span>${tx(i)}</span></li>`).join('')}</ul></div>`;
   if(b.k==='cards') return `<div class="grid gap-3 sm:grid-cols-2 my-2.5">${b.c.map(c=>`<div class="bg-dark-surface border border-dark-border rounded-xl p-3.5"><div class="font-bold text-brand-500 mb-1.5">${tx(c.t)}</div><ul class="space-y-1 text-sm">${c.l.map(i=>`<li class="flex gap-2"><span class="text-dark-muted">▪</span><span>${tx(i)}</span></li>`).join('')}</ul></div>`).join('')}</div>`;
   if(b.k==='tbl') return `<div class="overflow-x-auto my-2.5 rounded-xl border border-dark-border"><table class="w-full text-sm"><thead class="bg-brand-600 text-white"><tr>${b.h.map(h=>`<th class="p-2.5 text-start font-semibold">${tx(h)}</th>`).join('')}</tr></thead><tbody>${b.r.map((r,i)=>`<tr class="${i\%2?'bg-dark-surface':'bg-dark-elevated'}">${r.map((c,j)=>`<td class="p-2.5 border-t border-dark-border ${j===0?'font-semibold':''}">${tx(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
   return '';
