@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>نخبة الـ 20 شعاراً المختارة | IT VIP 20 Logos Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=JetBrains+Mono:wght@700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body { background-color: #04060b; color: #f3f4f6; font-family: 'Cairo', sans-serif; }
+  .logo-card { background: radial-gradient(circle at 50% 35%, #111827 0%, #050811 100%); border: 1px solid #1e293b; transition: all 0.25s ease; }
+  .logo-card:hover { border-color: #38bdf8; transform: translateY(-5px); box-shadow: 0 16px 35px -10px rgba(56, 189, 248, 0.28); }
+  .logo-card.vip-pick { border-color: #a855f7; box-shadow: 0 0 25px -5px rgba(168, 85, 247, 0.35); }
+  svg { width: 100%; height: auto; max-width: 300px; margin: 0 auto; display: block; }
+  .tab-btn.active { background: linear-gradient(135deg, #059669, #0284c7); color: #fff; border-color: transparent; }
+</style>
+</head>
+<body class="min-h-screen p-4 sm:p-6 pb-24">
+
+  <!-- الرأس ولوحة التخصيص -->
+  <header class="max-w-7xl mx-auto text-center mb-8">
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/15 border border-purple-500/40 text-purple-300 text-xs font-bold mb-3">
+      <span>👑 VIP CURATED EDITION</span>
+      <span>•</span>
+      <span>أفضل 20 شعاراً مختاراً ومطوراً</span>
+    </div>
+    <h1 class="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-400 to-purple-500 mb-3">
+      استوديو النخبة: الـ 20 شعاراً المختارة
+    </h1>
+    <p class="text-gray-400 text-sm sm:text-base max-w-3xl mx-auto mb-6">
+      تضم النسخة المطورة من <span class="text-purple-400 font-bold">#67 أرملة التشفير السوداء</span>، وإصلاح قبعة <span class="text-rose-400 font-bold">#38 ملك قراصنة السيرفرات</span>، وتعديل الوجه الحاد (Looksmaxing) لشعار <span class="text-red-400 font-bold">#14 طبيب الفيروسات القرمزي</span>.
+    </p>
+
+    <!-- أدوات التعديل الفوري -->
+    <div class="bg-gray-900/95 border border-gray-800 rounded-2xl p-4 max-w-5xl mx-auto grid gap-4 sm:grid-cols-3 shadow-2xl mb-6">
+      <div class="text-right">
+        <label class="text-xs text-emerald-400 font-bold block mb-1">الاسم الرئيسي (على جميع الشعارات):</label>
+        <input id="mainText" type="text" value="IT BATCH 26" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-white font-mono text-left focus:border-emerald-500 outline-none" dir="ltr">
+      </div>
+      <div class="text-right">
+        <label class="text-xs text-cyan-400 font-bold block mb-1">الشعار الفرعي (Sub-text):</label>
+        <input id="subText" type="text" value="ROOT ACCESS • SYSTEM ELITE" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-white font-mono text-left focus:border-cyan-500 outline-none" dir="ltr">
+      </div>
+      <div class="text-right">
+        <label class="text-xs text-purple-400 font-bold block mb-1">بحث سريع في الـ 20 شعاراً:</label>
+        <input id="searchBox" type="text" placeholder="ابحث بالرقم (مثل 67 أو 38 أو 14) أو الاسم..." class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2 text-white focus:border-purple-500 outline-none">
+      </div>
+    </div>
+
+    <!-- أزرار الفلترة -->
+    <div id="tabs" class="flex flex-wrap justify-center gap-2 max-w-4xl mx-auto">
+      <button data-cat="all" class="tab-btn active px-4 py-2 rounded-xl text-xs sm:text-sm font-bold border border-gray-800 bg-gray-900 transition">الكل (20)</button>
+      <button data-cat="special" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold border border-purple-800/60 bg-gray-900 hover:border-purple-500 transition">⭐ التعديلات الخاصة والمفضلة (#67, #38, #14)</button>
+      <button data-cat="hacker" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold border border-gray-800 bg-gray-900 hover:border-emerald-500 transition">🕵️‍♂️ هاكرز وقراصنة (5)</button>
+      <button data-cat="anime" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold border border-gray-800 bg-gray-900 hover:border-rose-500 transition">⚔️ أنمي وشينوبي (6)</button>
+      <button data-cat="beast" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold border border-gray-800 bg-gray-900 hover:border-purple-500 transition">🐺 وحوش الشبكة (4)</button>
+      <button data-cat="scifi" class="tab-btn px-4 py-2 rounded-xl text-xs sm:text-sm font-bold border border-gray-800 bg-gray-900 hover:border-cyan-500 transition">🎬 أفلام وخوارزميات وبروتوكولات (5)</button>
+    </div>
+  </header>
+
+  <!-- شبكة الشعارات العشرين -->
+  <main id="grid" class="max-w-7xl mx-auto grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"></main>
+
+<script>
+/* =========================================================================
+   1. لوحات الألوان النيون (18 لوحة لونية)
+   ========================================================================= */
+const PALETTES = [
+  { name:"Matrix Green", p:"#10b981", s:"#34d399", bg:"#040d0a", b:"#064e3b" },      // 0
+  { name:"Crimson Shinobi", p:"#f43f5e", s:"#38bdf8", bg:"#12050a", b:"#4c0519" },   // 1
+  { name:"Cyber Widow Purple", p:"#a855f7", s:"#22d3ee", bg:"#090514", b:"#2e1065" },// 2
+  { name:"Kernel Cyan", p:"#06b6d4", s:"#67e8f9", bg:"#040d17", b:"#083344" },       // 3
+  { name:"Pirate King Red", p:"#ef4444", s:"#fbbf24", bg:"#110404", b:"#450a0a" },   // 4
+  { name:"Kitsune Blaze", p:"#f97316", s:"#38bdf8", bg:"#120804", b:"#431407" },     // 5
+  { name:"Hollow Purple", p:"#8b5cf6", s:"#ec4899", bg:"#0b0518", b:"#3b0764" },     // 6
+  { name:"Golden Sovereign", p:"#eab308", s:"#f43f5e", bg:"#100c03", b:"#422006" },  // 7
+  { name:"Toxic Lime CTF", p:"#84cc16", s:"#22d3ee", bg:"#080d04", b:"#1a2e05" },    // 8
+  { name:"Arch Blue", p:"#3b82f6", s:"#60a5fa", bg:"#040917", b:"#172554" },         // 9
+  { name:"Blade Synthwave", p:"#ec4899", s:"#22d3ee", bg:"#140510", b:"#500724" },   // 10
+  { name:"Ice Phantom", p:"#38bdf8", s:"#e0f2fe", bg:"#030b14", b:"#0c4a6e" },       // 11
+  { name:"Viper Venom", p:"#22c55e", s:"#a855f7", bg:"#041008", b:"#052e16" },       // 12
+  { name:"Lava Core", p:"#ff4500", s:"#fde047", bg:"#140602", b:"#451a03" },         // 13
+  { name:"Ghost Silver", p:"#94a3b8", s:"#38bdf8", bg:"#090d16", b:"#1e293b" },      // 14
+  { name:"Sharingan Blood", p:"#dc2626", s:"#f87171", bg:"#0d0305", b:"#3f0909" },   // 15
+  { name:"Reverse Shell Mint", p:"#2dd4bf", s:"#c084fc", bg:"#041012", b:"#115e59" },// 16
+  { name:"Dark Crow Gold", p:"#f59e0b", s:"#94a3b8", bg:"#0c0a06", b:"#292524" }     // 17
+];
+
+/* =========================================================================
+   2. الدروع والإطارات الخلفية
+   ========================================================================= */
+function drawFrame(type, pal) {
+  const {p, s, bg} = pal;
+  switch(type) {
+    case 0: // درع سداسي مدرع
+      return `<polygon points="200,24 348,98 348,272 200,356 52,272 52,98" fill="${bg}" stroke="${p}" stroke-width="5"/>
+              <polygon points="200,38 334,106 334,264 200,342 66,264 66,106" fill="none" stroke="${s}" stroke-width="1.5" stroke-dasharray="10,6" opacity="0.6"/>`;
+    case 1: // درع Esports هجومي
+      return `<polygon points="200,22 355,78 320,275 200,360 80,275 45,78" fill="${bg}" stroke="${p}" stroke-width="5"/>
+              <polygon points="200,36 336,88 306,265 200,342 94,265 64,88" fill="none" stroke="${s}" stroke-width="1.5" opacity="0.5"/>`;
+    case 2: // دائرة الرادار
+      return `<circle cx="200" cy="182" r="140" fill="${bg}" stroke="${p}" stroke-width="5"/>
+              <circle cx="200" cy="182" r="126" fill="none" stroke="${s}" stroke-width="2" stroke-dasharray="22,8,4,8" opacity="0.7"/>`;
+    case 4: // معين المصفوفة (Diamond)
+      return `<polygon points="200,18 365,180 200,352 35,180" fill="${bg}" stroke="${p}" stroke-width="5"/>
+              <polygon points="200,36 344,180 200,332 56,180" fill="none" stroke="${s}" stroke-width="1.5" opacity="0.6"/>`;
+    case 5: // درع الفارس السيبراني
+      return `<path d="M55,58 L200,24 L345,58 L335,225 Q325,310 200,358 Q75,310 65,225 Z" fill="${bg}" stroke="${p}" stroke-width="5"/>
+              <path d="M72,70 L200,40 L328,70 L318,220 Q310,295 200,340 Q90,295 82,220 Z" fill="none" stroke="${s}" stroke-width="1.5" stroke-dasharray="14,6"/>`;
+    case 6: // معالج الحاسوب (CPU Microchip)
+      return `<rect x="62" y="46" width="276" height="272" rx="22" fill="${bg}" stroke="${p}" stroke-width="5"/>
+              <g stroke="${s}" stroke-width="4">
+                <line x1="110" y1="26" x2="110" y2="46"/><line x1="155" y1="26" x2="155" y2="46"/><line x1="245" y1="26" x2="245" y2="46"/><line x1="290" y1="26" x2="290" y2="46"/>
+                <line x1="38" y1="100" x2="62" y2="100"/><line x1="38" y1="150" x2="62" y2="150"/><line x1="38" y1="200" x2="62" y2="200"/><line x1="38" y1="250" x2="62" y2="250"/>
+                <line x1="338" y1="100" x2="362" y2="100"/><line x1="338" y1="150" x2="362" y2="150"/><line x1="338" y1="200" x2="362" y2="200"/><line x1="338" y1="250" x2="362" y2="250"/>
+              </g>`;
+    case 7: // بوابة الطاقة المدارية
+      return `<circle cx="200" cy="182" r="136" fill="${bg}" stroke="${p}" stroke-width="4"/>
+              <ellipse cx="200" cy="182" rx="152" ry="56" transform="rotate(-25 200 182)" fill="none" stroke="${s}" stroke-width="2" opacity="0.65"/>
+              <ellipse cx="200" cy="182" rx="152" ry="56" transform="rotate(25 200 182)" fill="none" stroke="${p}" stroke-width="2" opacity="0.65"/>`;
+    case 9: // درع الميكا المدرع
+      return `<polygon points="200,22 315,50 358,145 322,278 200,358 78,278 42,145 85,50" fill="${bg}" stroke="${p}" stroke-width="5"/>
+              <polygon points="200,38 302,62 340,148 308,268 200,340 92,268 60,148 98,62" fill="none" stroke="${s}" stroke-width="1.5"/>`;
+    default:
+      return `<polygon points="200,24 348,98 348,272 200,356 52,272 52,98" fill="${bg}" stroke="${p}" stroke-width="5"/>`;
+  }
+}
+
+/* =========================================================================
+   3. الأسلحة والخلفيات التقنية المتقاطعة
+   ========================================================================= */
+function drawWeapon(type, pal) {
+  const {p, s} = pal;
+  switch(type) {
+    case 0: // سيفا كاتانا متقاطعان
+      return `<g stroke-linecap="round">
+                <line x1="65" y1="58" x2="335" y2="295" stroke="${s}" stroke-width="5"/>
+                <line x1="335" y1="58" x2="65" y2="295" stroke="${p}" stroke-width="5"/>
+                <rect x="60" y="53" width="25" height="8" transform="rotate(42 65 58)" fill="${p}"/>
+                <rect x="315" y="53" width="25" height="8" transform="rotate(-42 335 58)" fill="${s}"/>
+              </g>`;
+    case 1: // منجلا الزيرو داي
+      return `<g fill="none" stroke-width="4.5">
+                <path d="M75,260 L310,68 Q235,28 175,88" stroke="${p}"/>
+                <path d="M325,260 L90,68 Q165,28 225,88" stroke="${s}"/>
+              </g>`;
+    case 2: // خناجر الكوناي اليابانية
+      return `<g stroke="${s}" stroke-width="3" fill="${p}">
+                <line x1="75" y1="68" x2="325" y2="285" stroke-width="4"/>
+                <line x1="325" y1="68" x2="75" y2="285" stroke-width="4"/>
+                <polygon points="58,52 102,68 76,95"/>
+                <polygon points="342,52 298,68 324,95"/>
+              </g>`;
+    case 3: // مسارات اللوحة الأم (Circuit Tree)
+      return `<g stroke="${p}" stroke-width="2.5" fill="none" opacity="0.65">
+                <polyline points="120,130 70,100 50,100"/><circle cx="50" cy="100" r="4.5" fill="${s}"/>
+                <polyline points="120,175 60,175 42,155"/><circle cx="42" cy="155" r="4.5" fill="${s}"/>
+                <polyline points="120,215 70,240 50,240"/><circle cx="50" cy="240" r="4.5" fill="${s}"/>
+                <polyline points="280,130 330,100 350,100"/><circle cx="350" cy="100" r="4.5" fill="${s}"/>
+                <polyline points="280,175 340,175 358,155"/><circle cx="358" cy="155" r="4.5" fill="${s}"/>
+                <polyline points="280,215 330,240 350,240"/><circle cx="350" cy="240" r="4.5" fill="${s}"/>
+              </g>`;
+    case 4: // أجنحة السيرفرات الحادة
+      return `<g fill="${p}" opacity="0.32" stroke="${s}" stroke-width="2">
+                <polygon points="140,150 38,85 68,145 42,175 78,205 55,235 145,220"/>
+                <polygon points="260,150 362,85 332,145 358,175 322,205 345,235 255,220"/>
+              </g>`;
+    case 5: // مطر المصفوفة الرقمي (1010)
+      return `<g fill="${p}" font-family="JetBrains Mono, monospace" font-size="13" font-weight="700" opacity="0.35">
+                <text x="85" y="98">1 0 1 1 0 1 0 1</text>
+                <text x="75" y="128">0 1 0 1 1 0 1 1 0</text>
+                <text x="90" y="158">1 1 0 0 1 0 1 0</text>
+                <text x="75" y="218">0 1 1 0 1 0 0 1 1</text>
+                <text x="95" y="248">1 0 0 1 1 1 0 1</text>
+              </g>`;
+    case 6: // نجمة شوريكن عملاقة في الخلفية
+      return `<polygon points="200,38 232,145 342,178 232,211 200,318 168,211 58,178 168,145" fill="none" stroke="${s}" stroke-width="2.5" opacity="0.45"/>`;
+    case 7: // صواعق الطاقة السيبرانية
+      return `<g fill="none" stroke="${s}" stroke-width="3.5" opacity="0.8">
+                <polyline points="75,68 115,128 90,143 135,218"/>
+                <polyline points="325,68 285,128 310,143 265,218"/>
+              </g>`;
+    case 8: // مفاتيح التشفير المتقاطعة
+      return `<g stroke="${p}" stroke-width="5" fill="none">
+                <line x1="80" y1="82" x2="320" y2="260"/><circle cx="75" cy="77" r="14"/>
+                <line x1="320" y1="82" x2="80" y2="260"/><circle cx="325" cy="77" r="14"/>
+              </g>`;
+    case 9: // شبكة العنكبوت السيبرانية (Laser Web)
+      return `<g stroke="${s}" stroke-width="1.5" fill="none" opacity="0.42">
+                <polygon points="200,75 275,115 295,185 255,250 145,250 105,185 125,115"/>
+                <polygon points="200,110 248,135 260,182 235,225 165,225 140,182 152,135"/>
+                <line x1="95" y1="70" x2="305" y2="280"/><line x1="305" y1="70" x2="95" y2="280"/>
+                <line x1="200" y1="55" x2="200" y2="295"/><line x1="75" y1="178" x2="325" y2="178"/>
+              </g>`;
+  }
+}
+
+/* =========================================================================
+   4. الشخصيات والرموز المركزية (مع التعديلات الخاصة لـ #67 و #38 و #14)
+   ========================================================================= */
+function drawMascot(id, pal) {
+  const {p, s, bg} = pal;
+  switch(id) {
+
+    // ★ #67: أرملة التشفير السوداء (VIP MASTERPIECE UPGRADE)
+    case 20:
+      return `<g>
+                <!-- الأرجل الميكانيكية المدرعة الثمانية مع مفاصل نيون -->
+                <g stroke="${p}" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" fill="none">
+                  <polyline points="172,148 118,88 72,118"/><polyline points="166,162 92,138 58,175"/>
+                  <polyline points="168,178 96,195 66,238"/><polyline points="176,194 126,238 104,268"/>
+                  <polyline points="228,148 282,88 328,118"/><polyline points="234,162 308,138 342,175"/>
+                  <polyline points="232,178 304,195 334,238"/><polyline points="224,194 274,238 296,268"/>
+                </g>
+                <!-- عقد الشبكة (Nodes) على مفاصل وأطراف الأرجل -->
+                <g fill="${s}">
+                  <circle cx="118" cy="88" r="4.5"/><circle cx="282" cy="88" r="4.5"/>
+                  <circle cx="92" cy="138" r="4.5"/><circle cx="308" cy="138" r="4.5"/>
+                  <circle cx="96" cy="195" r="4.5"/><circle cx="304" cy="195" r="4.5"/>
+                  <circle cx="72" cy="118" r="3.5"/><circle cx="328" cy="118" r="3.5"/>
+                  <circle cx="58" cy="175" r="3.5"/><circle cx="342" cy="175" r="3.5"/>
+                </g>
+                <!-- البطن المدرع للأرملة السوداء (Abdomen) -->
+                <polygon points="200,148 244,175 236,236 200,262 164,236 156,175" fill="#090d16" stroke="${p}" stroke-width="3.5"/>
+                <polygon points="200,158 232,180 225,228 200,248 175,228 168,180" fill="#111827" stroke="${s}" stroke-width="1.5" opacity="0.8"/>
+                <!-- الساعة الرملية الحمراء/النيون الشهيرة للأرملة السوداء -->
+                <polygon points="184,182 216,182 203,204 216,226 184,226 197,204" fill="#ef4444" stroke="#ffffff" stroke-width="1.5"/>
+                <!-- الرأس والصدر المدرع (Cephalothorax) -->
+                <polygon points="174,115 226,115 236,152 200,166 164,152" fill="#0f172a" stroke="${s}" stroke-width="3"/>
+                <!-- الكلابات الأمامية الحادة (Chelicerae/Fangs) -->
+                <polygon points="182,115 194,115 186,88 174,102" fill="${p}" stroke="#ffffff" stroke-width="1.5"/>
+                <polygon points="218,115 206,115 214,88 226,102" fill="${p}" stroke="#ffffff" stroke-width="1.5"/>
+                <!-- الأعين الثمانية الليزرية -->
+                <g fill="#ef4444">
+                  <polygon points="180,128 195,134 183,138"/><polygon points="220,128 205,134 217,138"/>
+                  <circle cx="176" cy="124" r="2.5"/><circle cx="224" cy="124" r="2.5"/>
+                  <circle cx="192" cy="124" r="2.5"/><circle cx="208" cy="124" r="2.5"/>
+                </g>
+              </g>`;
+
+    // ★ #38: ملك قراصنة السيرفرات (FIXED STRAW HAT PLACEMENT ON SKULL)
+    case 11:
+      return `<g>
+                <!-- العظمتان/الكابلات المتقاطعتان خلف الجمجمة -->
+                <g stroke="#e2e8f0" stroke-width="8" stroke-linecap="round">
+                  <line x1="105" y1="115" x2="295" y2="255"/>
+                  <line x1="295" y1="115" x2="105" y2="255"/>
+                  <circle cx="98" cy="110" r="10" fill="#e2e8f0"/><circle cx="110" cy="102" r="10" fill="#e2e8f0"/>
+                  <circle cx="302" cy="110" r="10" fill="#e2e8f0"/><circle cx="290" cy="102" r="10" fill="#e2e8f0"/>
+                  <circle cx="98" cy="260" r="10" fill="#e2e8f0"/><circle cx="110" cy="268" r="10" fill="#e2e8f0"/>
+                  <circle cx="302" cy="260" r="10" fill="#e2e8f0"/><circle cx="290" cy="268" r="10" fill="#e2e8f0"/>
+                </g>
+                <!-- جمجمة القرصان السيبرانية (مضبوطة في المركز) -->
+                <path d="M144,142 C140,185 152,208 172,216 L172,248 L228,248 L228,216 C248,208 260,185 256,142 Z" fill="#f8fafc" stroke="#0f172a" stroke-width="4"/>
+                <!-- الفك وأسنان الشبكة -->
+                <line x1="172" y1="230" x2="228" y2="230" stroke="#0f172a" stroke-width="3.5"/>
+                <line x1="186" y1="216" x2="186" y2="248" stroke="#0f172a" stroke-width="3.5"/>
+                <line x1="200" y1="216" x2="200" y2="248" stroke="#0f172a" stroke-width="3.5"/>
+                <line x1="214" y1="216" x2="214" y2="248" stroke="#0f172a" stroke-width="3.5"/>
+                <!-- محجرا العينين المتوهجان + الندبة الشهيرة تحت العين اليسرى -->
+                <circle cx="175" cy="176" r="16" fill="#090d16" stroke="${p}" stroke-width="2.5"/>
+                <circle cx="225" cy="176" r="16" fill="#090d16" stroke="${p}" stroke-width="2.5"/>
+                <circle cx="175" cy="176" r="6" fill="${p}"/><circle cx="225" cy="176" r="6" fill="${s}"/>
+                <!-- ندبة لوفي تحت العين -->
+                <path d="M214,198 L236,202 M220,194 L218,204 M230,195 L228,205" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- الأنف المثلث -->
+                <polygon points="200,186 192,204 208,204" fill="#090d16"/>
+
+                <!-- ★ قبعة القش موضوعة بإحكام أعلى الرأس تماماً -->
+                <!-- قبة القبعة العلوية -->
+                <path d="M138,136 C138,66 262,66 262,136 Z" fill="#facc15" stroke="#ca8a04" stroke-width="3.5"/>
+                <!-- خطوط نسيج القش -->
+                <path d="M165,82 Q200,90 235,82 M150,100 Q200,110 250,100" fill="none" stroke="#ca8a04" stroke-width="2" opacity="0.6"/>
+                <!-- الشريط الأحمر القرمزي حول قاعدة القبعة -->
+                <path d="M137,116 Q200,126 263,116 L265,136 Q200,146 135,136 Z" fill="#dc2626" stroke="#991b1b" stroke-width="2.5"/>
+                <!-- حافة القبعة العريضة المنحنية فوق الجبين (Brim) -->
+                <path d="M78,138 Q200,116 322,138 Q200,158 78,138 Z" fill="#eab308" stroke="#a16207" stroke-width="3.5"/>
+              </g>`;
+
+    // ★ #14: طبيب الفيروسات القرمزي (LOOKSMAXING / CHISELED JAW & HUNTER EYES EDITION)
+    case 4:
+      return `<g>
+                <!-- القبعة التكتيكية الحادة -->
+                <polygon points="152,86 170,48 230,48 248,86" fill="#0f172a" stroke="${p}" stroke-width="3"/>
+                <path d="M92,88 Q200,72 308,88 Q200,102 92,88 Z" fill="#18181b" stroke="${p}" stroke-width="3.5"/>
+
+                <!-- الرأس المنحوت (Chiseled Mandible & High Zygomatic Cheekbones - Looksmaxed) -->
+                <polygon points="136,94 264,94 272,142 252,208 200,256 148,208 128,142" fill="#090d16" stroke="${p}" stroke-width="3.5"/>
+
+                <!-- بروز عظام الوجنتين وتجاويف الخدود الغائرة (Hollow Cheeks Shading) -->
+                <polygon points="132,142 172,152 156,204 148,208" fill="#18181b" stroke="${s}" stroke-width="1.5"/>
+                <polygon points="268,142 228,152 244,204 252,208" fill="#18181b" stroke="${s}" stroke-width="1.5"/>
+                <!-- خط الفك الفولاذي السفلي العريض (Giga Jawline Contour) -->
+                <polyline points="148,204 175,232 200,244 225,232 252,204" fill="none" stroke="${s}" stroke-width="3"/>
+
+                <!-- عيون الصياد الحادة المائلة (Positive Canthal Tilt Hunter Eyes) -->
+                <polygon points="142,122 188,134 182,144 148,136" fill="${p}"/>
+                <polygon points="258,122 212,134 218,144 252,136" fill="${p}"/>
+                <line x1="138" y1="116" x2="192" y2="130" stroke="#ffffff" stroke-width="2.5"/>
+                <line x1="262" y1="116" x2="208" y2="130" stroke="#ffffff" stroke-width="2.5"/>
+
+                <!-- منقار الطاعون السيبراني المعدني الحاد (Angular Mecha Beak) -->
+                <polygon points="200,136 226,162 200,262 174,162" fill="#111827" stroke="${p}" stroke-width="3"/>
+                <polygon points="200,136 226,162 200,262" fill="#1e293b" opacity="0.65"/>
+                <line x1="200" y1="136" x2="200" y2="262" stroke="${s}" stroke-width="2.5"/>
+                <!-- فتحات التنفس الليزرية على المنقار -->
+                <line x1="184" y1="182" x2="194" y2="196" stroke="${p}" stroke-width="2.5"/>
+                <line x1="216" y1="182" x2="206" y2="196" stroke="${p}" stroke-width="2.5"/>
+                <line x1="186" y1="204" x2="194" y2="216" stroke="${p}" stroke-width="2.5"/>
+                <line x1="214" y1="204" x2="206" y2="216" stroke="${p}" stroke-width="2.5"/>
+              </g>`;
+
+    // #108 & #12: شبح الروت والـ Reverse Shell
+    case 0:
+      return `<path d="M115,270 C115,210 150,192 200,192 C250,192 285,210 285,270 Z" fill="#0f172a" stroke="${p}" stroke-width="3"/>
+              <path d="M200,62 C148,62 130,110 134,174 C137,210 165,226 200,226 C235,226 263,210 266,174 C270,110 252,62 200,62 Z" fill="#111827" stroke="${p}" stroke-width="4"/>
+              <path d="M200,84 C164,84 150,120 154,170 C156,198 175,212 200,212 C225,212 244,198 246,170 C250,120 236,84 200,84 Z" fill="#020617"/>
+              <text x="165" y="158" fill="${p}" font-family="JetBrains Mono, monospace" font-weight="800" font-size="34">&gt;_</text>`;
+
+    // #18 & #7: حاصد الزيرو داي / قرصان الحزم
+    case 1:
+      return `<polygon points="200,56 272,104 262,212 200,245 138,212 128,104" fill="#0f172a" stroke="${p}" stroke-width="4"/>
+              <polygon points="200,74 250,114 242,198 200,225 158,198 150,114" fill="#020617"/>
+              <polygon points="162,172 200,160 238,172 230,216 200,232 170,216" fill="#1e293b" stroke="${s}" stroke-width="2.5"/>
+              <line x1="184" y1="192" x2="184" y2="218" stroke="${p}" stroke-width="3"/><line x1="200" y1="192" x2="200" y2="222" stroke="${p}" stroke-width="3"/><line x1="216" y1="192" x2="216" y2="218" stroke="${p}" stroke-width="3"/>
+              <text x="162" y="154" fill="${p}" font-family="JetBrains Mono, monospace" font-weight="800" font-size="26">#</text>
+              <text x="214" y="154" fill="${s}" font-family="JetBrains Mono, monospace" font-weight="800" font-size="26">&gt;_</text>`;
+
+    // #85: صائد الأندرويد (Blade Runner Visor)
+    case 2:
+      return `<polygon points="200,56 268,100 258,220 200,254 142,220 132,100" fill="#0f172a" stroke="${p}" stroke-width="3.5"/>
+              <polygon points="200,72 248,110 240,205 200,234 160,205 152,110" fill="#020617"/>
+              <polygon points="138,136 262,136 248,172 200,164 152,172" fill="${p}" stroke="#ffffff" stroke-width="2"/>
+              <text x="200" y="160" text-anchor="middle" fill="#020617" font-family="JetBrains Mono, monospace" font-weight="800" font-size="17">NEXUS-9</text>`;
+
+    // #50 & #40: شينوبي الكود / الصاعقة
+    case 6:
+      return `<polygon points="200,64 265,108 255,215 200,255 145,215 135,108" fill="#111827" stroke="${p}" stroke-width="3.5"/>
+              <polygon points="132,112 268,112 262,142 138,142" fill="#1e293b" stroke="${s}" stroke-width="2"/>
+              <text x="200" y="133" text-anchor="middle" fill="${s}" font-family="JetBrains Mono, monospace" font-weight="800" font-size="18">&lt;/&gt;</text>
+              <polygon points="152,160 190,170 158,178" fill="${p}"/><polygon points="248,160 210,170 242,178" fill="${s}"/>
+              <polygon points="145,186 200,174 255,186 242,232 200,255 158,232" fill="#090d16" stroke="${p}" stroke-width="2.5"/>`;
+
+    // #25: عين الشارينغان السيبرانية
+    case 8:
+      return `<circle cx="200" cy="172" r="88" fill="#1a0408" stroke="${p}" stroke-width="4.5"/>
+              <circle cx="200" cy="172" r="54" fill="none" stroke="${s}" stroke-width="2.5" stroke-dasharray="10,5"/>
+              <circle cx="200" cy="172" r="22" fill="${p}"/><circle cx="200" cy="172" r="9" fill="#000"/>
+              <circle cx="200" cy="118" r="10" fill="${p}"/><circle cx="152" cy="199" r="10" fill="${p}"/><circle cx="248" cy="199" r="10" fill="${p}"/>`;
+
+    // #36: المانغيكيو السيبراني (Mangekyou Shuriken Eye)
+    case 36:
+      return `<circle cx="200" cy="172" r="90" fill="#090204" stroke="${p}" stroke-width="4.5"/>
+              <path d="M200,88 C235,130 235,172 200,172 C235,172 265,205 272,218 C225,205 200,185 200,172 C200,185 175,205 128,218 C135,205 165,172 200,172 C165,172 165,130 200,88 Z" fill="${p}" stroke="${s}" stroke-width="2"/>
+              <circle cx="200" cy="172" r="14" fill="#090204" stroke="#ffffff" stroke-width="2"/>`;
+
+    // #93: الروبوت الحارس (Sentinel Prime)
+    case 12:
+      return `<polygon points="200,48 216,112 184,112" fill="${s}" stroke="#ffffff" stroke-width="2"/>
+              <polygon points="200,76 268,118 252,225 200,260 148,225 132,118" fill="#1e1b4b" stroke="${p}" stroke-width="3.5"/>
+              <polygon points="145,148 192,165 155,176" fill="${s}"/><polygon points="255,148 208,165 245,176" fill="${s}"/>
+              <polygon points="168,195 200,180 232,195 200,256" fill="${p}" stroke="#ffffff" stroke-width="1.5"/>`;
+
+    // #49: حكيم المسارات الستة التقني
+    case 15:
+      return `<circle cx="200" cy="172" r="92" fill="none" stroke="${p}" stroke-width="3.5"/>
+              <polygon points="200,78 282,218 118,218" fill="none" stroke="${s}" stroke-width="3"/>
+              <polygon points="200,266 282,126 118,126" fill="none" stroke="${s}" stroke-width="3"/>
+              <circle cx="200" cy="172" r="36" fill="#04100c" stroke="${p}" stroke-width="2.5"/>
+              <text x="200" y="181" text-anchor="middle" fill="#ffffff" font-family="Orbitron, monospace" font-weight="900" font-size="22">ROOT</text>`;
+
+    // #75: ذئب الزمرد الأخضر
+    case 16:
+      return `<g stroke="${s}" stroke-width="2" fill="#062e22">
+                <polygon points="125,64 165,114 130,134" fill="${p}"/>
+                <polygon points="275,64 235,114 270,134" fill="${p}"/>
+                <polygon points="165,114 235,114 255,164 200,194 145,164"/>
+                <polygon points="130,134 165,114 145,164 115,190"/>
+                <polygon points="270,134 235,114 255,164 285,190"/>
+                <polygon points="145,164 200,194 255,164 230,234 200,258 170,234" fill="#041712"/>
+              </g>
+              <polygon points="155,154 185,167 160,172" fill="${s}"/><polygon points="245,154 215,167 240,172" fill="${s}"/>`;
+
+    // #78: كيتسوني الساموراي القرمزي
+    case 17:
+      return `<polygon points="105,52 172,114 128,144" fill="${p}" stroke="#ffffff" stroke-width="2"/>
+              <polygon points="295,52 228,114 272,144" fill="${p}" stroke="#ffffff" stroke-width="2"/>
+              <polygon points="172,114 228,114 268,170 200,258 132,170" fill="#1c1917" stroke="${p}" stroke-width="3"/>
+              <polygon points="148,160 186,174 156,180" fill="${s}"/><polygon points="252,160 214,174 244,180" fill="${s}"/>`;
+
+    // #91: الكثبان الرقمية (Dune Spice Net)
+    case 18:
+      return `<polygon points="200,56 295,108 310,185 250,245 200,262 150,245 90,185 105,108" fill="#1e1b4b" stroke="${s}" stroke-width="3"/>
+              <polygon points="200,72 265,118 250,210 200,245 150,210 135,118" fill="#0f172a" stroke="${p}" stroke-width="2.5"/>
+              <polygon points="152,142 188,156 160,164" fill="#38bdf8"/><polygon points="248,142 212,156 240,164" fill="#38bdf8"/>
+              <polygon points="172,195 184,195 178,232" fill="#ffffff"/><polygon points="228,195 216,195 222,232" fill="#ffffff"/>`;
+
+    // #72: غراب الظلام المشفر (Crow of Cryptography)
+    case 25:
+      return `<polygon points="200,62 252,114 238,195 200,262 162,195 148,114" fill="#090d16" stroke="${p}" stroke-width="3.5"/>
+              <polygon points="178,175 200,158 222,175 200,262" fill="#1e293b" stroke="${s}" stroke-width="2.5"/>
+              <circle cx="200" cy="114" r="10" fill="${p}"/>
+              <polygon points="156,144 186,154 164,160" fill="${p}"/><polygon points="244,144 214,154 236,160" fill="${p}"/>`;
+
+    // #107: حارس البروتوكولات (BGP Guardian)
+    case 33:
+      return `<path d="M162,138 L162,98 C162,68 238,68 238,98 L238,138" fill="none" stroke="${s}" stroke-width="12" stroke-linecap="round"/>
+              <rect x="138" y="132" width="124" height="105" rx="14" fill="#0f172a" stroke="${p}" stroke-width="4"/>
+              <circle cx="200" cy="176" r="14" fill="${s}"/><polygon points="194,180 206,180 210,212 190,212" fill="${s}"/>`;
+
+    // #105: مكعب الخوارزميات والـ C++
+    case 34:
+      return `<polygon points="200,72 282,118 200,164 118,118" fill="${p}" stroke="#ffffff" stroke-width="2"/>
+              <polygon points="118,118 200,164 200,254 118,208" fill="#0f172a" stroke="${p}" stroke-width="2.5"/>
+              <polygon points="282,118 200,164 200,254 282,208" fill="#1e293b" stroke="${s}" stroke-width="2.5"/>
+              <text x="158" y="198" fill="#ffffff" font-family="JetBrains Mono, monospace" font-weight="800" font-size="22">C++</text>`;
+  }
+}
+
+/* =========================================================================
+   5. قائمة الـ 20 شعاراً المختارة (مع وضع التعديلات المفضلة في المقدمة)
+   ========================================================================= */
+const SELECTED_LOGOS = [
+  // ★ الثلاثة المعدلة والمفضلة في الصدارة
+  { id:67, cat:'beast', special:true, vipNote:'⭐ TOP PICK (مطور بالكامل)', ar:'أرملة التشفير السوداء', en:'Crypto Widow Maker', m:20, f:4, w:9, p:2, tag:'WIDOW-SEC' },
+  { id:38, cat:'anime', special:true, vipNote:'👒 تم ضبط قبعة القش والجمجمة', ar:'ملك قراصنة السيرفرات', en:'Server Pirate King', m:11, f:5, w:0, p:4, tag:'GRAND-LINE' },
+  { id:14, cat:'hacker', special:true, vipNote:'🗿 تم نحت الوجه والفك (Looksmaxed)', ar:'طبيب الفيروسات القرمزي', en:'Crimson Virus Doctor', m:4, f:1, w:1, p:15, tag:'TROJAN-DR' },
+
+  // باقي الـ 17 شعاراً المختارة بعناية
+  { id:108, cat:'hacker', ar:'النخبة المطلقة لتقنية المعلومات', en:'Ultimate IT Batch Legend', m:0, f:5, w:4, p:1, tag:'IT-LEGEND' },
+  { id:107, cat:'scifi', ar:'حارس البروتوكولات (BGP Guardian)', en:'Core Router BGP Guardian', m:33, f:9, w:3, p:7, tag:'ASN-BGP' },
+  { id:105, cat:'scifi', ar:'مكعب الخوارزميات والـ C++', en:'Competitive Coding C++', m:34, f:0, w:7, p:2, tag:'O(1)-TIME' },
+  { id:93, cat:'scifi', ar:'الروبوت الحارس (Sentinel Prime)', en:'Autobot Matrix Core', m:12, f:5, w:3, p:1, tag:'PRIME-OS' },
+  { id:91, cat:'scifi', ar:'الكثبان الرقمية (Dune Spice Net)', en:'Arrakis Sandworm Net', m:18, f:2, w:6, p:7, tag:'SPICE-NET' },
+  { id:85, cat:'scifi', ar:'صائد الأندرويد (Blade Runner)', en:'Blade Runner Nexus-9', m:2, f:4, w:7, p:10, tag:'NEXUS-9' },
+  { id:78, cat:'beast', ar:'كيتسوني الساموراي القرمزي', en:'Samurai Fox Emblem', m:17, f:5, w:0, p:1, tag:'FOX-HOUND' },
+  { id:75, cat:'beast', ar:'ذئب الزمرد الأخضر', en:'Emerald Matrix Wolf', m:16, f:6, w:5, p:0, tag:'ROOT-WOLF' },
+  { id:72, cat:'beast', ar:'غراب الظلام المشفر', en:'Crow of Cryptography', m:25, f:5, w:3, p:17, tag:'DARK-CROW' },
+  { id:50, cat:'anime', ar:'أسطورة الشينوبي الأخضر', en:'Emerald Leaf Shinobi', m:6, f:0, w:2, p:0, tag:'KONOHA-IT' },
+  { id:49, cat:'anime', ar:'حكيم المسارات الستة التقني', en:'Sage of Six Servers', m:15, f:7, w:6, p:0, tag:'RIKAGE-IT' },
+  { id:40, cat:'anime', ar:'شينوبي الصاعقة (Chidori Net)', en:'Lightning Blade Net', m:6, f:4, w:7, p:3, tag:'CHIDORI' },
+  { id:36, cat:'anime', ar:'المانغيكيو السيبراني', en:'Mangekyou Firewall', m:36, f:4, w:6, p:1, tag:'AMATERASU' },
+  { id:25, cat:'anime', ar:'عين الشارينغان السيبرانية', en:'Sharingan Cyber Optic', m:8, f:2, w:2, p:15, tag:'GENJUTSU' },
+  { id:18, cat:'hacker', ar:'قرصان الحزم (Packet Pirate)', en:'Packet Sniffer Pirate', m:1, f:2, w:8, p:12, tag:'TCP-DUMP' },
+  { id:12, cat:'hacker', ar:'شبح السوكيت (Reverse Shell)', en:'Reverse Shell Ghost', m:0, f:7, w:5, p:16, tag:'LHOST:4444' },
+  { id:7, cat:'hacker', ar:'القرصان الشبح (CTF Corsair)', en:'CTF Shadow Corsair', m:1, f:5, w:8, p:8, tag:'CTF-CHAMP' }
+];
+
+/* =========================================================================
+   6. بناء رسمة الـ SVG (تم رفع الشريط العلوي لعدم تغطية القبعات والقرون)
+   ========================================================================= */
+function buildSVG(logo, mainTxt, subTxt) {
+  const pal = PALETTES[logo.p % PALETTES.length];
+  return `<svg id="svg-${logo.id}" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+    <!-- 1. الإطار والدرع الخلفي -->
+    ${drawFrame(logo.f, pal)}
+    <!-- 2. السلاح أو الخلفية المتقاطعة -->
+    ${drawWeapon(logo.w, pal)}
+    <!-- 3. الشخصية أو الأيقونة المركزية -->
+    ${drawMascot(logo.m, pal)}
+    <!-- 4. الكود التكتيكي العلوي (مرفوع للأعلى حتى لا يغطي القبعات) -->
+    <rect x="148" y="16" width="104" height="20" rx="5" fill="${pal.b}" stroke="${pal.s}" stroke-width="1.5"/>
+    <text x="200" y="30" text-anchor="middle" fill="${pal.s}" font-family="JetBrains Mono, monospace" font-weight="800" font-size="10" letter-spacing="1.5">${logo.tag}</text>
+    <!-- 5. لافتة اسم الدفعة واللقب -->
+    <polygon points="58,274 342,274 328,320 72,320" fill="${pal.b}" stroke="${pal.p}" stroke-width="3"/>
+    <text class="logo-main-text" x="200" y="304" text-anchor="middle" fill="#ffffff" font-family="Orbitron, JetBrains Mono, monospace" font-weight="900" font-size="21" letter-spacing="2">${mainTxt}</text>
+    <text class="logo-sub-text" x="200" y="342" text-anchor="middle" fill="${pal.s}" font-family="JetBrains Mono, monospace" font-weight="700" font-size="9.5" letter-spacing="1.5">${subTxt}</text>
+  </svg>`;
+}
+
+/* =========================================================================
+   7. العرض التفاعلي، تبديل الألوان، والتحميل
+   ========================================================================= */
+const grid = document.getElementById('grid');
+const mainInput = document.getElementById('mainText');
+const subInput = document.getElementById('subText');
+const searchBox = document.getElementById('searchBox');
+let currentCat = 'all';
+
+function renderGallery() {
+  const q = searchBox.value.trim().toLowerCase();
+  const mTxt = mainInput.value || 'IT BATCH 26';
+  const sTxt = subInput.value || 'ROOT ACCESS • SYSTEM ELITE';
+
+  const filtered = SELECTED_LOGOS.filter(l => {
+    const matchCat = currentCat === 'all' || (currentCat === 'special' ? l.special : l.cat === currentCat);
+    const matchQ = !q || (l.id + ' ' + l.ar + ' ' + l.en + ' ' + l.tag).toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+
+  grid.innerHTML = filtered.map(l => {
+    const palName = PALETTES[l.p % PALETTES.length].name;
+    return `<div class="logo-card ${l.special ? 'vip-pick' : ''} rounded-2xl p-4 flex flex-col justify-between">
+      <div>
+        <div class="flex justify-between items-center mb-2">
+          ${l.vipNote
+            ? `<span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-purple-500/20 text-purple-300 border border-purple-500/40">${l.vipNote}</span>`
+            : `<span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/30">نخبة الـ 20</span>`
+          }
+          <span class="text-xs text-gray-400 font-mono font-bold">#${l.id}</span>
+        </div>
+        <div id="wrap-${l.id}" class="bg-black/65 rounded-xl p-3 border border-gray-800/90">
+          ${buildSVG(l, mTxt, sTxt)}
+        </div>
+        <div class="flex justify-between items-start mt-3">
+          <div>
+            <h3 class="font-bold text-base text-white">#${l.id} - ${l.ar}</h3>
+            <p class="text-xs text-gray-400 font-mono" dir="ltr">${l.en}</p>
+          </div>
+          <button onclick="cycleColor(${l.id})" title="تغيير لوحة الألوان" class="px-2.5 py-1 rounded-lg bg-gray-800 hover:bg-gray-700 text-[11px] text-cyan-300 font-bold border border-gray-700 shrink-0">
+            🎨 لون آخر
+          </button>
+        </div>
+        <p id="pal-label-${l.id}" class="text-[11px] text-gray-500 font-mono mt-1" dir="ltr">Theme: ${palName}</p>
+      </div>
+      <div class="flex gap-2 mt-4">
+        <button onclick="downloadPNG(${l.id}, '${l.en.replace(/\s+/g,'-')}')" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2.5 rounded-lg transition">⬇ PNG شفاف (2000px)</button>
+        <button onclick="downloadSVG(${l.id}, '${l.en.replace(/\s+/g,'-')}')" class="px-3 bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-bold py-2.5 rounded-lg transition">SVG</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// تغيير اللون لأي شعار بضغطة زر
+function cycleColor(id) {
+  const logo = SELECTED_LOGOS.find(x => x.id === id);
+  if (!logo) return;
+  logo.p = (logo.p + 1) % PALETTES.length;
+  const mTxt = mainInput.value || 'IT BATCH 26';
+  const sTxt = subInput.value || 'ROOT ACCESS • SYSTEM ELITE';
+  document.getElementById('wrap-' + id).innerHTML = buildSVG(logo, mTxt, sTxt);
+  document.getElementById('pal-label-' + id).textContent = 'Theme: ' + PALETTES[logo.p].name;
+}
+
+mainInput.addEventListener('input', () => {
+  document.querySelectorAll('.logo-main-text').forEach(el => el.textContent = mainInput.value || 'IT BATCH');
+});
+subInput.addEventListener('input', () => {
+  document.querySelectorAll('.logo-sub-text').forEach(el => el.textContent = subInput.value || '');
+});
+searchBox.addEventListener('input', renderGallery);
+
+document.getElementById('tabs').addEventListener('click', e => {
+  const btn = e.target.closest('[data-cat]');
+  if (!btn) return;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentCat = btn.dataset.cat;
+  renderGallery();
+});
+
+function downloadSVG(id, name) {
+  const svgEl = document.getElementById('svg-' + id);
+  const source = new XMLSerializer().serializeToString(svgEl);
+  const blob = new Blob([source], { type: 'image/svg+xml;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `VIP-Logo-${id}-${name}.svg`; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function downloadPNG(id, name) {
+  const svgEl = document.getElementById('svg-' + id);
+  const source = new XMLSerializer().serializeToString(svgEl);
+  const img = new Image();
+  const url = URL.createObjectURL(new Blob([source], { type: 'image/svg+xml;charset=utf-8' }));
+  img.onload = function() {
+    const canvas = document.createElement('canvas');
+    canvas.width = 2000; canvas.height = 2000;
+    canvas.getContext('2d').drawImage(img, 0, 0, 2000, 2000);
+    URL.revokeObjectURL(url);
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    a.download = `VIP-Logo-${id}-${name}.png`;
+    a.click();
+  };
+  img.src = url;
+}
+
+renderGallery();
+</script>
+</body>
+</html>

@@ -107,19 +107,6 @@ LECTURES.push({ id:'l1', n:1,
     ["Differentiate between an assembler, a compiler and an interpreter.","التمييز بين المجمّع (Assembler) والمترجم (Compiler) والمفسّر (Interpreter)."]
   ],
   sec:[
-   {t:["Course Information","معلومات المقرر"], b:[
-     {k:'ul', h:["Course objectives","أهداف المقرر"], x:[
-       ["To provide students with a general idea about computer programming.","تزويد الطلاب بفكرة عامة عن برمجة الحاسوب."],
-       ["To give a background about the evolution of programming languages.","إعطاء خلفية عن تطور لغات البرمجة."],
-       ["To introduce the C++ programming language and explain how it can be used practically (computer lab).","تقديم لغة C++ وشرح كيفية استخدامها عمليًا (معمل الحاسوب)."]]},
-     {k:'ul', h:["References","المراجع"], x:[
-       ["C++ How to Program, 8th edition, Paul Deitel.","C++ How to Program، الطبعة الثامنة، Paul Deitel."],
-       ["C++ Programming: From Problem Analysis to Program Design, 5th edition, D.S. Malik.","C++ Programming: From Problem Analysis to Program Design، الطبعة الخامسة، D.S. Malik."]]},
-     {k:'tbl', h:[["Course version","نسخة المقرر"],["Class Work","أعمال الفصل"],["Mid Exam","الامتحان النصفي"],["Final Exam","الامتحان النهائي"]],
-      r:[[["Programming Fundamentals","أساسيات البرمجة"],["40 marks","40 درجة"],["20 marks","20 درجة"],["40 marks","40 درجة"]],
-         [["Programming Technique II","تقنيات البرمجة II"],["20 marks","20 درجة"],["20 marks","20 درجة"],["60 marks","60 درجة"]]]},
-     {k:'tip', x:["Your two PDFs give two different mark distributions. Use the one your instructor announced.","الملفان يعطيان توزيعين مختلفين للدرجات. اعتمد التوزيع الذي أعلنه مدرّسك."]}
-   ]},
    {t:["Components of the Computer System","مكونات النظام الحاسوبي"], b:[
      {k:'p', x:["A computer system has two parts: hardware and software.","يتكون النظام الحاسوبي من جزأين: المكونات المادية (Hardware) والبرمجيات (Software)."]},
      {k:'cards', c:[
@@ -2338,19 +2325,26 @@ function renderHome(){
   </div>`;
 }
 
+
 function renderLecture(L, idx){
   const d=sd(); d.seen[L.id]=true; save();
   const lects=LECT(), prev=lects[idx-1], next=lects[idx+1], ar=state.lang==='ar';
   return `<div class="fade">
     <div class="mono text-brand-500 text-sm mb-1">${u('lecture')} ${L.n}</div>
     <h1 class="text-2xl sm:text-3xl font-extrabold mb-4">${tx(L.title)}</h1>
-    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-5">
-      <h2 class="font-bold text-lg mb-2">🎯 ${u('objectives')}</h2>
-      <ul class="space-y-1">${L.obj.map(o=>`<li class="flex gap-2"><span class="text-brand-500">✓</span><span>${tx(o)}</span></li>`).join('')}</ul>
-    </div>
+
+    <details class="group bg-dark-elevated border border-dark-border open:border-brand-500 rounded-2xl mb-5 overflow-hidden transition-all">
+      <summary class="cursor-pointer list-none px-5 py-3.5 font-bold text-lg flex items-center justify-between hover:bg-white/5 select-none">
+        <span>🎯 ${u('objectives')}</span>
+        <span class="mono text-xs text-brand-500 transition-transform duration-300 group-open:rotate-180">▼</span>
+      </summary>
+      <div class="px-5 pb-5 pt-3 border-t border-dark-border">
+        <ul class="space-y-1">${L.obj.map(o=>`<li class="flex gap-2"><span class="text-brand-500">✓</span><span>${tx(o)}</span></li>`).join('')}</ul>
+      </div>
+    </details>
+
     ${L.sec.map((s,i)=>`<section class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-5">
-        <h2 class="text-xl font-bold mb-2 flex items-center gap-2"><span class="mono text-sm bg-brand-600 text-white rounded-md px-2 py-0.5">${i+1}</span>${tx(s.t)}</h2>
-        ${s.b.map(renderBlock).join('')}</section>`).join('')}
+        <h2 class="text-xl font-bold mb-2 flex items-center gap-2"><span class="mono text-sm bg-brand-600 text-white rounded-md px-2 py-0.5">${i+1}</span>${tx(s.t)}</h2>${s.b.map(renderBlock).join('')}</section>`).join('')}
     <div class="bg-brand-500/10 border border-brand-500 rounded-2xl p-5 mb-5">
       <h2 class="font-bold text-lg mb-2 text-brand-500">⭐ ${u('take')}</h2>
       <ul class="space-y-1">${L.take.map(t=>`<li class="flex gap-2"><span class="text-brand-500">★</span><span>${tx(t)}</span></li>`).join('')}</ul>
@@ -2359,12 +2353,24 @@ function renderLecture(L, idx){
       <h2 class="font-bold text-lg mb-3">🃏 ${u('flash')}</h2>
       ${deckBox('fc-'+L.id,'l',L.fc)}
     </div>
-    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-5" data-quiz="${L.id}" id="quiz-${L.id}">${quizInner(L)}</div>
+
+    <details class="group bg-dark-elevated border border-dark-border open:border-brand-500 rounded-2xl mb-5 overflow-hidden transition-all">
+      <summary class="cursor-pointer list-none px-5 py-3.5 flex items-center justify-between hover:bg-white/5 select-none">
+        <span class="font-bold text-lg">📝 ${u('quiz')} <span class="mono text-sm text-dark-muted">(${L.quiz.length})</span></span>
+        <div class="flex items-center gap-3">
+          ${d.best[L.id]!=null?`<span class="mono text-xs text-dark-muted">${u('best')}:${d.best[L.id]}%</span>`:''}
+          <span class="mono text-xs text-brand-500 transition-transform duration-300 group-open:rotate-180">▼</span>
+        </div>
+      </summary>
+      <div class="px-5 pb-5 pt-3 border-t border-dark-border [&>div:first-child]:hidden" data-quiz="${L.id}" id="quiz-${L.id}">${quizInner(L)}</div>
+    </details>
+
     <div class="flex justify-between gap-3">
-      ${prev?`<button data-go="${prev.id}" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500">${ar?'→':'←'} ${u('prev')}</button>`:'<span></span>'}
-      ${next?`<button data-go="${next.id}" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white">${u('next')} ${ar?'←':'→'}</button>`:`<button data-go="exam" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white">${u('exam')} ${ar?'←':'→'}</button>`}
+      ${prev?`<button data-go="${prev.id}" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500">${ar?'→':'←'}${u('prev')}</button>`:'<span></span>'}
+      ${next?`<button data-go="${next.id}" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white">${u('next')}${ar?'←':'→'}</button>`:`<button data-go="exam" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white">${u('exam')}${ar?'←':'→'}</button>`}
     </div></div>`;
 }
+
 
 function gItems(list){
   return list.map(g=>`<div class="bg-dark-elevated border border-dark-border rounded-xl p-3 flex flex-wrap justify-between gap-2"><span class="mono text-brand-500 font-semibold" dir="ltr">${esc(g[0])}</span><span class="font-semibold" dir="rtl" style="font-family:Cairo">${esc(g[1])}</span></div>`).join('') || '<div class="text-dark-muted">—</div>';

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Technical English II | اللغة الإنجليزية التقنية 2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = { theme: { extend: { colors: { brand: { 500: 'rgb(var(--b5) / 1)', 600: 'rgb(var(--b6) / 1)' }, dark: { base: '#0b0f17', surface: '#111827', elevated: '#1f2937', border: '#374151', text: '#f3f4f6', muted: '#9ca3af' } }, fontFamily: { sans: ['Inter','sans-serif'], arabic: ['Cairo','sans-serif'], mono: ['JetBrains Mono','monospace'] } } } }
+  </script>
+  <style>
+    :root { --b5: 20 184 166; --b6: 13 148 136; }
+    html, body { margin: 0; min-height: 100%; }
+    body { background: #0b0f17; color: #f3f4f6; font-family: 'Cairo','sans-serif'; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .card { background: rgba(17,24,39,0.9); border: 1px solid #374151; border-radius: 1rem; }
+    .nav-btn.active { background: linear-gradient(135deg, #14b8a6, #0d9488); color: white; }
+    .btn { border: 1px solid #374151; background: #111827; border-radius: .75rem; padding: .6rem 1rem; }
+    .btn.primary { background: #0d9488; border-color: #0d9488; color: white; }
+  </style>
+</head>
+<body class="min-h-screen">
+  <header class="fixed inset-x-0 top-0 z-30 h-16 border-b border-dark-border bg-dark-surface/95 backdrop-blur">
+    <div class="mx-auto flex h-full max-w-6xl items-center justify-between px-4">
+      <div class="flex items-center gap-3">
+        <button id="menuBtn" class="btn p-2" aria-label="Menu">☰</button>
+        <a href="index.html" class="btn p-2" title="All subjects">🗂️</a>
+        <div id="topTitle" class="text-lg font-bold text-brand-500">Technical English II</div>
+      </div>
+      <button id="langBtn" class="btn primary text-sm font-semibold">English</button>
+    </div>
+  </header>
+
+  <div class="mx-auto flex max-w-6xl pt-20">
+    <aside id="sidebar" class="hidden w-72 shrink-0 border-e border-dark-border bg-dark-surface p-4 lg:block">
+      <nav id="nav" class="space-y-2"></nav>
+    </aside>
+
+    <main class="flex-1 p-4 md:p-6">
+      <div id="app"></div>
+    </main>
+  </div>
+
+  <script>
+    const UI = {
+      home: ['Home', 'الرئيسية'],
+      lecture: ['Lecture', 'المحاضرة'],
+      quiz: ['Quiz', 'اختبار'],
+      glossary: ['Glossary', 'المفردات'],
+      next: ['Next', 'التالي'],
+      previous: ['Previous', 'السابق'],
+      read: ['Read', 'مقروءة']
+    };
+
+    const LECTURES = [
+      {
+        id: 'l1',
+        title: ['Technical English II & Voice', 'الإنجليزية التقنية 2 والمبني للمعلوم والمجهول'],
+        sections: [
+          {t: ['Definition & General vs. Technical English', 'التعريف والمقارنة'], b: [
+            'Technical English is the form of English used in science, engineering, and technology.',
+            'General English is used for everyday communication, while Technical English focuses on clarity and precision.',
+            'Examples: database, network, algorithm, interface, protocol.'
+          ]},
+          {t: ['Voice and Tense', 'المبني للمعلوم والمجهول'], b: [
+            'Active voice: The engineer wrote the report.',
+            'Passive voice: The report was written by the engineer.',
+            'Use passive voice in formal reports when the action is more important than the doer.'
+          ]}
+        ],
+        flash: [
+          ['What is Technical English?', 'الإنجليزية التقنية هي اللغة المستخدمة في العلوم والهندسة والتقنية.'],
+          ['When do we use passive voice?', 'نستخدم المبني للمجهول في الكتابات الرسمية عندما يكون الفعل أهم من الفاعل.']
+        ],
+        quiz: [
+          { q: ['Which sentence is active voice?', 'أي جملة مبنية للمعلوم؟'], options: ['The report was written by the engineer.','The engineer wrote the report.','The report is written.','The task was completed.'], answer: 1 },
+          { q: ['Why is technical English important?', 'لماذا أهمية الإنجليزية التقنية؟'], options: ['To read books and technical documents','To avoid studying','To write poems only','It is not useful'], answer: 0 }
+        ]
+      },
+      {
+        id: 'l2',
+        title: ['Word Formation', 'تكوين الكلمات'],
+        sections: [
+          {t: ['Word Formation Methods', 'طرق تكوين الكلمات'], b: [
+            'Derivation: add prefixes or suffixes to change the word form.',
+            'Compounding: combine two words like software + engineer = software engineer.',
+            'Blending: merge parts of two words like smog from smoke + fog.'
+          ]},
+          {t: ['Useful Vocabulary', 'مفردات مفيدة'], b: [
+            'device, network, data, analysis, security, architecture, operation.'
+          ]}
+        ],
+        flash: [
+          ['What is derivation?', 'الاشتقاق هو إضافة بادئة أو لاحقة لتغيير شكل الكلمة.'],
+          ['Give a technical example.', 'network, database, algorithm.']
+        ],
+        quiz: [
+          { q: ['Which method changes the form of a word with affixes?', 'أي طريقة تغير شكل الكلمة بإضافة بادئة أو لاحقة؟'], options: ['Derivation','Compounding','Coinage','Blending'], answer: 0 },
+          { q: ['Which is a technical term?', 'أي كلمة تعتبر مصطلحًا تقنيًا؟'], options: ['algorithm','table','house','sun'], answer: 0 }
+        ]
+      }
+    ];
+
+    const GLOSSARY = [
+      ['Active Voice', 'المبني للمعلوم'],
+      ['Algorithm', 'الخوارزمية'],
+      ['Database', 'قاعدة البيانات'],
+      ['Passive Voice', 'المبني للمجهول'],
+      ['Technical English', 'الإنجليزية التقنية']
+    ];
+
+    const SUBJECT = {
+      id: 'eng',
+      name: ['Technical English II', 'اللغة الإنجليزية التقنية 2'],
+      icon: '🧠',
+      lectures: LECTURES,
+      glossary: GLOSSARY
+    };
+
+    const state = { lang: localStorage.getItem('studyLang') || 'ar', page: 'home' };
+
+    function t(v) { return Array.isArray(v) ? v[state.lang === 'ar' ? 1 : 0] : v; }
+
+    function renderNav() {
+      const nav = document.getElementById('nav');
+      const items = [];
+      items.push(`<button data-page="home" class="nav-btn ${state.page === 'home' ? 'active' : ''} w-full rounded-lg px-3 py-2 text-start">${UI.home[state.lang === 'ar' ? 1 : 0]}</button>`);
+      SUBJECT.lectures.forEach((lec, i) => {
+        items.push(`<button data-page="lecture:${lec.id}" class="nav-btn ${state.page === 'lecture:' + lec.id ? 'active' : ''} w-full rounded-lg px-3 py-2 text-start">${t(lec.title)}</button>`);
+      });
+      items.push(`<button data-page="glossary" class="nav-btn ${state.page === 'glossary' ? 'active' : ''} w-full rounded-lg px-3 py-2 text-start">${UI.glossary[state.lang === 'ar' ? 1 : 0]}</button>`);
+      nav.innerHTML = items.join('');
+    }
+
+    function renderHome() {
+      const html = `
+        <div class="card p-6">
+          <div class="mb-4 text-4xl">${SUBJECT.icon}</div>
+          <h1 class="text-3xl font-extrabold">${t(SUBJECT.name)}</h1>
+          <p class="mt-3 text-dark-muted">${state.lang === 'ar' ? 'مراجعة مختصرة للإنجليزية التقنية مع شرح ومفردات وأسئلة.' : 'Short revision for technical English with explanations, vocabulary, and quizzes.'}</p>
+        </div>
+        <div class="mt-6 grid gap-4 md:grid-cols-2">
+          ${SUBJECT.lectures.map((lec, idx) => `
+            <button data-page="lecture:${lec.id}" class="card p-4 text-start transition hover:border-brand-500">
+              <div class="mb-2 text-xs font-semibold text-brand-500">${UI.lecture[state.lang === 'ar' ? 1 : 0]} ${idx + 1}</div>
+              <div class="text-xl font-bold">${t(lec.title)}</div>
+            </button>
+          `).join('')}
+        </div>
+      `;
+      document.getElementById('app').innerHTML = html;
+    }
+
+    function renderLecture(id) {
+      const lec = SUBJECT.lectures.find(x => x.id === id);
+      if (!lec) return renderHome();
+
+      const sections = lec.sections.map((s, i) => `
+        <section class="card mb-4 p-4">
+          <h2 class="mb-3 text-xl font-bold">${i + 1}. ${t(s.t)}</h2>
+          <ul class="space-y-2 text-dark-muted">
+            ${s.b.map(item => `<li>• ${item}</li>`).join('')}
+          </ul>
+        </section>
+      `).join('');
+
+      const flashes = lec.flash.map((pair, idx) => `
+        <div class="card mb-3 p-4">
+          <div class="mb-2 text-xs font-semibold text-brand-500">${idx + 1}</div>
+          <div class="font-bold">${pair[0]}</div>
+          <div class="mt-2 text-dark-muted">${pair[1]}</div>
+        </div>
+      `).join('');
+
+      const quiz = lec.quiz.map((item, idx) => `
+        <div class="card mb-4 p-4">
+          <div class="mb-3 font-bold">${idx + 1}. ${t(item.q)}</div>
+          <div class="space-y-2">
+            ${item.options.map((opt, j) => `
+              <button class="answer-btn w-full rounded-lg border border-dark-border px-3 py-2 text-left ${j === item.answer ? 'bg-green-600/20 border-green-500' : 'bg-dark-surface'}" data-correct="${j === item.answer ? '1' : '0'}">
+                ${opt}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('app').innerHTML = `
+        <div class="mb-4 text-sm text-brand-500 font-semibold">${UI.lecture[state.lang === 'ar' ? 1 : 0]} ${lec.id.replace('l','')}</div>
+        <h1 class="mb-6 text-3xl font-extrabold">${t(lec.title)}</h1>
+        ${sections}
+        <div class="card mb-4 p-4">
+          <h2 class="mb-3 text-xl font-bold">${UI.quiz[state.lang === 'ar' ? 1 : 0]}</h2>
+          ${flashes}
+        </div>
+        <div class="mb-4">
+          <h2 class="mb-3 text-xl font-bold">${UI.quiz[state.lang === 'ar' ? 1 : 0]}</h2>
+          ${quiz}
+        </div>
+      `;
+    }
+
+    function renderGlossary() {
+      const html = `
+        <div class="card p-5">
+          <h1 class="mb-4 text-2xl font-extrabold">${UI.glossary[state.lang === 'ar' ? 1 : 0]}</h1>
+          <div class="space-y-3">
+            ${GLOSSARY.map(([en, ar]) => `
+              <div class="rounded-lg border border-dark-border bg-dark-surface p-3">
+                <div class="font-bold text-brand-500">${en}</div>
+                <div class="text-dark-muted">${ar}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      document.getElementById('app').innerHTML = html;
+    }
+
+    function render() {
+      document.documentElement.lang = state.lang;
+      document.documentElement.dir = state.lang === 'ar' ? 'rtl' : 'ltr';
+      document.getElementById('langBtn').textContent = state.lang === 'ar' ? 'English' : 'العربية';
+      document.getElementById('topTitle').textContent = t(SUBJECT.name);
+      renderNav();
+
+      if (state.page === 'home') renderHome();
+      else if (state.page === 'glossary') renderGlossary();
+      else if (state.page.startsWith('lecture:')) renderLecture(state.page.split(':')[1]);
+    }
+
+    document.addEventListener('click', (e) => {
+      const navBtn = e.target.closest('[data-page]');
+      if (navBtn) {
+        state.page = navBtn.dataset.page;
+        render();
+        return;
+      }
+
+      const answer = e.target.closest('.answer-btn');
+      if (answer) {
+        const correct = answer.dataset.correct === '1';
+        answer.style.borderColor = correct ? '#22c55e' : '#ef4444';
+        answer.style.background = correct ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)';
+      }
+
+      const menu = e.target.closest('#menuBtn');
+      if (menu) {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('hidden');
+        sidebar.classList.toggle('lg:block');
+      }
+
+      const langBtn = e.target.closest('#langBtn');
+      if (langBtn) {
+        state.lang = state.lang === 'ar' ? 'en' : 'ar';
+        localStorage.setItem('studyLang', state.lang);
+        render();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>

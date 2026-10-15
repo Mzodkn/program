@@ -1,268 +1,1300 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Technical English II | اللغة الإنجليزية التقنية 2</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = { theme: { extend: { colors: { brand: { 500: 'rgb(var(--b5) / 1)', 600: 'rgb(var(--b6) / 1)' }, dark: { base: '#0b0f17', surface: '#111827', elevated: '#1f2937', border: '#374151', text: '#f3f4f6', muted: '#9ca3af' } }, fontFamily: { sans: ['Inter','sans-serif'], arabic: ['Cairo','sans-serif'], mono: ['JetBrains Mono','monospace'] } } } }
-  </script>
-  <style>
-    :root { --b5: 20 184 166; --b6: 13 148 136; }
-    html, body { margin: 0; min-height: 100%; }
-    body { background: #0b0f17; color: #f3f4f6; font-family: 'Cairo','sans-serif'; }
-    .mono { font-family: 'JetBrains Mono', monospace; }
-    .card { background: rgba(17,24,39,0.9); border: 1px solid #374151; border-radius: 1rem; }
-    .nav-btn.active { background: linear-gradient(135deg, #14b8a6, #0d9488); color: white; }
-    .btn { border: 1px solid #374151; background: #111827; border-radius: .75rem; padding: .6rem 1rem; }
-    .btn.primary { background: #0d9488; border-color: #0d9488; color: white; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Technical English II | اللغة الإنجليزية التقنية 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+/* brand colors default = teal (#14b8a6 / #0d9488). Each subject can switch them through CSS variables. */
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      brand: { 500: 'rgb(var(--b5) / <alpha-value>)', 600: 'rgb(var(--b6) / <alpha-value>)' },
+      dark: { base: '#0b0f17', surface: '#111827', elevated: '#1f2937', border: '#374151', text: '#f3f4f6', muted: '#9ca3af' }
+    },
+    fontFamily: { sans: ['Inter', 'sans-serif'], arabic: ['Cairo', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
+  } }
+}
+</script>
+<style>
+  :root { --b5: 20 184 166; --b6: 13 148 136; }
+  html[lang="en"] body { font-family: 'Inter', sans-serif; }
+  html[lang="ar"] body { font-family: 'Cairo', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #0b0f17; }
+  ::-webkit-scrollbar-thumb { background: #374151; border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgb(var(--b6)); }
+  .fade { animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .flip { perspective: 1000px; }
+  .flip-inner { transition: transform .5s; transform-style: preserve-3d; position: relative; min-height: 230px; }
+  .flip.on .flip-inner { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1.5rem; border-radius: 1rem; overflow: auto; }
+  .back { transform: rotateY(180deg); }
+</style>
 </head>
-<body class="min-h-screen">
-  <header class="fixed inset-x-0 top-0 z-30 h-16 border-b border-dark-border bg-dark-surface/95 backdrop-blur">
-    <div class="mx-auto flex h-full max-w-6xl items-center justify-between px-4">
-      <div class="flex items-center gap-3">
-        <button id="menuBtn" class="btn p-2" aria-label="Menu">☰</button>
-        <a href="index.html" class="btn p-2" title="All subjects">🗂️</a>
-        <div id="topTitle" class="text-lg font-bold text-brand-500">Technical English II</div>
-      </div>
-      <button id="langBtn" class="btn primary text-sm font-semibold">English</button>
-    </div>
-  </header>
+<body class="bg-dark-base text-dark-text min-h-screen">
 
-  <div class="mx-auto flex max-w-6xl pt-20">
-    <aside id="sidebar" class="hidden w-72 shrink-0 border-e border-dark-border bg-dark-surface p-4 lg:block">
-      <nav id="nav" class="space-y-2"></nav>
-    </aside>
-
-    <main class="flex-1 p-4 md:p-6">
-      <div id="app"></div>
-    </main>
+<header class="fixed top-0 inset-x-0 z-40 h-14 bg-dark-surface/95 backdrop-blur border-b border-dark-border flex items-center justify-between px-3">
+  <div class="flex items-center gap-3 min-w-0">
+    <button id="menuBtn" class="p-2 rounded-lg hover:bg-dark-elevated" aria-label="Menu">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <a href="index.html" class="p-2 rounded-lg hover:bg-dark-elevated" title="All subjects">🗂️</a>
+    <span id="topTitle" class="font-bold text-brand-500 truncate"></span>
   </div>
+  <div class="flex items-center gap-3">
+    <div id="topProgWrap" class="hidden sm:flex items-center gap-2" title="Mastery">
+      <div class="w-28 h-2 bg-dark-base rounded-full overflow-hidden"><div id="topBar" class="h-full bg-brand-500 transition-all" style="width:0%"></div></div>
+      <span id="topPct" class="mono text-xs text-dark-muted w-9"></span>
+    </div>
+    <button id="langBtn" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold"></button>
+  </div>
+</header>
 
-  <script>
-    const UI = {
-      home: ['Home', 'الرئيسية'],
-      lecture: ['Lecture', 'المحاضرة'],
-      quiz: ['Quiz', 'اختبار'],
-      glossary: ['Glossary', 'المفردات'],
-      next: ['Next', 'التالي'],
-      previous: ['Previous', 'السابق'],
-      read: ['Read', 'مقروءة']
-    };
+<div id="backdrop" class="fixed inset-0 bg-black/60 z-30 hidden lg:hidden"></div>
 
-    const LECTURES = [
-      {
-        id: 'l1',
-        title: ['Technical English II & Voice', 'الإنجليزية التقنية 2 والمبني للمعلوم والمجهول'],
-        sections: [
-          {t: ['Definition & General vs. Technical English', 'التعريف والمقارنة'], b: [
-            'Technical English is the form of English used in science, engineering, and technology.',
-            'General English is used for everyday communication, while Technical English focuses on clarity and precision.',
-            'Examples: database, network, algorithm, interface, protocol.'
-          ]},
-          {t: ['Voice and Tense', 'المبني للمعلوم والمجهول'], b: [
-            'Active voice: The engineer wrote the report.',
-            'Passive voice: The report was written by the engineer.',
-            'Use passive voice in formal reports when the action is more important than the doer.'
-          ]}
-        ],
-        flash: [
-          ['What is Technical English?', 'الإنجليزية التقنية هي اللغة المستخدمة في العلوم والهندسة والتقنية.'],
-          ['When do we use passive voice?', 'نستخدم المبني للمجهول في الكتابات الرسمية عندما يكون الفعل أهم من الفاعل.']
-        ],
-        quiz: [
-          { q: ['Which sentence is active voice?', 'أي جملة مبنية للمعلوم؟'], options: ['The report was written by the engineer.','The engineer wrote the report.','The report is written.','The task was completed.'], answer: 1 },
-          { q: ['Why is technical English important?', 'لماذا أهمية الإنجليزية التقنية؟'], options: ['To read books and technical documents','To avoid studying','To write poems only','It is not useful'], answer: 0 }
-        ]
-      },
-      {
-        id: 'l2',
-        title: ['Word Formation', 'تكوين الكلمات'],
-        sections: [
-          {t: ['Word Formation Methods', 'طرق تكوين الكلمات'], b: [
-            'Derivation: add prefixes or suffixes to change the word form.',
-            'Compounding: combine two words like software + engineer = software engineer.',
-            'Blending: merge parts of two words like smog from smoke + fog.'
-          ]},
-          {t: ['Useful Vocabulary', 'مفردات مفيدة'], b: [
-            'device, network, data, analysis, security, architecture, operation.'
-          ]}
-        ],
-        flash: [
-          ['What is derivation?', 'الاشتقاق هو إضافة بادئة أو لاحقة لتغيير شكل الكلمة.'],
-          ['Give a technical example.', 'network, database, algorithm.']
-        ],
-        quiz: [
-          { q: ['Which method changes the form of a word with affixes?', 'أي طريقة تغير شكل الكلمة بإضافة بادئة أو لاحقة؟'], options: ['Derivation','Compounding','Coinage','Blending'], answer: 0 },
-          { q: ['Which is a technical term?', 'أي كلمة تعتبر مصطلحًا تقنيًا؟'], options: ['algorithm','table','house','sun'], answer: 0 }
-        ]
-      }
-    ];
+<aside id="sidebar" class="fixed top-14 bottom-0 start-0 w-72 z-30 bg-dark-surface border-e border-dark-border overflow-y-auto transition-transform duration-300">
+  <nav id="nav" class="p-3 space-y-1"></nav>
+</aside>
 
-    const GLOSSARY = [
-      ['Active Voice', 'المبني للمعلوم'],
-      ['Algorithm', 'الخوارزمية'],
-      ['Database', 'قاعدة البيانات'],
-      ['Passive Voice', 'المبني للمجهول'],
-      ['Technical English', 'الإنجليزية التقنية']
-    ];
+<main id="main" class="pt-14 transition-all duration-300">
+  <div id="app" class="max-w-4xl mx-auto p-4 sm:p-6 pb-24"></div>
+</main>
 
-    const SUBJECT = {
-      id: 'eng',
-      name: ['Technical English II', 'اللغة الإنجليزية التقنية 2'],
-      icon: '🧠',
-      lectures: LECTURES,
-      glossary: GLOSSARY
-    };
+<script>
+/* ============================================================
+   UI LABELS  [English, Arabic]
+   ============================================================ */
+const UI = {
+  hub:["All Subjects","كل المواد"], home:["Subject Home","الصفحة الرئيسية للمادة"], lecture:["Lecture","المحاضرة"],
+  objectives:["Learning Objectives","أهداف التعلم"], def:["Definition","تعريف"], ex:["Example","مثال"], tip:["Exam Tip","نصيحة للامتحان"],
+  take:["Key Takeaways","أهم النقاط"], quiz:["Self-Assessment Quiz","اختبار ذاتي"], flash:["Lecture Flashcards","بطاقات مراجعة المحاضرة"],
+  exam:["Final Exam","الاختبار النهائي"], next:["Next","التالي"], prev:["Previous","السابق"],
+  correct:["Correct! ✔","إجابة صحيحة! ✔"], wrong:["Incorrect ✘ - the correct answer is highlighted","إجابة خاطئة ✘ - الإجابة الصحيحة موضحة"],
+  score:["Your score","نتيجتك"], retry:["Try again","أعد المحاولة"], search:["Search a term...","ابحث عن مصطلح..."],
+  flip:["Tap the card to flip","اضغط على البطاقة لقلبها"], shuffle:["Shuffle","خلط"], start:["Start Exam","ابدأ الاختبار"],
+  mastery:["Mastery","مستوى الإتقان"], best:["Best","الأفضل"], plan:["How to score 100%","كيف تحصل على 100%"],
+  finish:["Finish","إنهاء"], reset:["Reset progress of this subject","إعادة ضبط تقدم هذه المادة"], read:["Read","تمت القراءة"],
+  soon:["Coming soon","قريبًا"], open:["Open","فتح"], subjects:["Subjects","المواد"], tools:["Study Tools","أدوات المراجعة"],
+  lectures:["Lectures","المحاضرات"], mistakes:["Questions you missed","الأسئلة التي أخطأت فيها"], yourAns:["Correct answer","الإجابة الصحيحة"],
+  glossFlash:["Term Flashcards","بطاقات المصطلحات"], glossList:["All Terms","كل المصطلحات"], questions:["questions","سؤالًا"],
+  question:["Question","السؤال"],
+  chooseSize:["Choose the number of questions","اختر عدد الأسئلة"], all:["All","الكل"], answerEN:["English","English"],
+  masteryHow:["Mastery = average of your best score in each lecture quiz and your best final exam score. Reading lectures does not raise it.","الإتقان = متوسط أفضل نتيجة لك في اختبار كل محاضرة وأفضل نتيجة في الاختبار النهائي. قراءة المحاضرات وحدها لا ترفعه."]
+};
+const LECTURES = [];
 
-    const state = { lang: localStorage.getItem('studyLang') || 'ar', page: 'home' };
+LECTURES.push({ id:'l1', n:1,
+  title:["Introduction to Technical English & Vocabulary","مقدمة في اللغة الإنجليزية التقنية والمفردات"],
+  obj:[
+    ["Define Technical English and distinguish it from General English.","تعريف اللغة الإنجليزية التقنية والتمييز بينها وبين اللغة الإنجليزية العامة."],
+    ["Explain why English proficiency matters in technical and IT fields.","توضيح أهمية إتقان اللغة الإنجليزية في المجالات التقنية وتقنية المعلومات."],
+    ["Define technical vocabulary and describe strategies for building it.","تعريف المفردات التقنية ووصف استراتيجيات بنائها."],
+    ["Identify the main methods of word formation, including derivation via affixes.","تحديد الطرق الرئيسية لتكوين الكلمات، بما في ذلك الاشتقاق عبر الزوائد."]
+  ],
+  sec:[
+   {t:["What Is Technical English?","ما هي اللغة الإنجليزية التقنية؟"], b:[
+     {k:'def', x:["Technical English is the form of English used in scientific, engineering, and computing fields. It emphasizes clarity, accuracy, and technical vocabulary.","اللغة الإنجليزية التقنية (Technical English) هي الصيغة من اللغة الإنجليزية المستخدمة في المجالات العلمية والهندسية والحاسوبية. وتُركّز على الوضوح والدقة والمفردات التقنية."]},
+     {k:'p', x:["In short, it is a way to explain technical information without ambiguity.","باختصار، هي وسيلة لشرح المعلومات التقنية دون غموض."]}
+   ]},
+   {t:["General English vs. Technical English","اللغة الإنجليزية العامة مقابل التقنية"], b:[
+     {k:'tbl', h:[["Type","النوع"],["Definition","التعريف"]],
+      r:[
+       [["General English","اللغة الإنجليزية العامة"],["The English used in daily life communication.","اللغة الإنجليزية المستخدمة في التواصل اليومي."]],
+       [["Technical English","اللغة الإنجليزية التقنية"],["The English used in scientific and technical fields.","اللغة الإنجليزية المستخدمة في المجالات العلمية والتقنية."]]
+      ]}
+   ]},
+   {t:["Why English Matters in the Technical Field","لماذا تهم اللغة الإنجليزية في المجال التقني"], b:[
+     {k:'ul', h:["Three reasons English is important for technical fields","ثلاثة أسباب لأهمية الإنجليزية في المجالات التقنية"], x:[
+       ["1. Understanding technical books and references — most computer science books are written in English; it helps you read textbooks, research papers, and technical documents.","1. فهم الكتب والمراجع التقنية — فمعظم كتب علوم الحاسوب مكتوبة بالإنجليزية؛ وتساعدك على قراءة الكتب المنهجية والأبحاث والوثائق التقنية."],
+       ["2. Using software and applications — most software interfaces use English; it helps you understand menus, commands, and instructions in programs.","2. استخدام البرمجيات والتطبيقات — فمعظم واجهات البرمجيات تستخدم الإنجليزية؛ وتساعدك على فهم القوائم والأوامر والتعليمات في البرامج."],
+       ["3. Understanding technical terms — technical fields use many English terms such as database, network, and algorithm.","3. فهم المصطلحات التقنية — فالمجالات التقنية تستخدم مصطلحات إنجليزية كثيرة مثل قاعدة البيانات والشبكة والخوارزمية."]]}
+   ]},
+   {t:["Building Technical Vocabulary","بناء المفردات التقنية"], b:[
+     {k:'def', x:["Technical vocabulary is the specialized vocabulary of any field, which evolves due to the need for experts to communicate with clarity, precision, relevance, and brevity.","المفردات التقنية (Technical Vocabulary) هي المفردات المتخصصة لأي مجال، وتتطور بسبب حاجة الخبراء للتواصل بوضوح ودقة وملاءمة وإيجاز."]},
+     {k:'p', x:["Prior to developing your technical vocabulary, improving your general vocabulary in English is essential. The thirst to learn new words should be a continuous process; whenever you learn new words, try to use them while you communicate so that they register in your mind.","قبل تطوير مفرداتك التقنية، من الضروري تحسين مفرداتك العامة في اللغة الإنجليزية. وينبغي أن يكون الشغف بتعلم كلمات جديدة عملية مستمرة؛ فكلما تعلمت كلمات جديدة، حاول استخدامها أثناء التواصل حتى ترسخ في ذهنك."]},
+     {k:'ul', h:["Strategies for building vocabulary","استراتيجيات بناء المفردات"], x:[
+       ["Learn words by knowing their origin.","تعلّم الكلمات من خلال معرفة أصلها."],
+       ["Use a dictionary — an invaluable tool for building vocabulary.","استخدام القاموس — أداة لا تُقدَّر بثمن لبناء المفردات."],
+       ["Infer the meaning of a word from context, but note the meaning may not be exact.","استنتاج معنى الكلمة من السياق، مع ملاحظة أن المعنى قد لا يكون دقيقًا."]]}
+   ]},
+   {t:["Word Formation and Affixes","تكوين الكلمات والزوائد"], b:[
+     {k:'p', x:["Once you have learnt to use the dictionary, you can improve your vocabulary in various ways. The most important one is word formation. Some methods of word formation are blending, compounding, coinage, borrowing, and clipping.","بمجرد أن تتعلم استخدام القاموس، يمكنك تحسين مفرداتك بطرق متعددة. وأهمها تكوين الكلمات. ومن طرق تكوين الكلمات: المزج، والتركيب، والصياغة، والاقتراض، والقص."]},
+     {k:'def', x:["It is only in the process of derivation that the form of a word changes. This derivation takes place with the help of affixes — small bits of the English language attached to root words, such as un-, mis-, pre-, -ful, -less.","يحدث تغيّر صيغة الكلمة فقط في عملية الاشتقاق (Derivation). ويتم هذا الاشتقاق بمساعدة الزوائد (Affixes) — وهي أجزاء صغيرة من اللغة الإنجليزية تُضاف إلى الكلمات الجذرية، مثل un- وmis- وpre- و-ful و-less."]},
+     {k:'ul', h:["Affixes can be divided into two categories:","يمكن تقسيم الزوائد إلى فئتين:"], x:[
+       ["Prefixes — added before the root word.","البادئات (Prefixes) — تُضاف قبل الكلمة الجذرية."],
+       ["Suffixes — added after the root word.","اللواحق (Suffixes) — تُضاف بعد الكلمة الجذرية."]]}
+   ]}
+  ],
+  take:[
+   ["Technical English emphasizes clarity, accuracy, and technical vocabulary — a way to explain technical information without ambiguity.","تُركّز اللغة الإنجليزية التقنية على الوضوح والدقة والمفردات التقنية — وهي وسيلة لشرح المعلومات التقنية دون غموض."],
+   ["English matters in technical fields for reading references, using software interfaces, and understanding technical terms.","تهم اللغة الإنجليزية في المجالات التقنية لقراءة المراجع، واستخدام واجهات البرمجيات، وفهم المصطلحات التقنية."],
+   ["Building vocabulary relies on dictionaries, learning word origins, and cautious inference from context.","يعتمد بناء المفردات على القواميس، وتعلّم أصول الكلمات، والاستنتاج الحذر من السياق."],
+   ["Word formation methods include blending, compounding, coinage, borrowing, and clipping; derivation uses prefixes and suffixes.","تشمل طرق تكوين الكلمات المزج والتركيب والصياغة والاقتراض والقص؛ ويستخدم الاشتقاق البادئات واللواحق."]
+  ],
+  fc:[
+   [["Define Technical English.","عرّف اللغة الإنجليزية التقنية."],["The form of English used in scientific, engineering, and computing fields, emphasizing clarity, accuracy, and technical vocabulary.","صيغة اللغة الإنجليزية المستخدمة في المجالات العلمية والهندسية والحاسوبية، وتُركّز على الوضوح والدقة والمفردات التقنية."]],
+   [["How does General English differ from Technical English?","كيف تختلف اللغة الإنجليزية العامة عن التقنية؟"],["General English is used in daily life communication; Technical English is used in scientific and technical fields.","تُستخدم اللغة الإنجليزية العامة في التواصل اليومي؛ وتُستخدم التقنية في المجالات العلمية والتقنية."]],
+   [["Name the three reasons English is important in technical fields.","اذكر الأسباب الثلاثة لأهمية الإنجليزية في المجالات التقنية."],["Understanding technical books/references, using software/applications, and understanding technical terms.","فهم الكتب/المراجع التقنية، استخدام البرمجيات/التطبيقات، وفهم المصطلحات التقنية."]],
+   [["Define technical vocabulary.","عرّف المفردات التقنية."],["The specialized vocabulary of a field, evolving from experts' need to communicate with clarity, precision, relevance, and brevity.","المفردات المتخصصة لمجال ما، تتطور من حاجة الخبراء للتواصل بوضوح ودقة وملاءمة وإيجاز."]],
+   [["Why is building general English vocabulary important before technical vocabulary?","لماذا يُعد بناء المفردات الإنجليزية العامة مهمًا قبل المفردات التقنية؟"],["Because improving general vocabulary is essential groundwork before developing specialized technical vocabulary.","لأن تحسين المفردات العامة أساس ضروري قبل تطوير المفردات التقنية المتخصصة."]],
+   [["Name two strategies for building vocabulary.","اذكر استراتيجيتين لبناء المفردات."],["Any two of: learning word origins, using a dictionary, inferring meaning from context.","أي استراتيجيتين من: تعلّم أصول الكلمات، استخدام القاموس، استنتاج المعنى من السياق."]],
+   [["Why should you be cautious when inferring a word's meaning from context?","لماذا يجب الحذر عند استنتاج معنى كلمة من السياق؟"],["Because the inferred meaning may not be exact.","لأن المعنى المستنتج قد لا يكون دقيقًا."]],
+   [["Name the five methods of word formation mentioned.","اذكر طرق تكوين الكلمات الخمس المذكورة."],["Blending, compounding, coinage, borrowing, and clipping.","المزج، والتركيب، والصياغة، والاقتراض، والقص."]],
+   [["What is derivation, and what tool enables it?","ما هو الاشتقاق، وما الأداة التي تُمكّنه؟"],["The process in which a word's form changes, enabled by affixes attached to root words.","العملية التي تتغيّر فيها صيغة الكلمة، وتُمكّنها الزوائد المُضافة إلى الكلمات الجذرية."]],
+   [["What are the two categories of affixes?","ما فئتا الزوائد؟"],["Prefixes (before the root word) and suffixes (after the root word).","البادئات (قبل الكلمة الجذرية) واللواحق (بعد الكلمة الجذرية)."]],
+   [["Give two examples of prefixes mentioned in the lecture.","اذكر مثالين للبادئات المذكورة في المحاضرة."],["Any two of: un-, mis-, pre-.","أي اثنين من: un-، mis-، pre-."]]
+  ],
+  quiz:[
+   {q:["Technical English is best defined as:","تُعرَّف اللغة الإنجليزية التقنية على أفضل وجه بأنها:"], o:[["English used only in daily conversation","إنجليزية تُستخدم فقط في المحادثة اليومية"],["The form of English used in scientific, engineering, and computing fields","صيغة الإنجليزية المستخدمة في المجالات العلمية والهندسية والحاسوبية"],["A dialect spoken only in the UK","لهجة تُستخدم فقط في المملكة المتحدة"],["English used exclusively in literature","إنجليزية تُستخدم حصريًا في الأدب"]], a:1},
+   {q:["General English is used for:","تُستخدم اللغة الإنجليزية العامة من أجل:"], o:[["Scientific research papers only","أبحاث علمية فقط"],["Daily life communication","التواصل في الحياة اليومية"],["Software source code only","شيفرة مصدر البرمجيات فقط"],["Legal contracts only","العقود القانونية فقط"]], a:1},
+   {q:["Which is NOT listed as a reason English matters in the technical field?","أي مما يلي لم يُذكر كسبب لأهمية الإنجليزية في المجال التقني؟"], o:[["Understanding technical books and references","فهم الكتب والمراجع التقنية"],["Using software and applications","استخدام البرمجيات والتطبيقات"],["Improving physical fitness","تحسين اللياقة البدنية"],["Understanding technical terms","فهم المصطلحات التقنية"]], a:2},
+   {q:["Technical vocabulary evolves primarily due to experts' need for:","تتطور المفردات التقنية أساسًا بسبب حاجة الخبراء إلى:"], o:[["Entertainment","الترفيه"],["Clarity, precision, relevance, and brevity","الوضوح والدقة والملاءمة والإيجاز"],["Longer sentences","جمل أطول"],["Poetic expression","التعبير الشعري"]], a:1},
+   {q:["Which tool is described as invaluable for building vocabulary?","أي أداة وُصفت بأنها لا تُقدَّر بثمن لبناء المفردات؟"], o:[["A calculator","آلة حاسبة"],["A dictionary","قاموس"],["A spreadsheet","جدول بيانات"],["A compiler","مترجم برمجي"]], a:1},
+   {q:["Why should inferring word meaning from context be done carefully?","لماذا يجب توخي الحذر عند استنتاج معنى الكلمة من السياق؟"], o:[["It is always 100% accurate","لأنه دقيق 100% دائمًا"],["The inferred meaning may not be exact","قد لا يكون المعنى المستنتج دقيقًا"],["Context never helps with meaning","السياق لا يساعد أبدًا في فهم المعنى"],["It is illegal to do so","لأن ذلك غير قانوني"]], a:1},
+   {q:["Which is NOT listed as a method of word formation?","أي مما يلي لم يُذكر كطريقة لتكوين الكلمات؟"], o:[["Blending","المزج"],["Compounding","التركيب"],["Translation","الترجمة"],["Clipping","القص"]], a:2},
+   {q:["Derivation is the process in which:","الاشتقاق هو العملية التي:"], o:[["A word's pronunciation changes only","يتغيّر فيها نطق الكلمة فقط"],["A word's form changes with the help of affixes","تتغيّر فيها صيغة الكلمة بمساعدة الزوائد"],["Two unrelated words are combined randomly","تُدمج فيها كلمتان غير مرتبطتين عشوائيًا"],["A word is deleted from the dictionary","تُحذف فيها كلمة من القاموس"]], a:1},
+   {q:["Which affix type is added BEFORE the root word?","أي نوع من الزوائد يُضاف قبل الكلمة الجذرية؟"], o:[["Suffix","اللاحقة"],["Prefix","البادئة"],["Root","الجذر"],["Clipping","القص"]], a:1},
+   {q:["Which affix type is added AFTER the root word?","أي نوع من الزوائد يُضاف بعد الكلمة الجذرية؟"], o:[["Prefix","البادئة"],["Suffix","اللاحقة"],["Infix","الحشو"],["Blend","المزج"]], a:1}
+  ]
+});
 
-    function t(v) { return Array.isArray(v) ? v[state.lang === 'ar' ? 1 : 0] : v; }
+LECTURES.push({ id:'l2', n:2,
+  title:["Active and Passive Voice","المبني للمعلوم والمبني للمجهول"],
+  obj:[
+    ["Define voice and explain the relationship between voice and tense.","تعريف الصيغة (Voice) وتوضيح العلاقة بينها وبين الزمن (Tense)."],
+    ["Convert sentences between active and passive voice using the standard steps.","تحويل الجمل بين المبني للمعلوم والمبني للمجهول باستخدام الخطوات القياسية."],
+    ["Recognize the active and passive forms of a verb across all eight tenses covered.","التعرف على صيغتي المبني للمعلوم والمجهول للفعل عبر جميع الأزمنة الثمانية المغطاة."],
+    ["Explain when to use active voice versus passive voice, and which verbs can be transformed.","شرح متى تُستخدم كل من الصيغتين، وأي الأفعال يمكن تحويلها."]
+  ],
+  sec:[
+   {t:["What Is Voice?","ما هي الصيغة (Voice)؟"], b:[
+     {k:'def', x:["In grammar, the term voice shows the two different ways an action can be viewed: (1) someone or something performing an action, and (2) the action being performed on someone or something.","في القواعد، يُستخدم مصطلح الصيغة (Voice) لبيان طريقتين مختلفتين لرؤية الفعل: (1) شخص أو شيء يقوم بالفعل، و(2) الفعل يقع على شخص أو شيء."]},
+     {k:'ex', x:["1. The operators conducted a test on the turbo generator. (Active Voice — the subject 'the operators' performs the action)\n2. A test was conducted on the turbo generator by the operators. (Passive Voice — the subject 'a test' receives the action)","1. أجرى المشغّلون اختبارًا على المولد التوربيني. (مبني للمعلوم — الفاعل 'المشغّلون' يقوم بالفعل)\n2. أُجري اختبار على المولد التوربيني من قِبل المشغّلين. (مبني للمجهول — الفاعل النحوي 'اختبار' يقع عليه الفعل)"]},
+     {k:'tip', x:["Whenever we talk about a verb denoting an action, we also need to talk about the time at/during which the action occurs — this sense of time is the tense. There is a strong link between the voice of the verb and the tense.","كلما تحدثنا عن فعل يدل على حدث، نحتاج أيضًا للحديث عن الوقت الذي يقع فيه الحدث — وهذا الإحساس بالوقت هو الزمن (Tense). وهناك ارتباط قوي بين صيغة الفعل وزمنه."]}
+   ]},
+   {t:["The Tense–Voice Table","جدول الزمن والصيغة"], b:[
+     {k:'p', x:["The table below shows the active and passive forms of the verb 'analyse' across eight tenses.","يُظهر الجدول أدناه صيغتي المبني للمعلوم والمجهول للفعل 'analyse' عبر ثمانية أزمنة."]},
+     {k:'tbl', h:[["Tense","الزمن"],["Active Voice","المبني للمعلوم"],["Passive Voice","المبني للمجهول"]],
+      r:[
+       [["Simple present","المضارع البسيط"],["Analyses","Analyses"],["is analysed","is analysed"]],
+       [["Present continuous","المضارع المستمر"],["is analyzing","is analyzing"],["is being analysed","is being analysed"]],
+       [["Simple past","الماضي البسيط"],["Analysed","Analysed"],["was analysed","was analysed"]],
+       [["Past continuous","الماضي المستمر"],["was analysing","was analysing"],["was being analysed","was being analysed"]],
+       [["Present Perfect","المضارع التام"],["has analysed","has analysed"],["has been analysed","has been analysed"]],
+       [["Future","المستقبل"],["will analyse","will analyse"],["will analyse","will analyse"]],
+       [["Conditional","الشرطي"],["would analyse","would analyse"],["would analyse","would analyse"]],
+       [["Perfect conditional","الشرطي التام"],["would have analysed","would have analysed"],["would have been analysed","would have been analysed"]]
+      ]}
+   ]},
+   {t:["Changing Active Voice into Passive Voice","تحويل المبني للمعلوم إلى المبني للمجهول"], b:[
+     {k:'ul', x:[
+       ["Identify the subject (the agent, or thing causing the action) — who performed it.","تحديد الفاعل (الجهة المسببة للفعل) — من قام به."],
+       ["Identify the object (what action has been done — performed what).","تحديد المفعول به (ما الفعل الذي تم تنفيذه)."],
+       ["Note the tense of the verb.","ملاحظة زمن الفعل."],
+       ["Begin the passive sentence with the action (the object of the active sentence).","ابدأ الجملة المبنية للمجهول بالمفعول به (مفعول الجملة المبنية للمعلوم)."],
+       ["Use the third form of the verb (past participle) preceded by the appropriate auxiliary verb, followed by the phrase 'by the'.","استخدم الصيغة الثالثة للفعل (اسم المفعول) مسبوقة بالفعل المساعد المناسب، متبوعة بعبارة 'by the'."],
+       ["Complete the sentence with the agent or thing (the subject of the active sentence).","أكمل الجملة بالفاعل أو الشيء (فاعل الجملة المبنية للمعلوم)."]]}
+   ]},
+   {t:["Changing Passive Voice into Active Voice","تحويل المبني للمجهول إلى المبني للمعلوم"], b:[
+     {k:'ul', x:[
+       ["Identify the doer/agent by noting what follows the 'by the...' phrase; if not specified, infer the agent from the action or context.","حدد الفاعل من خلال ملاحظة ما يلي عبارة 'by the...'؛ وإن لم يُذكر، استنتج الفاعل من الفعل أو السياق."],
+       ["Note the action performed by the agent (at the beginning of the passive sentence).","لاحظ الفعل الذي قام به الفاعل (في بداية الجملة المبنية للمجهول)."],
+       ["Note the tense of the verb.","لاحظ زمن الفعل."],
+       ["Begin the active sentence with the agent.","ابدأ الجملة المبنية للمعلوم بالفاعل."],
+       ["Choose the appropriate verb form according to whether the agent is singular or plural, and the simple, continuous, or perfect form of the tense.","اختر صيغة الفعل المناسبة بحسب كون الفاعل مفردًا أو جمعًا، وبحسب الصيغة البسيطة أو المستمرة أو التامة للزمن."]]}
+   ]},
+   {t:["Worked Examples: Passive, Agent, and Active","أمثلة محلولة: المبني للمجهول، الفاعل، والمبني للمعلوم"], b:[
+     {k:'tbl', h:[["Passive Voice","المبني للمجهول"],["Agent","الفاعل"],["Active Voice","المبني للمعلوم"]],
+      r:[
+       [["Multifarious operations are performed by these computers.","تُنفَّذ عمليات متعددة من قِبل هذه الحواسيب."],["These computers","هذه الحواسيب"],["These computers perform multifarious operations.","تُنفّذ هذه الحواسيب عمليات متعددة."]],
+       [["The equipment for the practical examinations was being arranged by the technician.","كانت معدات الاختبارات العملية تُرتَّب من قِبل الفني."],["Technician","الفني"],["The technician was arranging the equipment for the practical examinations.","كان الفني يُرتّب معدات الاختبارات العملية."]],
+       [["Results will be published in the next issue of the journal.","ستُنشر النتائج في العدد القادم من المجلة."],["Agent not specified — may be 'researchers' or the 'association'.","الفاعل غير محدد — قد يكون 'الباحثين' أو 'الجمعية'."],["The researchers will publish the results in the next issue of the journal.","سينشر الباحثون النتائج في العدد القادم من المجلة."]],
+       [["The components were identified by Thomas and his associates.","حُدِّدت المكونات من قِبل توماس وزملائه."],["Thomas and his associates","توماس وزملاؤه"],["Thomas and his associates identified the components.","حدّد توماس وزملاؤه المكونات."]]
+      ]}
+   ]},
+   {t:["More Examples Across Tenses","مزيد من الأمثلة عبر الأزمنة"], b:[
+     {k:'cards', c:[
+       {t:["Simple Present","المضارع البسيط"], l:[["Active: We add water to the mixture.","مبني للمعلوم: We add water to the mixture."],["Passive: Water is added to the mixture (by us).","مبني للمجهول: Water is added to the mixture (by us)."]]},
+       {t:["Simple Past","الماضي البسيط"], l:[["Active: The Civil Engineers tried out different layouts.","مبني للمعلوم: The Civil Engineers tried out different layouts."],["Passive: Different layouts were tried out by the Civil Engineers.","مبني للمجهول: Different layouts were tried out by the Civil Engineers."]]},
+       {t:["Simple Future","المستقبل البسيط"], l:[["Active: We will not carry out any research in this area.","مبني للمعلوم: We will not carry out any research in this area."],["Passive: No research will be carried out in this area.","مبني للمجهول: No research will be carried out in this area."]]},
+       {t:["Present Perfect","المضارع التام"], l:[["Active: The Committee has approved the Plan.","مبني للمعلوم: The Committee has approved the Plan."],["Passive: The Plan has been approved by the Committee.","مبني للمجهول: The Plan has been approved by the Committee."]]},
+       {t:["Past Perfect","الماضي التام"], l:[["Active: The Engineers had completed the job in time.","مبني للمعلوم: The Engineers had completed the job in time."],["Passive: The job had been completed in time by the Engineers.","مبني للمجهول: The job had been completed in time by the Engineers."]]},
+       {t:["Present/Past Continuous","المضارع/الماضي المستمر"], l:[["Active: They are repairing the road.","مبني للمعلوم: They are repairing the road."],["Passive: The road is being repaired.","مبني للمجهول: The road is being repaired."]]}
+     ]}
+   ]},
+   {t:["When to Use Active vs. Passive Voice","متى تُستخدم كل صيغة"], b:[
+     {k:'p', x:["While the doer is given importance in Active Voice, the action gets prominence in Passive Voice. Active Voice is used for clear, direct, and strong writing, and requires active verbs.","بينما يُعطى الفاعل الأهمية في المبني للمعلوم، يحظى الفعل بالأهمية في المبني للمجهول. ويُستخدم المبني للمعلوم للكتابة الواضحة والمباشرة والقوية، ويتطلب أفعالًا فاعلة."]},
+     {k:'p', x:["Passive Voice is used in most formal writing such as reports, proposals, and complaint or rejection letters, because the action — not the doer — needs to be emphasized.","يُستخدم المبني للمجهول في معظم الكتابات الرسمية مثل التقارير والمقترحات ورسائل الشكوى أو الرفض، لأن التركيز يجب أن يكون على الفعل لا على الفاعل."]},
+     {k:'ex', x:["The project was completed on time. (focus is on the project)\nSohan's team completed the project on time. (focus is on Sohan's team)","The project was completed on time. (التركيز على المشروع)\nSohan's team completed the project on time. (التركيز على فريق سوهان)"]}
+   ]},
+   {t:["Important Notes","ملاحظات مهمة"], b:[
+     {k:'tip', x:["Not all sentences can be transformed from active into passive voice. Only transitive verbs (verbs which take an object) can be transformed into passive voice.","لا يمكن تحويل كل الجمل من المبني للمعلوم إلى المبني للمجهول. فقط الأفعال المتعدية (التي تأخذ مفعولًا به) يمكن تحويلها إلى المبني للمجهول."]},
+     {k:'p', x:["To sum up: the tense of the verb undergoes a change when you transfer one voice into another. Passive construction is verbose, while active is crisp, direct, and unambiguous.","باختصار: يتغيّر زمن الفعل عند تحويل إحدى الصيغتين إلى الأخرى. والتركيب المبني للمجهول مُطنب، بينما المبني للمعلوم موجز ومباشر وغير غامض."]}
+   ]}
+  ],
+  take:[
+   ["Active Voice: the subject performs the action. Passive Voice: the subject receives the action.","المبني للمعلوم: الفاعل يقوم بالفعل. المبني للمجهول: الفاعل النحوي يقع عليه الفعل."],
+   ["Passive voice formula: appropriate auxiliary + past participle (+ 'by' + agent, if needed).","صيغة المبني للمجهول: الفعل المساعد المناسب + اسم المفعول (+ 'by' + الفاعل، إذا لزم)."],
+   ["Active voice = clear, direct, strong writing. Passive voice = formal writing (reports, proposals) emphasizing the action over the doer.","المبني للمعلوم = كتابة واضحة ومباشرة وقوية. المبني للمجهول = كتابة رسمية (تقارير، مقترحات) تُبرز الفعل على الفاعل."],
+   ["Only transitive verbs (verbs that take an object) can be converted to passive voice.","فقط الأفعال المتعدية (التي تأخذ مفعولًا به) يمكن تحويلها إلى المبني للمجهول."],
+   ["Passive construction is verbose; active construction is crisp, direct, and unambiguous.","التركيب المبني للمجهول مُطنب؛ والمبني للمعلوم موجز ومباشر وغير غامض."]
+  ],
+  fc:[
+   [["Define voice in grammar.","عرّف الصيغة (Voice) في القواعد."],["The term showing whether the subject performs the action (active) or receives the action (passive).","المصطلح الذي يبيّن ما إذا كان الفاعل يقوم بالفعل (مبني للمعلوم) أو يقع عليه الفعل (مبني للمجهول)."]],
+   [["In 'A test was conducted on the turbo generator by the operators,' which voice is used, and why?","في جملة 'A test was conducted on the turbo generator by the operators'، أي صيغة استُخدمت، ولماذا؟"],["Passive voice — the subject 'a test' receives the action rather than performing it.","المبني للمجهول — لأن الفاعل النحوي 'a test' يقع عليه الفعل بدلًا من أن يقوم به."]],
+   [["What is the passive form of 'is analyzing' (present continuous)?","ما الصيغة المبنية للمجهول لـ 'is analyzing' (المضارع المستمر)؟"],["is being analysed.","is being analysed."]],
+   [["What is the passive form of 'has analysed' (present perfect)?","ما الصيغة المبنية للمجهول لـ 'has analysed' (المضارع التام)؟"],["has been analysed.","has been analysed."]],
+   [["List the first two steps for changing active voice into passive voice.","اذكر الخطوتين الأوليين لتحويل المبني للمعلوم إلى المبني للمجهول."],["Identify the subject (agent), then identify the object.","تحديد الفاعل، ثم تحديد المفعول به."]],
+   [["What verb form, and what preceding element, is used to build the passive voice?","ما صيغة الفعل، وما العنصر الذي يسبقها، في بناء المبني للمجهول؟"],["The third form of the verb (past participle), preceded by the appropriate auxiliary verb.","الصيغة الثالثة للفعل (اسم المفعول)، مسبوقة بالفعل المساعد المناسب."]],
+   [["If the agent is not specified after 'by', what should you do when converting passive to active?","إذا لم يُذكر الفاعل بعد 'by'، ماذا يجب فعله عند التحويل من المبني للمجهول إلى المعلوم؟"],["Infer the agent from the action or context.","استنتاج الفاعل من الفعل أو السياق."]],
+   [["Convert to passive: 'The Committee has approved the Plan.'","حوّل إلى المبني للمجهول: 'The Committee has approved the Plan.'"],["The Plan has been approved by the Committee.","The Plan has been approved by the Committee."]],
+   [["When is Active Voice generally preferred?","متى يُفضَّل عمومًا استخدام المبني للمعلوم؟"],["For clear, direct, and strong writing.","للكتابة الواضحة والمباشرة والقوية."]],
+   [["When is Passive Voice generally preferred?","متى يُفضَّل عمومًا استخدام المبني للمجهول؟"],["In formal writing such as reports, proposals, and complaint/rejection letters, where the action matters more than the doer.","في الكتابة الرسمية مثل التقارير والمقترحات ورسائل الشكوى/الرفض، حيث يهم الفعل أكثر من الفاعل."]],
+   [["Which type of verb can be transformed into passive voice?","أي نوع من الأفعال يمكن تحويله إلى المبني للمجهول؟"],["Only transitive verbs — verbs that take an object.","فقط الأفعال المتعدية — التي تأخذ مفعولًا به."]],
+   [["Compare active vs. passive construction in terms of style.","قارن بين التركيب المبني للمعلوم والمجهول من حيث الأسلوب."],["Passive construction is verbose; active construction is crisp, direct, and unambiguous.","التركيب المبني للمجهول مُطنب؛ والمبني للمعلوم موجز ومباشر وغير غامض."]],
+   [["In 'The project was completed on time' vs. 'Sohan's team completed the project on time,' what differs?","في 'The project was completed on time' مقابل 'Sohan's team completed the project on time'، ما الذي يختلف؟"],["The focus: the first emphasizes the project, the second emphasizes Sohan's team (the doer).","التركيز: الأولى تُبرز المشروع، والثانية تُبرز فريق سوهان (الفاعل)."]]
+  ],
+  quiz:[
+   {q:["In Active Voice, the subject:","في المبني للمعلوم، الفاعل:"], o:[["Receives the action","يقع عليه الفعل"],["Performs the action","يقوم بالفعل"],["Is always omitted","يُحذف دائمًا"],["Is always plural","يكون جمعًا دائمًا"]], a:1},
+   {q:["'A test was conducted on the turbo generator by the operators' is an example of:","'A test was conducted on the turbo generator by the operators' مثال على:"], o:[["Active Voice","المبني للمعلوم"],["Passive Voice","المبني للمجهول"],["Future tense only","المستقبل فقط"],["A question","سؤال"]], a:1},
+   {q:["What is the passive form of the simple present 'Analyses'?","ما الصيغة المبنية للمجهول للمضارع البسيط 'Analyses'؟"], o:[["was analysed","was analysed"],["is analysed","is analysed"],["has analysed","has analysed"],["will analyse","will analyse"]], a:1},
+   {q:["What is the passive form of the simple past 'Analysed'?","ما الصيغة المبنية للمجهول للماضي البسيط 'Analysed'؟"], o:[["is analysed","is analysed"],["was analysed","was analysed"],["is being analysed","is being analysed"],["has been analysed","has been analysed"]], a:1},
+   {q:["What is the FIRST step in changing active voice into passive voice?","ما الخطوة الأولى في تحويل المبني للمعلوم إلى المبني للمجهول؟"], o:[["Use the phrase 'by the'","استخدام عبارة 'by the'"],["Identify the subject (agent)","تحديد الفاعل"],["Note the tense of the verb","ملاحظة زمن الفعل"],["Add an auxiliary verb","إضافة فعل مساعد"]], a:1},
+   {q:["In the passive voice, the verb uses which form?","في المبني للمجهول، أي صيغة فعل تُستخدم؟"], o:[["The base form","الصيغة الأساسية"],["The third form (past participle)","الصيغة الثالثة (اسم المفعول)"],["The gerund (-ing) form only","صيغة المصدر (-ing) فقط"],["The imperative form","صيغة الأمر"]], a:1},
+   {q:["If the agent is not specified after 'by' in a passive sentence, you should:","إذا لم يُذكر الفاعل بعد 'by' في جملة مبنية للمجهول، يجب:"], o:[["Leave the active sentence with no subject","ترك الجملة المبنية للمعلوم دون فاعل"],["Infer the agent from the action or context","استنتاج الفاعل من الفعل أو السياق"],["The sentence cannot be converted at all","لا يمكن تحويل الجملة إطلاقًا"],["Always use 'someone' as the agent","استخدام 'someone' دائمًا كفاعل"]], a:1},
+   {q:["Convert to active voice: 'The components were identified by Thomas and his associates.'","حوّل إلى المبني للمعلوم: 'The components were identified by Thomas and his associates.'"], o:[["Thomas and his associates identified the components.","Thomas and his associates identified the components."],["The components identified Thomas.","The components identified Thomas."],["Thomas was identified by the components.","Thomas was identified by the components."],["The components were Thomas's associates.","The components were Thomas's associates."]], a:0},
+   {q:["Active Voice is typically used for:","يُستخدم المبني للمعلوم عادة من أجل:"], o:[["Vague, indirect writing","كتابة غامضة وغير مباشرة"],["Clear, direct, and strong writing","كتابة واضحة ومباشرة وقوية"],["Only poetry","الشعر فقط"],["Only legal contracts","العقود القانونية فقط"]], a:1},
+   {q:["Passive Voice is typically used in:","يُستخدم المبني للمجهول عادة في:"], o:[["Casual text messages only","الرسائل النصية غير الرسمية فقط"],["Formal writing such as reports and proposals","الكتابة الرسمية مثل التقارير والمقترحات"],["Song lyrics only","كلمات الأغاني فقط"],["Children's stories only","قصص الأطفال فقط"]], a:1},
+   {q:["Which type of verb can be transformed into passive voice?","أي نوع من الأفعال يمكن تحويله إلى المبني للمجهول؟"], o:[["Intransitive verbs only","الأفعال اللازمة فقط"],["Transitive verbs (verbs that take an object)","الأفعال المتعدية (التي تأخذ مفعولًا به)"],["All verbs, without exception","جميع الأفعال، دون استثناء"],["Only irregular verbs","الأفعال الشاذة فقط"]], a:1},
+   {q:["According to the lecture's summary, which style is more verbose?","وفق خلاصة المحاضرة، أي أسلوب أكثر إطنابًا؟"], o:[["Active voice","المبني للمعلوم"],["Passive voice","المبني للمجهول"],["Both are equally concise","كلاهما موجز بالتساوي"],["Neither has a style difference","لا فرق أسلوبي بينهما"]], a:1}
+  ]
+});
 
-    function renderNav() {
-      const nav = document.getElementById('nav');
-      const items = [];
-      items.push(`<button data-page="home" class="nav-btn ${state.page === 'home' ? 'active' : ''} w-full rounded-lg px-3 py-2 text-start">${UI.home[state.lang === 'ar' ? 1 : 0]}</button>`);
-      SUBJECT.lectures.forEach((lec, i) => {
-        items.push(`<button data-page="lecture:${lec.id}" class="nav-btn ${state.page === 'lecture:' + lec.id ? 'active' : ''} w-full rounded-lg px-3 py-2 text-start">${t(lec.title)}</button>`);
-      });
-      items.push(`<button data-page="glossary" class="nav-btn ${state.page === 'glossary' ? 'active' : ''} w-full rounded-lg px-3 py-2 text-start">${UI.glossary[state.lang === 'ar' ? 1 : 0]}</button>`);
-      nav.innerHTML = items.join('');
-    }
+LECTURES.push({ id:'l3', n:3,
+  title:["Note Making and Summarizing","تدوين الملاحظات والتلخيص"],
+  obj:[
+    ["Define note making and list its main uses.","تعريف تدوين الملاحظات وسرد استخداماته الرئيسية."],
+    ["Describe the reading strategy and the heading/subheading/points method for making notes.","وصف استراتيجية القراءة وطريقة العنوان/العناوين الفرعية/النقاط لتدوين الملاحظات."],
+    ["Identify the standard abbreviation techniques used in note making.","تحديد تقنيات الاختصار القياسية المستخدمة في تدوين الملاحظات."],
+    ["Explain the three methods of note making and the five C's of summarizing.","شرح طرق تدوين الملاحظات الثلاث والحروف الخمسة (C's) للتلخيص."]
+  ],
+  sec:[
+   {t:["What Is Note Making?","ما هو تدوين الملاحظات؟"], b:[
+     {k:'def', x:["A note can be defined as a systematic method of quickly, briefly, and clearly writing down the important points of a text being read. It is a productive skill that integrates both reading and writing skills.","يمكن تعريف الملاحظة (Note) بأنها طريقة منهجية لتدوين النقاط المهمة من نص مقروء بسرعة وإيجاز ووضوح. وهي مهارة إنتاجية تدمج مهارتي القراءة والكتابة معًا."]},
+     {k:'ul', h:["Note making is used to:","يُستخدم تدوين الملاحظات من أجل:"], x:[
+       ["Keep a record of the main points of a reading text for future use and reference.","الاحتفاظ بسجل للنقاط الرئيسية لنص مقروء لاستخدامه والرجوع إليه مستقبلًا."],
+       ["Revise for an exam.","المراجعة لامتحان."],
+       ["Update information.","تحديث المعلومات."],
+       ["Analyze a text.","تحليل نص."]]}
+   ]},
+   {t:["Reading Strategy for Note Making","استراتيجية القراءة لتدوين الملاحظات"], b:[
+     {k:'p', x:["A careful reading plan is to identify the central idea, important points, and supporting details. This enables you to understand the text quickly and make appropriate notes.","تتمثل خطة القراءة الدقيقة في تحديد الفكرة المركزية والنقاط المهمة والتفاصيل الداعمة. وهذا يُمكّنك من فهم النص بسرعة وتدوين الملاحظات المناسبة."]},
+     {k:'ul', x:[
+       ["Recognize the key lexical items related to the topic.","التعرف على المفردات الرئيسية المرتبطة بالموضوع."],
+       ["Identify the relationships among the units within the text.","تحديد العلاقات بين الوحدات داخل النص."],
+       ["Read the key points and signal words.","قراءة النقاط الرئيسية والكلمات الدلالية."],
+       ["Ignore irrelevant matter and concentrate on the main parts.","تجاهل المحتوى غير ذي الصلة والتركيز على الأجزاء الرئيسية."],
+       ["Deduce meanings of words and phrases from context and infer relationships.","استنتاج معاني الكلمات والعبارات من السياق واستنباط العلاقات."],
+       ["Interpret graphic aids used in the text.","تفسير الوسائل البيانية المستخدمة في النص."]]}
+   ]},
+   {t:["How to Make Notes: Heading, Subheadings, Points","كيفية تدوين الملاحظات: العنوان، العناوين الفرعية، النقاط"], b:[
+     {k:'def', x:["Heading: What is the main idea of the passage? Frame a heading based on the central idea and write it in the middle of the page.","العنوان (Heading): ما الفكرة الرئيسية للنص؟ صُغ عنوانًا بناءً على الفكرة المركزية واكتبه في منتصف الصفحة."]},
+     {k:'def', x:["Subheadings: How was the main idea presented and developed? Are there two or three subordinate ideas? Frame subheadings based on these.","العناوين الفرعية (Subheadings): كيف قُدّمت الفكرة الرئيسية وطُوّرت؟ هل هناك فكرتان أو ثلاث أفكار فرعية؟ صُغ عناوين فرعية بناءً عليها."]},
+     {k:'def', x:["Points: Are there further details or points under the subheadings that you wish to keep in the notes? All subheadings should be written at a uniform distance from the margin, with suitable indentation (space and number).","النقاط (Points): هل هناك تفاصيل أو نقاط إضافية تحت العناوين الفرعية ترغب بالاحتفاظ بها في الملاحظات؟ يجب كتابة جميع العناوين الفرعية على مسافة موحدة من الهامش، مع إزاحة مناسبة (مسافة ورقم)."]}
+   ]},
+   {t:["Using Abbreviations in Notes","استخدام الاختصارات في الملاحظات"], b:[
+     {k:'p', x:["Do not write full sentences. Use abbreviations and standard symbols wherever necessary.","لا تكتب جملًا كاملة. استخدم الاختصارات والرموز القياسية حيثما لزم الأمر."]},
+     {k:'ul', h:["Abbreviation techniques","تقنيات الاختصار"], x:[
+       ["Capitalize the first letters of words — e.g. U.P., USA, USSR, UK.","استخدام الأحرف الأولى الكبيرة للكلمات — مثل U.P., USA, USSR, UK."],
+       ["Use common abbreviations — e.g. Sc (Science), Geog (Geography), Mr, Mrs, Dr, Govt.","استخدام الاختصارات الشائعة — مثل Sc (Science)، Geog (Geography)، Mr، Mrs، Dr، Govt."],
+       ["Write the first few and last few letters of a word with an apostrophe in between — e.g. can't (cannot), w'out (without), wrt'g (writing).","كتابة الأحرف القليلة الأولى والأخيرة من الكلمة مع فاصلة عليا بينها — مثل can't (cannot)، w'out (without)، wrt'g (writing)."],
+       ["Use the first letters of phrases — e.g. Kilogram → Kg, Per annum → P A, Curriculum Vitae → CV.","استخدام الأحرف الأولى للعبارات — مثل Kilogram ← Kg، Per annum ← P A، Curriculum Vitae ← CV."],
+       ["Use the first few letters of words or phrases — e.g. Approximately → Approx, Difference → Diff, Professor → Prof.","استخدام الأحرف القليلة الأولى للكلمات أو العبارات — مثل Approximately ← Approx، Difference ← Diff، Professor ← Prof."],
+       ["Use generally accepted abbreviations — e.g. e.g. (example), viz (namely), et al (and others), N.B. (take note that).","استخدام الاختصارات المتعارف عليها عمومًا — مثل e.g. (مثال)، viz (أي)، et al (وآخرون)، N.B. (لاحظ أن)."]]}
+   ]},
+   {t:["Three Methods of Note Making","ثلاث طرق لتدوين الملاحظات"], b:[
+     {k:'def', x:["Topicalising: the main points and central idea are rephrased in points, with redundant words and phrases removed.","التبويب الموضوعي (Topicalising): تُعاد صياغة النقاط الرئيسية والفكرة المركزية في شكل نقاط، مع حذف الكلمات والعبارات الزائدة."]},
+     {k:'def', x:["Schematizing: scientific and technical texts may contain forms, figures, classifications, contrasts, and processes — so notes are organized in the form of tables and diagrams.","التخطيط البياني (Schematizing): قد تحتوي النصوص العلمية والتقنية على نماذج وأشكال وتصنيفات ومقارنات وعمليات — لذا تُنظَّم الملاحظات في شكل جداول ومخططات."]},
+     {k:'def', x:["Sequencing: the process of making a clear layout for fast and accurate interpretation of notes.","التسلسل (Sequencing): عملية وضع تخطيط واضح لتفسير الملاحظات بسرعة ودقة."]}
+   ]},
+   {t:["Summarizing: The Five C's","التلخيص: الحروف الخمسة C's"], b:[
+     {k:'def', x:["Summarizing provides maximum information in the minimum number of words. It improves your ability to write concisely by making you aware of the kind of details that can be avoided to achieve precision.","يُقدّم التلخيص أقصى قدر من المعلومات في أقل عدد من الكلمات. ويُحسّن قدرتك على الكتابة بإيجاز من خلال توعيتك بنوع التفاصيل التي يمكن تجنبها لتحقيق الدقة."]},
+     {k:'ul', h:["The five C's important for summarizing: completeness, compactness, conciseness, clarity, coherence.","الحروف الخمسة C's المهمة للتلخيص: الاكتمال، التماسك، الإيجاز، الوضوح، الترابط."], x:[
+       ["Completeness: the summary must have all the essential elements/contents of the original.","الاكتمال (Completeness): يجب أن يحتوي الملخص على جميع العناصر/المحتويات الأساسية للنص الأصلي."],
+       ["Compactness: all the ideas should form a compact whole — unity is important.","التماسك (Compactness): يجب أن تُشكّل جميع الأفكار كلًا متماسكًا — الوحدة مهمة."],
+       ["Conciseness: brevity is the soul of wit — all ideas should be clear and concise.","الإيجاز (Conciseness): الإيجاز روح البلاغة — يجب أن تكون جميع الأفكار واضحة وموجزة."],
+       ["Clarity: clarity of expression is essential — no vague statements.","الوضوح (Clarity): وضوح التعبير أساسي — لا عبارات غامضة."],
+       ["Coherence: all sentences/ideas should have a logical, chronological, and spatial order, linked coherently.","الترابط (Coherence): يجب أن يكون لجميع الجمل/الأفكار ترتيب منطقي وزمني ومكاني، مترابط بتماسك."]]},
+     {k:'tip', x:["Summarizing, like note making, is a productive skill integrating both reading and writing skills. To write effective summaries, you need to read the material carefully with good comprehension.","التلخيص، مثل تدوين الملاحظات، مهارة إنتاجية تدمج مهارتي القراءة والكتابة. ولكتابة ملخصات فعّالة، يجب قراءة المادة بعناية وفهم جيد."]}
+   ]}
+  ],
+  take:[
+   ["A note is a quick, systematic record of a text's important points, integrating reading and writing skills.","الملاحظة سجل سريع ومنهجي للنقاط المهمة في نص ما، يدمج مهارتي القراءة والكتابة."],
+   ["Good notes follow a Heading → Subheadings → Points structure, with uniform indentation.","تتبع الملاحظات الجيدة بنية العنوان ← العناوين الفرعية ← النقاط، مع إزاحة موحدة."],
+   ["Notes use abbreviations and symbols instead of full sentences — capitalized initials, truncated words, apostrophes, and standard shorthand (e.g., etc).","تستخدم الملاحظات الاختصارات والرموز بدلًا من الجمل الكاملة — أحرف أولى كبيرة، كلمات مقتطعة، فواصل عليا، واختصارات قياسية (e.g.، etc)."],
+   ["Three note-making methods: Topicalising (rephrase in points), Schematizing (tables/diagrams), Sequencing (clear layout).","ثلاث طرق لتدوين الملاحظات: التبويب الموضوعي (إعادة الصياغة في نقاط)، التخطيط البياني (جداول/مخططات)، التسلسل (تخطيط واضح)."],
+   ["The five C's of summarizing: completeness, compactness, conciseness, clarity, coherence.","الحروف الخمسة C's للتلخيص: الاكتمال، التماسك، الإيجاز، الوضوح، الترابط."]
+  ],
+  fc:[
+   [["Define a note.","عرّف الملاحظة."],["A systematic method of quickly, briefly, and clearly writing down the important points of a text being read.","طريقة منهجية لتدوين النقاط المهمة من نص مقروء بسرعة وإيجاز ووضوح."]],
+   [["List the four uses of note making.","اذكر الاستخدامات الأربعة لتدوين الملاحظات."],["Keeping a record for future reference, revising for an exam, updating information, and analyzing a text.","الاحتفاظ بسجل للرجوع إليه مستقبلًا، المراجعة لامتحان، تحديث المعلومات، وتحليل نص."]],
+   [["Name two parts of the reading strategy for note making.","اذكر جزأين من استراتيجية القراءة لتدوين الملاحظات."],["Any two of: recognize key lexical items, identify relationships among text units, read key points/signal words, ignore irrelevant matter, deduce meaning from context, interpret graphic aids.","أي جزأين من: التعرف على المفردات الرئيسية، تحديد العلاقات بين وحدات النص، قراءة النقاط الرئيسية/الكلمات الدلالية، تجاهل المحتوى غير ذي الصلة، استنتاج المعنى من السياق، تفسير الوسائل البيانية."]],
+   [["What question does the 'Heading' step answer?","ما السؤال الذي تجيب عليه خطوة 'العنوان'؟"],["What is the main idea of the passage?","ما الفكرة الرئيسية للنص؟"],],
+   [["What question does the 'Subheadings' step answer?","ما السؤال الذي تجيب عليه خطوة 'العناوين الفرعية'؟"],["How was the main idea presented and developed, and are there subordinate ideas?","كيف قُدّمت الفكرة الرئيسية وطُوّرت، وهل هناك أفكار فرعية؟"]],
+   [["Give an example of writing the first and last letters of a word with an apostrophe in between.","اذكر مثالًا لكتابة الأحرف الأولى والأخيرة من كلمة مع فاصلة عليا بينها."],["w'out (without), or can't (cannot).","w'out (without)، أو can't (cannot)."]],
+   [["What does the abbreviation 'et al' mean, and what type of abbreviation is it?","ماذا يعني الاختصار 'et al'، وما نوعه؟"],["'And others' — a generally accepted abbreviation.","'وآخرون' — اختصار متعارف عليه عمومًا."]],
+   [["Define Topicalising.","عرّف التبويب الموضوعي (Topicalising)."],["Rephrasing the main points and central idea in points, removing redundant words and phrases.","إعادة صياغة النقاط الرئيسية والفكرة المركزية في شكل نقاط، مع حذف الكلمات والعبارات الزائدة."]],
+   [["Define Schematizing.","عرّف التخطيط البياني (Schematizing)."],["Organizing notes as tables and diagrams, useful for scientific/technical texts with forms, classifications, contrasts, and processes.","تنظيم الملاحظات في شكل جداول ومخططات، مفيد للنصوص العلمية/التقنية ذات النماذج والتصنيفات والمقارنات والعمليات."]],
+   [["Define Sequencing.","عرّف التسلسل (Sequencing)."],["Making a clear layout for fast and accurate interpretation of notes.","وضع تخطيط واضح لتفسير الملاحظات بسرعة ودقة."]],
+   [["List the five C's of summarizing.","اذكر الحروف الخمسة C's للتلخيص."],["Completeness, compactness, conciseness, clarity, coherence.","الاكتمال، التماسك، الإيجاز، الوضوح، الترابط."]],
+   [["Which of the five C's means 'brevity is the soul of wit'?","أي من الحروف الخمسة يعني 'الإيجاز روح البلاغة'؟"],["Conciseness.","الإيجاز (Conciseness)."]]
+  ],
+  quiz:[
+   {q:["A note is best defined as:","تُعرَّف الملاحظة على أفضل وجه بأنها:"], o:[["A full retelling of the entire text","إعادة سرد كاملة للنص بأكمله"],["A systematic, quick, brief, clear record of important points","سجل منهجي وسريع وموجز وواضح للنقاط المهمة"],["A random list of unrelated words","قائمة عشوائية من كلمات غير مترابطة"],["A translation of the text","ترجمة للنص"]], a:1},
+   {q:["Which is NOT listed as a use of note making?","أي مما يلي لم يُذكر كاستخدام لتدوين الملاحظات؟"], o:[["Revising for an exam","المراجعة لامتحان"],["Keeping a record for future reference","الاحتفاظ بسجل للرجوع إليه مستقبلًا"],["Replacing the need to ever read the original text","الاستغناء التام عن قراءة النص الأصلي"],["Updating information","تحديث المعلومات"]], a:2},
+   {q:["The 'Heading' in note making is based on:","يُبنى 'العنوان' في تدوين الملاحظات على:"], o:[["A random word from the text","كلمة عشوائية من النص"],["The central/main idea of the passage","الفكرة المركزية/الرئيسية للنص"],["The last sentence only","الجملة الأخيرة فقط"],["The author's name","اسم الكاتب"]], a:1},
+   {q:["Subheadings in note making are based on:","تُبنى العناوين الفرعية في تدوين الملاحظات على:"], o:[["Subordinate ideas that develop the main idea","الأفكار الفرعية التي تُطوّر الفكرة الرئيسية"],["Random details only","تفاصيل عشوائية فقط"],["The page number","رقم الصفحة"],["The font size used","حجم الخط المستخدم"]], a:0},
+   {q:["In note making, you should generally:","في تدوين الملاحظات، يجب عمومًا:"], o:[["Write full, complete sentences","كتابة جمل كاملة تامة"],["Use abbreviations and standard symbols","استخدام الاختصارات والرموز القياسية"],["Copy the text word-for-word","نسخ النص كلمة بكلمة"],["Avoid using any symbols","تجنب استخدام أي رموز"]], a:1},
+   {q:["'CV' for 'Curriculum Vitae' is an example of which abbreviation technique?","'CV' لـ 'Curriculum Vitae' مثال على أي تقنية اختصار؟"], o:[["Using the first letters of a phrase","استخدام الأحرف الأولى لعبارة"],["Using an apostrophe mid-word","استخدام فاصلة عليا وسط الكلمة"],["A generally accepted Latin abbreviation","اختصار لاتيني متعارف عليه"],["Capitalizing only the last letter","تكبير الحرف الأخير فقط"]], a:0},
+   {q:["Which note-making method organizes notes as tables and diagrams?","أي طريقة لتدوين الملاحظات تُنظّم الملاحظات في شكل جداول ومخططات؟"], o:[["Topicalising","التبويب الموضوعي"],["Sequencing","التسلسل"],["Schematizing","التخطيط البياني"],["Abbreviating","الاختصار"]], a:2},
+   {q:["Which note-making method rephrases main points, removing redundant words?","أي طريقة لتدوين الملاحظات تُعيد صياغة النقاط الرئيسية، مع حذف الكلمات الزائدة؟"], o:[["Sequencing","التسلسل"],["Schematizing","التخطيط البياني"],["Topicalising","التبويب الموضوعي"],["None of the above","لا شيء مما سبق"]], a:2},
+   {q:["Which is NOT one of the five C's of summarizing?","أي مما يلي ليس من الحروف الخمسة C's للتلخيص؟"], o:[["Completeness","الاكتمال"],["Conciseness","الإيجاز"],["Creativity","الإبداع"],["Coherence","الترابط"]], a:2},
+   {q:["'The summary must have all the essential elements of the original' describes which C?","'يجب أن يحتوي الملخص على جميع العناصر الأساسية للأصل' يصف أي حرف C؟"], o:[["Clarity","الوضوح"],["Completeness","الاكتمال"],["Compactness","التماسك"],["Coherence","الترابط"]], a:1},
+   {q:["A good summary provides:","يُقدّم الملخص الجيد:"], o:[["Minimum information in maximum words","أقل قدر من المعلومات بأكبر عدد من الكلمات"],["Maximum information in minimum words","أقصى قدر من المعلومات بأقل عدد من الكلمات"],["Only the author's opinion","رأي الكاتب فقط"],["An exact word-for-word copy","نسخة مطابقة كلمة بكلمة"]], a:1}
+  ]
+});
 
-    function renderHome() {
-      const html = `
-        <div class="card p-6">
-          <div class="mb-4 text-4xl">${SUBJECT.icon}</div>
-          <h1 class="text-3xl font-extrabold">${t(SUBJECT.name)}</h1>
-          <p class="mt-3 text-dark-muted">${state.lang === 'ar' ? 'مراجعة مختصرة للإنجليزية التقنية مع شرح ومفردات وأسئلة.' : 'Short revision for technical English with explanations, vocabulary, and quizzes.'}</p>
+LECTURES.push({ id:'l4', n:4,
+  title:["Nouns, Compound Nouns, and Negative Prefixes","الأسماء، الأسماء المركبة، والبادئات السلبية"],
+  obj:[
+    ["Identify the main types of nouns, including compound nouns.","تحديد الأنواع الرئيسية للأسماء، بما في ذلك الأسماء المركبة."],
+    ["Describe how compound nouns are formed and classify them by countability.","وصف كيفية تكوين الأسماء المركبة وتصنيفها من حيث العد."],
+    ["Apply the spelling rules for negative prefixes (im-, ir-, il-).","تطبيق قواعد تهجئة البادئات السلبية (im-، ir-، il-)."],
+    ["Identify the five categories of prefixes and give an example of each.","تحديد الفئات الخمس للبادئات وذكر مثال لكل منها."]
+  ],
+  sec:[
+   {t:["Types of Nouns","أنواع الأسماء"], b:[
+     {k:'def', x:["A noun is the part of speech which names a person, animal, place, thing, or a quality of a thing.","الاسم (Noun) هو قسم الكلام الذي يُسمّي شخصًا أو حيوانًا أو مكانًا أو شيئًا أو صفة لشيء."]},
+     {k:'tbl', h:[["Type","النوع"],["Examples"]],
+      r:[
+       [["Common noun","الاسم العام"],["girl, boy, woman, book, town, country"]],
+       [["Abstract noun","الاسم المجرد"],["honesty, charity, wisdom"]],
+       [["Collective noun","اسم الجماعة"],["crowd, fleet, team, group"]],
+       [["Concrete noun","الاسم المحسوس"],["iron, gold, silver"]],
+       [["Countable noun","الاسم المعدود"],["pens, chairs, people, car (singular or plural)"]],
+       [["Uncountable noun","الاسم غير المعدود"],["sugar"]],
+       [["Proper noun","اسم العلم"],["Sita, Rama, Madras, Delhi"]],
+       [["Gerund noun","اسم المصدر (Gerund)"],["singing (verb + -ing; follows a verb, preposition, or adjective) — e.g. I love singing."]]
+      ]}
+   ]},
+   {t:["What Is a Compound Noun?","ما هو الاسم المركب؟"], b:[
+     {k:'def', x:["A compound noun is an expression made up of more than one word that functions as a noun. They are formed by nouns modified by adjectives or other nouns — most often a combination of two nouns, like bank-account, baby-sitter, letter-box.","الاسم المركب (Compound Noun) هو تعبير مكوّن من أكثر من كلمة ويعمل كاسم واحد. ويتكوّن من أسماء معدّلة بصفات أو أسماء أخرى — وغالبًا ما يكون مزيجًا من اسمين، مثل bank-account وbaby-sitter وletter-box."]},
+     {k:'ul', h:["Formation patterns","أنماط التكوين"], x:[
+       ["Black bird — adjective + noun.","Black bird — صفة + اسم."],
+       ["Under-water — preposition + noun.","Under-water — حرف جر + اسم."],
+       ["Hair cut — noun + verb.","Hair cut — اسم + فعل."]]},
+     {k:'p', x:["Compound nouns can be written as one word, with a hyphen in between, or as two separate words: Tin opener (separate words), Pen-name (hyphen), Earring (one word).","يمكن كتابة الأسماء المركبة ككلمة واحدة، أو بفاصل (hyphen) بينها، أو ككلمتين منفصلتين: Tin opener (كلمتان منفصلتان)، Pen-name (بفاصل)، Earring (كلمة واحدة)."]}
+   ]},
+   {t:["Compound Nouns by Countability","الأسماء المركبة من حيث العد"], b:[
+     {k:'p', x:["Compound nouns may be countable, uncountable, or used only in the singular or the plural.","قد تكون الأسماء المركبة معدودة أو غير معدودة، أو تُستخدم فقط في صيغة المفرد أو الجمع."]},
+     {k:'cards', c:[
+       {t:["Common Countable Compound Nouns","أسماء مركبة معدودة شائعة"], l:[["Tea-bag, contact lens, credit card, food token, hand cuffs, windscreen.","Tea-bag وcontact lens وcredit card وfood token وhand cuffs وwindscreen."]]},
+       {t:["Common Uncountable Compound Nouns","أسماء مركبة غير معدودة شائعة"], l:[["Income-tax, data-processing, family-planning, pocket money, swine-flu, fast-food.","Income-tax وdata-processing وfamily-planning وpocket money وswine-flu وfast-food."]]},
+       {t:["Used Only in the Singular","تُستخدم فقط في صيغة المفرد"], l:[["Generation-gap, brain drain, mother-tongue, labour force, death-penalty, blood-pressure.","Generation-gap وbrain drain وmother-tongue وlabour force وdeath-penalty وblood-pressure."]]},
+       {t:["Used Only in the Plural","تُستخدم فقط في صيغة الجمع"], l:[["Roadworks, traffic-lights, dancing shoes, sun-glasses, human rights.","Roadworks وtraffic-lights وdancing shoes وsun-glasses وhuman rights."]]}
+     ]}
+   ]},
+   {t:["Negative Prefixes: General Rules","البادئات السلبية: القواعد العامة"], b:[
+     {k:'p', x:["Prefixes are often used to give adjectives a negative meaning: similar → dissimilar, kind → unkind, decent → indecent, obedient → disobedient. Unfortunately, there is no easy way to know in advance which prefix an adjective will use — when you learn a new adjective, note down whether it has an opposite formed with a prefix, and if so, what it is.","غالبًا ما تُستخدم البادئات لإعطاء الصفات معنى سلبيًا: similar ← dissimilar، kind ← unkind، decent ← indecent، obedient ← disobedient. للأسف، لا توجد طريقة سهلة لمعرفة أي بادئة ستستخدمها الصفة مسبقًا — فعند تعلّم صفة جديدة، لاحظ ما إذا كان لها عكس يُكوَّن ببادئة، وما هي إن وُجدت."]},
+     {k:'ul', h:["Spelling rules to remember","قواعد تهجئة يجب تذكرها"], x:[
+       ["in- becomes im- before a root beginning with 'm' or 'p' — e.g. immature, impatient, improbable.","تصبح in- → im- قبل جذر يبدأ بـ 'm' أو 'p' — مثل immature وimpatient وimprobable."],
+       ["in- becomes ir- before a word beginning with 'r' — e.g. irreplaceable, irreversible.","تصبح in- → ir- قبل كلمة تبدأ بـ 'r' — مثل irreplaceable وirreversible."],
+       ["in- becomes il- before a word beginning with 'l' — e.g. illegal, illegible, illiterate.","تصبح in- → il- قبل كلمة تبدأ بـ 'l' — مثل illegal وillegible وilliterate."]]},
+     {k:'tip', x:["The prefix in- does not always have a negative meaning — often it gives the idea of 'inside' or 'into', e.g. impart, internal, insert, income.","لا تحمل البادئة in- معنى سلبيًا دائمًا — فغالبًا ما تُعطي فكرة 'الداخل' أو 'إلى الداخل'، مثل impart وinternal وinsert وincome."]}
+   ]},
+   {t:["Negative Prefixes with Verbs","البادئات السلبية مع الأفعال"], b:[
+     {k:'p', x:["Although it is mainly adjectives that are made negative by prefixes, in- and dis- can also form the opposites of verbs, reversing the action of the verb — e.g. appear → disappear.","رغم أن الصفات هي التي تُجعل سلبية بالبادئات في الغالب، يمكن لـ in- وdis- أيضًا تكوين عكس الأفعال، بعكس فعل الفعل — مثل appear ← disappear."]},
+     {k:'ul', x:[
+       ["disagree, disapprove, disbelieve, disconnect, discredit, dislike, dismount, disqualify.","disagree وdisapprove وdisbelieve وdisconnect وdiscredit وdislike وdismount وdisqualify."],
+       ["unbend, undo, undress, unfold, unload, unlock, unveil, unwrap, unzip.","unbend وundo وundress وunfold وunload وunlock وunveil وunwrap وunzip."]]}
+   ]},
+   {t:["Categories of Prefixes","فئات البادئات"], b:[
+     {k:'tbl', h:[["Category","الفئة"],["Prefixes","البادئات"],["Examples"]],
+      r:[
+       [["Reversative — reverses the action of the base, without negative implication.","انعكاسية (Reversative) — تعكس فعل الأساس، دون دلالة سلبية."],["un-, de-, dis-","un-، de-، dis-"],["undo, untie, unpack, dehydrate, decode, defrost, decentralise, disown"]],
+       [["Pejorative — gives the sense of ill, bad, wrong, or not in the right way.","تحقيرية (Pejorative) — تُعطي معنى السيئ أو الخاطئ أو غير الصحيح."],["mis-, mal-, pseudo-","mis-، mal-، pseudo-"],["misuse, misunderstanding, malfunction, malnutrition, pseudo-intellectual"]],
+       [["Time and Order","الزمن والترتيب"],["fore-, pre-, post-, ex-, re-","fore-، pre-، post-، ex-، re-"],["forewarn, pre-war, post-war, ex-president, reappear"]],
+       [["Change word-class — convert the base into a different word class.","مُغيّرة لفئة الكلمة — تُحوّل الأساس إلى فئة كلمة مختلفة."],["be-, en-, a-","be-، en-، a-"],["bewitch, empower, astray"]],
+       [["Negative — reverse or negate the meaning of the word.","سلبية (Negative) — تعكس أو تنفي معنى الكلمة."],["a-, de-, il-, im-, in-, ir-, dis-, mis-, non-, un-","a-، de-، il-، im-، in-، ir-، dis-، mis-، non-، un-"],["amoral, decentralize, disrespect, illogical, illegal"]]
+      ]}
+   ]}
+  ],
+  take:[
+   ["Nouns have many types: common, abstract, collective, concrete, countable, uncountable, proper, and gerund.","للأسماء أنواع عديدة: العام، المجرد، الجماعة، المحسوس، المعدود، غير المعدود، العلم، واسم المصدر."],
+   ["A compound noun combines two or more words into one noun unit, formed as one word, hyphenated, or separate words.","يجمع الاسم المركب كلمتين أو أكثر في وحدة اسمية واحدة، وقد يُكتب ككلمة واحدة أو بفاصل أو ككلمات منفصلة."],
+   ["Compound nouns can be countable, uncountable, singular-only, or plural-only.","يمكن أن تكون الأسماء المركبة معدودة أو غير معدودة أو تُستخدم فقط بصيغة المفرد أو الجمع."],
+   ["Key spelling rules: in- → im- before m/p, in- → ir- before r, in- → il- before l.","قواعد تهجئة أساسية: in- ← im- قبل m/p، in- ← ir- قبل r، in- ← il- قبل l."],
+   ["Five prefix categories: Reversative, Pejorative, Time/Order, Word-class-changing, and Negative.","خمس فئات للبادئات: الانعكاسية، التحقيرية، الزمن/الترتيب، مُغيّرة فئة الكلمة، والسلبية."]
+  ],
+  fc:[
+   [["Define a noun.","عرّف الاسم."],["The part of speech which names a person, animal, place, thing, or a quality of a thing.","قسم الكلام الذي يُسمّي شخصًا أو حيوانًا أو مكانًا أو شيئًا أو صفة لشيء."]],
+   [["Give an example of a collective noun.","اذكر مثالًا على اسم جماعة."],["Any of: crowd, fleet, team, group.","أي من: crowd، fleet، team، group."]],
+   [["What is a gerund noun, and give an example.","ما هو اسم المصدر (Gerund)، واذكر مثالًا."],["A noun formed from a verb by adding '-ing', e.g. singing (as in 'I love singing').","اسم يتكوّن من فعل بإضافة '-ing'، مثل singing (كما في 'I love singing')."]],
+   [["Define a compound noun.","عرّف الاسم المركب."],["An expression of more than one word that functions as a noun, often a combination of two nouns.","تعبير من أكثر من كلمة يعمل كاسم واحد، وغالبًا ما يكون مزيجًا من اسمين."]],
+   [["Give the formation pattern of 'Black bird' and 'Under-water'.","اذكر نمط تكوين 'Black bird' و'Under-water'."],["Black bird = adjective + noun; Under-water = preposition + noun.","Black bird = صفة + اسم؛ Under-water = حرف جر + اسم."]],
+   [["Give one example each of a compound noun written as one word, with a hyphen, and as separate words.","اذكر مثالًا لكل من: اسم مركب يُكتب ككلمة واحدة، بفاصل، وككلمات منفصلة."],["Earring (one word), Pen-name (hyphen), Tin opener (separate words).","Earring (كلمة واحدة)، Pen-name (بفاصل)، Tin opener (كلمات منفصلة)."]],
+   [["State the spelling rule for in- before a root starting with 'm' or 'p'.","اذكر قاعدة التهجئة لـ in- قبل جذر يبدأ بـ 'm' أو 'p'."],["in- becomes im- — e.g. immature, impatient.","تصبح in- ← im- — مثل immature وimpatient."]],
+   [["State the spelling rule for in- before a word starting with 'r'.","اذكر قاعدة التهجئة لـ in- قبل كلمة تبدأ بـ 'r'."],["in- becomes ir- — e.g. irreplaceable, irreversible.","تصبح in- ← ir- — مثل irreplaceable وirreversible."]],
+   [["Does the prefix in- always mean negation? Give an example.","هل تعني البادئة in- النفي دائمًا؟ اذكر مثالًا."],["No — it can mean 'inside/into', e.g. insert, internal.","لا — قد تعني 'الداخل/إلى الداخل'، مثل insert وinternal."]],
+   [["Give an example of a verb made negative with dis-.","اذكر مثالًا على فعل جُعل سلبيًا بـ dis-."],["Any of: disagree, disapprove, disconnect, dislike.","أي من: disagree، disapprove، disconnect، dislike."]],
+   [["What meaning do Pejorative prefixes (mis-, mal-, pseudo-) give?","ما المعنى الذي تُعطيه البادئات التحقيرية (mis-، mal-، pseudo-)؟"],["The sense of ill, bad, wrong, or not in the right way — e.g. misuse, malfunction.","معنى السيئ أو الخاطئ أو غير الصحيح — مثل misuse وmalfunction."]],
+   [["Give an example of a 'Time and Order' prefix and a word using it.","اذكر مثالًا لبادئة 'الزمن والترتيب' وكلمة تستخدمها."],["Any of: fore- (forewarn), pre- (pre-war), post- (post-war), ex- (ex-president), re- (reappear).","أي من: fore- (forewarn)، pre- (pre-war)، post- (post-war)، ex- (ex-president)، re- (reappear)."]],
+   [["Give an example of a prefix that changes word-class, with its example word.","اذكر مثالًا على بادئة تُغيّر فئة الكلمة، مع كلمة مثال."],["Any of: be- (bewitch), en- (empower), a- (astray).","أي من: be- (bewitch)، en- (empower)، a- (astray)."]]
+  ],
+  quiz:[
+   {q:["Which is an example of a collective noun?","أي مما يلي مثال على اسم جماعة؟"], o:[["honesty","honesty"],["team","team"],["gold","gold"],["Delhi","Delhi"]], a:1},
+   {q:["Which is an example of an abstract noun?","أي مما يلي مثال على اسم مجرد؟"], o:[["wisdom","wisdom"],["crowd","crowd"],["chair","chair"],["Rama","Rama"]], a:0},
+   {q:["A gerund noun is formed by:","يتكوّن اسم المصدر (Gerund) من خلال:"], o:[["Adding '-ed' to a verb","إضافة '-ed' إلى فعل"],["Adding '-ing' to a verb","إضافة '-ing' إلى فعل"],["Removing the last letter of a noun","حذف الحرف الأخير من اسم"],["Capitalizing a common noun","تكبير اسم عام"]], a:1},
+   {q:["'Hair cut' is an example of which compound noun formation pattern?","'Hair cut' مثال على أي نمط لتكوين الاسم المركب؟"], o:[["Adjective + noun","صفة + اسم"],["Preposition + noun","حرف جر + اسم"],["Noun + verb","اسم + فعل"],["Verb + adjective","فعل + صفة"]], a:2},
+   {q:["Which compound noun is used ONLY in the plural, per the lecture?","أي اسم مركب يُستخدم فقط بصيغة الجمع، وفق المحاضرة؟"], o:[["Mother-tongue","Mother-tongue"],["Sun-glasses","Sun-glasses"],["Income-tax","Income-tax"],["Blood-pressure","Blood-pressure"]], a:1},
+   {q:["According to the spelling rule, 'in-' becomes 'im-' before a root beginning with:","وفق قاعدة التهجئة، تصبح 'in-' إلى 'im-' قبل جذر يبدأ بـ:"], o:[["'r' or 'l'","'r' أو 'l'"],["'m' or 'p'","'m' أو 'p'"],["Any vowel","أي حرف علة"],["'s' or 't'","'s' أو 't'"]], a:1},
+   {q:["Which word correctly shows 'in-' becoming 'il-' before a root beginning with 'l'?","أي كلمة تُظهر بشكل صحيح تحوّل 'in-' إلى 'il-' قبل جذر يبدأ بـ 'l'؟"], o:[["irreplaceable","irreplaceable"],["impatient","impatient"],["illegal","illegal"],["disagree","disagree"]], a:2},
+   {q:["Which word shows that 'in-' does NOT always mean negation?","أي كلمة تُظهر أن 'in-' لا تعني النفي دائمًا؟"], o:[["insert","insert"],["indecent","indecent"],["improbable","improbable"],["irreversible","irreversible"]], a:0},
+   {q:["Which prefix type reverses an action WITHOUT negative implication?","أي نوع من البادئات يعكس فعلًا دون دلالة سلبية؟"], o:[["Pejorative","التحقيرية"],["Reversative","الانعكاسية"],["Time and Order","الزمن والترتيب"],["Word-class-changing","مُغيّرة فئة الكلمة"]], a:1},
+   {q:["Which prefixes form the Pejorative category?","أي بادئات تُشكّل الفئة التحقيرية؟"], o:[["un-, de-, dis-","un-، de-، dis-"],["fore-, pre-, post-","fore-، pre-، post-"],["mis-, mal-, pseudo-","mis-، mal-، pseudo-"],["be-, en-, a-","be-، en-، a-"]], a:2},
+   {q:["Which prefix set belongs to the 'Time and Order' category?","أي مجموعة بادئات تنتمي لفئة 'الزمن والترتيب'؟"], o:[["be-, en-, a-","be-، en-، a-"],["fore-, pre-, post-, ex-, re-","fore-، pre-، post-، ex-، re-"],["mis-, mal-, pseudo-","mis-، mal-، pseudo-"],["un-, de-, dis-","un-، de-، dis-"]], a:1},
+   {q:["Which prefix converts the base word into a different word-class, as in 'bewitch'?","أي بادئة تُحوّل الكلمة الأساس إلى فئة كلمة مختلفة، كما في 'bewitch'؟"], o:[["mis-","mis-"],["be-","be-"],["re-","re-"],["ir-","ir-"]], a:1}
+  ]
+});
+
+LECTURES.push({ id:'l5', n:5,
+  title:["Writing System Requirements & Specifications","كتابة متطلبات ومواصفات الأنظمة"],
+  obj:[
+    ["Explain why Requirements Engineering is critical to software project success.","شرح أهمية هندسة المتطلبات لنجاح مشاريع البرمجيات."],
+    ["Distinguish System Requirements Specification (SyRS) from Software Requirements Specification (SRS).","التمييز بين مواصفات متطلبات النظام (SyRS) ومواصفات متطلبات البرمجيات (SRS)."],
+    ["Write a functional requirement using the standard structure, and classify it into one of the four functional categories.","كتابة متطلب وظيفي باستخدام البنية القياسية، وتصنيفه ضمن إحدى الفئات الوظيفية الأربع."],
+    ["Distinguish functional from non-functional requirements, and write a quantified, testable NFR.","التمييز بين المتطلبات الوظيفية وغير الوظيفية، وكتابة متطلب غير وظيفي كمّي وقابل للاختبار."]
+  ],
+  sec:[
+   {t:["Why Requirements Engineering Matters","لماذا تهم هندسة المتطلبات"], b:[
+     {k:'p', x:["In the software development lifecycle (SDLC), Requirements Engineering (RE) bridges the gap between high-level business goals and implementation-level code. More software projects fail due to poor, ambiguous, or incomplete requirements than due to technical coding errors.","في دورة حياة تطوير البرمجيات (SDLC)، تسد هندسة المتطلبات (Requirements Engineering) الفجوة بين أهداف الأعمال رفيعة المستوى والشيفرة على مستوى التنفيذ. وتفشل مشاريع برمجية أكثر بسبب متطلبات ضعيفة أو غامضة أو ناقصة أكثر مما تفشل بسبب أخطاء برمجية تقنية."]},
+     {k:'p', x:["For IT professionals, the ability to write precise, clear, and unambiguous specification documents is a foundational skill — primarily for authoring the Software Requirements Specification (SRS).","بالنسبة لأخصائيي تقنية المعلومات، تُعد القدرة على كتابة وثائق مواصفات دقيقة وواضحة وغير غامضة مهارة أساسية — خصوصًا لصياغة مواصفات متطلبات البرمجيات (SRS)."]}
+   ]},
+   {t:["The Requirement Construct","بنية المتطلب"], b:[
+     {k:'def', x:["A requirement is a statement that identifies a product or process operational constraint, characteristic, or attribute that must be verified and is contractually binding.","المتطلب (Requirement) هو عبارة تحدد قيدًا تشغيليًا أو خاصية أو سمة لمنتج أو عملية، يجب التحقق منها وتكون ملزمة تعاقديًا."]}
+   ]},
+   {t:["System Requirements vs. Software Requirements","متطلبات النظام مقابل متطلبات البرمجيات"], b:[
+     {k:'tbl', h:[["Term","المصطلح"],["Definition","التعريف"]],
+      r:[
+       [["System Requirements Specification (SyRS)","مواصفات متطلبات النظام (SyRS)"],["High-level operational needs of an entire system, combining hardware, software, human operators, and physical infrastructure.","الاحتياجات التشغيلية رفيعة المستوى لنظام كامل، تجمع العتاد والبرمجيات والمشغّلين البشريين والبنية التحتية المادية."]],
+       [["Software Requirements Specification (SRS)","مواصفات متطلبات البرمجيات (SRS)"],["A detailed breakdown focusing exclusively on software features, data behaviors, interfaces, and external constraints.","تفصيل دقيق يُركّز حصريًا على ميزات البرمجيات وسلوكيات البيانات والواجهات والقيود الخارجية."]]
+      ]}
+   ]},
+   {t:["Functional Requirements (FRs)","المتطلبات الوظيفية (FRs)"], b:[
+     {k:'def', x:["Functional requirements define the core functions, processing logic, data transformations, and interactions that the system must perform.","تُحدّد المتطلبات الوظيفية الوظائف الأساسية ومنطق المعالجة وتحويلات البيانات والتفاعلات التي يجب أن يؤديها النظام."]},
+     {k:'formula', x:"Structure: [Subject] + [Modal Verb] + [System Action] + [Object] + [Condition/Context]"},
+     {k:'p', x:["Focus: inputs, transformations, system state changes, and outputs.","التركيز: المُدخلات، التحويلات، تغييرات حالة النظام، والمُخرجات."]},
+     {k:'ex', x:["The Authentication Module shall lock a user account for 15 minutes when three consecutive invalid login attempts occur within a 5-minute window.","يجب أن تُقفل وحدة المصادقة حساب المستخدم لمدة 15 دقيقة عند حدوث ثلاث محاولات تسجيل دخول غير صحيحة متتالية خلال نافذة زمنية مدتها 5 دقائق."]},
+     {k:'ul', h:["Functional Categories","الفئات الوظيفية"], x:[
+       ["User Authentication & Authorization — access control, identity validation, role-based controls.","المصادقة والتفويض — التحكم في الوصول، التحقق من الهوية، الضوابط المبنية على الأدوار."],
+       ["Data Processing & Storage — CRUD operations (Create, Read, Update, Delete), transaction handling, validation rules.","معالجة البيانات وتخزينها — عمليات CRUD (الإنشاء، القراءة، التحديث، الحذف)، معالجة المعاملات، قواعد التحقق."],
+       ["External Interface Interactions — data transfers via APIs, integration with third-party payment gateways or messaging queues.","تفاعلات الواجهة الخارجية — نقل البيانات عبر واجهات برمجة التطبيقات (APIs)، والتكامل مع بوابات دفع أو طوابير رسائل خارجية."],
+       ["Business Logic Execution — domain-specific calculations, e.g. tax calculation algorithms, routing protocols.","تنفيذ منطق الأعمال — حسابات خاصة بالمجال، مثل خوارزميات حساب الضرائب وبروتوكولات التوجيه."]]}
+   ]},
+   {t:["Non-Functional Requirements (NFRs / Quality Attributes)","المتطلبات غير الوظيفية (NFRs / سمات الجودة)"], b:[
+     {k:'def', x:["Non-functional requirements describe how well the system performs its functions. They dictate system properties and quality attributes.","تصف المتطلبات غير الوظيفية مدى جودة أداء النظام لوظائفه. وتُحدّد خصائص النظام وسمات الجودة."]},
+     {k:'tbl', h:[["NFR Category","فئة المتطلب غير الوظيفي"],["Good Example (Quantified & Testable)","مثال جيد (كمّي وقابل للاختبار)"],["Bad Example (Vague)","مثال ضعيف (غامض)"],["Technical Focus","التركيز التقني"]],
+      r:[
+       [["Performance","الأداء"],["The web application shall render the dashboard within 1.5 seconds under a load of 500 concurrent active users.","يجب أن يعرض تطبيق الويب لوحة التحكم خلال 1.5 ثانية تحت حمل 500 مستخدم نشط متزامن."],["The system must load pages quickly.","يجب أن يُحمّل النظام الصفحات بسرعة."],["Latency, Throughput, Resource Usage","زمن الاستجابة، معدل الإنتاجية، استهلاك الموارد"]],
+       [["Security","الأمان"],["The system shall encrypt all sensitive user data at rest using AES-256 and in transit using TLS 1.3.","يجب أن يُشفّر النظام جميع بيانات المستخدم الحساسة أثناء التخزين باستخدام AES-256 وأثناء النقل باستخدام TLS 1.3."],["The database must be secure from hackers.","يجب أن تكون قاعدة البيانات آمنة من القراصنة."],["Encryption, Authentication, Confidentiality","التشفير، المصادقة، السرية"]],
+       [["Availability / Reliability","التوفر / الموثوقية"],["The core API service shall maintain an operational uptime of 99.95% per calendar month, excluding scheduled maintenance.","يجب أن تحافظ خدمة واجهة برمجة التطبيقات الأساسية على نسبة تشغيل 99.95% شهريًا، باستثناء الصيانة المجدولة."],["The system should almost never go down.","يجب ألا يتوقف النظام تقريبًا أبدًا."],["Uptime, Mean Time Between Failures (MTBF)","نسبة التشغيل، متوسط الوقت بين الأعطال (MTBF)"]]
+      ]}
+   ]}
+  ],
+  take:[
+   ["More software projects fail from poor requirements than from coding errors — RE bridges business goals and implementation.","تفشل مشاريع برمجية أكثر بسبب متطلبات ضعيفة أكثر مما تفشل بسبب أخطاء برمجية — وهندسة المتطلبات تسد الفجوة بين أهداف الأعمال والتنفيذ."],
+   ["SyRS covers the whole system (hardware+software+people+infrastructure); SRS focuses only on software.","تغطي SyRS النظام بأكمله (عتاد+برمجيات+أشخاص+بنية تحتية)؛ بينما تُركّز SRS على البرمجيات فقط."],
+   ["Functional requirement structure: [Subject] + [Modal Verb] + [System Action] + [Object] + [Condition/Context].","بنية المتطلب الوظيفي: [الفاعل] + [الفعل الواصفي] + [فعل النظام] + [المفعول به] + [الشرط/السياق]."],
+   ["Four functional categories: User Auth/Authorization, Data Processing/Storage, External Interface Interactions, Business Logic Execution.","أربع فئات وظيفية: المصادقة/التفويض، معالجة/تخزين البيانات، تفاعلات الواجهة الخارجية، تنفيذ منطق الأعمال."],
+   ["Good NFRs are quantified and testable ('within 1.5 seconds'); bad NFRs are vague ('quickly').","المتطلبات غير الوظيفية الجيدة كمّية وقابلة للاختبار ('خلال 1.5 ثانية')؛ أما الضعيفة فغامضة ('بسرعة')."]
+  ],
+  fc:[
+   [["What does Requirements Engineering (RE) do in the SDLC?","ماذا تفعل هندسة المتطلبات (RE) في دورة حياة تطوير البرمجيات؟"],["Bridges the gap between high-level business goals and implementation-level code.","تسد الفجوة بين أهداف الأعمال رفيعة المستوى والشيفرة على مستوى التنفيذ."]],
+   [["What causes more software project failures: poor requirements or coding errors?","ما الذي يُسبب فشل مشاريع برمجية أكثر: المتطلبات الضعيفة أم الأخطاء البرمجية؟"],["Poor, ambiguous, or incomplete requirements.","المتطلبات الضعيفة أو الغامضة أو الناقصة."]],
+   [["Define a requirement.","عرّف المتطلب."],["A statement identifying a product/process operational constraint, characteristic, or attribute that must be verified and is contractually binding.","عبارة تحدد قيدًا تشغيليًا أو خاصية أو سمة لمنتج/عملية، يجب التحقق منها وتكون ملزمة تعاقديًا."]],
+   [["What does SyRS stand for, and what does it cover?","ماذا يعني اختصار SyRS، وماذا يغطي؟"],["System Requirements Specification — high-level needs of the whole system (hardware, software, operators, infrastructure).","مواصفات متطلبات النظام — الاحتياجات رفيعة المستوى للنظام بأكمله (العتاد، البرمجيات، المشغّلون، البنية التحتية)."]],
+   [["What does SRS stand for, and what does it cover?","ماذا يعني اختصار SRS، وماذا يغطي؟"],["Software Requirements Specification — a detailed breakdown of software features, data behaviors, interfaces, and external constraints.","مواصفات متطلبات البرمجيات — تفصيل دقيق لميزات البرمجيات وسلوكيات البيانات والواجهات والقيود الخارجية."]],
+   [["Give the standard structure for writing a functional requirement.","اذكر البنية القياسية لكتابة متطلب وظيفي."],["[Subject] + [Modal Verb] + [System Action] + [Object] + [Condition/Context].","[الفاعل] + [الفعل الواصفي] + [فعل النظام] + [المفعول به] + [الشرط/السياق]."]],
+   [["List the four functional categories.","اذكر الفئات الوظيفية الأربع."],["User Authentication & Authorization, Data Processing & Storage, External Interface Interactions, Business Logic Execution.","المصادقة والتفويض، معالجة وتخزين البيانات، تفاعلات الواجهة الخارجية، تنفيذ منطق الأعمال."]],
+   [["What do CRUD operations stand for?","ماذا تعني عمليات CRUD؟"],["Create, Read, Update, Delete.","الإنشاء، القراءة، التحديث، الحذف."]],
+   [["What do non-functional requirements describe?","ماذا تصف المتطلبات غير الوظيفية؟"],["How well the system performs its functions — system properties and quality attributes.","مدى جودة أداء النظام لوظائفه — خصائص النظام وسمات الجودة."]],
+   [["Give the 'good' (quantified) NFR example for Performance.","اذكر مثال NFR 'الجيد' (الكمّي) للأداء."],["The web application shall render the dashboard within 1.5 seconds under a load of 500 concurrent active users.","يجب أن يعرض تطبيق الويب لوحة التحكم خلال 1.5 ثانية تحت حمل 500 مستخدم نشط متزامن."]],
+   [["Why is 'The system must load pages quickly' a BAD NFR?","لماذا يُعد 'يجب أن يُحمّل النظام الصفحات بسرعة' متطلبًا غير وظيفي ضعيفًا؟"],["It is vague and not quantified or testable.","لأنه غامض وغير كمّي أو قابل للاختبار."]],
+   [["Which NFR category covers encryption and authentication?","أي فئة من المتطلبات غير الوظيفية تغطي التشفير والمصادقة؟"],["Security.","الأمان."]]
+  ],
+  quiz:[
+   {q:["What does Requirements Engineering (RE) primarily do?","ماذا تفعل هندسة المتطلبات (RE) بشكل أساسي؟"], o:[["Writes the final source code","تكتب الشيفرة المصدرية النهائية"],["Bridges business goals and implementation-level code","تسد الفجوة بين أهداف الأعمال وشيفرة التنفيذ"],["Tests the hardware only","تختبر العتاد فقط"],["Replaces the need for documentation","تُلغي الحاجة للتوثيق"]], a:1},
+   {q:["According to the lecture, more software projects fail due to:","وفق المحاضرة، تفشل مشاريع برمجية أكثر بسبب:"], o:[["Technical coding errors","أخطاء برمجية تقنية"],["Poor, ambiguous, or incomplete requirements","متطلبات ضعيفة أو غامضة أو ناقصة"],["Hardware failures","أعطال العتاد"],["Lack of funding only","نقص التمويل فقط"]], a:1},
+   {q:["A 'requirement' is defined as a statement that is:","يُعرَّف 'المتطلب' بأنه عبارة:"], o:[["Optional and non-binding","اختيارية وغير ملزمة"],["Verified and contractually binding","يُتحقق منها وملزمة تعاقديًا"],["Written only in code","مكتوبة بالشيفرة فقط"],["Always vague by design","غامضة دائمًا بالتصميم"]], a:1},
+   {q:["SyRS (System Requirements Specification) covers:","تغطي مواصفات متطلبات النظام (SyRS):"], o:[["Software features only","ميزات البرمجيات فقط"],["The whole system: hardware, software, operators, infrastructure","النظام بأكمله: العتاد، البرمجيات، المشغّلون، البنية التحتية"],["Only the user interface","واجهة المستخدم فقط"],["Only the database schema","مخطط قاعدة البيانات فقط"]], a:1},
+   {q:["SRS (Software Requirements Specification) focuses exclusively on:","تُركّز مواصفات متطلبات البرمجيات (SRS) حصريًا على:"], o:[["Physical infrastructure","البنية التحتية المادية"],["Software features, data behaviors, interfaces, and external constraints","ميزات البرمجيات وسلوكيات البيانات والواجهات والقيود الخارجية"],["Human operator training","تدريب المشغّلين البشريين"],["Marketing strategy","استراتيجية التسويق"]], a:1},
+   {q:["Which is the correct structure for a functional requirement?","ما البنية الصحيحة للمتطلب الوظيفي؟"], o:[["[Object] + [Subject] + [Price]","[المفعول به] + [الفاعل] + [السعر]"],["[Subject] + [Modal Verb] + [System Action] + [Object] + [Condition/Context]","[الفاعل] + [الفعل الواصفي] + [فعل النظام] + [المفعول به] + [الشرط/السياق]"],["Just a single verb","فعل واحد فقط"],["A diagram only, no text","مخطط فقط، دون نص"]], a:1},
+   {q:["Which is NOT one of the four functional categories listed?","أي مما يلي ليس من الفئات الوظيفية الأربع المذكورة؟"], o:[["User Authentication & Authorization","المصادقة والتفويض"],["Data Processing & Storage","معالجة وتخزين البيانات"],["Office furniture procurement","شراء أثاث المكتب"],["Business Logic Execution","تنفيذ منطق الأعمال"]], a:2},
+   {q:["CRUD operations fall under which functional category?","تندرج عمليات CRUD تحت أي فئة وظيفية؟"], o:[["External Interface Interactions","تفاعلات الواجهة الخارجية"],["Data Processing & Storage","معالجة وتخزين البيانات"],["Business Logic Execution","تنفيذ منطق الأعمال"],["User Authentication & Authorization","المصادقة والتفويض"]], a:1},
+   {q:["Non-functional requirements describe:","تصف المتطلبات غير الوظيفية:"], o:[["What the system does","ما يفعله النظام"],["How well the system performs its functions","مدى جودة أداء النظام لوظائفه"],["The project budget only","ميزانية المشروع فقط"],["The company's org chart","الهيكل التنظيمي للشركة"]], a:1},
+   {q:["Which is an example of a GOOD (quantified) NFR?","أي مما يلي مثال على متطلب غير وظيفي جيد (كمّي)؟"], o:[["The system should almost never go down","يجب ألا يتوقف النظام تقريبًا أبدًا"],["The database must be secure from hackers","يجب أن تكون قاعدة البيانات آمنة من القراصنة"],["The core API shall maintain 99.95% uptime per month, excluding scheduled maintenance","يجب أن تحافظ واجهة برمجة التطبيقات الأساسية على 99.95% نسبة تشغيل شهريًا، باستثناء الصيانة المجدولة"],["The system must load pages quickly","يجب أن يُحمّل النظام الصفحات بسرعة"]], a:2},
+   {q:["AES-256 encryption and TLS 1.3 are examples used under which NFR category?","يُستخدم تشفير AES-256 وTLS 1.3 كمثال تحت أي فئة من المتطلبات غير الوظيفية؟"], o:[["Performance","الأداء"],["Security","الأمان"],["Availability / Reliability","التوفر / الموثوقية"],["Business Logic","منطق الأعمال"]], a:1}
+  ]
+});
+
+LECTURES.push({ id:'l6', n:6,
+  title:["Software & Process Documentation","توثيق البرمجيات والعمليات"],
+  obj:[
+    ["Explain the difference between SRS and Software & Process Documentation, and list what the latter covers.","شرح الفرق بين SRS وتوثيق البرمجيات والعمليات، وسرد ما يغطيه الأخير."],
+    ["Identify the five pillars of effective technical writing for software.","تحديد الركائز الخمس للكتابة التقنية الفعّالة للبرمجيات."],
+    ["Describe the standard structure of a user manual.","وصف البنية القياسية لدليل المستخدم."],
+    ["Describe the standard process description template and the two UML notations used for process mapping.","وصف قالب وصف العملية القياسي ونوعي ترميز UML المستخدمين لتخطيط العمليات."]
+  ],
+  sec:[
+   {t:["What Is Software & Process Documentation?","ما هو توثيق البرمجيات والعمليات؟"], b:[
+     {k:'p', x:["In the modern IT ecosystem, software is only as good as its documentation. Software & Process Documentation refers to the structured written materials, visual guides, and technical specifications that accompany software products to assist end-users, system administrators, and software engineers.","في منظومة تقنية المعلومات الحديثة، لا تكون البرمجيات أفضل من توثيقها. ويشير توثيق البرمجيات والعمليات (Software & Process Documentation) إلى المواد المكتوبة المنظّمة والأدلة البصرية والمواصفات التقنية المرافقة للمنتجات البرمجية لمساعدة المستخدمين النهائيين ومديري الأنظمة ومهندسي البرمجيات."]},
+     {k:'p', x:["While Requirements Specifications (SRS) focus on what to build, Software & Process Documentation focuses on:","بينما تُركّز مواصفات المتطلبات (SRS) على ما الذي يجب بناؤه، يُركّز توثيق البرمجيات والعمليات على:"]},
+     {k:'ul', x:[
+       ["How to use the software (User Documentation / End-User Manuals).","كيفية استخدام البرنامج (توثيق المستخدم / أدلة المستخدم النهائي)."],
+       ["How the internal processes flow (Process Descriptions & Architecture Diagrams).","كيفية تدفق العمليات الداخلية (أوصاف العمليات ومخططات البنية)."],
+       ["How systems integrate (API Documentation).","كيفية تكامل الأنظمة (توثيق واجهات برمجة التطبيقات)."],
+       ["How to diagnose and repair failures (Troubleshooting Guides & Post-Mortems).","كيفية تشخيص الأعطال وإصلاحها (أدلة استكشاف الأخطاء وتحليلات ما بعد الحادثة)."]]}
+   ]},
+   {t:["Five Pillars of Technical Writing for Software","الركائز الخمس للكتابة التقنية للبرمجيات"], b:[
+     {k:'p', x:["Effective software documentation adheres to five fundamental pillars of technical communication.","يلتزم التوثيق البرمجي الفعّال بخمس ركائز أساسية للتواصل التقني."]},
+     {k:'ul', x:[
+       ["Conciseness.","الإيجاز."],
+       ["Clarity.","الوضوح."],
+       ["Consistency.","الاتساق."],
+       ["Accuracy.","الدقة."],
+       ["Accessibility.","سهولة الوصول."]]}
+   ]},
+   {t:["User Documentation & User Manuals","توثيق المستخدم وأدلة المستخدم"], b:[
+     {k:'def', x:["A User Manual (or User Guide) provides step-by-step instructions enabling non-technical or technical end-users to operate a software application effectively.","دليل المستخدم (User Manual أو User Guide) يُقدّم تعليمات خطوة بخطوة تُمكّن المستخدمين النهائيين، التقنيين وغير التقنيين، من تشغيل تطبيق برمجي بفعالية."]}
+   ]},
+   {t:["Structural Standard for a User Manual","البنية القياسية لدليل المستخدم"], b:[
+     {k:'ul', x:[
+       ["1. Title Page & Document Metadata (Version, Date, Author).","1. صفحة العنوان وبيانات الوثيقة الوصفية (الإصدار، التاريخ، المؤلف)."],
+       ["2. System Requirements / Prerequisites.","2. متطلبات النظام / المتطلبات المسبقة."],
+       ["3. Getting Started / Installation Guide.","3. البدء / دليل التثبيت."],
+       ["4. Interface Overview & Navigation.","4. نظرة عامة على الواجهة والتنقل."],
+       ["5. Core Tasks / Step-by-Step Procedures.","5. المهام الأساسية / الإجراءات خطوة بخطوة."],
+       ["6. Troubleshooting & Frequently Asked Questions (FAQ).","6. استكشاف الأخطاء والأسئلة الشائعة (FAQ)."],
+       ["7. Glossary of Terms & Index.","7. قائمة المصطلحات والفهرس."]]}
+   ]},
+   {t:["Process Mapping Notation: UML & Flowcharts","ترميز تخطيط العمليات: UML والمخططات الانسيابية"], b:[
+     {k:'p', x:["Technical writers use standard visual notations to complement written text.","يستخدم الكتّاب التقنيون ترميزات بصرية قياسية لتكملة النص المكتوب."]},
+     {k:'ul', x:[
+       ["UML Activity Diagrams / Flowcharts — for decision trees and control flow.","مخططات النشاط UML / المخططات الانسيابية — لأشجار القرار وتدفق التحكم."],
+       ["UML Sequence Diagrams — for interaction between different software subsystems or APIs.","مخططات التسلسل UML — للتفاعل بين الأنظمة الفرعية البرمجية المختلفة أو واجهات برمجة التطبيقات."]]}
+   ]},
+   {t:["Standard Process Description Template","قالب وصف العملية القياسي"], b:[
+     {k:'p', x:["When documenting a system process, include the following structural elements.","عند توثيق عملية نظام، أدرج العناصر البنيوية التالية."]},
+     {k:'ul', x:[
+       ["Process Title — clear name (e.g., User Password Reset Workflow).","عنوان العملية — اسم واضح (مثل سير عمل إعادة تعيين كلمة مرور المستخدم)."],
+       ["Objective — what this process achieves.","الهدف — ما الذي تحققه هذه العملية."],
+       ["Triggers — what initiates the process (e.g., user clicks 'Forgot Password').","المُحفّزات — ما الذي يُطلق العملية (مثل نقر المستخدم على 'نسيت كلمة المرور')."],
+       ["Inputs — required data or conditions before execution.","المُدخلات — البيانات أو الشروط المطلوبة قبل التنفيذ."],
+       ["Execution Steps — sequential list of actions taken by actors/systems.","خطوات التنفيذ — قائمة متسلسلة بالإجراءات التي يتخذها الفاعلون/الأنظمة."],
+       ["Outputs — resulting state, data saved, or notifications dispatched.","المُخرجات — الحالة الناتجة، أو البيانات المحفوظة، أو الإشعارات المُرسلة."],
+       ["Exceptions / Alternative Flows — how errors during the process are handled.","الاستثناءات / المسارات البديلة — كيفية التعامل مع الأخطاء أثناء العملية."]]}
+   ]}
+  ],
+  take:[
+   ["Software is only as good as its documentation; SRS defines what to build, while S&PD explains how to use, how it flows internally, how it integrates, and how to fix it.","لا تكون البرمجيات أفضل من توثيقها؛ تُحدّد SRS ما يجب بناؤه، بينما يشرح توثيق البرمجيات والعمليات كيفية الاستخدام، والتدفق الداخلي، والتكامل، والإصلاح."],
+   ["Five pillars of software documentation: conciseness, clarity, consistency, accuracy, accessibility.","خمس ركائز لتوثيق البرمجيات: الإيجاز، الوضوح، الاتساق، الدقة، سهولة الوصول."],
+   ["A user manual follows a 7-part structure: title/metadata, prerequisites, getting started, interface overview, core tasks, troubleshooting/FAQ, glossary/index.","يتبع دليل المستخدم بنية من 7 أجزاء: العنوان/البيانات الوصفية، المتطلبات المسبقة، البدء، نظرة الواجهة، المهام الأساسية، استكشاف الأخطاء/الأسئلة الشائعة، المصطلحات/الفهرس."],
+   ["UML Activity Diagrams/Flowcharts map decision trees and control flow; UML Sequence Diagrams map interaction between subsystems/APIs.","تُخطط مخططات النشاط UML/المخططات الانسيابية أشجار القرار وتدفق التحكم؛ بينما تُخطط مخططات التسلسل UML التفاعل بين الأنظمة الفرعية/واجهات برمجة التطبيقات."],
+   ["A process description includes: title, objective, triggers, inputs, execution steps, outputs, and exceptions/alternative flows.","يتضمن وصف العملية: العنوان، الهدف، المُحفّزات، المُدخلات، خطوات التنفيذ، المُخرجات، والاستثناءات/المسارات البديلة."]
+  ],
+  fc:[
+   [["What does Software & Process Documentation refer to?","إلى ماذا يشير توثيق البرمجيات والعمليات؟"],["Structured written materials, visual guides, and technical specs accompanying software to assist end-users, admins, and engineers.","المواد المكتوبة المنظّمة والأدلة البصرية والمواصفات التقنية المرافقة للبرمجيات لمساعدة المستخدمين النهائيين ومديري الأنظمة والمهندسين."]],
+   [["How does SRS differ from Software & Process Documentation in focus?","كيف يختلف تركيز SRS عن توثيق البرمجيات والعمليات؟"],["SRS focuses on what to build; S&PD focuses on how to use, how it flows internally, integrates, and is fixed.","تُركّز SRS على ما يجب بناؤه؛ بينما يُركّز توثيق البرمجيات والعمليات على كيفية الاستخدام والتدفق الداخلي والتكامل والإصلاح."]],
+   [["List the five pillars of technical writing for software.","اذكر الركائز الخمس للكتابة التقنية للبرمجيات."],["Conciseness, clarity, consistency, accuracy, accessibility.","الإيجاز، الوضوح، الاتساق، الدقة، سهولة الوصول."]],
+   [["Define a User Manual.","عرّف دليل المستخدم."],["A document providing step-by-step instructions enabling end-users to operate a software application effectively.","وثيقة تُقدّم تعليمات خطوة بخطوة تُمكّن المستخدمين النهائيين من تشغيل تطبيق برمجي بفعالية."]],
+   [["What is the first section in the standard User Manual structure?","ما القسم الأول في البنية القياسية لدليل المستخدم؟"],["Title Page & Document Metadata (Version, Date, Author).","صفحة العنوان وبيانات الوثيقة الوصفية (الإصدار، التاريخ، المؤلف)."]],
+   [["What is the last section in the standard User Manual structure?","ما القسم الأخير في البنية القياسية لدليل المستخدم؟"],["Glossary of Terms & Index.","قائمة المصطلحات والفهرس."]],
+   [["Which UML notation is used for decision trees and control flow?","أي ترميز UML يُستخدم لأشجار القرار وتدفق التحكم؟"],["UML Activity Diagrams / Flowcharts.","مخططات النشاط UML / المخططات الانسيابية."]],
+   [["Which UML notation is used for interaction between subsystems or APIs?","أي ترميز UML يُستخدم للتفاعل بين الأنظمة الفرعية أو واجهات برمجة التطبيقات؟"],["UML Sequence Diagrams.","مخططات التسلسل UML."]],
+   [["What does the 'Triggers' element of a process description specify?","ماذا يُحدّد عنصر 'المُحفّزات' في وصف العملية؟"],["What initiates the process (e.g., user clicks 'Forgot Password').","ما الذي يُطلق العملية (مثل نقر المستخدم على 'نسيت كلمة المرور')."]],
+   [["What does the 'Exceptions / Alternative Flows' element describe?","ماذا يصف عنصر 'الاستثناءات / المسارات البديلة'؟"],["How errors during the process are handled.","كيفية التعامل مع الأخطاء أثناء العملية."]],
+   [["Name three of the seven elements of the standard process description template.","اذكر ثلاثة من العناصر السبعة لقالب وصف العملية القياسي."],["Any three of: Process Title, Objective, Triggers, Inputs, Execution Steps, Outputs, Exceptions/Alternative Flows.","أي ثلاثة من: عنوان العملية، الهدف، المُحفّزات، المُدخلات، خطوات التنفيذ، المُخرجات، الاستثناءات/المسارات البديلة."]]
+  ],
+  quiz:[
+   {q:["SRS focuses on 'what to build.' What does Software & Process Documentation focus on?","تُركّز SRS على 'ما يجب بناؤه'. فعلى ماذا يُركّز توثيق البرمجيات والعمليات؟"], o:[["Marketing the software","تسويق البرنامج"],["How to use, how it flows, how it integrates, and how to fix it","كيفية الاستخدام والتدفق والتكامل والإصلاح"],["The company's hiring process","عملية التوظيف في الشركة"],["Stock price projections","توقعات سعر السهم"]], a:1},
+   {q:["Which is NOT one of the five pillars of technical writing for software?","أي مما يلي ليس من الركائز الخمس للكتابة التقنية للبرمجيات؟"], o:[["Conciseness","الإيجاز"],["Clarity","الوضوح"],["Entertainment value","القيمة الترفيهية"],["Accuracy","الدقة"]], a:2},
+   {q:["A User Manual is best defined as:","يُعرَّف دليل المستخدم على أفضل وجه بأنه:"], o:[["Marketing material for investors","مادة تسويقية للمستثمرين"],["Step-by-step instructions for operating a software application","تعليمات خطوة بخطوة لتشغيل تطبيق برمجي"],["The source code of the application","الشيفرة المصدرية للتطبيق"],["A legal contract","عقد قانوني"]], a:1},
+   {q:["In the standard User Manual structure, what comes right after 'Getting Started / Installation Guide'?","في البنية القياسية لدليل المستخدم، ماذا يأتي مباشرة بعد 'البدء / دليل التثبيت'؟"], o:[["Glossary of Terms & Index","قائمة المصطلحات والفهرس"],["Interface Overview & Navigation","نظرة عامة على الواجهة والتنقل"],["Title Page & Document Metadata","صفحة العنوان وبيانات الوثيقة الوصفية"],["Troubleshooting & FAQ","استكشاف الأخطاء والأسئلة الشائعة"]], a:1},
+   {q:["Which section of a User Manual addresses common user problems?","أي قسم من دليل المستخدم يتناول المشكلات الشائعة للمستخدمين؟"], o:[["System Requirements / Prerequisites","متطلبات النظام / المتطلبات المسبقة"],["Troubleshooting & FAQ","استكشاف الأخطاء والأسئلة الشائعة"],["Title Page & Document Metadata","صفحة العنوان وبيانات الوثيقة الوصفية"],["Core Tasks / Step-by-Step Procedures","المهام الأساسية / الإجراءات خطوة بخطوة"]], a:1},
+   {q:["UML Activity Diagrams / Flowcharts are used for:","تُستخدم مخططات النشاط UML / المخططات الانسيابية من أجل:"], o:[["Decision trees and control flow","أشجار القرار وتدفق التحكم"],["Marketing budgets","الميزانيات التسويقية"],["Employee salaries","رواتب الموظفين"],["Office floor plans","مخططات تصميم المكاتب"]], a:0},
+   {q:["UML Sequence Diagrams are used for:","تُستخدم مخططات التسلسل UML من أجل:"], o:[["Interaction between subsystems or APIs","التفاعل بين الأنظمة الفرعية أو واجهات برمجة التطبيقات"],["Company organizational charts","الهياكل التنظيمية للشركة"],["Color palettes for the UI","لوحات ألوان الواجهة"],["Font selection","اختيار الخطوط"]], a:0},
+   {q:["Which element of a process description specifies what initiates the process?","أي عنصر من وصف العملية يُحدّد ما الذي يُطلق العملية؟"], o:[["Outputs","المُخرجات"],["Triggers","المُحفّزات"],["Objective","الهدف"],["Process Title","عنوان العملية"]], a:1},
+   {q:["Which element of a process description describes how errors are handled?","أي عنصر من وصف العملية يصف كيفية التعامل مع الأخطاء؟"], o:[["Inputs","المُدخلات"],["Execution Steps","خطوات التنفيذ"],["Exceptions / Alternative Flows","الاستثناءات / المسارات البديلة"],["Process Title","عنوان العملية"]], a:2},
+   {q:["'User Password Reset Workflow' is an example of which process description element?","'سير عمل إعادة تعيين كلمة مرور المستخدم' مثال على أي عنصر من وصف العملية؟"], o:[["Outputs","المُخرجات"],["Process Title","عنوان العملية"],["Triggers","المُحفّزات"],["Exceptions","الاستثناءات"]], a:1}
+  ]
+});
+
+LECTURES.push({ id:'l7', n:7,
+  title:["Technical Incident Report","تقرير الحادثة التقنية"],
+  obj:[
+    ["Define a technical incident and a technical incident report, and list the eight questions it should answer.","تعريف الحادثة التقنية وتقرير الحادثة التقنية، وسرد الأسئلة الثمانية التي يجب أن يُجيب عليها."],
+    ["List the five purposes and ten main parts of a technical incident report.","سرد الأغراض الخمسة والأجزاء الرئيسية العشرة لتقرير الحادثة التقنية."],
+    ["Distinguish a technical incident report from a technical report.","التمييز بين تقرير الحادثة التقنية والتقرير التقني."],
+    ["Identify the six qualities of a good incident report.","تحديد الصفات الست للتقرير الجيد عن الحادثة."]
+  ],
+  sec:[
+   {t:["What Is a Technical Incident Report?","ما هو تقرير الحادثة التقنية؟"], b:[
+     {k:'def', x:["A Technical Incident Report is a formal document used to record and explain a technical problem or unexpected event.","تقرير الحادثة التقنية (Technical Incident Report) هو وثيقة رسمية تُستخدم لتسجيل وشرح مشكلة تقنية أو حدث غير متوقع."]},
+     {k:'ul', h:["It provides information about:","يُقدّم معلومات حول:"], x:[
+       ["What happened?","ماذا حدث؟"],["When did it happen?","متى حدث؟"],["Where did it happen?","أين حدث؟"],["What was affected?","ماذا تأثر؟"],
+       ["What caused the problem?","ما سبب المشكلة؟"],["What actions were taken?","ما الإجراءات التي اتُّخذت؟"],["How was the problem solved?","كيف حُلّت المشكلة؟"],["How can we prevent it from happening again?","كيف يمكننا منع تكرارها؟"]]}
+   ]},
+   {t:["What Is a Technical Incident?","ما هي الحادثة التقنية؟"], b:[
+     {k:'def', x:["A technical incident is an unexpected event that affects a computer system, network, software, hardware, database, or IT service.","الحادثة التقنية هي حدث غير متوقع يؤثر على نظام حاسوبي أو شبكة أو برنامج أو عتاد أو قاعدة بيانات أو خدمة تقنية معلومات."]},
+     {k:'ul', h:["Examples of Technical Incidents","أمثلة على الحوادث التقنية"], x:[
+       ["Network failure.","عطل الشبكة."],["Server failure.","عطل الخادم."],["Computer virus infection.","الإصابة بفيروس حاسوبي."],["Database failure.","عطل قاعدة البيانات."],["Software error.","خطأ برمجي."]]}
+   ]},
+   {t:["Purpose of a Technical Incident Report","غرض تقرير الحادثة التقنية"], b:[
+     {k:'ul', x:[
+       ["1. Documentation — to create an official record of the incident.","1. التوثيق — لإنشاء سجل رسمي للحادثة."],
+       ["2. Investigation — to identify what caused the problem.","2. التحقيق — لتحديد سبب المشكلة."],
+       ["3. Communication — to communicate the incident to managers, IT staff, or other responsible people.","3. التواصل — لإبلاغ المديرين أو طاقم تقنية المعلومات أو الجهات المسؤولة الأخرى بالحادثة."],
+       ["4. Problem Resolution — to record how the problem was solved.","4. حل المشكلة — لتسجيل كيفية حل المشكلة."],
+       ["5. Prevention — to help prevent the same problem from happening again.","5. الوقاية — للمساعدة في منع تكرار المشكلة نفسها."]]}
+   ]},
+   {t:["Main Parts of a Technical Incident Report","الأجزاء الرئيسية لتقرير الحادثة التقنية"], b:[
+     {k:'p', x:["A Technical Incident Report normally contains:","يحتوي تقرير الحادثة التقنية عادةً على:"]},
+     {k:'ul', x:[
+       ["1. Title","1. العنوان"],["2. Incident Information","2. معلومات الحادثة"],["3. Description of the Incident","3. وصف الحادثة"],["4. Impact","4. الأثر"],
+       ["5. Investigation","5. التحقيق"],["6. Root Cause","6. السبب الجذري"],["7. Actions Taken","7. الإجراءات المتخذة"],["8. Resolution","8. الحل"],
+       ["9. Recommendations","9. التوصيات"],["10. Conclusion","10. الخاتمة"]]}
+   ]},
+   {t:["Complete Example: Network Failure Incident Report","مثال كامل: تقرير حادثة عطل الشبكة"], b:[
+     {k:'ex', x:["Technical Incident Report – Network Failure\n\nIncident Information\nIncident Date: 20 September 2026\nIncident Time: 10:30 AM\nLocation: Computer Laboratory\nSystem: University Network\nReported By: IT Support Team\nSeverity: High\n\nDescription of the Incident\nAt 10:30 AM, the Internet connection stopped working in the computer laboratory. Students and staff were unable to access online services.\n\nImpact\nThe incident affected 25 computers in the laboratory. Students were unable to access the university's online learning system.\n\nInvestigation\nThe IT support team checked the network cables, switch, router, and server connection. The router configuration was also examined.\n\nRoot Cause\nThe investigation showed that a configuration error caused the router to stop providing Internet access.\n\nActions Taken\nThe IT team corrected the configuration and restarted the router. The network connection was then tested on several computers.\n\nResolution\nInternet access was successfully restored at 12:15 PM.\n\nRecommendations\nIt is recommended that router configurations be backed up regularly and network devices be monitored to prevent similar incidents.\n\nConclusion\nThe network incident was successfully investigated and resolved. Normal Internet services were restored to the computer laboratory.","تقرير حادثة تقنية – عطل الشبكة\n\nمعلومات الحادثة\nتاريخ الحادثة: 20 سبتمبر 2026\nوقت الحادثة: 10:30 صباحًا\nالموقع: مختبر الحاسوب\nالنظام: شبكة الجامعة\nمُقدِّم البلاغ: فريق الدعم التقني\nالخطورة: عالية\n\nوصف الحادثة\nفي الساعة 10:30 صباحًا، توقف اتصال الإنترنت عن العمل في مختبر الحاسوب. لم يتمكن الطلاب والموظفون من الوصول إلى الخدمات الإلكترونية.\n\nالأثر\nأثرت الحادثة على 25 حاسوبًا في المختبر. لم يتمكن الطلاب من الوصول إلى نظام التعلم الإلكتروني للجامعة.\n\nالتحقيق\nفحص فريق الدعم التقني كابلات الشبكة والمحوّل والموجّه واتصال الخادم. كما فُحص إعداد الموجّه.\n\nالسبب الجذري\nأظهر التحقيق أن خطأً في الإعداد تسبب في توقف الموجّه عن توفير الوصول إلى الإنترنت.\n\nالإجراءات المتخذة\nصحّح فريق تقنية المعلومات الإعداد وأعاد تشغيل الموجّه. ثم جُرِّب اتصال الشبكة على عدة أجهزة.\n\nالحل\nاستُعيد الوصول إلى الإنترنت بنجاح في الساعة 12:15 ظهرًا.\n\nالتوصيات\nيُوصى بعمل نسخ احتياطية دورية لإعدادات الموجّه ومراقبة أجهزة الشبكة لمنع تكرار حوادث مماثلة.\n\nالخاتمة\nجرى التحقيق في حادثة الشبكة وحلّها بنجاح. واستُعيدت خدمات الإنترنت الطبيعية لمختبر الحاسوب."]}
+   ]},
+   {t:["Incident Report vs. Technical Report","تقرير الحادثة مقابل التقرير التقني"], b:[
+     {k:'tbl', h:[["Technical Report","التقرير التقني"],["Incident Report","تقرير الحادثة"]],
+      r:[
+       [["Reports a technical topic or study.","يتناول موضوعًا أو دراسة تقنية."],["Reports a problem or incident.","يتناول مشكلة أو حادثة."]],
+       [["Explains what was studied.","يشرح ما تمت دراسته."],["Explains what happened.","يشرح ما حدث."]],
+       [["Focuses on analysis and results.","يُركّز على التحليل والنتائج."],["Focuses on the cause and solution.","يُركّز على السبب والحل."]],
+       [["Can be written without an incident.","يمكن كتابته دون وقوع حادثة."],["Written after an incident occurs.","يُكتب بعد وقوع حادثة."]],
+       [["Example: Server Performance Analysis.","مثال: تحليل أداء الخادم."],["Example: Server Failure.","مثال: عطل الخادم."]]
+      ]}
+   ]},
+   {t:["Qualities of a Good Incident Report","صفات التقرير الجيد عن الحادثة"], b:[
+     {k:'ul', x:[
+       ["1. Clear — the information should be easy to understand.","1. واضح — يجب أن تكون المعلومات سهلة الفهم."],
+       ["2. Accurate — the information should be correct.","2. دقيق — يجب أن تكون المعلومات صحيحة."],
+       ["3. Objective — the report should present facts rather than personal opinions.","3. موضوعي — يجب أن يعرض التقرير الحقائق لا الآراء الشخصية."],
+       ["4. Concise — the report should not contain unnecessary information.","4. موجز — يجب ألا يحتوي التقرير على معلومات غير ضرورية."],
+       ["5. Organized — information should be presented in a logical order.","5. منظم — يجب تقديم المعلومات بترتيب منطقي."],
+       ["6. Specific — the report should include exact dates, times, systems, and actions whenever possible.","6. محدد — يجب أن يتضمن التقرير تواريخ وأوقاتًا وأنظمة وإجراءات دقيقة كلما أمكن."]]}
+   ]}
+  ],
+  take:[
+   ["A technical incident report formally records and explains a technical problem — answering what, when, where, what was affected, cause, actions, resolution, and prevention.","يُسجّل تقرير الحادثة التقنية ويشرح مشكلة تقنية رسميًا — مُجيبًا عن ماذا ومتى وأين وماذا تأثر والسبب والإجراءات والحل والوقاية."],
+   ["Five purposes: documentation, investigation, communication, problem resolution, and prevention.","خمسة أغراض: التوثيق، التحقيق، التواصل، حل المشكلة، والوقاية."],
+   ["Ten main parts, from Title through Conclusion, including Root Cause and Recommendations.","عشرة أجزاء رئيسية، من العنوان إلى الخاتمة، بما في ذلك السبب الجذري والتوصيات."],
+   ["Technical reports study a topic (can exist without an incident); incident reports explain what happened after a specific event.","تدرس التقارير التقنية موضوعًا (يمكن أن توجد دون حادثة)؛ بينما تشرح تقارير الحوادث ما حدث بعد واقعة محددة."],
+   ["A good incident report is clear, accurate, objective, concise, organized, and specific.","التقرير الجيد عن الحادثة واضح ودقيق وموضوعي وموجز ومنظم ومحدد."]
+  ],
+  fc:[
+   [["Define a Technical Incident Report.","عرّف تقرير الحادثة التقنية."],["A formal document used to record and explain a technical problem or unexpected event.","وثيقة رسمية تُستخدم لتسجيل وشرح مشكلة تقنية أو حدث غير متوقع."]],
+   [["Name four of the eight questions a technical incident report answers.","اذكر أربعة من الأسئلة الثمانية التي يُجيب عليها تقرير الحادثة التقنية."],["Any four of: what happened, when, where, what was affected, what caused it, what actions were taken, how it was solved, how to prevent recurrence.","أي أربعة من: ماذا حدث، متى، أين، ماذا تأثر، ما السبب، ما الإجراءات المتخذة، كيف حُلّت، كيف تُمنع إعادة الحدوث."]],
+   [["Define a technical incident, and give two examples.","عرّف الحادثة التقنية، واذكر مثالين."],["An unexpected event affecting a computer system, network, software, hardware, database, or IT service — e.g. network failure, software error.","حدث غير متوقع يؤثر على نظام حاسوبي أو شبكة أو برنامج أو عتاد أو قاعدة بيانات أو خدمة تقنية معلومات — مثل عطل الشبكة أو خطأ برمجي."]],
+   [["List the five purposes of a technical incident report.","اذكر الأغراض الخمسة لتقرير الحادثة التقنية."],["Documentation, investigation, communication, problem resolution, and prevention.","التوثيق، التحقيق، التواصل، حل المشكلة، والوقاية."]],
+   [["Name five of the ten main parts of a technical incident report.","اذكر خمسة من الأجزاء الرئيسية العشرة لتقرير الحادثة التقنية."],["Any five of: Title, Incident Information, Description, Impact, Investigation, Root Cause, Actions Taken, Resolution, Recommendations, Conclusion.","أي خمسة من: العنوان، معلومات الحادثة، الوصف، الأثر، التحقيق، السبب الجذري، الإجراءات المتخذة، الحل، التوصيات، الخاتمة."]],
+   [["In the worked example, what was the root cause of the network failure?","في المثال المحلول، ما السبب الجذري لعطل الشبكة؟"],["A configuration error caused the router to stop providing Internet access.","خطأ في الإعداد تسبب في توقف الموجّه عن توفير الوصول إلى الإنترنت."]],
+   [["In the worked example, how many computers were affected, and when was the issue resolved?","في المثال المحلول، كم حاسوبًا تأثر، ومتى حُلّت المشكلة؟"],["25 computers were affected; Internet access was restored at 12:15 PM.","تأثر 25 حاسوبًا؛ واستُعيد الوصول إلى الإنترنت في الساعة 12:15 ظهرًا."]],
+   [["What recommendation was given in the worked example's incident report?","ما التوصية التي وردت في تقرير الحادثة في المثال المحلول؟"],["Back up router configurations regularly and monitor network devices to prevent similar incidents.","عمل نسخ احتياطية دورية لإعدادات الموجّه ومراقبة أجهزة الشبكة لمنع تكرار حوادث مماثلة."]],
+   [["How does a technical report differ from an incident report in terms of focus?","كيف يختلف التقرير التقني عن تقرير الحادثة من حيث التركيز؟"],["A technical report focuses on analysis and results; an incident report focuses on the cause and solution.","يُركّز التقرير التقني على التحليل والنتائج؛ بينما يُركّز تقرير الحادثة على السبب والحل."]],
+   [["Can a technical report be written without an incident occurring? What about an incident report?","هل يمكن كتابة تقرير تقني دون وقوع حادثة؟ وماذا عن تقرير الحادثة؟"],["Yes, a technical report can be written without an incident; an incident report is written only after an incident occurs.","نعم، يمكن كتابة تقرير تقني دون حادثة؛ بينما يُكتب تقرير الحادثة فقط بعد وقوع حادثة."]],
+   [["List the six qualities of a good incident report.","اذكر صفات التقرير الجيد عن الحادثة الست."],["Clear, accurate, objective, concise, organized, and specific.","واضح، دقيق، موضوعي، موجز، منظم، ومحدد."]],
+   [["What does 'Objective' mean for an incident report?","ماذا تعني 'الموضوعية' بالنسبة لتقرير الحادثة؟"],["The report should present facts rather than personal opinions.","يجب أن يعرض التقرير الحقائق لا الآراء الشخصية."]],
+   [["What does 'Specific' mean for an incident report?","ماذا تعني 'التحديد' بالنسبة لتقرير الحادثة؟"],["It should include exact dates, times, systems, and actions whenever possible.","يجب أن يتضمن تواريخ وأوقاتًا وأنظمة وإجراءات دقيقة كلما أمكن."]]
+  ],
+  quiz:[
+   {q:["A Technical Incident Report is best defined as:","يُعرَّف تقرير الحادثة التقنية على أفضل وجه بأنه:"], o:[["A marketing brochure","كتيب تسويقي"],["A formal document recording and explaining a technical problem or unexpected event","وثيقة رسمية تُسجّل وتشرح مشكلة تقنية أو حدثًا غير متوقع"],["A software license agreement","اتفاقية ترخيص برمجيات"],["A job application form","نموذج طلب توظيف"]], a:1},
+   {q:["Which is NOT one of the eight questions a technical incident report answers?","أي مما يلي ليس من الأسئلة الثمانية التي يُجيب عليها تقرير الحادثة التقنية؟"], o:[["What happened?","ماذا حدث؟"],["What is the company's five-year growth plan?","ما خطة نمو الشركة الخمسية؟"],["What caused the problem?","ما سبب المشكلة؟"],["How can we prevent it from happening again?","كيف يمكننا منع تكرارها؟"]], a:1},
+   {q:["Which is an example of a technical incident?","أي مما يلي مثال على حادثة تقنية؟"], o:[["A scheduled staff meeting","اجتماع موظفين مجدول"],["A server failure","عطل خادم"],["An employee's vacation request","طلب إجازة موظف"],["A marketing campaign launch","إطلاق حملة تسويقية"]], a:1},
+   {q:["Which is NOT one of the five purposes of a technical incident report?","أي مما يلي ليس من الأغراض الخمسة لتقرير الحادثة التقنية؟"], o:[["Documentation","التوثيق"],["Investigation","التحقيق"],["Advertising the company's products","الترويج لمنتجات الشركة"],["Prevention","الوقاية"]], a:2},
+   {q:["Which part of a technical incident report explains WHY the problem happened?","أي جزء من تقرير الحادثة التقنية يشرح لماذا حدثت المشكلة؟"], o:[["Title","العنوان"],["Root Cause","السبب الجذري"],["Conclusion","الخاتمة"],["Recommendations","التوصيات"]], a:1},
+   {q:["In the worked network failure example, what was the Severity listed as?","في مثال عطل الشبكة المحلول، ما الخطورة المُدرَجة؟"], o:[["Low","منخفضة"],["Medium","متوسطة"],["High","عالية"],["Critical","حرجة"]], a:2},
+   {q:["In the worked example, what time was Internet access restored?","في المثال المحلول، في أي وقت استُعيد الوصول إلى الإنترنت؟"], o:[["10:30 AM","10:30 صباحًا"],["12:15 PM","12:15 ظهرًا"],["3:00 PM","3:00 عصرًا"],["9:00 AM","9:00 صباحًا"]], a:1},
+   {q:["A technical report, unlike an incident report:","التقرير التقني، على عكس تقرير الحادثة:"], o:[["Can only be written after an incident","لا يمكن كتابته إلا بعد حادثة"],["Can be written without an incident occurring","يمكن كتابته دون وقوع حادثة"],["Never contains any analysis","لا يحتوي أبدًا على أي تحليل"],["Is always shorter","أقصر دائمًا"]], a:1},
+   {q:["An incident report focuses mainly on:","يُركّز تقرير الحادثة أساسًا على:"], o:[["General analysis and results of a study","التحليل العام ونتائج دراسة"],["The cause and solution of a problem","سبب المشكلة وحلها"],["Future marketing plans","خطط التسويق المستقبلية"],["Employee performance reviews","مراجعات أداء الموظفين"]], a:1},
+   {q:["'The report should present facts rather than personal opinions' describes which quality?","'يجب أن يعرض التقرير الحقائق لا الآراء الشخصية' يصف أي صفة؟"], o:[["Concise","موجز"],["Objective","موضوعي"],["Organized","منظم"],["Specific","محدد"]], a:1},
+   {q:["'The report should not contain unnecessary information' describes which quality?","'يجب ألا يحتوي التقرير على معلومات غير ضرورية' يصف أي صفة؟"], o:[["Accurate","دقيق"],["Clear","واضح"],["Concise","موجز"],["Specific","محدد"]], a:2},
+   {q:["Including exact dates, times, systems, and actions describes which quality of a good report?","تضمين تواريخ وأوقات وأنظمة وإجراءات دقيقة يصف أي صفة للتقرير الجيد؟"], o:[["Organized","منظم"],["Specific","محدد"],["Objective","موضوعي"],["Accurate","دقيق"]], a:1}
+  ]
+});
+
+LECTURES.push({ id:'l8', n:8,
+  title:["Network and Security Policies","سياسات الشبكة والأمان"],
+  obj:[
+    ["Define network policy and security policy, and distinguish between them.","تعريف سياسة الشبكة وسياسة الأمان والتمييز بينهما."],
+    ["List the common security threats a security policy protects against.","سرد التهديدات الأمنية الشائعة التي تحمي منها سياسة الأمان."],
+    ["Explain why network and security policies are important for organizations.","شرح أهمية سياسات الشبكة والأمان بالنسبة للمؤسسات."],
+    ["Identify the main components of a security policy.","تحديد المكونات الرئيسية لسياسة الأمان."]
+  ],
+  sec:[
+   {t:["Introduction: What Is a Network and Security Policy?","مقدمة: ما هي سياسة الشبكة والأمان؟"], b:[
+     {k:'def', x:["A Network and Security Policy is a set of rules and guidelines used to protect a computer network, its systems, and its data.","سياسة الشبكة والأمان هي مجموعة من القواعد والإرشادات تُستخدم لحماية الشبكة الحاسوبية وأنظمتها وبياناتها."]}
+   ]},
+   {t:["What Is a Network Policy?","ما هي سياسة الشبكة؟"], b:[
+     {k:'def', x:["A Network Policy defines how users and devices should use the network.","سياسة الشبكة (Network Policy) تُحدّد كيفية استخدام المستخدمين والأجهزة للشبكة."]},
+     {k:'ul', h:["Examples of what a network policy defines","أمثلة على ما تُحدّده سياسة الشبكة"], x:[
+       ["Who can access the network?","من يمكنه الوصول إلى الشبكة؟"],
+       ["What devices can connect?","ما الأجهزة التي يمكنها الاتصال؟"],
+       ["Which websites can users access?","ما المواقع التي يمكن للمستخدمين الوصول إليها؟"],
+       ["What services can users use?","ما الخدمات التي يمكن للمستخدمين استخدامها؟"],
+       ["How much network access does each user have?","ما مقدار الوصول إلى الشبكة الذي يملكه كل مستخدم؟"]]}
+   ]},
+   {t:["What Is a Security Policy?","ما هي سياسة الأمان؟"], b:[
+     {k:'def', x:["A Security Policy is a set of rules designed to protect information systems, networks, and data from security threats.","سياسة الأمان (Security Policy) هي مجموعة من القواعد المصمّمة لحماية أنظمة المعلومات والشبكات والبيانات من التهديدات الأمنية."]},
+     {k:'ul', h:["Security threats include:","تشمل التهديدات الأمنية:"], x:[
+       ["Viruses.","الفيروسات."],["Malware.","البرمجيات الخبيثة."],["Hacking.","القرصنة."],["Unauthorized access.","الوصول غير المصرح به."],["Data theft.","سرقة البيانات."],["Password attacks.","هجمات كلمات المرور."]]}
+   ]},
+   {t:["Why Are Network and Security Policies Important?","لماذا تهم سياسات الشبكة والأمان؟"], b:[
+     {k:'p', x:["Network and security policies help organizations to:","تساعد سياسات الشبكة والأمان المؤسسات على:"]},
+     {k:'ul', x:[
+       ["Protect data.","حماية البيانات."],["Prevent unauthorized access.","منع الوصول غير المصرح به."],["Protect network resources.","حماية موارد الشبكة."],
+       ["Reduce security risks.","تقليل المخاطر الأمنية."],["Control user access.","التحكم في وصول المستخدمين."],["Respond to security incidents.","الاستجابة للحوادث الأمنية."]]}
+   ]},
+   {t:["Main Components of a Security Policy","المكونات الرئيسية لسياسة الأمان"], b:[
+     {k:'p', x:["A security policy may include:","قد تتضمن سياسة الأمان:"]},
+     {k:'ul', x:[
+       ["1. Password Policy.","1. سياسة كلمات المرور."],["2. Access Control Policy.","2. سياسة التحكم في الوصول."],["3. Internet Usage Policy.","3. سياسة استخدام الإنترنت."],
+       ["4. Email Policy.","4. سياسة البريد الإلكتروني."],["5. Data Protection Policy.","5. سياسة حماية البيانات."],["6. Backup Policy.","6. سياسة النسخ الاحتياطي."],["7. Incident Response Policy.","7. سياسة الاستجابة للحوادث."]]}
+   ]},
+   {t:["Network Policy vs. Security Policy","سياسة الشبكة مقابل سياسة الأمان"], b:[
+     {k:'tbl', h:[["Security Policy","سياسة الأمان"],["Network Policy","سياسة الشبكة"]],
+      r:[
+       [["Protects systems and data.","تحمي الأنظمة والبيانات."],["Controls network usage.","تتحكم في استخدام الشبكة."]],
+       [["Protects against threats.","تحمي من التهديدات."],["Controls users and devices.","تتحكم في المستخدمين والأجهزة."]],
+       [["Defines security rules.","تُحدّد قواعد الأمان."],["Defines network access.","تُحدّد الوصول إلى الشبكة."]],
+       [["Focuses on security.","تُركّز على الأمان."],["Focuses on network resources.","تُركّز على موارد الشبكة."]]
+      ]},
+     {k:'tip', x:["Key difference: a Network Policy controls how the network is used, while a Security Policy defines how systems, networks, and data are protected.","الفرق الأساسي: تتحكم سياسة الشبكة في كيفية استخدام الشبكة، بينما تُحدّد سياسة الأمان كيفية حماية الأنظمة والشبكات والبيانات."]}
+   ]}
+  ],
+  take:[
+   ["A Network and Security Policy protects a network, its systems, and its data through rules and guidelines.","تحمي سياسة الشبكة والأمان الشبكة وأنظمتها وبياناتها من خلال القواعد والإرشادات."],
+   ["A Network Policy defines how users/devices use the network (access, devices, websites, services).","تُحدّد سياسة الشبكة كيفية استخدام المستخدمين/الأجهزة للشبكة (الوصول، الأجهزة، المواقع، الخدمات)."],
+   ["A Security Policy protects against threats like viruses, malware, hacking, unauthorized access, data theft, and password attacks.","تحمي سياسة الأمان من تهديدات مثل الفيروسات والبرمجيات الخبيثة والقرصنة والوصول غير المصرح به وسرقة البيانات وهجمات كلمات المرور."],
+   ["A security policy's components include password, access control, Internet usage, email, data protection, backup, and incident response policies.","تشمل مكونات سياسة الأمان سياسات كلمات المرور والتحكم في الوصول واستخدام الإنترنت والبريد الإلكتروني وحماية البيانات والنسخ الاحتياطي والاستجابة للحوادث."],
+   ["Key difference: Network Policy controls network usage; Security Policy defines how systems/networks/data are protected.","الفرق الأساسي: سياسة الشبكة تتحكم في استخدام الشبكة؛ وسياسة الأمان تُحدّد كيفية حماية الأنظمة/الشبكات/البيانات."]
+  ],
+  fc:[
+   [["Define a Network and Security Policy.","عرّف سياسة الشبكة والأمان."],["A set of rules and guidelines used to protect a computer network, its systems, and its data.","مجموعة من القواعد والإرشادات تُستخدم لحماية الشبكة الحاسوبية وأنظمتها وبياناتها."]],
+   [["Define a Network Policy.","عرّف سياسة الشبكة."],["A policy that defines how users and devices should use the network.","سياسة تُحدّد كيفية استخدام المستخدمين والأجهزة للشبكة."]],
+   [["Give two examples of what a network policy defines.","اذكر مثالين لما تُحدّده سياسة الشبكة."],["Any two of: who can access the network, what devices can connect, which websites users can access, what services can be used, how much access each user has.","أي مثالين من: من يمكنه الوصول للشبكة، ما الأجهزة التي يمكنها الاتصال، ما المواقع التي يمكن الوصول إليها، ما الخدمات المتاحة، مقدار وصول كل مستخدم."]],
+   [["Define a Security Policy.","عرّف سياسة الأمان."],["A set of rules designed to protect information systems, networks, and data from security threats.","مجموعة من القواعد المصمّمة لحماية أنظمة المعلومات والشبكات والبيانات من التهديدات الأمنية."]],
+   [["List four security threats mentioned in the lecture.","اذكر أربعة تهديدات أمنية وردت في المحاضرة."],["Any four of: viruses, malware, hacking, unauthorized access, data theft, password attacks.","أي أربعة من: الفيروسات، البرمجيات الخبيثة، القرصنة، الوصول غير المصرح به، سرقة البيانات، هجمات كلمات المرور."]],
+   [["Name three reasons network and security policies are important.","اذكر ثلاثة أسباب لأهمية سياسات الشبكة والأمان."],["Any three of: protect data, prevent unauthorized access, protect network resources, reduce security risks, control user access, respond to security incidents.","أي ثلاثة من: حماية البيانات، منع الوصول غير المصرح به، حماية موارد الشبكة، تقليل المخاطر الأمنية، التحكم في وصول المستخدمين، الاستجابة للحوادث الأمنية."]],
+   [["List four of the seven main components of a security policy.","اذكر أربعة من المكونات الرئيسية السبعة لسياسة الأمان."],["Any four of: Password Policy, Access Control Policy, Internet Usage Policy, Email Policy, Data Protection Policy, Backup Policy, Incident Response Policy.","أي أربعة من: سياسة كلمات المرور، سياسة التحكم في الوصول، سياسة استخدام الإنترنت، سياسة البريد الإلكتروني، سياسة حماية البيانات، سياسة النسخ الاحتياطي، سياسة الاستجابة للحوادث."]],
+   [["What does a Security Policy focus on, compared to a Network Policy?","على ماذا تُركّز سياسة الأمان، مقارنة بسياسة الشبكة؟"],["Security Policy focuses on security (protecting systems/data); Network Policy focuses on network resources (controlling usage).","تُركّز سياسة الأمان على الأمان (حماية الأنظمة/البيانات)؛ بينما تُركّز سياسة الشبكة على موارد الشبكة (التحكم في الاستخدام)."]],
+   [["What is the key difference between a Network Policy and a Security Policy?","ما الفرق الأساسي بين سياسة الشبكة وسياسة الأمان؟"],["Network Policy controls how the network is used; Security Policy defines how systems, networks, and data are protected.","سياسة الشبكة تتحكم في كيفية استخدام الشبكة؛ وسياسة الأمان تُحدّد كيفية حماية الأنظمة والشبكات والبيانات."]],
+   [["Which policy controls 'users and devices': Network Policy or Security Policy?","أي سياسة تتحكم في 'المستخدمين والأجهزة': سياسة الشبكة أم سياسة الأمان؟"],["Network Policy.","سياسة الشبكة."]],
+   [["Which policy 'protects against threats': Network Policy or Security Policy?","أي سياسة 'تحمي من التهديدات': سياسة الشبكة أم سياسة الأمان؟"],["Security Policy.","سياسة الأمان."]]
+  ],
+  quiz:[
+   {q:["A Network and Security Policy is best defined as:","تُعرَّف سياسة الشبكة والأمان على أفضل وجه بأنها:"], o:[["A marketing strategy","استراتيجية تسويقية"],["A set of rules and guidelines to protect a network, its systems, and its data","مجموعة من القواعد والإرشادات لحماية الشبكة وأنظمتها وبياناتها"],["A hardware specification sheet","ورقة مواصفات عتاد"],["An employee vacation schedule","جدول إجازات الموظفين"]], a:1},
+   {q:["A Network Policy primarily defines:","تُحدّد سياسة الشبكة أساسًا:"], o:[["How users and devices should use the network","كيفية استخدام المستخدمين والأجهزة للشبكة"],["The company's marketing budget","ميزانية تسويق الشركة"],["Employee salaries","رواتب الموظفين"],["Office seating arrangements","ترتيبات جلوس المكتب"]], a:0},
+   {q:["Which is NOT an example of something a Network Policy defines?","أي مما يلي ليس مثالًا على ما تُحدّده سياسة الشبكة؟"], o:[["Who can access the network","من يمكنه الوصول للشبكة"],["What devices can connect","ما الأجهزة التي يمكنها الاتصال"],["The company's stock price","سعر سهم الشركة"],["Which websites users can access","ما المواقع التي يمكن للمستخدمين الوصول إليها"]], a:2},
+   {q:["A Security Policy is designed to protect information systems, networks, and data from:","تُصمَّم سياسة الأمان لحماية أنظمة المعلومات والشبكات والبيانات من:"], o:[["Weather conditions","الظروف الجوية"],["Security threats","التهديدات الأمنية"],["Employee vacations","إجازات الموظفين"],["Currency exchange rates","أسعار صرف العملات"]], a:1},
+   {q:["Which is NOT listed as a security threat?","أي مما يلي لم يُذكر كتهديد أمني؟"], o:[["Malware","البرمجيات الخبيثة"],["Password attacks","هجمات كلمات المرور"],["Slow typing speed","بطء سرعة الكتابة"],["Hacking","القرصنة"]], a:2},
+   {q:["Which is NOT listed as a reason network/security policies are important?","أي مما يلي لم يُذكر كسبب لأهمية سياسات الشبكة/الأمان؟"], o:[["Protect data","حماية البيانات"],["Increase advertising revenue","زيادة إيرادات الإعلانات"],["Reduce security risks","تقليل المخاطر الأمنية"],["Control user access","التحكم في وصول المستخدمين"]], a:1},
+   {q:["Which is a listed component of a security policy?","أي مما يلي مكون مُدرَج لسياسة الأمان؟"], o:[["Marketing Policy","سياسة التسويق"],["Password Policy","سياسة كلمات المرور"],["Office Decoration Policy","سياسة تزيين المكتب"],["Parking Policy","سياسة مواقف السيارات"]], a:1},
+   {q:["Which policy 'defines security rules': Network Policy or Security Policy?","أي سياسة 'تُحدّد قواعد الأمان': سياسة الشبكة أم سياسة الأمان؟"], o:[["Network Policy","سياسة الشبكة"],["Security Policy","سياسة الأمان"],["Neither","لا شيء منهما"],["Both equally","كلاهما بالتساوي"]], a:1},
+   {q:["Which policy 'defines network access': Network Policy or Security Policy?","أي سياسة 'تُحدّد الوصول إلى الشبكة': سياسة الشبكة أم سياسة الأمان؟"], o:[["Security Policy","سياسة الأمان"],["Network Policy","سياسة الشبكة"],["Neither","لا شيء منهما"],["Both equally","كلاهما بالتساوي"]], a:1},
+   {q:["What is the key difference between Network Policy and Security Policy?","ما الفرق الأساسي بين سياسة الشبكة وسياسة الأمان؟"], o:[["There is no real difference","لا يوجد فرق حقيقي"],["Network Policy controls network usage; Security Policy defines how systems/data are protected","سياسة الشبكة تتحكم في استخدام الشبكة؛ وسياسة الأمان تُحدّد كيفية حماية الأنظمة/البيانات"],["Security Policy only applies to hardware","سياسة الأمان تنطبق فقط على العتاد"],["Network Policy is always more important","سياسة الشبكة أهم دائمًا"]], a:1}
+  ]
+});
+
+const GLOSSARY = [
+  ["Technical English","اللغة الإنجليزية التقنية (Technical English)"],
+  ["General English","اللغة الإنجليزية العامة (General English)"],
+  ["Technical vocabulary","المفردات التقنية (Technical Vocabulary)"],
+  ["Word formation","تكوين الكلمات (Word Formation)"],
+  ["Derivation","الاشتقاق (Derivation)"],
+  ["Affix","الزائدة (Affix)"],
+  ["Prefix","البادئة (Prefix)"],
+  ["Suffix","اللاحقة (Suffix)"],
+  ["Voice (grammar)","الصيغة النحوية (Voice)"],
+  ["Active Voice","المبني للمعلوم (Active Voice)"],
+  ["Passive Voice","المبني للمجهول (Passive Voice)"],
+  ["Tense","الزمن (Tense)"],
+  ["Transitive verb","الفعل المتعدي (Transitive Verb)"],
+  ["Auxiliary verb","الفعل المساعد (Auxiliary Verb)"],
+  ["Past participle","اسم المفعول (Past Participle)"],
+  ["Agent (grammar)","الفاعل النحوي (Agent)"],
+  ["Note making","تدوين الملاحظات (Note Making)"],
+  ["Summarizing","التلخيص (Summarizing)"],
+  ["Heading","العنوان (Heading)"],
+  ["Subheading","العنوان الفرعي (Subheading)"],
+  ["Abbreviation","الاختصار (Abbreviation)"],
+  ["Topicalising","التبويب الموضوعي (Topicalising)"],
+  ["Schematizing","التخطيط البياني (Schematizing)"],
+  ["Sequencing","التسلسل (Sequencing)"],
+  ["Completeness","الاكتمال (Completeness)"],
+  ["Compactness","التماسك (Compactness)"],
+  ["Conciseness","الإيجاز (Conciseness)"],
+  ["Clarity","الوضوح (Clarity)"],
+  ["Coherence","الترابط (Coherence)"],
+  ["Noun","الاسم (Noun)"],
+  ["Common noun","الاسم العام (Common Noun)"],
+  ["Abstract noun","الاسم المجرد (Abstract Noun)"],
+  ["Collective noun","اسم الجماعة (Collective Noun)"],
+  ["Concrete noun","الاسم المحسوس (Concrete Noun)"],
+  ["Countable noun","الاسم المعدود (Countable Noun)"],
+  ["Uncountable noun","الاسم غير المعدود (Uncountable Noun)"],
+  ["Proper noun","اسم العلم (Proper Noun)"],
+  ["Gerund noun","اسم المصدر (Gerund Noun)"],
+  ["Compound noun","الاسم المركب (Compound Noun)"],
+  ["Negative prefix","البادئة السلبية (Negative Prefix)"],
+  ["Reversative prefix","البادئة الانعكاسية (Reversative Prefix)"],
+  ["Pejorative prefix","البادئة التحقيرية (Pejorative Prefix)"],
+  ["Requirements Engineering (RE)","هندسة المتطلبات (Requirements Engineering)"],
+  ["Requirement","المتطلب (Requirement)"],
+  ["System Requirements Specification (SyRS)","مواصفات متطلبات النظام (System Requirements Specification)"],
+  ["Software Requirements Specification (SRS)","مواصفات متطلبات البرمجيات (Software Requirements Specification)"],
+  ["Functional Requirement (FR)","المتطلب الوظيفي (Functional Requirement)"],
+  ["Non-Functional Requirement (NFR)","المتطلب غير الوظيفي (Non-Functional Requirement)"],
+  ["CRUD","عمليات CRUD (الإنشاء، القراءة، التحديث، الحذف)"],
+  ["Software & Process Documentation","توثيق البرمجيات والعمليات (Software & Process Documentation)"],
+  ["User Manual","دليل المستخدم (User Manual)"],
+  ["UML (Unified Modeling Language)","لغة النمذجة الموحدة (UML)"],
+  ["Activity Diagram","مخطط النشاط (Activity Diagram)"],
+  ["Sequence Diagram","مخطط التسلسل (Sequence Diagram)"],
+  ["Process Description","وصف العملية (Process Description)"],
+  ["Technical Incident Report","تقرير الحادثة التقنية (Technical Incident Report)"],
+  ["Technical Incident","الحادثة التقنية (Technical Incident)"],
+  ["Root Cause","السبب الجذري (Root Cause)"],
+  ["Severity","الخطورة (Severity)"],
+  ["Technical Report","التقرير التقني (Technical Report)"],
+  ["Network Policy","سياسة الشبكة (Network Policy)"],
+  ["Security Policy","سياسة الأمان (Security Policy)"],
+  ["Malware","البرمجيات الخبيثة (Malware)"],
+  ["Access Control Policy","سياسة التحكم في الوصول (Access Control Policy)"],
+  ["Backup Policy","سياسة النسخ الاحتياطي (Backup Policy)"],
+  ["Incident Response Policy","سياسة الاستجابة للحوادث (Incident Response Policy)"]
+].sort((a,b)=>a[0].localeCompare(b[0]));
+
+/* ============================================================
+   SUBJECTS + THEMES  (8 subjects, each with its own color)
+   To add a subject: set ready:true and give it lectures + glossary.
+   ============================================================ */
+const THEMES = {
+  teal:['20 184 166','13 148 136'], pink:['236 72 153','219 39 119'], purple:['168 85 247','147 51 234'],
+  blue:['59 130 246','37 99 235'], orange:['249 115 22','234 88 12'], green:['34 197 94','22 163 74'],
+  yellow:['234 179 8','202 138 4'], red:['239 68 68','220 38 38']
+};
+/* ----- THIS PAGE'S SUBJECT (edit when copying this file to make a new subject) ----- */
+const SUBJECT = {id:'techeng', color:'green', ready:true, icon:'🔤', name:["Technical English II","اللغة الإنجليزية التقنية 2 (Technical English II)"], lectures:LECTURES, glossary:GLOSSARY};
+const SUBJECTS = [SUBJECT];
+
+/* ============================================================
+   STATE + STORAGE
+   ============================================================ */
+const KEY = 'studyHubV2';
+const store = (()=>{ try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ return {}; } })();
+const state = { lang: store.lang||'en', subject:SUBJECT.id, page:'home', sidebar: window.innerWidth>=1024, data: store.data||{}, decks:{}, qz:{}, exam:null };
+function save(){
+  try{
+    const cur=JSON.parse(localStorage.getItem(KEY)||'{}'); cur.data=cur.data||{};
+    cur.lang=state.lang;
+    const d=sd(SUBJECT.id); d.mastery=mastery(SUBJECT); d.n=SUBJECT.lectures.length;
+    cur.data[SUBJECT.id]=d;
+    localStorage.setItem(KEY, JSON.stringify(cur));
+  }catch(e){}
+}
+const subj = () => SUBJECTS.find(s=>s.id===state.subject);
+const LECT = () => subj().lectures;
+function sd(id){ id=id||state.subject; return state.data[id]||(state.data[id]={seen:{},best:{},exam:0}); }
+function mastery(s){
+  if(!s.ready) return 0;
+  const d=sd(s.id); let sum=0;
+  s.lectures.forEach(l=>{ sum += (d.best[l.id]||0)/100; });
+  sum += (d.exam||0)/100;
+  return Math.round(sum/(s.lectures.length+1)*100);
+}
+
+/* ============================================================
+   HELPERS  (invisible citation handling + XSS protection)
+   ============================================================ */
+const clean = s => String(s)
+  .replace(/<\/?(antml:)?cite[^>]*>/gi,'')
+  .replace(/\[cite[^\]]*\]/gi,'')
+  .replace(/\[(source|ref)[^\]]*\]/gi,'')
+  .replace(/[ \t]{2,}/g,' ').trim();
+const esc = s => clean(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const fmt = s => esc(s).replace(/(\$?\d[\d,.]*\d|\$?\d)/g,'<span class="mono">$1</span>');
+const li = () => state.lang==='ar'?1:0;
+const tx = a => fmt(a[li()]);
+const u = k => UI[k][li()];
+const $ = id => document.getElementById(id);
+function shuf(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function mixQ(q){ const idx=shuf(q.o.map((_,i)=>i)); return {q:q.q, o:idx.map(i=>q.o[i]), a:idx.indexOf(q.a)}; }
+function applyTheme(){
+  const t = THEMES[(state.subject&&subj().color)||'teal'];
+  document.documentElement.style.setProperty('--b5',t[0]);
+  document.documentElement.style.setProperty('--b6',t[1]);
+}
+
+/* ============================================================
+   BLOCK RENDERERS
+   ============================================================ */
+const labelColors = {
+  def:['border-brand-500 bg-brand-500/10','text-brand-500'],
+  ex:['border-amber-400 bg-amber-400/10','text-amber-400'],
+  tip:['border-violet-400 bg-violet-400/10','text-violet-400']
+};
+function renderBlock(b){
+  if(b.k==='p') return `<p class="leading-relaxed text-dark-text/90 my-3">${tx(b.x)}</p>`;
+  if(labelColors[b.k]){
+    const c=labelColors[b.k];
+    return `<div class="border-s-4 ${c[0]} rounded-e-xl p-4 my-3"><div class="text-xs font-bold uppercase tracking-wide ${c[1]} mb-1">${u(b.k)}</div><div class="leading-relaxed whitespace-pre-line">${tx(b.x)}</div></div>`;
+  }
+  if(b.k==='formula') return `<pre class="mono bg-dark-base border border-dark-border rounded-xl p-4 my-3 text-brand-500 overflow-x-auto" dir="ltr"><code>${esc(b.x)}</code></pre>`;
+  if(b.k==='ul') return `<div class="my-3">${b.h?`<div class="font-semibold text-brand-500 mb-1">${tx(b.h)}</div>`:''}<ul class="space-y-1.5">${b.x.map(i=>`<li class="flex gap-2 leading-relaxed"><span class="text-brand-500 mt-1.5 shrink-0">●</span><span>${tx(i)}</span></li>`).join('')}</ul></div>`;
+  if(b.k==='cards') return `<div class="grid gap-3 sm:grid-cols-2 my-3">${b.c.map(c=>`<div class="bg-dark-surface border border-dark-border rounded-xl p-4"><div class="font-bold text-brand-500 mb-2">${tx(c.t)}</div><ul class="space-y-1 text-sm leading-relaxed">${c.l.map(i=>`<li class="flex gap-2"><span class="text-dark-muted shrink-0">▪</span><span>${tx(i)}</span></li>`).join('')}</ul></div>`).join('')}</div>`;
+  if(b.k==='tbl') return `<div class="overflow-x-auto my-3 rounded-xl border border-dark-border"><table class="w-full text-sm"><thead class="bg-brand-600 text-white"><tr>${b.h.map(h=>`<th class="p-3 text-start font-semibold">${tx(h)}</th>`).join('')}</tr></thead><tbody>${b.r.map((r,i)=>`<tr class="${i%2?'bg-dark-surface':'bg-dark-elevated'}">${r.map((c,j)=>`<td class="p-3 border-t border-dark-border ${j===0?'font-semibold':''}">${tx(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  return '';
+}
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+function optHTML(o,i){
+  return `<button class="opt w-full text-start p-3 rounded-lg border border-dark-border bg-dark-surface hover:border-brand-500 transition flex gap-3 items-start" data-i="${i}"><span class="mono text-dark-muted shrink-0">${'ABCD'[i]}.</span><span>${tx(o)}</span></button>`;
+}
+function qHTML(q,idx,total){
+  return `<div class="qbox bg-dark-elevated border border-dark-border rounded-xl p-4 mb-4" data-a="${q.a}">
+    <div class="font-semibold mb-3"><span class="mono text-brand-500">${idx}/${total}</span> ${tx(q.q)}</div>
+    <div class="space-y-2">${q.o.map(optHTML).join('')}</div>
+    <div class="fb mt-3 text-sm font-semibold hidden"></div></div>`;
+}
+function getQz(L){ return state.qz[L.id] || (state.qz[L.id]=L.quiz.map(mixQ)); }
+function quizInner(L){
+  const qs=getQz(L), best=sd().best[L.id];
+  return `<div class="flex justify-between items-center mb-3"><h2 class="font-bold text-lg">📝 ${u('quiz')} <span class="mono text-sm text-dark-muted">(${qs.length})</span></h2>${best!=null?`<span class="mono text-xs text-dark-muted">${u('best')}: ${best}%</span>`:''}</div>
+    ${qs.map((q,i)=>qHTML(q,i+1,qs.length)).join('')}
+    <div class="qscore hidden mt-2 p-3 rounded-lg bg-dark-surface border border-brand-500 flex flex-wrap items-center justify-between gap-2"><b class="qs-text"></b><button data-act="retryQuiz" data-id="${L.id}" class="px-4 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm">${u('retry')}</button></div>`;
+}
+
+/* ============================================================
+   FLASHCARD DECKS (shared by lectures and glossary)
+   ============================================================ */
+function getDeck(id,kind,list){
+  if(!state.decks[id]) state.decks[id]={kind,list:list.slice(),i:0,flip:false};
+  return state.decks[id];
+}
+function deckHTML(id){
+  const d=state.decks[id], c=d.list[d.i], l=li();
+  let front, back;
+  if(d.kind==='g'){
+    front=`<div class="mono text-2xl text-brand-500 font-bold" dir="ltr">${esc(c[0])}</div>`;
+    back=`<div class="text-2xl font-bold text-white" dir="rtl" style="font-family:Cairo">${esc(c[1])}</div>`;
+  } else {
+    front=`<div class="text-xs mono text-dark-muted mb-2">${u('question')}</div><div class="text-lg font-bold">${esc(c[0][l])}</div>`;
+    back=`<div class="text-base font-semibold text-white leading-relaxed">${esc(c[1][l])}</div><div class="text-xs text-white/70 mt-3 leading-relaxed" dir="${l?'ltr':'rtl'}">${esc(c[1][1-l])}</div>`;
+  }
+  return `<p class="text-dark-muted mb-3 text-sm">${u('flip')} • <span class="mono">${d.i+1}/${d.list.length}</span></p>
+    <div class="flip ${d.flip?'on':''} cursor-pointer mb-3" data-act="dk-flip" data-deck="${id}"><div class="flip-inner">
+      <div class="face bg-dark-elevated border border-brand-500">${front}</div>
+      <div class="face back bg-brand-600">${back}</div></div></div>
+    <div class="flex justify-between gap-2">
+      <button data-act="dk-prev" data-deck="${id}" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500">${u('prev')}</button>
+      <button data-act="dk-shuf" data-deck="${id}" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500">🔀 ${u('shuffle')}</button>
+      <button data-act="dk-next" data-deck="${id}" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white">${u('next')}</button>
+    </div>`;
+}
+function deckBox(id,kind,list){ getDeck(id,kind,list); return `<div id="deck-${id}">${deckHTML(id)}</div>`; }
+function redrawDeck(id){ const el=$('deck-'+id); if(el) el.innerHTML=deckHTML(id); }
+
+/* ============================================================
+   PAGES
+   ============================================================ */
+function renderHome(){
+  const s=subj(), d=sd(), m=mastery(s), n=s.lectures.length;
+  const steps = [
+    ["Read each lecture slowly, then read the Key Takeaways.","اقرأ كل محاضرة ببطء ثم اقرأ أهم النقاط."],
+    ["Go through the lecture flashcards, then do the quiz until you get 100%.","راجع بطاقات المحاضرة ثم حل الاختبار حتى تحصل على 100%."],
+    ["Use the term flashcards in the Glossary page for 10 minutes every day.","استخدم بطاقات المصطلحات في صفحة القاموس 10 دقائق يوميًا."],
+    ["Take the Final Exam again and again until you score 90% or more. Read the mistakes list after each try.","أدِّ الاختبار النهائي مرارًا حتى تحصل على 90% أو أكثر. اقرأ قائمة الأخطاء بعد كل محاولة."],
+    ["Memorize the lists: 4 ownership forms, 4 CSR types, 4 functions of management (P-O-L-C), 4Ps.","احفظ القوائم: 4 أشكال ملكية، 4 أنواع CSR، 4 وظائف إدارية (P-O-L-C)، الـ 4Ps."],
+    ["Know the formulas: Profit = Revenue - Expenses and Value = Benefits - Cost.","اعرف المعادلات: الربح = الإيرادات - المصروفات والقيمة = الفوائد - التكلفة."]
+  ];
+  return `<div class="fade">
+    <div class="rounded-2xl bg-gradient-to-br from-brand-600 to-dark-elevated p-6 mb-6 border border-dark-border">
+      <div class="text-3xl mb-1">${s.icon}</div>
+      <h1 class="text-3xl font-extrabold mb-1">${tx(s.name)}</h1>
+      <p class="text-white/80">${n} ${u('lectures').toLowerCase()} • ${state.lang==='ar'?'اختبارات • بطاقات • اختبار نهائي • قاموس':'quizzes • flashcards • final exam • glossary'}</p>
+    </div>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-6">
+      <div class="flex justify-between mb-2"><b>${u('mastery')}</b><span class="mono text-brand-500">${m}%</span></div>
+      <div class="h-3 bg-dark-base rounded-full overflow-hidden"><div class="h-full bg-brand-500 transition-all" style="width:${m}%"></div></div>
+      <p class="text-xs text-dark-muted mt-2">${u('masteryHow')}</p>
+    </div>
+    <div class="grid gap-3 sm:grid-cols-2 mb-6">
+      ${s.lectures.map(l=>{ const b=d.best[l.id]; return `<button data-go="${l.id}" class="text-start bg-dark-elevated border border-dark-border hover:border-brand-500 rounded-xl p-4 transition">
+        <div class="flex justify-between"><span class="mono text-brand-500 text-sm">${u('lecture')} ${l.n}</span>${d.seen[l.id]?`<span class="text-dark-muted text-xs">📖 ${u('read')}</span>`:''}</div>
+        <div class="font-semibold mt-1">${tx(l.title)}</div>
+        <div class="h-1.5 bg-dark-base rounded-full overflow-hidden mt-3"><div class="h-full bg-brand-500" style="width:${b||0}%"></div></div>
+        <div class="mono text-xs text-dark-muted mt-1">${u('quiz')}: ${b!=null?b+'%':'—'}</div></button>`; }).join('')}
+    </div>
+    <div class="grid gap-3 sm:grid-cols-2 mb-6">
+      <button data-go="exam" class="bg-dark-elevated border border-dark-border hover:border-brand-500 rounded-xl p-4 font-semibold text-start">🏆 ${u('exam')}<div class="mono text-xs text-dark-muted mt-1">${u('best')}: ${d.exam?d.exam+'%':'—'}</div></button>
+      <button data-go="glossary" class="bg-dark-elevated border border-dark-border hover:border-brand-500 rounded-xl p-4 font-semibold text-start">📖 Glossary / قاموس المصطلحات<div class="mono text-xs text-dark-muted mt-1">${s.glossary.length} • ${u('glossFlash')}</div></button>
+    </div>
+    <div class="border-s-4 border-violet-400 bg-violet-400/10 rounded-e-xl p-5">
+      <h2 class="font-bold text-violet-400 mb-2">🚀 ${u('plan')}</h2>
+      <ol class="space-y-1.5 list-decimal ps-5">${steps.map(x=>`<li>${tx(x)}</li>`).join('')}</ol>
+    </div>
+    <button data-act="reset" class="mt-6 text-xs text-dark-muted underline">${u('reset')}</button>
+  </div>`;
+}
+
+function renderLecture(L, idx){
+  const d=sd(); d.seen[L.id]=true; save();
+  const lects=LECT(), prev=lects[idx-1], next=lects[idx+1], ar=state.lang==='ar';
+  return `<div class="fade">
+    <div class="mono text-brand-500 text-sm mb-1">${u('lecture')} ${L.n}</div>
+    <h1 class="text-2xl sm:text-3xl font-extrabold mb-4">${tx(L.title)}</h1>
+
+    <details class="group bg-dark-elevated border border-dark-border open:border-brand-500 rounded-2xl mb-5 overflow-hidden transition-all">
+      <summary class="cursor-pointer list-none px-5 py-3.5 font-bold text-lg flex items-center justify-between hover:bg-white/5 select-none">
+        <span>🎯 ${u('objectives')}</span>
+        <span class="mono text-xs text-brand-500 transition-transform duration-300 group-open:rotate-180">▼</span>
+      </summary>
+      <div class="px-5 pb-5 pt-3 border-t border-dark-border">
+        <ul class="space-y-1">${L.obj.map(o=>`<li class="flex gap-2"><span class="text-brand-500">✓</span><span>${tx(o)}</span></li>`).join('')}</ul>
+      </div>
+    </details>
+
+    ${L.sec.map((s,i)=>`<section class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-5">
+        <h2 class="text-xl font-bold mb-2 flex items-center gap-2"><span class="mono text-sm bg-brand-600 text-white rounded-md px-2 py-0.5">${i+1}</span>${tx(s.t)}</h2>${s.b.map(renderBlock).join('')}</section>`).join('')}
+    <div class="bg-brand-500/10 border border-brand-500 rounded-2xl p-5 mb-5">
+      <h2 class="font-bold text-lg mb-2 text-brand-500">⭐ ${u('take')}</h2>
+      <ul class="space-y-1">${L.take.map(t=>`<li class="flex gap-2"><span class="text-brand-500">★</span><span>${tx(t)}</span></li>`).join('')}</ul>
+    </div>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-5">
+      <h2 class="font-bold text-lg mb-3">🃏 ${u('flash')}</h2>
+      ${deckBox('fc-'+L.id,'l',L.fc)}
+    </div>
+
+    <details class="group bg-dark-elevated border border-dark-border open:border-brand-500 rounded-2xl mb-5 overflow-hidden transition-all">
+      <summary class="cursor-pointer list-none px-5 py-3.5 flex items-center justify-between hover:bg-white/5 select-none">
+        <span class="font-bold text-lg">📝 ${u('quiz')} <span class="mono text-sm text-dark-muted">(${L.quiz.length})</span></span>
+        <div class="flex items-center gap-3">
+          ${d.best[L.id]!=null?`<span class="mono text-xs text-dark-muted">${u('best')}:${d.best[L.id]}%</span>`:''}
+          <span class="mono text-xs text-brand-500 transition-transform duration-300 group-open:rotate-180">▼</span>
         </div>
-        <div class="mt-6 grid gap-4 md:grid-cols-2">
-          ${SUBJECT.lectures.map((lec, idx) => `
-            <button data-page="lecture:${lec.id}" class="card p-4 text-start transition hover:border-brand-500">
-              <div class="mb-2 text-xs font-semibold text-brand-500">${UI.lecture[state.lang === 'ar' ? 1 : 0]} ${idx + 1}</div>
-              <div class="text-xl font-bold">${t(lec.title)}</div>
-            </button>
-          `).join('')}
-        </div>
-      `;
-      document.getElementById('app').innerHTML = html;
-    }
+      </summary>
+      <div class="px-5 pb-5 pt-3 border-t border-dark-border [&>div:first-child]:hidden" data-quiz="${L.id}" id="quiz-${L.id}">${quizInner(L)}</div>
+    </details>
 
-    function renderLecture(id) {
-      const lec = SUBJECT.lectures.find(x => x.id === id);
-      if (!lec) return renderHome();
+    <div class="flex justify-between gap-3">
+      ${prev?`<button data-go="${prev.id}" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500">${ar?'→':'←'}${u('prev')}</button>`:'<span></span>'}
+      ${next?`<button data-go="${next.id}" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white">${u('next')}${ar?'←':'→'}</button>`:`<button data-go="exam" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white">${u('exam')}${ar?'←':'→'}</button>`}
+    </div></div>`;
+}
 
-      const sections = lec.sections.map((s, i) => `
-        <section class="card mb-4 p-4">
-          <h2 class="mb-3 text-xl font-bold">${i + 1}. ${t(s.t)}</h2>
-          <ul class="space-y-2 text-dark-muted">
-            ${s.b.map(item => `<li>• ${item}</li>`).join('')}
-          </ul>
-        </section>
-      `).join('');
+function gItems(list){
+  return list.map(g=>`<div class="bg-dark-elevated border border-dark-border rounded-xl p-3 flex flex-wrap justify-between gap-2"><span class="mono text-brand-500 font-semibold" dir="ltr">${esc(g[0])}</span><span class="font-semibold" dir="rtl" style="font-family:Cairo">${esc(g[1])}</span></div>`).join('') || '<div class="text-dark-muted">—</div>';
+}
+function renderGlossary(){
+  const G=subj().glossary;
+  return `<div class="fade">
+    <h1 class="text-3xl font-extrabold mb-1">Glossary / قاموس المصطلحات</h1>
+    <p class="text-dark-muted mb-5 mono text-sm">${G.length} terms</p>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-6">
+      <h2 class="font-bold text-lg mb-3">🃏 ${u('glossFlash')}</h2>
+      ${deckBox('gl','g',shuf(G))}
+    </div>
+    <h2 class="font-bold text-lg mb-2">📖 ${u('glossList')}</h2>
+    <input id="gSearch" placeholder="${u('search')}" class="w-full p-3 rounded-xl bg-dark-elevated border border-dark-border focus:border-brand-500 outline-none mb-4">
+    <div id="gList" class="grid gap-2">${gItems(G)}</div></div>`;
+}
 
-      const flashes = lec.flash.map((pair, idx) => `
-        <div class="card mb-3 p-4">
-          <div class="mb-2 text-xs font-semibold text-brand-500">${idx + 1}</div>
-          <div class="font-bold">${pair[0]}</div>
-          <div class="mt-2 text-dark-muted">${pair[1]}</div>
-        </div>
-      `).join('');
+/* ---------- FINAL EXAM ---------- */
+function pool(){ const p=[]; LECT().forEach(l=>l.quiz.forEach(q=>p.push(q))); return p; }
+function newExam(size){
+  const qs=shuf(pool()).slice(0,size).map(mixQ);
+  state.exam={qs,i:0,score:0,wrong:[],finished:false,size};
+}
+function renderExam(){
+  const e=state.exam, total=pool().length, d=sd();
+  if(!e){
+    const sizes=[20,40,total];
+    return `<div class="fade text-center py-8"><h1 class="text-3xl font-extrabold mb-2">🏆 ${u('exam')}</h1>
+      <p class="text-dark-muted mb-1">${state.lang==='ar'?`بنك الأسئلة: ${total} سؤالًا من كل المحاضرات. تتغير الأسئلة وترتيب الخيارات في كل مرة.`:`Question bank: ${total} questions from all lectures. Questions and answer order change every time.`}</p>
+      <p class="mono text-sm text-dark-muted mb-6">${u('best')}: ${d.exam?d.exam+'%':'—'}</p>
+      <p class="font-semibold mb-3">${u('chooseSize')}</p>
+      <div class="flex flex-wrap justify-center gap-3">${sizes.map((n,i)=>`<button data-size="${n}" class="px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold"><span class="mono">${n}</span> ${i===2?`(${u('all')})`:u('questions')}</button>`).join('')}</div></div>`;
+  }
+  if(e.finished){
+    const p=Math.round(e.score/e.qs.length*100);
+    return `<div class="fade py-6"><div class="text-center">
+      <h1 class="text-3xl font-extrabold mb-3">🏆 ${u('exam')}</h1>
+      <div class="mono text-5xl font-extrabold ${p>=90?'text-green-400':p>=60?'text-amber-400':'text-red-400'} mb-2">${e.score}/${e.qs.length}</div>
+      <div class="mono text-xl mb-4">${p}%</div>
+      <p class="mb-6">${p>=90?(state.lang==='ar'?'ممتاز! أنت جاهز للامتحان 🎉':'Excellent! You are ready 🎉'):(state.lang==='ar'?'راجع المحاضرات وأعد المحاولة للوصول إلى 90%+':'Review the lectures and try again to reach 90%+')}</p>
+      <button data-act="examAgain" class="px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold">${u('retry')}</button></div>
+      ${e.wrong.length?`<h2 class="font-bold text-lg mt-8 mb-3">❌ ${u('mistakes')} (${e.wrong.length})</h2>
+      ${e.wrong.map(w=>`<div class="bg-dark-elevated border border-dark-border border-s-4 border-s-red-500 rounded-xl p-4 mb-3"><div class="font-semibold mb-1">${tx(w.q)}</div><div class="text-sm text-green-400">${u('yourAns')}: ${tx(w.c)}</div></div>`).join('')}`:''}
+    </div>`;
+  }
+  const q=e.qs[e.i];
+  return `<div class="fade"><h1 class="text-2xl font-extrabold mb-3">🏆 ${u('exam')}</h1>
+    <div class="h-2 bg-dark-surface rounded-full mb-4 overflow-hidden"><div class="h-full bg-brand-500" style="width:${e.i/e.qs.length*100}%"></div></div>
+    <div data-exam="1">${qHTML(q,e.i+1,e.qs.length)}</div>
+    <div class="flex justify-between items-center"><span class="mono text-sm text-dark-muted">${u('score')}: ${e.score}</span>
+    <button id="examNext" class="hidden px-5 py-2 rounded-lg bg-brand-600 text-white">${e.i===e.qs.length-1?u('finish'):u('next')}</button></div></div>`;
+}
 
-      const quiz = lec.quiz.map((item, idx) => `
-        <div class="card mb-4 p-4">
-          <div class="mb-3 font-bold">${idx + 1}. ${t(item.q)}</div>
-          <div class="space-y-2">
-            ${item.options.map((opt, j) => `
-              <button class="answer-btn w-full rounded-lg border border-dark-border px-3 py-2 text-left ${j === item.answer ? 'bg-green-600/20 border-green-500' : 'bg-dark-surface'}" data-correct="${j === item.answer ? '1' : '0'}">
-                ${opt}
-              </button>
-            `).join('')}
-          </div>
-        </div>
-      `).join('');
+/* ============================================================
+   SHELL: nav, layout, render
+   ============================================================ */
+function renderNav(){
+  const item=(id,icon,label,extra='')=>`<button data-go="${id}" class="w-full flex items-center gap-3 text-start px-3 py-2.5 rounded-lg transition ${state.page===id?'bg-brand-600 text-white':'hover:bg-dark-elevated text-dark-text'}"><span>${icon}</span><span class="flex-1 text-sm">${label}</span>${extra}</button>`;
+  const head=t=>`<div class="px-3 pt-3 pb-1 text-xs uppercase tracking-wider text-dark-muted">${t}</div>`;
+  const s=subj(), d=sd();
+  let h=`<a href="index.html" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-dark-elevated text-dark-text"><span>🗂️</span><span class="flex-1 text-sm">${u('hub')}</span></a>`;
+  h += `<div class="px-3 pt-3 pb-1 text-sm font-bold text-brand-500">${s.icon} ${tx(s.name)}</div>`;
+  h += item('home','🏠',u('home'));
+  h += head(u('lectures')) + s.lectures.map(l=>item(l.id,`<span class="mono text-xs">${l.n}</span>`,tx(l.title),d.best[l.id]!=null?`<span class="mono text-[10px] opacity-80">${d.best[l.id]}%</span>`:'')).join('');
+  h += head(u('tools')) + item('exam','🏆',u('exam'),d.exam?`<span class="mono text-[10px] opacity-80">${d.exam}%</span>`:'') + item('glossary','📖','Glossary / قاموس المصطلحات');
+  $('nav').innerHTML=h;
+}
+function applyLayout(){
+  const sb=$('sidebar'), main=$('main'), bd=$('backdrop');
+  sb.classList.toggle('ltr:-translate-x-full',!state.sidebar);
+  sb.classList.toggle('rtl:translate-x-full',!state.sidebar);
+  main.classList.toggle('lg:ps-72',state.sidebar);
+  bd.classList.toggle('hidden',!(state.sidebar && window.innerWidth<1024));
+}
+function updateTop(){
+  const show=!!state.subject, m=show?mastery(subj()):0;
+  $('topProgWrap').classList.toggle('hidden',!show); $('topProgWrap').classList.toggle('sm:flex',show);
+  $('topBar').style.width=m+'%'; $('topPct').textContent=m+'%';
+}
+function render(){
+  document.documentElement.lang=state.lang;
+  document.documentElement.dir=state.lang==='ar'?'rtl':'ltr';
+  $('langBtn').textContent = state.lang==='ar'?'English':'العربية';
+  applyTheme();
+  const lects = state.subject?LECT():[];
+  const idx=lects.findIndex(l=>l.id===state.page);
+  let html='', title='';
+  if(state.page==='home'){ html=renderHome(); title=tx(subj().name).replace(/<[^>]+>/g,''); }
+  else if(idx>=0){ html=renderLecture(lects[idx],idx); title=`${u('lecture')} ${lects[idx].n}`; }
+  else if(state.page==='exam'){ html=renderExam(); title=u('exam'); }
+  else if(state.page==='glossary'){ html=renderGlossary(); title='Glossary / قاموس المصطلحات'; }
+  $('app').innerHTML=html; $('topTitle').textContent=title;
+  updateTop(); renderNav(); applyLayout();
+}
+function go(p){
+  state.page=p; state.qz={}; state.decks={}; if(p!=='exam') state.exam=null;
+  if(window.innerWidth<1024) state.sidebar=false;
+  render(); window.scrollTo({top:0,behavior:'smooth'});
+}
 
-      document.getElementById('app').innerHTML = `
-        <div class="mb-4 text-sm text-brand-500 font-semibold">${UI.lecture[state.lang === 'ar' ? 1 : 0]} ${lec.id.replace('l','')}</div>
-        <h1 class="mb-6 text-3xl font-extrabold">${t(lec.title)}</h1>
-        ${sections}
-        <div class="card mb-4 p-4">
-          <h2 class="mb-3 text-xl font-bold">${UI.quiz[state.lang === 'ar' ? 1 : 0]}</h2>
-          ${flashes}
-        </div>
-        <div class="mb-4">
-          <h2 class="mb-3 text-xl font-bold">${UI.quiz[state.lang === 'ar' ? 1 : 0]}</h2>
-          ${quiz}
-        </div>
-      `;
-    }
+/* ============================================================
+   EVENTS
+   ============================================================ */
+document.addEventListener('click',e=>{
+  const g=e.target.closest('[data-go]'); if(g){ go(g.dataset.go); return; }
 
-    function renderGlossary() {
-      const html = `
-        <div class="card p-5">
-          <h1 class="mb-4 text-2xl font-extrabold">${UI.glossary[state.lang === 'ar' ? 1 : 0]}</h1>
-          <div class="space-y-3">
-            ${GLOSSARY.map(([en, ar]) => `
-              <div class="rounded-lg border border-dark-border bg-dark-surface p-3">
-                <div class="font-bold text-brand-500">${en}</div>
-                <div class="text-dark-muted">${ar}</div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      `;
-      document.getElementById('app').innerHTML = html;
-    }
+  const sz=e.target.closest('[data-size]'); if(sz){ newExam(+sz.dataset.size); render(); window.scrollTo({top:0}); return; }
 
-    function render() {
-      document.documentElement.lang = state.lang;
-      document.documentElement.dir = state.lang === 'ar' ? 'rtl' : 'ltr';
-      document.getElementById('langBtn').textContent = state.lang === 'ar' ? 'English' : 'العربية';
-      document.getElementById('topTitle').textContent = t(SUBJECT.name);
-      renderNav();
-
-      if (state.page === 'home') renderHome();
-      else if (state.page === 'glossary') renderGlossary();
-      else if (state.page.startsWith('lecture:')) renderLecture(state.page.split(':')[1]);
-    }
-
-    document.addEventListener('click', (e) => {
-      const navBtn = e.target.closest('[data-page]');
-      if (navBtn) {
-        state.page = navBtn.dataset.page;
-        render();
-        return;
-      }
-
-      const answer = e.target.closest('.answer-btn');
-      if (answer) {
-        const correct = answer.dataset.correct === '1';
-        answer.style.borderColor = correct ? '#22c55e' : '#ef4444';
-        answer.style.background = correct ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)';
-      }
-
-      const menu = e.target.closest('#menuBtn');
-      if (menu) {
-        const sidebar = document.getElementById('sidebar');
-        sidebar.classList.toggle('hidden');
-        sidebar.classList.toggle('lg:block');
-      }
-
-      const langBtn = e.target.closest('#langBtn');
-      if (langBtn) {
-        state.lang = state.lang === 'ar' ? 'en' : 'ar';
-        localStorage.setItem('studyLang', state.lang);
-        render();
-      }
+  const opt=e.target.closest('.opt');
+  if(opt){
+    const box=opt.closest('.qbox'); if(box.dataset.done) return;
+    box.dataset.done='1';
+    const a=+box.dataset.a, i=+opt.dataset.i, ok=(i===a);
+    if(ok) box.dataset.ok='1';
+    box.querySelectorAll('.opt').forEach(b=>{
+      b.disabled=true; b.classList.remove('hover:border-brand-500'); b.classList.add('cursor-not-allowed');
+      if(+b.dataset.i===a) b.classList.add('!bg-green-600/30','!border-green-500');
     });
+    if(!ok) opt.classList.add('!bg-red-600/30','!border-red-500');
+    const fb=box.querySelector('.fb'); fb.classList.remove('hidden');
+    fb.className='fb mt-3 text-sm font-semibold '+(ok?'text-green-400':'text-red-400');
+    fb.textContent=ok?u('correct'):u('wrong');
 
-    render();
-  </script>
+    const exam=box.closest('[data-exam]');
+    if(exam){
+      const ex=state.exam, q=ex.qs[ex.i];
+      if(ok) ex.score++; else ex.wrong.push({q:q.q,c:q.o[q.a]});
+      $('examNext').classList.remove('hidden'); return;
+    }
+    const qz=box.closest('[data-quiz]');
+    if(qz){
+      const boxes=[...qz.querySelectorAll('.qbox')];
+      if(boxes.every(b=>b.dataset.done)){
+        const sc=boxes.filter(b=>b.dataset.ok).length, pct=Math.round(sc/boxes.length*100);
+        const sEl=qz.querySelector('.qscore'); sEl.classList.remove('hidden');
+        qz.querySelector('.qs-text').textContent=`${u('score')}: ${sc}/${boxes.length} (${pct}%)`;
+        const d=sd(), id=qz.dataset.quiz;
+        if(d.best[id]==null||pct>d.best[id]){ d.best[id]=pct; save(); }
+        updateTop(); renderNav();
+      }
+    }
+    return;
+  }
+
+  const a=e.target.closest('[data-act]'); if(!a) return;
+  const act=a.dataset.act;
+  if(act.startsWith('dk-')){
+    const id=a.dataset.deck, d=state.decks[id]; if(!d) return;
+    if(act==='dk-flip'){ d.flip=!d.flip; const f=document.querySelector(`#deck-${id} .flip`); if(f) f.classList.toggle('on',d.flip); return; }
+    if(act==='dk-next') d.i=(d.i+1)%d.list.length;
+    if(act==='dk-prev') d.i=(d.i-1+d.list.length)%d.list.length;
+    if(act==='dk-shuf'){ d.list=shuf(d.list); d.i=0; }
+    d.flip=false; redrawDeck(id); return;
+  }
+  if(act==='retryQuiz'){
+    const L=LECT().find(l=>l.id===a.dataset.id); delete state.qz[L.id];
+    $('quiz-'+L.id).innerHTML=quizInner(L); $('quiz-'+L.id).scrollIntoView({behavior:'smooth',block:'start'}); return;
+  }
+  if(act==='examAgain'){ state.exam=null; render(); return; }
+  if(act==='reset'){ state.data[state.subject]={seen:{},best:{},exam:0}; save(); render(); return; }
+});
+document.addEventListener('click',e=>{
+  if(e.target.id==='examNext'){
+    const ex=state.exam;
+    if(ex.i<ex.qs.length-1) ex.i++;
+    else { ex.finished=true; const p=Math.round(ex.score/ex.qs.length*100), d=sd(); if(p>(d.exam||0)){ d.exam=p; save(); } }
+    render(); window.scrollTo({top:0});
+  }
+});
+document.addEventListener('input',e=>{
+  if(e.target.id==='gSearch'){
+    const q=e.target.value.toLowerCase();
+    $('gList').innerHTML=gItems(subj().glossary.filter(g=>(g[0]+' '+g[1]).toLowerCase().includes(q)));
+  }
+});
+$('menuBtn').onclick=()=>{ state.sidebar=!state.sidebar; applyLayout(); };
+$('backdrop').onclick=()=>{ state.sidebar=false; applyLayout(); };
+$('langBtn').onclick=()=>{ state.lang=state.lang==='ar'?'en':'ar'; save(); render(); };
+window.addEventListener('resize',applyLayout);
+
+render();
+</script>
 </body>
 </html>
