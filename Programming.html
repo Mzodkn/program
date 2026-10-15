@@ -91,7 +91,7 @@ const UI = {
   correct:["Correct! ✔","إجابة صحيحة! ✔"], wrong:["Incorrect ✘ - the correct answer is highlighted","إجابة خاطئة ✘ - الإجابة الصحيحة موضحة"],
   score:["Your score","نتيجتك"], retry:["Try again","أعد المحاولة"], search:["Search a term...","ابحث عن مصطلح..."],
   flip:["Tap the card to flip","اضغط على البطاقة لقلبها"], shuffle:["Shuffle","خلط"], start:["Start Exam","ابدأ الاختبار"],
-  mastery:["Mastery","مستوى الإتقان"], best:["Best","الأفضل"], plan:["How to score 100%","كيف تحصل على 100%"],
+  mastery:["Mastery","مستوى الإتقان"], best:["Best","الأفضل"], plan:["How to study","كيف تقري"],
   finish:["Finish","إنهاء"], reset:["Reset progress of this subject","إعادة ضبط تقدم هذه المادة"], read:["Read","تمت القراءة"],
   soon:["Coming soon","قريبًا"], open:["Open","فتح"], subjects:["Subjects","المواد"], tools:["Study Tools","أدوات المراجعة"],
   lectures:["Lectures","المحاضرات"], mistakes:["Questions you missed","الأسئلة التي أخطأت فيها"], yourAns:["Correct answer","الإجابة الصحيحة"],
@@ -2316,6 +2316,14 @@ function renderHome(){
       <div class="flex justify-between mb-2"><b>${u('mastery')}</b><span class="mono text-brand-500">${m}%</span></div>
       <div class="h-3 bg-dark-base rounded-full overflow-hidden"><div class="h-full bg-brand-500 transition-all" style="width:${m}%"></div></div>
       <p class="text-xs text-dark-muted mt-2">${u('masteryHow')}</p>
+
+    </div>
+     <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-6">
+      <div class="flex justify-between mb-2 font-semibold"><b>تنبيه بسيط</b></div>
+      <p class="text-dark font-semibold text-xx mt-2">عشان دروس البرمجة مترابطه الصفحه دي فيها شيتات السمسترين (الاول و التاني)</p>
+            <p class=" text-dark mt-2 ont-semibold"> في اخر قسم في صفحه ممكن تشغل بيها الاكواد --- بس لو عندك مدخلات لازم تكتب مدخلاتك كلها قبل ما تشغل الكود</p>
+
+
     </div>
     <div class="grid gap-3 sm:grid-cols-2 mb-6">
       ${s.lectures.map(l=>{ const b=d.best[l.id]; return `<button data-go="${l.id}" class="text-start bg-dark-elevated border border-dark-border hover:border-brand-500 rounded-xl p-4 transition">
