@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Computer Ethics_S2.pdf - Educational Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 500: '#14b8a6', 600: '#0d9488' },
+                        dark: { base: '#0b0f17', surface: '#111827', elevated: '#1f2937', border: '#374151', text: '#f3f4f6', muted: '#9ca3af' }
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'sans-serif'],
+                        cairo: ['Cairo', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>  body {
+    background-color: #0b0f17;
+    background-image: 
+      linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+        body { background-color: #0b0f17; color: #f3f4f6; }
+        .font-en { font-family: 'Inter', sans-serif; }
+        .font-ar { font-family: 'Cairo', sans-serif; }
+        .font-tech { font-family: 'JetBrains Mono', monospace; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #111827; }
+        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #14b8a6; }
+        .card { background-color: #1f2937; border: 1px solid #374151; border-radius: 0.5rem; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .alert-box { border-left: 4px solid #14b8a6; background-color: #111827; padding: 1rem; margin-bottom: 1rem; border-radius: 0 0.5rem 0.5rem 0; }
+        html[dir="rtl"] .alert-box { border-left: none; border-right: 4px solid #14b8a6; border-radius: 0.5rem 0 0 0.5rem; }
+        .quiz-option { cursor: pointer; transition: all 0.2s; }
+        .quiz-option.correct { background-color: #064e3b; border-color: #10b981; }
+        .quiz-option.incorrect { background-color: #7f1d1d; border-color: #ef4444; }
+        .quiz-option.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+        
+        /* Mobile sidebar transition */
+        #sidebar { transition: transform 0.3s ease-in-out; }
+    </style>
+</head>
+<body class="font-en h-screen flex flex-col overflow-hidden">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-dark-base/80 border-b border-dark-border px-4 md:px-6 py-4 flex justify-between items-center shadow-md">
+        <div class="flex items-center gap-3">
+            <!-- Mobile Hamburger Button -->
+            <button id="mobileMenuBtn" class="md:hidden text-brand-500 hover:text-brand-600 focus:outline-none p-1" onclick="toggleMobileMenu()">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+            <!-- زر الرجوع للقائمة الرئيسية -->
+        <a href="index.html" class="px-3 py-1.5 rounded-lg bg-dark-elevated border border-dark-border text-xs sm:text-sm font-bold text-dark-muted hover:text-white hover:bg-dark-border transition flex items-center gap-1.5 shadow-sm shrink-0" title="الرئيسية">
+            <span>&larr;</span> <span class="hidden sm:inline">الرئيسية</span>
+        </a>
+            <svg class="w-8 h-8 text-brand-500 hidden md:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            <h1 class="text-lg md:text-xl font-bold text-white tracking-wide truncate" id="siteTitle">Computer Ethics</h1>
+        </div>
+        <button id="langToggle" class="bg-dark-surface hover:bg-dark-elevated border border-dark-border px-3 md:px-4 py-2 rounded-lg font-semibold text-brand-500 transition-colors text-sm md:text-base whitespace-nowrap">
+            عربي 
+        </button>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden relative">
+        <!-- Mobile Overlay -->
+        <div id="mobileOverlay" class="fixed inset-0 bg-black/60 z-40 hidden md:hidden" onclick="toggleMobileMenu()"></div>
+       
+        <!-- Sidebar (Responsive) -->
+        <aside id="sidebar" class="fixed md:static inset-y-0 start-0 z-50 w-72 bg-dark-surface border-e border-dark-border overflow-y-auto flex-shrink-0 shadow-2xl md:shadow-none">
+            <div class="flex items-center justify-between p-4 md:hidden border-b border-dark-border">
+                <span class="font-bold text-white" id="menuTitle">Menu / القائمة</span>
+                <button onclick="toggleMobileMenu()" class="text-dark-muted hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+            <nav id="sidebarNav" class="p-4 space-y-2"></nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto bg-dark-base p-4 md:p-10 scroll-smooth w-full">
+            <div id="contentArea" class="max-w-4xl mx-auto pb-24"></div>
+            
+            <!-- Navigation Footer -->
+            <div class="max-w-4xl mx-auto mt-10 border-t border-dark-border pt-6 flex justify-between">
+                <button id="prevBtn" class="px-5 md:px-6 py-3 bg-dark-elevated hover:bg-dark-surface border border-dark-border rounded-lg font-semibold transition-colors hidden">Previous</button>
+                <button id="nextBtn" class="px-5 md:px-6 py-3 bg-brand-600 hover:bg-brand-500 text-white rounded-lg font-semibold transition-colors ml-auto rtl:ml-0 rtl:mr-auto">Next</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const rawData = [
+            {
+                id: "ch1",
+                titleEn: "Chapter One: An Overview of Ethics",
+                titleAr: "الفصل الأول: نظرة عامة على الأخلاقيات (An Overview of Ethics)",
+                blocks: [
+                    { type: "h2", en: "Basic Definitions", ar: "تعريفات أساسية (Basic Definitions)" },
+                    {
+                        type: "list",
+                        itemsEn: [
+                            "Moral code: Set of rules. Establishes boundaries of generally accepted behavior. Different rules often have contradictions.",
+                            "Morality: Social conventions about right and wrong. Widely shared. Form basis for an established consensus.",
+                            "Morality may vary by: Age, Cultural group, Ethnic background, Religion, Life experiences, Education, Gender.",
+                            "Ethics: Set of beliefs about right and wrong behavior.",
+                            "Virtues: Habits that incline people to do what is acceptable.",
+                            "Vices: Habits of unacceptable behavior.",
+                            "Virtues and vices define a personal value system (scheme of moral values)."
+                        ],
+                        itemsAr: [
+                            "القانون الأخلاقي (Moral code): مجموعة من القواعد. تضع حدوداً للسلوك المقبول عموماً. غالباً ما تحتوي القواعد المختلفة على تناقضات.",
+                            "الأخلاق العامة (Morality): الأعراف الاجتماعية حول الصواب والخطأ. مشتركة على نطاق واسع. تشكل أساساً لإجماع راسخ.",
+                            "قد تختلف الأخلاق العامة (Morality) باختلاف: العمر، المجموعة الثقافية، الخلفية العرقية، الدين، تجارب الحياة، التعليم، والجنس.",
+                            "الأخلاقيات (Ethics): مجموعة من المعتقدات حول السلوك الصحيح والخاطئ.",
+                            "الفضائل (Virtues): العادات التي تدفع الناس للقيام بما هو مقبول.",
+                            "الرذائل (Vices): عادات السلوك غير المقبول.",
+                            "الفضائل والرذائل تحدد نظام القيم الشخصية (مخطط القيم الأخلاقية)."
+                        ]
+                    },
+                    { type: "h2", en: "The Importance of Integrity", ar: "أهمية النزاهة (The Importance of Integrity)" },
+                    {
+                        type: "list",
+                        itemsEn: [
+                            "Integrity is a cornerstone of ethical behaviour.",
+                            "People with integrity act in accordance with a personal code of principles.",
+                            "They extend to all the same respect and consideration.",
+                            "They apply the same moral standards in all situations.",
+                            "Lack of integrity emerges if you apply moral standards differently according to situation or people involved.",
+                            "Many ethical dilemmas are not as simple as right versus wrong."
+                        ],
+                        itemsAr: [
+                            "النزاهة هي حجر الزاوية للسلوك الأخلاقي.",
+                            "الأشخاص ذوو النزاهة يتصرفون وفقاً لقانون شخصي من المبادئ.",
+                            "يقدمون للجميع نفس الاحترام والتقدير.",
+                            "يطبقون نفس المعايير الأخلاقية في جميع المواقف.",
+                            "يظهر الافتقار إلى النزاهة إذا قمت بتطبيق المعايير الأخلاقية بشكل مختلف وفقاً للموقف أو الأشخاص المعنيين.",
+                            "العديد من المعضلات الأخلاقية ليست بسيطة مثل الصواب مقابل الخطأ."
+                        ]
+                    },
+                    { type: "h2", en: "The Difference between Morals, Ethics, and Laws", ar: "الفرق بين الأخلاق العامة والأخلاقيات والقوانين (Morals, Ethics, and Laws)" },
+                    {
+                        type: "alert",
+                        en: "Morals: One's personal beliefs about right and wrong.<br>Ethics: Standards or codes of behavior expected of an individual by a group.<br>Law: System of rules that tells us what we can and cannot do. Laws are enforced by a set of institutions.<br>Legal acts conform to the law, while moral acts conform to what an individual believes is the right belief of right and wrong.",
+                        ar: "الأخلاق العامة (Morals): معتقدات الفرد الشخصية حول الصواب والخطأ.<br>الأخلاقيات (Ethics): معايير أو قواعد السلوك المتوقعة من الفرد من قبل مجموعة.<br>القانون (Law): نظام من القواعد يخبرنا بما يمكننا وما لا يمكننا القيام به. يتم تطبيق القوانين من قبل مجموعة من المؤسسات.<br>تتوافق الأفعال القانونية مع القانون، بينما تتوافق الأفعال الأخلاقية مع ما يعتقده الفرد أنه المعتقد الصحيح للصواب والخطأ."
+                    },
+                    { type: "h2", en: "Ethics in the Business World", ar: "الأخلاقيات في عالم الأعمال (Ethics in the Business World)" },
+                    {
+                        type: "list",
+                        itemsEn: [
+                            "Both the likelihood and the negative impact of inappropriate behavior have increased.",
+                            "Trends increasing unethical behaviour: Globalization creating complex work environments, organizations challenged to maintain profits/revenue.",
+                            "Heightened vigilance by: Employees, Shareholders, Regulatory agencies.",
+                            "Recent scandals in IT companies: Satyam Computer Services (India), Hewlett Packard, Computer Associates International, IBM.",
+                            "Not just executives, but even lower-level employees, can find themselves in the middle of an ethical dilemma."
+                        ],
+                        itemsAr: [
+                            "ازداد كل من احتمالية وتأثير السلوك غير اللائق السلبي.",
+                            "الاتجاهات التي تزيد من السلوك غير الأخلاقي: العولمة التي تخلق بيئات عمل معقدة، وتحدي المنظمات للحفاظ على الأرباح/الإيرادات.",
+                            "زيادة اليقظة من قبل: الموظفين، المساهمين، والوكالات التنظيمية.",
+                            "فضائح حديثة في شركات تكنولوجيا المعلومات: Satyam Computer Services (الهند)، Hewlett Packard، Computer Associates International، IBM.",
+                            "ليس فقط المديرين التنفيذيين، بل حتى الموظفين من المستوى الأدنى يمكن أن يجدوا أنفسهم في وسط معضلة أخلاقية."
+                        ]
+                    },
+                    { type: "h2", en: "Why Fostering Good Business Ethics Is Important", ar: "لماذا يعد تعزيز أخلاقيات العمل الجيدة مهماً" },
+                    {
+                        type: "list",
+                        itemsEn: [
+                            "To gain the good will of the community (contributions, benefits, socially desirable choices).",
+                            "To create an organization that operates consistently (ensures employees know expectations).",
+                            "To foster good business practices (safe products avoid lawsuits, excellent service retains customers, strong relations lower turnover).",
+                            "To protect organization/employees from legal action (Respondent superior principle).",
+                            "To avoid unfavourable publicity (protect stock value and consumer regard)."
+                        ],
+                        itemsAr: [
+                            "لكسب حسن نية المجتمع (المساهمات، الفوائد، الخيارات المرغوبة اجتماعياً).",
+                            "لإنشاء منظمة تعمل باستمرار (يضمن معرفة الموظفين بالتوقعات).",
+                            "لتعزيز الممارسات التجارية الجيدة (المنتجات الآمنة تتجنب الدعاوى القضائية، الخدمة الممتازة تحتفظ بالعملاء، العلاقات القوية تقلل من معدل الدوران).",
+                            "لحماية المنظمة/الموظفين من الإجراءات القانونية (مبدأ مسؤولية الرئيس/Respondent superior).",
+                            "لتجنب الدعاية غير المواتية (حماية قيمة الأسهم ونظرة المستهلك)."
+                        ]
+                    },
+                    { type: "h2", en: "Improving Corporate Ethics", ar: "تحسين أخلاقيات الشركات (Improving Corporate Ethics)" },
+                    {
+                        type: "list",
+                        itemsEn: [
+                            "Ethical Standards Set by Board of Directors: Must conduct themselves with integrity, set company-wide standards, and ensure compliance.",
+                            "Establishing a Corporate Code of Ethics: Highlights ethical issues, identifies values, provides reporting mechanisms.",
+                            "Sarbanes-Oxley Act of 2002: Enacted after major accounting scandals. Section 404 requires CEO and CFO to sign SEC filings. Section 406 requires public disclosure of ethics codes.",
+                            "Conducting Social Audits: Reviews how well organization meets ethical/social goals.",
+                            "Requiring Ethics Training: Apply code to case studies, reassure feedback will be acted on without retaliation.",
+                            "Ethical Criteria in Appraisals: Only 43% of companies include it. Includes treating others fairly, personal accountability.",
+                            "Creating an Ethical Work Environment: Provide knowledgeable resources (manager, legal department) to discuss perceived unethical practices."
+                        ],
+                        itemsAr: [
+                            "المعايير الأخلاقية التي يحددها مجلس الإدارة: يجب أن يتصرفوا بنزاهة، ويضعوا معايير على مستوى الشركة، ويضمنوا الامتثال.",
+                            "إنشاء مدونة قواعد سلوك الشركة (Code of Ethics): تسلط الضوء على القضايا الأخلاقية، وتحدد القيم، وتوفر آليات الإبلاغ.",
+                            "قانون ساربينز-أوكسلي لعام 2002 (Sarbanes-Oxley Act): سُن بعد فضائح محاسبية رئيسية. يتطلب القسم 404 توقيع الرئيس التنفيذي والمدير المالي على إيداعات لجنة الأوراق المالية. يتطلب القسم 406 الكشف العلني عن مدونات الأخلاق.",
+                            "إجراء التدقيق الاجتماعي (Social Audits): يراجع مدى تلبية المنظمة للأهداف الأخلاقية/الاجتماعية.",
+                            "التدريب الإلزامي على الأخلاقيات: تطبيق المدونة على دراسات الحالة، وطمأنة الموظفين بأنه سيتم التعامل مع ملاحظاتهم دون انتقام.",
+                            "المعايير الأخلاقية في تقييم الموظفين: 43% فقط من الشركات تدرجها. تشمل معاملة الآخرين بإنصاف والمساءلة الشخصية.",
+                            "خلق بيئة عمل أخلاقية: توفير موارد مطلعة (المدير، الإدارة القانونية) لمناقشة الممارسات غير الأخلاقية المتصورة."
+                        ]
+                    },
+                    { type: "h2", en: "Decision Making Process & Approaches", ar: "عملية صنع القرار والمناهج (Decision Making Process & Approaches)" },
+                    {
+                        type: "list",
+                        itemsEn: [
+                            "Steps: 1. Develop problem statement. 2. Identify alternatives. 3. Evaluate and choose alternative. 4. Implement decision. 5. Evaluate results.",
+                            "Good problem statement: Clear, concise. E.g., 'Our product supply organization is continually running out of stock... resulting in over $300,000 in lost sales per month.'",
+                            "Virtue ethics approach: Guided by virtues to reach right decision. Problem: does not provide guide for action.",
+                            "Utilitarian Approach: Chooses action with best overall consequences (cost-benefit). Problem: measuring values is difficult.",
+                            "Fairness Approach: Fair distribution of benefits/burdens. Problem: decisions influenced by personal bias.",
+                            "Common Good Approach: Work together for common values and goals. Problem: consensus is difficult."
+                        ],
+                        itemsAr: [
+                            "الخطوات: 1. تطوير بيان المشكلة. 2. تحديد البدائل. 3. تقييم واختيار البديل. 4. تنفيذ القرار. 5. تقييم النتائج.",
+                            "بيان المشكلة الجيد: واضح وموجز. مثال: 'تنفد مخزونات المنتجات النهائية باستمرار من منظمتنا... مما يؤدي إلى خسارة مبيعات تزيد عن 300,000 دولار شهرياً.'",
+                            "منهج فضيلة الأخلاق (Virtue ethics approach): يسترشد بالفضائل للوصول للقرار الصحيح. المشكلة: لا يوفر دليلاً للعمل.",
+                            "المنهج النفعي (Utilitarian Approach): يختار الإجراء ذو أفضل العواقب الإجمالية (التكلفة والعائد). المشكلة: قياس القيم صعب.",
+                            "منهج العدالة (Fairness Approach): التوزيع العادل للفوائد/الأعباء. المشكلة: القرارات تتأثر بالتحيز الشخصي.",
+                            "منهج الصالح العام (Common Good Approach): العمل معاً من أجل القيم والأهداف المشتركة. المشكلة: الإجماع صعب."
+                        ]
+                    },
+                     { type: "h2", en: "Ethics in Information Technology", ar: "الأخلاقيات في تكنولوجيا المعلومات (Ethics in Information Technology)" },
+                    {
+                        type: "list",
+                        itemsEn: [
+                            "Public concern includes: E-mail monitoring, copyright violation, spam, hackers, plagiarism, cookies and spyware.",
+                            "General public does not understand the critical importance of ethics applied to IT. Important decisions are often left to technical experts.",
+                            "General managers must make decisions based on technical savvy, business know-how, and a sense of ethics."
+                        ],
+                        itemsAr: [
+                            "يشمل القلق العام: مراقبة البريد الإلكتروني، انتهاك حقوق الطبع والنشر، البريد العشوائي، القراصنة، الانتحال الأكاديمي، ملفات تعريف الارتباط وبرامج التجسس.",
+                            "لا يفهم عامة الناس الأهمية الحاسمة للأخلاقيات المطبقة على تكنولوجيا المعلومات. غالباً ما تُترك القرارات المهمة للخبراء الفنيين.",
+                            "يجب على المديرين العامين اتخاذ القرارات بناءً على الدهاء الفني، والمعرفة التجارية، والحس الأخلاقي."
+                        ]
+                    }
+                ],
+                quiz: [
+                    {
+                        qEn: "Which of the following is defined as a 'Set of rules that establishes boundaries of generally accepted behavior'?",
+                        qAr: "أي مما يلي يُعرّف بأنه 'مجموعة من القواعد التي تضع حدوداً للسلوك المقبول عموماً'؟",
+                        optionsEn: ["Morality", "Moral code", "Ethics", "Virtues"],
+                        optionsAr: ["الأخلاق العامة", "القانون الأخلاقي", "الأخلاقيات", "الفضائل"],
+                        correct: 1
+                    },
+                    {
+                        qEn: "According to the Sarbanes-Oxley Act of 2002, which section requires the CEO and CFO to sign SEC filings?",
+                        qAr: "وفقاً لقانون ساربينز-أوكسلي لعام 2002، أي قسم يتطلب من الرئيس التنفيذي والمدير المالي التوقيع على إيداعات لجنة الأوراق المالية؟",
+                        optionsEn: ["Section 404", "Section 406", "Section 202", "Section 301"],
+                        optionsAr: ["القسم 404", "القسم 406", "القسم 202", "القسم 301"],
+                        correct: 0
+                    },
+                    {
+                        qEn: "Which ethical decision-making approach focuses on finding the greatest good by balancing all interests (cost-benefit analysis)?",
+                        qAr: "أي منهج لصنع القرار الأخلاقي يركز على إيجاد أكبر قدر من الخير من خلال موازنة جميع المصالح (تحليل التكلفة والعائد)؟",
+                        optionsEn: ["Virtue ethics approach", "Fairness Approach", "Common Good Approach", "Utilitarian Approach"],
+                        optionsAr: ["منهج فضيلة الأخلاق", "منهج العدالة", "منهج الصالح العام", "المنهج النفعي"],
+                        correct: 3
+                    }
+                ]
+            },
+            {
+                id: "ch2",
+                titleEn: "Chapter Two: Accountability in IT",
+                titleAr: "الفصل الثاني: المساءلة في تكنولوجيا المعلومات (Accountability in IT)",
+                blocks: [
+                    { type: "h2", en: "Introduction to Accountability", ar: "مقدمة عن المساءلة (Accountability)" },
+                    {
+                        type: "alert",
+                        en: "Accountability is the means of ensuring that individuals, groups and the organization understand their part in accomplishing goals. Accountability is the flip side of delegation.",
+                        ar: "المساءلة هي وسيلة لضمان فهم الأفراد والمجموعات والمنظمة لدورهم في تحقيق الأهداف. المساءلة هي الوجه الآخر للتفويض."
+                    },
+                    { type: "h2", en: "Ensuring Accountability Concepts", ar: "مفاهيم ضمان المساءلة (Ensuring Accountability)" },
+                    {
+                        type: "list",
+                        itemsEn: [
+                            "Accountability: Broadest meaning. Rests with someone with the ultimate responsibility (e.g., Head of department).",
+                            "Role Responsibility: Analogous to duty. What people are expected to do within their role.",
+                            "Casual Responsibility: Result of causality. (e.g., X did something and caused an event).",
+                            "Blameworthy Responsibility: Being at fault for failing a role responsibility.",
+                            "Liability: Legal obligation. You might be held liable (friend slips on floor) but not blameworthy."
+                        ],
+                        itemsAr: [
+                            "المساءلة (Accountability): المعنى الأوسع. تقع على عاتق شخص يتحمل المسؤولية النهائية (مثل رئيس القسم).",
+                            "مسؤولية الدور (Role Responsibility): تشبه الواجب. ما يُتوقع من الناس القيام به ضمن دورهم.",
+                            "المسؤولية السببية (Casual Responsibility): نتيجة للسببية. (مثال: فعل شخص شيئاً وتسبب في حدث).",
+                            "المسؤولية الجديرة باللوم (Blameworthy Responsibility): أن تكون مخطئاً لفشلك في مسؤولية الدور.",
+                            "المسؤولية القانونية (Liability): الالتزام القانوني. قد تُعتبر مسؤولاً قانونياً (انزلاق صديق على الأرض) لكنك لست جديراً باللوم."
+                        ]
+                    },
+                    { type: "h2", en: "Buying and Selling Software", ar: "شراء وبيع البرمجيات (Buying and Selling Software)" },
+                    {
+                        type: "list",
+                        itemsEn: [
+                            "Seller's duties: Right to sell, duty to be honest, duty not to coerce, emphasize good aspects, answer questions honestly.",
+                            "Software as a Mass Market Product: Strict liability imposed. Producers invite public, earn profit, should bear risks and control them. Cost spread over clients.",
+                            "Customized Software (Service): Strict liability does not make sense. Client specifies context and shares risk. Treated as a service.",
+                            "Mixed Case: Product + Service. Treated each on its own.",
+                            "Negligence: Failure to do something expected of a reasonable and prudent person."
+                        ],
+                        itemsAr: [
+                            "واجبات البائع: الحق في البيع، واجب الصدق، واجب عدم إكراه العميل، التأكيد على الجوانب الجيدة، الإجابة على الأسئلة بصدق.",
+                            "البرمجيات كمنتج سوق شامل (Mass Market Product): تُفرض مسؤولية صارمة. المنتجون يدعون الجمهور، يجنون الأرباح، ويجب أن يتحملوا المخاطر ويسيطروا عليها.",
+                            "البرمجيات المخصصة (Customized Software): المسؤولية الصارمة غير منطقية. العميل يحدد السياق ويشارك في المخاطر. تُعامل كخدمة.",
+                            "حالة مختلطة (Mixed Case): منتج + خدمة. يتم التعامل مع كل منهما على حدة.",
+                            "الإهمال (Negligence): الفشل في القيام بشيء يُتوقع من شخص عاقل وحذر."
+                        ]
+                    },
+                    { type: "h2", en: "Diffusion of Responsibility Cases", ar: "حالات انتشار المسؤولية (Diffusion of Responsibility)" },
+                    {
+                        type: "list",
+                        itemsEn: [
+                            "Y2K Problem: Was it the designer's fault? Best strategy is to state role responsibilities clearly, ensure understanding of effects, and hold those responsible who fail their duties.",
+                            "THERAC-25: Radiation treatment system caused fatalities. Operator was not to blame; error existed in previous software version. Highlights difficulty of testing real-time systems.",
+                            "ISP Responsibility (Stratton vs Prodigy 1995): Prodigy sued for forum content. Court initially found them guilty like a newspaper. 1996 Communications Decency Act reversed this, treating ISPs like telephone companies and introducing Good Samaritan immunity."
+                        ],
+                        itemsAr: [
+                            "مشكلة عام 2000 (Y2K Problem): هل كان خطأ المصمم؟ أفضل استراتيجية هي توضيح مسؤوليات الدور، ضمان فهم التأثيرات، ومحاسبة المقصرين.",
+                            "نظام ثيراك-25 (THERAC-25): نظام علاج إشعاعي تسبب في وفيات. المشغل لم يكن جديراً باللوم؛ الخطأ كان في نسخة برمجيات سابقة. يبرز صعوبة اختبار الأنظمة في الوقت الفعلي.",
+                            "مسؤولية مزود الخدمة (ISP Responsibility): تمت مقاضاة Prodigy بسبب محتوى المنتدى. وجدتهم المحكمة مذنبين كصحيفة. قانون آداب الاتصالات 1996 عكس ذلك، وعاملهم كشركات هواتف وقدم حصانة 'السامري الصالح'."
+                        ]
+                    }
+                ],
+                quiz: [
+                    {
+                        qEn: "Which type of responsibility is described as 'being at fault for failing a role responsibility'?",
+                        qAr: "أي نوع من المسؤولية يوصف بأنه 'أن تكون مخطئاً لفشلك في مسؤولية الدور'؟",
+                        optionsEn: ["Casual Responsibility", "Blameworthy Responsibility", "Liability", "Role Responsibility"],
+                        optionsAr: ["المسؤولية السببية", "المسؤولية الجديرة باللوم", "المسؤولية القانونية", "مسؤولية الدور"],
+                        correct: 1
+                    },
+                    {
+                        qEn: "In the context of buying and selling software, customized software is strictly considered a:",
+                        qAr: "في سياق شراء وبيع البرمجيات، تُعتبر البرمجيات المخصصة بشكل صارم:",
+                        optionsEn: ["Mass Market Product", "Mixed Case", "Service", "Negligence"],
+                        optionsAr: ["منتج سوق شامل", "حالة مختلطة", "خدمة", "إهمال"],
+                        correct: 2
+                    }
+                ]
+            },
+            {
+                id: "ch3",
+                titleEn: "Chapter Three: Ethics for IT Workers and IT Users",
+                titleAr: "الفصل الثالث: الأخلاقيات للعاملين والمستخدمين في تكنولوجيا المعلومات",
+                blocks: [
+                    { type: "h2", en: "IT Professionals Definition", ar: "تعريف محترفي تكنولوجيا المعلومات (IT Professionals)" },
+                    {
+                        type: "list",
+                        itemsEn: [
+                            "Profession requires: Specialized knowledge, Long/intensive academic preparation.",
+                            "Professionals exercise discretion and judgment, work cannot be standardized, carry special rights/responsibilities.",
+                            "Legal perspective: IT workers do NOT meet the legal definition of professional. Not licensed by state/federal government, not liable for malpractice."
+                        ],
+                        itemsAr: [
+                            "تتطلب المهنة: معرفة متخصصة، إعداد أكاديمي طويل/مكثف.",
+                            "المحترفون يمارسون التقدير والحكم، ولا يمكن توحيد عملهم معيارياً، ويحملون حقوقاً/مسؤوليات خاصة.",
+                            "المنظور القانوني: لا يفي عمال تكنولوجيا المعلومات بالتعريف القانوني للمحترف. غير مرخصين من الحكومة، وغير مسؤولين قانونياً عن سوء الممارسة (Malpractice)."
+                        ]
+                    },
+                    { type: "h2", en: "The Changing Professional Services Industry", ar: "صناعة الخدمات المهنية المتغيرة" },
+                    {
+                        type: "list",
+                        itemsEn: [
+                            "Seven forces changing the industry:",
+                            "1. Client sophistication (able to drive hard bargains)",
+                            "2. Governance (due to major scandals)",
+                            "3. Connectivity (instant communications)",
+                            "4. Transparency (view work-in-progress in real-time)",
+                            "5. Modularization (able to outsource modules)",
+                            "6. Globalization (worldwide sourcing)",
+                            "7. Commoditization (for low-end services)"
+                        ],
+                        itemsAr: [
+                            "سبع قوى تغير الصناعة:",
+                            "1. تطور العميل (قادر على عقد صفقات صعبة)",
+                            "2. الحوكمة (بسبب الفضائح الكبرى)",
+                            "3. الاتصال (الاتصالات الفورية)",
+                            "4. الشفافية (عرض العمل قيد التقدم في الوقت الفعلي)",
+                            "5. التجزئة (Modularization - القدرة على الاستعانة بمصادر خارجية للوحدات)",
+                            "6. العولمة (المصادر العالمية)",
+                            "7. التسليع (Commoditization - للخدمات المنخفضة الجودة)"
+                        ]
+                    },
+                    { type: "h2", en: "Professional Relationships", ar: "العلاقات المهنية (Professional Relationships)" },
+                    {
+                        type: "list",
+                        itemsEn: [
+                            "1. IT Workers & Employers: Deal with software piracy (Business Software Alliance - BSA stops unauthorized copying), Trade secrets (confidential, require effort), Whistle-blowing (attracting attention to illegal/dangerous acts).",
+                            "2. IT Workers & Clients: Documented in contracts. Issues include Fraud (obtaining goods by deception), Misrepresentation (misstatement of material fact), Breach of contract (failing terms). Ethical problem: Recommending own products to remedy detected problems (conflict of interest).",
+                            "3. IT Workers & Suppliers: Avoid bribery (U.S. Foreign Corrupt Practices Act FCPA, UN Convention against Corruption). No gift should be hidden.",
+                            "4. IT Workers & Other Professionals: Owe adherence to code of conduct. Problems: Résumé inflation (30% of US apps), inappropriate sharing of corporate info.",
+                            "5. IT Workers & IT Users: Understand needs, establish environment supporting ethical behaviour (discourage piracy, avoid inappropriate sharing).",
+                            "6. IT Workers & Society: Provide benefits, do not cause harm. Guided by professional organizations' codes of ethics."
+                        ],
+                        itemsAr: [
+                            "1. العمال وأصحاب العمل: التعامل مع قرصنة البرمجيات (تحالف برامج الأعمال BSA يوقف النسخ غير المصرح به)، الأسرار التجارية، والإبلاغ عن المخالفات (Whistle-blowing).",
+                            "2. العمال والعملاء: موثقة في العقود. تشمل القضايا الاحتيال (Fraud)، التحريف (Misrepresentation)، وخرق العقد. مشكلة أخلاقية: التوصية بالمنتجات الخاصة لعلاج المشاكل المكتشفة (تضارب مصالح).",
+                            "3. العمال والموردون: تجنب الرشوة (Bribery - قانون الممارسات الأجنبية الفاسدة الأمريكي FCPA، اتفاقية الأمم المتحدة لمكافحة الفساد). لا ينبغي إخفاء أي هدية.",
+                            "4. العمال والمحترفون الآخرون: الالتزام بمدونة السلوك. المشاكل: تضخيم السيرة الذاتية (Résumé inflation)، والمشاركة غير اللائقة لمعلومات الشركة.",
+                            "5. العمال والمستخدمون: فهم الاحتياجات، إنشاء بيئة تدعم السلوك الأخلاقي.",
+                            "6. العمال والمجتمع: تقديم الفوائد، وعدم التسبب في ضرر. يسترشد بمدونات الأخلاق للمنظمات المهنية."
+                        ]
+                    }
+                ],
+                quiz: [
+                    {
+                        qEn: "From a legal perspective in the U.S., do IT workers meet the legal definition of a professional (e.g., licensed, liable for malpractice)?",
+                        qAr: "من منظور قانوني في الولايات المتحدة، هل يلبي عمال تكنولوجيا المعلومات التعريف القانوني للمحترف (مرخص، مسؤول عن سوء الممارسة)؟",
+                        optionsEn: ["Yes, completely", "No, they do not", "Only Network Administrators", "Only if they have a degree"],
+                        optionsAr: ["نعم، تماماً", "لا، لا يلبون ذلك", "فقط مسؤولي الشبكات", "فقط إذا كان لديهم شهادة"],
+                        correct: 1
+                    },
+                    {
+                        qEn: "What does the term 'Whistle-blowing' refer to?",
+                        qAr: "إلى ماذا يشير مصطلح 'الإبلاغ عن المخالفات' (Whistle-blowing)؟",
+                        optionsEn: ["Sharing trade secrets", "Résumé inflation", "Attracting attention to a negligent, illegal, or dangerous act", "Breach of contract"],
+                        optionsAr: ["مشاركة الأسرار التجارية", "تضخيم السيرة الذاتية", "جذب الانتباه إلى عمل مهمل أو غير قانوني أو خطير", "خرق العقد"],
+                        correct: 2
+                    },
+                    {
+                        qEn: "Which organization represents the world's largest software manufacturers and aims to stop unauthorized copying of software?",
+                        qAr: "ما هي المنظمة التي تمثل أكبر الشركات المصنعة للبرمجيات في العالم وتهدف إلى وقف النسخ غير المصرح به للبرمجيات؟",
+                        optionsEn: ["BSA (Business Software Alliance)", "FCPA", "SEC", "UN"],
+                        optionsAr: ["تحالف برمجيات الأعمال (BSA)", "FCPA", "SEC", "الأمم المتحدة"],
+                        correct: 0
+                    }
+                ]
+            },
+            {
+                id: "glossary",
+                titleEn: "Glossary / قاموس المصطلحات",
+                titleAr: "قاموس المصطلحات / Glossary",
+                blocks: [
+                    { type: "h2", en: "Key Technical Terms & Concepts", ar: "المصطلحات والمفاهيم التقنية الرئيسية" },
+                    {
+                        type: "table",
+                        headersEn: ["Term (English)", "Arabic Translation", "Context"],
+                        headersAr: ["المصطلح (إنجليزي)", "الترجمة العربية", "السياق"],
+                        rows: [
+                            ["Moral code", "القانون الأخلاقي", "Set of rules establishing behavior boundaries."],
+                            ["Morality", "الأخلاق العامة", "Social conventions about right and wrong."],
+                            ["Ethics", "الأخلاقيات", "Set of beliefs about right and wrong behavior."],
+                            ["Virtues / Vices", "الفضائل / الرذائل", "Habits of acceptable/unacceptable behavior."],
+                            ["Integrity", "النزاهة", "Acting in accordance with a personal code of principles."],
+                            ["Accountability", "المساءلة", "Understanding one's part in accomplishing goals; ultimate responsibility."],
+                            ["Liability", "المسؤولية القانونية", "Legal obligation or responsibility."],
+                            ["Negligence", "الإهمال", "Failure to do something expected of a reasonable person."],
+                            ["Whistle-blowing", "الإبلاغ عن المخالفات", "Exposing illegal or dangerous acts in an organization."],
+                            ["Trade secrets", "الأسرار التجارية", "Confidential business info requiring effort to develop."],
+                            ["Fraud", "الاحتيال", "Obtaining goods/services through deception."],
+                            ["Misrepresentation", "التحريف", "Misstatement of material fact."],
+                            ["Bribery", "الرشوة", "Providing money/favors to obtain business advantage."],
+                            ["Commoditization", "التسليع", "Treating services as commodities (low-end services)."],
+                            ["Modularization", "التجزئة", "Breaking systems into modules that can be outsourced."]
+                        ]
+                    }
+                ],
+                quiz: []
+            }
+        ];
+
+        let currentLang = 'en';
+        let currentChapterIndex = 0;
+        let isMobileMenuOpen = false;
+
+        function stripCitations(text) {
+            if (!text) return "";
+            return text.replace(new RegExp('\\[' + 'cite' + ':[^\\]]+\\]', 'gi'), '').trim();
+        }
+
+        // --- Mobile Menu Logic ---
+        function toggleMobileMenu() {
+            isMobileMenuOpen = !isMobileMenuOpen;
+            updateSidebarTransform();
+        }
+
+        function updateSidebarTransform() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('mobileOverlay');
+            
+            if (window.innerWidth >= 768) {
+                // Desktop: reset transforms
+                sidebar.style.transform = 'none';
+                overlay.classList.add('hidden');
+            } else {
+                // Mobile
+                if (isMobileMenuOpen) {
+                    sidebar.style.transform = 'translateX(0)';
+                    overlay.classList.remove('hidden');
+                } else {
+                    // Hide off-screen logically based on LTR/RTL
+                    sidebar.style.transform = currentLang === 'ar' ? 'translateX(100%)' : 'translateX(-100%)';
+                    overlay.classList.add('hidden');
+                }
+            }
+        }
+        window.addEventListener('resize', updateSidebarTransform);
+        // -------------------------
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'ar' : 'en';
+            document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            document.body.className = currentLang === 'ar' ? 'font-ar h-screen flex flex-col overflow-hidden' : 'font-en h-screen flex flex-col overflow-hidden';
+            
+            document.getElementById('langToggle').innerText = currentLang === 'ar' ? 'English (EN)' : 'عربي (AR)';
+            document.getElementById('menuTitle').innerText = currentLang === 'ar' ? 'القائمة' : 'Menu';
+            
+            renderSidebar();
+            renderContent();
+            updateSidebarTransform(); // Re-apply logical positioning for mobile off-canvas
+        }
+
+        function navigate(index) {
+            currentChapterIndex = index;
+            renderSidebar();
+            renderContent();
+            document.querySelector('main').scrollTo(0, 0);
+            
+            // Auto-close mobile menu upon selection
+            if (isMobileMenuOpen) toggleMobileMenu();
+        }
+
+        function renderSidebar() {
+            const nav = document.getElementById('sidebarNav');
+            nav.innerHTML = '';
+            rawData.forEach((ch, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left px-4 py-3 rounded-lg font-semibold transition-colors ${idx === currentChapterIndex ? 'bg-brand-600 text-white' : 'text-dark-text hover:bg-dark-elevated'}`;
+                
+                if (currentLang === 'ar') btn.classList.replace('text-left', 'text-right');
+
+                btn.innerText = stripCitations(currentLang === 'en' ? ch.titleEn : ch.titleAr);
+                btn.onclick = () => navigate(idx);
+                nav.appendChild(btn);
+            });
+
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            
+            prevBtn.style.display = currentChapterIndex > 0 ? 'block' : 'none';
+            prevBtn.innerText = currentLang === 'en' ? 'Previous' : 'السابق';
+            prevBtn.onclick = () => navigate(currentChapterIndex - 1);
+
+            nextBtn.style.display = currentChapterIndex < rawData.length - 1 ? 'block' : 'none';
+            nextBtn.innerText = currentLang === 'en' ? 'Next' : 'التالي';
+            nextBtn.onclick = () => navigate(currentChapterIndex + 1);
+        }
+
+        function renderContent() {
+            const area = document.getElementById('contentArea');
+            const chapter = rawData[currentChapterIndex];
+            area.innerHTML = '';
+
+            const title = document.createElement('h1');
+            title.className = 'text-2xl md:text-3xl font-bold text-white mb-8 pb-4 border-b border-dark-border leading-tight';
+            title.innerHTML = stripCitations(currentLang === 'en' ? chapter.titleEn : chapter.titleAr);
+            area.appendChild(title);
+
+            chapter.blocks.forEach(block => {
+                if (block.type === 'h2') {
+                    const h2 = document.createElement('h2');
+                    h2.className = 'text-xl md:text-2xl font-semibold text-brand-500 mt-8 mb-4';
+                    h2.innerHTML = stripCitations(currentLang === 'en' ? block.en : block.ar);
+                    area.appendChild(h2);
+                } else if (block.type === 'alert') {
+                    const alert = document.createElement('div');
+                    alert.className = 'alert-box text-base md:text-lg leading-relaxed shadow-sm';
+                    alert.innerHTML = stripCitations(currentLang === 'en' ? block.en : block.ar);
+                    area.appendChild(alert);
+                } else if (block.type === 'list') {
+                    const card = document.createElement('div');
+                    card.className = 'card shadow-lg';
+                    const ul = document.createElement('ul');
+                    ul.className = 'space-y-3 list-disc list-inside text-base md:text-lg leading-relaxed';
+                    const items = currentLang === 'en' ? block.itemsEn : block.itemsAr;
+                    items.forEach(item => {
+                        const li = document.createElement('li');
+                        li.innerHTML = stripCitations(item);
+                        ul.appendChild(li);
+                    });
+                    card.appendChild(ul);
+                    area.appendChild(card);
+                } else if (block.type === 'table') {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'overflow-x-auto card shadow-lg p-0';
+                    const table = document.createElement('table');
+                    table.className = 'w-full text-left border-collapse min-w-[600px]';
+                    
+                    if (currentLang === 'ar') table.classList.replace('text-left', 'text-right');
+
+                    const thead = document.createElement('thead');
+                    const trHead = document.createElement('tr');
+                    trHead.className = 'bg-dark-surface';
+                    const headers = currentLang === 'en' ? block.headersEn : block.headersAr;
+                    headers.forEach(h => {
+                        const th = document.createElement('th');
+                        th.className = 'p-3 md:p-4 border-b border-dark-border font-semibold text-brand-500';
+                        th.innerText = stripCitations(h);
+                        trHead.appendChild(th);
+                    });
+                    thead.appendChild(trHead);
+                    table.appendChild(thead);
+
+                    const tbody = document.createElement('tbody');
+                    block.rows.forEach((row, rIdx) => {
+                        const tr = document.createElement('tr');
+                        tr.className = rIdx % 2 === 0 ? 'bg-dark-elevated' : 'bg-dark-base';
+                        row.forEach((cell, cIdx) => {
+                            const td = document.createElement('td');
+                            td.className = 'p-3 md:p-4 border-b border-dark-border text-sm md:text-base';
+                            if (currentLang === 'ar' && cIdx === 0) {
+                                td.className += ' font-tech text-left ltr';
+                                td.dir = 'ltr';
+                            }
+                            td.innerText = stripCitations(cell);
+                            tr.appendChild(td);
+                        });
+                        tbody.appendChild(tr);
+                    });
+                    table.appendChild(tbody);
+                    wrapper.appendChild(table);
+                    area.appendChild(wrapper);
+                }
+            });
+
+            if (chapter.quiz && chapter.quiz.length > 0) {
+                const quizHeader = document.createElement('h2');
+                quizHeader.className = 'text-2xl md:text-3xl font-bold text-white mt-12 mb-6 pt-6 border-t border-dark-border';
+                quizHeader.innerText = currentLang === 'en' ? 'Interactive Quiz' : 'اختبار تفاعلي';
+                area.appendChild(quizHeader);
+
+                chapter.quiz.forEach((q, qIdx) => {
+                    const qCard = document.createElement('div');
+                    qCard.className = 'card shadow-lg';
+                    
+                    const qTitle = document.createElement('h3');
+                    qTitle.className = 'text-lg md:text-xl font-semibold mb-4 leading-snug';
+                    qTitle.innerHTML = `${qIdx + 1}. ${stripCitations(currentLang === 'en' ? q.qEn : q.qAr)}`;
+                    qCard.appendChild(qTitle);
+
+                    const optionsBox = document.createElement('div');
+                    optionsBox.className = 'space-y-3';
+                    
+                    const options = currentLang === 'en' ? q.optionsEn : q.optionsAr;
+                    options.forEach((opt, oIdx) => {
+                        const optBtn = document.createElement('div');
+                        optBtn.className = 'quiz-option p-4 rounded-lg border border-dark-border bg-dark-base hover:bg-dark-surface text-sm md:text-base';
+                        optBtn.innerHTML = stripCitations(opt);
+                        
+                        optBtn.onclick = function() {
+                            if (qCard.getAttribute('data-answered') === 'true') return;
+                            qCard.setAttribute('data-answered', 'true');
+                            
+                            Array.from(optionsBox.children).forEach((child, cIdx) => {
+                                child.classList.add('disabled');
+                                const iconSpan = document.createElement('span');
+                                iconSpan.className = currentLang === 'ar' ? 'float-left' : 'float-right';
+                                
+                                if (cIdx === q.correct) {
+                                    child.classList.remove('bg-dark-base', 'hover:bg-dark-surface', 'border-dark-border');
+                                    child.classList.add('correct');
+                                    iconSpan.innerText = '✔️';
+                                    child.appendChild(iconSpan);
+                                } else if (cIdx === oIdx && cIdx !== q.correct) {
+                                    child.classList.remove('bg-dark-base', 'hover:bg-dark-surface', 'border-dark-border');
+                                    child.classList.add('incorrect');
+                                    iconSpan.innerText = '✖️';
+                                    child.appendChild(iconSpan);
+                                }
+                            });
+                        };
+                        
+                        optionsBox.appendChild(optBtn);
+                    });
+                    
+                    qCard.appendChild(optionsBox);
+                    area.appendChild(qCard);
+                });
+            }
+        }
+
+        document.getElementById('langToggle').addEventListener('click', toggleLanguage);
+
+        // Initialize setup
+        renderSidebar();
+        renderContent();
+        updateSidebarTransform();
+    </script>
+</body>
+</html>

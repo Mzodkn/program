@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>C++ Programming Fundamentals - Study Portal</title>
+  
+  <!-- Fonts: Inter (EN), Cairo (AR), JetBrains Mono (Code/Tech) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#f0fdfa', 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e' },
+            dark: { base: '#0b0f17', surface: '#111827', elevated: '#1f2937', border: '#374151', text: '#f3f4f6', muted: '#9ca3af' }
+          },
+          fontFamily: {
+            sans: ['Inter', 'Cairo', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+      body {
+    background-color: #0b0f17;
+    background-image: 
+      linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0b0f17; }
+    ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #374151; }
+    
+    /* Active Sidebar Navigation */
+    .nav-active {
+      background-color: #1f2937;
+      border-inline-start: 4px solid #14b8a6;
+      color: #14b8a6 !important;
+      font-weight: 600;
+    }
+    
+    /* Code Highlighting Simulators */
+    .token.keyword { color: #c678dd; }
+    .token.type { color: #e5c07b; }
+    .token.string { color: #98c379; }
+    .token.number { color: #d19a66; }
+    .token.comment { color: #5c6370; font-style: italic; }
+    .token.function { color: #61afef; }
+    
+    /* Inline Code Styling */
+    code {
+      background-color: #0b0f17;
+      color: #14b8a6;
+      padding: 0.125rem 0.375rem;
+      border-radius: 0.25rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.875em;
+      border: 1px solid #374151;
+    }
+  </style>
+</head>
+<body class="bg-dark-base text-dark-text font-sans antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+
+  <!-- Sticky Header -->
+  <header class="sticky top-0 z-40 bg-dark-surface/90 backdrop-blur border-b border-dark-border">
+    
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+       <div class="flex items-center gap-3 truncate pr-2">
+                <a href="index.html" class="px-3 py-1.5 rounded-lg bg-dark-elevated border border-dark-border text-xs sm:text-sm font-bold text-dark-muted hover:text-white hover:bg-dark-border transition flex items-center gap-1.5 shadow-sm shrink-0" title="الرئيسية">
+                    <span>&larr;</span> <span class="hidden sm:inline">الرئيسية</span>
+                </a>
+                <div class="h-5 w-[1px] bg-dark-border shrink-0"></div>
+                <h2 id="moduleTitle" class="text-lg md:text-2xl font-bold text-white truncate"></h2>
+            </div>
+      <div class="flex items-center gap-3">
+        <button id="sidebarToggle" class="p-2 md:hidden text-dark-muted hover:text-white" aria-label="Toggle Navigation">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+        </button>
+        <div class="w-9 h-9 rounded bg-gradient-to-tr from-brand-600 to-teal-400 flex items-center justify-center font-bold text-white shadow-lg font-mono">C++</div>
+        <div>
+          <div class="font-bold text-lg hidden sm:block leading-tight">Programming Technique II</div>
+          <div class="text-xs text-dark-muted hidden sm:block">Programing_4_s2 Reference</div>
+        </div>
+      </div>
+      
+      <!-- Bilingual Toggle Button -->
+      <button id="langToggle" class="px-4 py-1.5 rounded-lg bg-dark-elevated border border-dark-border text-sm font-semibold text-brand-500 hover:bg-dark-border transition shadow-sm">
+        العربية
+      </button>
+    </div>
+  </header>
+
+  <div class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 flex gap-6">
+    
+    <!-- Collapsible Sidebar -->
+    <aside id="sidebar" class="w-72 bg-dark-surface border border-dark-border rounded-xl p-4 h-[calc(100vh-6rem)] sticky top-20 overflow-y-auto hidden md:block shrink-0 shadow-xl transition-all">
+      <div class="text-xs font-bold uppercase text-dark-muted px-3 mb-3 tracking-wider" id="navTitle">Course Modules</div>
+      <nav id="moduleList" class="space-y-1"></nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 min-w-0 bg-dark-surface border border-dark-border rounded-xl p-6 sm:p-8 shadow-xl flex flex-col">
+      <div class="text-sm font-mono text-brand-500 mb-2 font-semibold" id="lectureNumber"></div>
+      
+      <!-- Dynamic Article Content -->
+      <article id="contentArea" class="space-y-8 leading-relaxed flex-1"></article>
+
+      <!-- Interactive Quizzes -->
+      <section id="quizSection" class="mt-12 pt-8 border-t border-dark-border">
+        <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-brand-500"></span>
+          <span id="quizTitle">Interactive Self-Assessment</span>
+        </h3>
+        <div id="quizContainer" class="space-y-6"></div>
+      </section>
+
+      <!-- Navigation Footer -->
+      <div class="mt-12 pt-6 border-t border-dark-border flex items-center justify-between">
+        <button id="prevBtn" class="px-5 py-2.5 rounded-lg bg-dark-elevated border border-dark-border text-dark-muted hover:text-white transition font-medium text-sm">&larr; Previous</button>
+        <button id="nextBtn" class="px-5 py-2.5 rounded-lg bg-brand-600 text-white hover:bg-brand-500 transition font-medium text-sm shadow-md">Next &rarr;</button>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    /**
+     * INVISIBLE CITATION HANDLING (Crucial Requirement 7)
+     * Corrected RegExp logic to safely target standard `` format 
+     * without being broken by double-escaped backslashes.
+     */
+    function cleanText(text) {
+      if (!text) return '';
+      // Correctly resolved regex evaluating to: /\]+\]/gi
+      const citeRegex = new RegExp('\\]+\\]', 'gi');
+      return text.replace(citeRegex, '').trim();
+    }
+
+    const courseData = [
+      // ================= LECTURES 1 & 2 =================
+      {
+        id: "lec1-2",
+        number: "Lectures 1 & 2",
+        title: { en: "Introduction to C++ Concepts", ar: "مقدمة لمفاهيم لغة C++" },
+        content: {
+          en: `
+            <div class="space-y-6">
+              <h1 class="text-2xl sm:text-3xl font-bold text-white">Introduction to C++ Concepts</h1>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                  <h3 class="font-bold text-teal-400 mb-2">Course Objectives</h3>
+                  <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li>Provide students with a general idea about computer programming.</li>
+                    <li>Give a background on programming languages evolution.</li>
+                    <li>Introduce C++ programming language and explain practically how it can be used.</li>
+                  </ul>
+                </div>
+                <div class="p-4 rounded-lg bg-dark-elevated border-l-4 border-brand-500">
+                  <h3 class="font-bold text-white mb-2">Course Assessment</h3>
+                  <ul class="list-disc list-inside text-sm text-gray-300 space-y-1 font-mono">
+                    <li>Class Work: 20 Marks</li>
+                    <li>Mid Exam: 20 Marks</li>
+                    <li>Final Exam: 60 Marks</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">Computer Programs</h2>
+                <p class="text-sm text-gray-300 mb-4">A computer program, also known as "Code", is a collection of instructions that can be executed to perform a specific task.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                  <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-1">Constants</h4>
+                    <p class="text-gray-300">Used to represent fixed values/data in the program body. (e.g., error C3892: you cannot assign to a variable that is const).</p>
+                  </div>
+                  <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-1">Variables</h4>
+                    <p class="text-gray-300">Used to represent changeable values/data in the program.</p>
+                  </div>
+                  <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-1">Methods</h4>
+                    <p class="text-gray-300">Defined as procedures/functions, which are considered program segments used to perform certain tasks of the whole program's tasks.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                <h3 class="font-bold text-white mb-3">Program Code Structure Example</h3>
+                <pre class="bg-dark-base p-4 rounded text-sm font-mono overflow-x-auto text-gray-300">
+<span class="token function">main</span>() {
+  <span class="token type">int</span> i, j;     <span class="token comment">// Integer variables</span>
+  <span class="token type">char</span> a, b;    <span class="token comment">// Character variables</span>
+  <span class="token function">first</span>();      <span class="token comment">// Body of program/code</span>
+}
+
+<span class="token function">Function first</span>() {
+  <span class="token keyword">for</span> (i = <span class="token number">0</span>; i <= deg; i++) {   <span class="token comment">// Procedure body (segment)</span>
+    uc[i] = tc[<span class="token number">0</span>];
+    uc[npts + i + <span class="token number">1</span>] = tc[npts];
+  }
+}</pre>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">C++ Language Components & Rules</h2>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-2 mb-4">
+                  <li><strong>Letters & Characters:</strong> C++ programs consist of statements built using Numbers (0-9), Alphabet (A-Z, a-z), and Symbols/Operators ($, {, ., ;, /, +, -, _, etc.).</li>
+                </ul>
+                <div class="p-4 rounded-lg bg-dark-elevated border-l-4 border-brand-500 text-sm text-gray-300 space-y-2">
+                  <h4 class="font-bold text-white mb-1">Rules for C++ Names:</h4>
+                  <ol class="list-decimal list-inside space-y-1">
+                    <li>Names are case-sensitive (<code>age</code> and <code>AGE</code> are two different names).</li>
+                    <li>A name must start with a letter or the underscore character (_).</li>
+                    <li>A name cannot start with a number.</li>
+                    <li>A name can only contain alpha-numeric characters and underscores.</li>
+                  </ol>
+                  <p class="mt-2"><strong class="text-teal-400">Valid names:</strong> <code>count</code>, <code>sutd_name</code>, <code>age1</code>, <code>p1</code></p>
+                  <p><strong class="text-red-400">Invalid names:</strong> <code>cnt*</code>, <code>stud name</code>, <code>1age</code></p>
+                  <p class="mt-2"><strong>Reserved Words (Keywords):</strong> Words not allowed to be used as user-defined names (e.g., <code>class</code>, <code>main</code>, <code>public</code>, <code>void</code>, <code>static</code>).</p>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">C++ Data Types</h2>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left text-sm border-collapse">
+                    <thead class="bg-dark-elevated text-dark-muted border-b border-dark-border">
+                      <tr><th class="p-3">Category</th><th class="p-3">Data Type</th><th class="p-3">Memory Length</th><th class="p-3">Description / Example</th></tr>
+                    </thead>
+                    <tbody class="divide-y divide-dark-border bg-dark-surface font-mono text-gray-300">
+                      <tr><td class="p-3 font-sans font-semibold">Character</td><td class="p-3 text-teal-400">char</td><td class="p-3">2 bytes</td><td class="p-3">Contains one character ('a', '1'). e.g., <code>char Code = 'S';</code></td></tr>
+                      <tr><td class="p-3 font-sans font-semibold" rowspan="4">Integer</td><td class="p-3 text-teal-400">byte</td><td class="p-3">1 byte</td><td class="p-3" rowspan="4">Must have at least one digit, no decimal point, can be positive or negative.</td></tr>
+                      <tr><td class="p-3 text-teal-400">short</td><td class="p-3">2 bytes</td></tr>
+                      <tr><td class="p-3 text-teal-400">int</td><td class="p-3">4 bytes</td></tr>
+                      <tr><td class="p-3 text-teal-400">long</td><td class="p-3">4 bytes</td></tr>
+                      <tr><td class="p-3 font-sans font-semibold" rowspan="2">Real (Decimal)</td><td class="p-3 text-teal-400">float</td><td class="p-3">4 bytes</td><td class="p-3" rowspan="2">Must have at least one digit, may have a decimal, positive or negative.</td></tr>
+                      <tr><td class="p-3 text-teal-400">double</td><td class="p-3">8 bytes</td></tr>
+                      <tr><td class="p-3 font-sans font-semibold">Boolean</td><td class="p-3 text-teal-400">bool</td><td class="p-3">-</td><td class="p-3">Contains true or false. e.g., <code>bool single = true;</code></td></tr>
+                      <tr><td class="p-3 font-sans font-semibold">String</td><td class="p-3 text-teal-400">string</td><td class="p-3">-</td><td class="p-3">Set of chars. e.g., <code>string name = "Ahmed";</code></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                  <h4 class="font-bold text-teal-400 mb-2">Declaring Variables</h4>
+                  <p class="text-gray-300">Initially, write down the data type, then write down a valid variable name.</p>
+                  <pre class="mt-2 text-xs font-mono text-gray-400">char var;
+int var;
+float var;
+string var;</pre>
+                </div>
+                <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                  <h4 class="font-bold text-teal-400 mb-2">Declaring Constants</h4>
+                  <p class="text-gray-300">Initially, write down the <code>const</code> keyword, then the data type, then a valid variable name.</p>
+                  <pre class="mt-2 text-xs font-mono text-gray-400">const char var;
+const int var;
+const float var;
+const string var;</pre>
+                </div>
+              </div>
+            </div>
+          `,
+          ar: `
+            <div class="space-y-6">
+              <h1 class="text-2xl sm:text-3xl font-bold text-white">مقدمة لمفاهيم لغة C++</h1>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                  <h3 class="font-bold text-teal-400 mb-2">أهداف المقرر (Course Objectives)</h3>
+                  <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li>تزويد الطلاب بفكرة عامة عن برمجة الحاسوب.</li>
+                    <li>إعطاء خلفية عن تطور لغات البرمجة.</li>
+                    <li>تقديم لغة البرمجة C++ وشرح كيفية استخدامها عملياً في المختبر.</li>
+                  </ul>
+                </div>
+                <div class="p-4 rounded-lg bg-dark-elevated border-r-4 border-brand-500">
+                  <h3 class="font-bold text-white mb-2">تقييم المقرر (Course Assessment)</h3>
+                  <ul class="list-disc list-inside text-sm text-gray-300 space-y-1 font-mono" dir="ltr">
+                    <li class="text-right">أعمال السنة (Class Work): 20 درجة</li>
+                    <li class="text-right">اختبار نصفي (Mid Exam): 20 درجة</li>
+                    <li class="text-right">اختبار نهائي (Final Exam): 60 درجة</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">برامج الحاسوب (Computer Programs)</h2>
+                <p class="text-sm text-gray-300 mb-4">البرنامج ويُعرف أيضاً بالكود (Code)، هو مجموعة من التعليمات التي يمكن تنفيذها لأداء مهمة محددة.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                  <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-1">الثوابت (Constants)</h4>
+                    <p class="text-gray-300">تستخدم لتمثيل قيم وبيانات ثابتة في جسم البرنامج. (مثال: يظهر خطأ برمجي إذا حاولت إسناد قيمة لمتغير معرف كـ const).</p>
+                  </div>
+                  <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-1">المتغيرات (Variables)</h4>
+                    <p class="text-gray-300">تستخدم لتمثيل قيم وبيانات قابلة للتغيير داخل البرنامج.</p>
+                  </div>
+                  <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-1">الدوال (Methods)</h4>
+                    <p class="text-gray-300">تُعرّف كإجراءات أو دوال، وتعتبر أجزاء من البرنامج تُستخدم لأداء مهام معينة ضمن المهام الكلية للبرنامج.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                <h3 class="font-bold text-white mb-3">مثال على هيكل الكود البرمجي</h3>
+                <pre class="bg-dark-base p-4 rounded text-sm font-mono overflow-x-auto text-gray-300 text-left" dir="ltr">
+<span class="token function">main</span>() {
+  <span class="token type">int</span> i, j;     <span class="token comment">// Integer variables (متغيرات صحيحة)</span>
+  <span class="token type">char</span> a, b;    <span class="token comment">// Character variables (متغيرات حرفية)</span>
+  <span class="token function">first</span>();      <span class="token comment">// Body of program/code (جسم البرنامج)</span>
+}
+
+<span class="token function">Function first</span>() {
+  <span class="token keyword">for</span> (i = <span class="token number">0</span>; i <= deg; i++) {   <span class="token comment">// Procedure body (جسم الإجراء)</span>
+    uc[i] = tc[<span class="token number">0</span>];
+    uc[npts + i + <span class="token number">1</span>] = tc[npts];
+  }
+}</pre>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">مكونات لغة C++ وقواعد التسمية</h2>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-2 mb-4">
+                  <li><strong>الأحرف والرموز:</strong> يتكون برنامج C++ من عبارات تُبنى باستخدام الأرقام (0-9)، الحروف الأبجدية (A-Z, a-z)، والرموز والعمليات الحسابية ($, {, ., ;, /, +, -, _).</li>
+                </ul>
+                <div class="p-4 rounded-lg bg-dark-elevated border-r-4 border-brand-500 text-sm text-gray-300 space-y-2">
+                  <h4 class="font-bold text-white mb-1">قواعد تسمية المتغيرات (Rules for Names):</h4>
+                  <ol class="list-decimal list-inside space-y-1">
+                    <li>الأسماء حساسة لحالة الأحرف (<code>age</code> يختلف تماماً عن <code>AGE</code>).</li>
+                    <li>يجب أن يبدأ الاسم بحرف أو شرطة سفلية (_).</li>
+                    <li>لا يمكن أن يبدأ الاسم برقم.</li>
+                    <li>يمكن أن يحتوي الاسم فقط على أحرف وأرقام وشرطات سفلية ولا يسمح بالمسافات.</li>
+                  </ol>
+                  <p class="mt-2"><strong class="text-teal-400">أسماء صحيحة (Valid):</strong> <code>count</code>, <code>sutd_name</code>, <code>age1</code>, <code>p1</code></p>
+                  <p><strong class="text-red-400">أسماء خاطئة (Invalid):</strong> <code>cnt*</code>, <code>stud name</code>, <code>1age</code></p>
+                  <p class="mt-2"><strong>الكلمات المحجوزة (Reserved Words):</strong> كلمات لا يُسمح باستخدامها كأسماء من تعريف المستخدم مثل: <code>class</code>, <code>main</code>, <code>public</code>, <code>void</code>, <code>static</code>.</p>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">أنواع البيانات (Data Types)</h2>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-right text-sm border-collapse" dir="rtl">
+                    <thead class="bg-dark-elevated text-dark-muted border-b border-dark-border">
+                      <tr><th class="p-3">الفئة</th><th class="p-3">نوع البيانات (Type)</th><th class="p-3">الحجم بالذاكرة</th><th class="p-3">الوصف والقواعد</th></tr>
+                    </thead>
+                    <tbody class="divide-y divide-dark-border bg-dark-surface font-mono text-gray-300">
+                      <tr><td class="p-3 font-sans font-semibold">حرفي (Character)</td><td class="p-3 text-teal-400 text-left" dir="ltr">char</td><td class="p-3 text-left" dir="ltr">2 bytes</td><td class="p-3">حرف واحد. مثال: <code>char Code = 'S';</code></td></tr>
+                      <tr><td class="p-3 font-sans font-semibold" rowspan="4">عدد صحيح (Integer)</td><td class="p-3 text-teal-400 text-left" dir="ltr">byte</td><td class="p-3 text-left" dir="ltr">1 byte</td><td class="p-3" rowspan="4">يجب أن يحتوي على رقم واحد على الأقل، لا يوجد به فاصلة عشرية، يمكن أن يكون موجباً أو سالباً.</td></tr>
+                      <tr><td class="p-3 text-teal-400 text-left" dir="ltr">short</td><td class="p-3 text-left" dir="ltr">2 bytes</td></tr>
+                      <tr><td class="p-3 text-teal-400 text-left" dir="ltr">int</td><td class="p-3 text-left" dir="ltr">4 bytes</td></tr>
+                      <tr><td class="p-3 text-teal-400 text-left" dir="ltr">long</td><td class="p-3 text-left" dir="ltr">4 bytes</td></tr>
+                      <tr><td class="p-3 font-sans font-semibold" rowspan="2">رقم حقيقي (Real/Decimal)</td><td class="p-3 text-teal-400 text-left" dir="ltr">float</td><td class="p-3 text-left" dir="ltr">4 bytes</td><td class="p-3" rowspan="2">يجب أن يحتوي على رقم واحد على الأقل، قد يحتوي على فاصلة عشرية أو لا، ويكون موجباً أو سالباً.</td></tr>
+                      <tr><td class="p-3 text-teal-400 text-left" dir="ltr">double</td><td class="p-3 text-left" dir="ltr">8 bytes</td></tr>
+                      <tr><td class="p-3 font-sans font-semibold">منطقي (Boolean)</td><td class="p-3 text-teal-400 text-left" dir="ltr">bool</td><td class="p-3">-</td><td class="p-3">يحتوي على true أو false. مثال: <code>bool single = true;</code></td></tr>
+                      <tr><td class="p-3 font-sans font-semibold">نصي (String)</td><td class="p-3 text-teal-400 text-left" dir="ltr">string</td><td class="p-3">-</td><td class="p-3">مجموعة من الأحرف. مثال: <code>string name = "Ahmed";</code></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                  <h4 class="font-bold text-teal-400 mb-2">تعريف المتغيرات (Declaring Variables)</h4>
+                  <p class="text-gray-300">مبدئياً، اكتب نوع البيانات، ثم اكتب اسماً صحيحاً للمتغير.</p>
+                  <pre class="mt-2 text-xs font-mono text-gray-400 text-left" dir="ltr">char var;
+int var;
+float var;
+string var;</pre>
+                </div>
+                <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                  <h4 class="font-bold text-teal-400 mb-2">تعريف الثوابت (Declaring Constants)</h4>
+                  <p class="text-gray-300">اكتب الكلمة المفتاحية <code>const</code> أولاً، ثم نوع البيانات، وأخيراً اسماً صحيحاً للثابت.</p>
+                  <pre class="mt-2 text-xs font-mono text-gray-400 text-left" dir="ltr">const char var;
+const int var;
+const float var;
+const string var;</pre>
+                </div>
+              </div>
+            </div>
+          `
+        },
+        quizzes: [
+          {
+            q: { en: "Which of the following is an INVALID variable name according to C++ rules?", ar: "أي من أسماء المتغيرات التالية يُعتبر غير صالح (Invalid) وفقاً لقواعد لغة C++؟" },
+            options: {
+              en: ["sutd_name", "age1", "1age", "_count"],
+              ar: ["sutd_name", "age1", "1age", "_count"]
+            },
+            answer: 2
+          },
+          {
+            q: { en: "How many bytes of memory does an 'int' data type typically consume?", ar: "كم عدد البايتات (Bytes) التي يستهلكها نوع البيانات 'int' في الذاكرة؟" },
+            options: {
+              en: ["1 byte", "2 bytes", "4 bytes", "8 bytes"],
+              ar: ["1 بايت", "2 بايت", "4 بايت", "8 بايت"]
+            },
+            answer: 2
+          }
+        ]
+      },
+
+      // ================= LECTURE 3 =================
+      {
+        id: "lec3",
+        number: "Lecture 3",
+        title: { en: "Arrays", ar: "المصفوفات (Arrays)" },
+        content: {
+          en: `
+            <div class="space-y-6">
+              <h1 class="text-2xl sm:text-3xl font-bold text-white">Lecture 3: Arrays</h1>
+
+              <div class="p-4 rounded-lg bg-dark-elevated border-l-4 border-brand-500 text-sm text-gray-300">
+                <h3 class="font-bold text-white mb-2">What is an Array?</h3>
+                <p>An array is used for storing data in sequential memory locations. We access each element using an integer index. It is very basic, popular, and simple.</p>
+                <p class="mt-2">Arrays can be multi-dimensional, such as 1-dimensional arrays or 3-dimensional arrays (like currency trades over days).</p>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">Array Applications</h2>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                  <li>Given a list of test scores, determine the maximum and minimum scores.</li>
+                  <li>Read in a list of student names and rearrange them in alphabetical order (sorting).</li>
+                  <li>Given the height measurements of students in a class, output the names of those students who are taller than average.</li>
+                </ul>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">Array Declaration & Subscripting</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-1">Declaration Syntax</h4>
+                    <p class="font-mono text-gray-300 bg-dark-surface p-2 rounded"><code>&lt;type&gt; &lt;arrayName&gt;[&lt;array_size&gt;]</code></p>
+                    <p class="text-gray-400 mt-2">Example: <code>int Ar[10];</code> (Array of 10 uninitialized ints).</p>
+                    <p class="text-gray-400 mt-1">The array elements are all values of the type <code>&lt;type&gt;</code>. The <code>&lt;array_size&gt;</code> indicates the number of elements and must be an <strong>int constant</strong> or a constant expression.</p>
+                  </div>
+                  <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-1">Subscripting (Indexing)</h4>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1">
+                      <li>A subscript is a bracketed expression. The expression in brackets is the <strong>index</strong>.</li>
+                      <li>First element index is <strong>0</strong> (e.g., <code>Ar[0]</code>).</li>
+                      <li>Second element is <strong>1</strong> (e.g., <code>Ar[1]</code>), and so on.</li>
+                      <li>Last element index is <strong>one less</strong> than the size of the array (e.g., <code>Ar[9]</code> for size 10).</li>
+                      <li class="text-red-400">Incorrect indexing is a common error.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">Array Manipulations & Examples</h2>
+                
+                <div class="space-y-4">
+                  <!-- Example 1 -->
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <h4 class="font-bold text-white mb-2">Example 1: Filling & Printing an Array</h4>
+                    <pre class="bg-dark-base p-3 rounded font-mono text-sm text-gray-300 overflow-x-auto">
+<span class="token keyword">#include</span> &lt;iostream&gt;
+<span class="token keyword">using namespace</span> std;
+<span class="token type">int</span> <span class="token function">main</span> () {
+  <span class="token type">int</span> index, ar[<span class="token number">10</span>]; <span class="token comment">// array for 10 integers</span>
+  
+  <span class="token comment">// Read in 10 elements.</span>
+  cout &lt;&lt; <span class="token string">"Enter 10 integers: "</span>;
+  <span class="token keyword">for</span> (index = <span class="token number">0</span>; index &lt; <span class="token number">10</span>; index++)
+    cin &gt;&gt; ar[index];
+  
+  cout &lt;&lt; endl &lt;&lt; <span class="token string">"The integers are "</span>;
+  <span class="token keyword">for</span> (index = <span class="token number">0</span>; index &lt; <span class="token number">10</span>; index++)
+    cout &lt;&lt; ar[index] &lt;&lt; <span class="token string">" "</span>;
+  
+  cout &lt;&lt; endl;
+  <span class="token keyword">return</span> <span class="token number">0</span>;
+}</pre>
+                  </div>
+
+                  <!-- Example 3 -->
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <h4 class="font-bold text-white mb-2">Example 3: Element Manipulation</h4>
+                    <pre class="bg-dark-base p-3 rounded font-mono text-sm text-gray-300 overflow-x-auto">
+<span class="token type">int</span> Ar[<span class="token number">10</span>], i=<span class="token number">7</span>, j=<span class="token number">2</span>, k=<span class="token number">4</span>;
+Ar[<span class="token number">0</span>] = <span class="token number">1</span>;
+Ar[i] = <span class="token number">5</span>;
+Ar[j] = Ar[i] + <span class="token number">3</span>;             <span class="token comment">// Ar[2] becomes 8</span>
+Ar[j+<span class="token number">1</span>] = Ar[i] + Ar[<span class="token number">0</span>];       <span class="token comment">// Ar[3] becomes 6</span>
+Ar[Ar[j]] = <span class="token number">12</span>;                <span class="token comment">// Ar[8] becomes 12</span>
+cin &gt;&gt; Ar[k];                  <span class="token comment">// If next input is 3, Ar[4] becomes 3</span></pre>
+                  </div>
+
+                  <!-- Initialization & Common Tasks -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                      <h4 class="font-bold text-teal-400 mb-2">Array Initialization Example 4</h4>
+                      <p class="font-mono text-sm text-gray-300 bg-dark-elevated p-2 rounded">
+                        int Ar[10] = {9,8,7,6,5,4,3,2,1,0};<br>
+                        Ar[3] = -1; // Replaces index 3 (value 6) with -1
+                      </p>
+                    </div>
+                    <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                      <h4 class="font-bold text-teal-400 mb-2">Copying Arrays</h4>
+                      <p class="text-sm text-gray-300 mb-2">Using <code class="text-red-400">list = myList;</code> is NOT allowed in C++. You must copy individual elements from one array to the other using a loop:</p>
+                      <pre class="font-mono text-xs text-gray-400">
+for (int i = 0; i < ARRAY_SIZE; i++) {
+  list[i] = myList[i];
+}</pre>
+                    </div>
+                  </div>
+
+                  <!-- Algorithms -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                      <h4 class="font-bold text-teal-400 mb-2">Summing All Elements</h4>
+                      <p class="text-sm text-gray-300 mb-1">Use a variable named total. Add each element to total.</p>
+                      <pre class="font-mono text-xs text-gray-400">
+double total = 0;
+for (int i = 0; i < ARRAY_SIZE; i++) {
+  total += myList[i];
+}</pre>
+                    </div>
+                    <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                      <h4 class="font-bold text-teal-400 mb-2">Finding the Largest Element</h4>
+                      <p class="text-sm text-gray-300 mb-1">Compare each element with max, update max if greater.</p>
+                      <pre class="font-mono text-xs text-gray-400">
+double max = myList[0];
+for (int i = 1; i < ARRAY_SIZE; i++) {
+  if (myList[i] > max)
+    max = myList[i];
+}</pre>
+                    </div>
+                  </div>
+
+                  <!-- Shifting -->
+                  <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-2">Shifting Elements Left</h4>
+                    <pre class="font-mono text-xs text-gray-400">
+double temp = myList[0]; // Retain the first element
+// Shift elements left
+for (int i = 1; i < myList.length; i++) {
+  myList[i-1] = myList[i];
+}
+// Move the first element to fill in the last position
+myList[myList.length - 1] = temp;</pre>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          `,
+          ar: `
+            <div class="space-y-6">
+              <h1 class="text-2xl sm:text-3xl font-bold text-white">المحاضرة 3: المصفوفات (Arrays)</h1>
+
+              <div class="p-4 rounded-lg bg-dark-elevated border-r-4 border-brand-500 text-sm text-gray-300">
+                <h3 class="font-bold text-white mb-2">ما هي المصفوفة (Array)؟</h3>
+                <p>تستخدم المصفوفة لتخزين البيانات في مواقع ذاكرة متتالية (Sequential memory locations). نصل إلى كل عنصر باستخدام فهرس صحيح (Integer Index). وهي أساسية جداً، وشائعة، وبسيطة.</p>
+                <p class="mt-2">يمكن أن تكون المصفوفات متعددة الأبعاد، مثل مصفوفات أحادية البُعد أو ثلاثية الأبعاد.</p>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">تطبيقات المصفوفات (Array Applications)</h2>
+                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                  <li>إيجاد أعلى وأقل درجة من بين قائمة من درجات الاختبارات.</li>
+                  <li>قراءة قائمة بأسماء الطلاب وإعادة ترتيبهم أبجدياً (الفرز Sorting).</li>
+                  <li>معرفة قياسات أطوال الطلاب في الصف، وإخراج أسماء الطلاب الذين يزيد طولهم عن المتوسط.</li>
+                </ul>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">الإعلان عن المصفوفة والفهرسة (Declaration & Subscripting)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-1">صيغة الإعلان (Declaration Syntax)</h4>
+                    <p class="font-mono text-gray-300 bg-dark-surface p-2 rounded text-left" dir="ltr"><code>&lt;type&gt; &lt;arrayName&gt;[&lt;array_size&gt;]</code></p>
+                    <p class="text-gray-400 mt-2 text-left" dir="ltr">Example: <code>int Ar[10];</code></p>
+                    <p class="text-gray-400 mt-1">يجب أن تكون جميع عناصر المصفوفة من نفس النوع المحدد <code>&lt;type&gt;</code>. ويجب أن يكون حجم المصفوفة <code>&lt;array_size&gt;</code> ثابت صحيح (int constant).</p>
+                  </div>
+                  <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-1">الفهرسة (Subscripting/Indexing)</h4>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1">
+                      <li>المؤشر (Subscript) هو التعبير الموجود داخل الأقواس ويُعرف بالفهرس (Index).</li>
+                      <li>فهرس أول عنصر هو <strong>0</strong> (مثال: <code>Ar[0]</code>).</li>
+                      <li>العنصر الثاني فهرسه <strong>1</strong> (مثال: <code>Ar[1]</code>).</li>
+                      <li>فهرس آخر عنصر أقل بواحد من حجم المصفوفة (مثال: <code>Ar[9]</code> لمصفوفة حجمها 10).</li>
+                      <li class="text-red-400">الفهرسة الخاطئة هي خطأ برمجي شائع.</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">التعامل مع عناصر المصفوفة وأمثلة</h2>
+                
+                <div class="space-y-4">
+                  <!-- Example 1 -->
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <h4 class="font-bold text-white mb-2">مثال 1: تعبئة وطباعة مصفوفة</h4>
+                    <pre class="bg-dark-base p-3 rounded font-mono text-sm text-gray-300 overflow-x-auto text-left" dir="ltr">
+<span class="token keyword">#include</span> &lt;iostream&gt;
+<span class="token keyword">using namespace</span> std;
+<span class="token type">int</span> <span class="token function">main</span> () {
+  <span class="token type">int</span> index, ar[<span class="token number">10</span>]; <span class="token comment">// مصفوفة من 10 أرقام</span>
+  cout &lt;&lt; <span class="token string">"Enter 10 integers: "</span>;
+  <span class="token keyword">for</span> (index = <span class="token number">0</span>; index &lt; <span class="token number">10</span>; index++)
+    cin &gt;&gt; ar[index];
+  
+  cout &lt;&lt; endl &lt;&lt; <span class="token string">"The integers are "</span>;
+  <span class="token keyword">for</span> (index = <span class="token number">0</span>; index &lt; <span class="token number">10</span>; index++)
+    cout &lt;&lt; ar[index] &lt;&lt; <span class="token string">" "</span>;
+  
+  cout &lt;&lt; endl;
+  <span class="token keyword">return</span> <span class="token number">0</span>;
+}</pre>
+                  </div>
+
+                  <!-- Example 3 -->
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <h4 class="font-bold text-white mb-2">مثال 3: معالجة العناصر (Element Manipulation)</h4>
+                    <pre class="bg-dark-base p-3 rounded font-mono text-sm text-gray-300 overflow-x-auto text-left" dir="ltr">
+<span class="token type">int</span> Ar[<span class="token number">10</span>], i=<span class="token number">7</span>, j=<span class="token number">2</span>, k=<span class="token number">4</span>;
+Ar[<span class="token number">0</span>] = <span class="token number">1</span>;
+Ar[i] = <span class="token number">5</span>;
+Ar[j] = Ar[i] + <span class="token number">3</span>;             <span class="token comment">// Ar[2] becomes 8</span>
+Ar[j+<span class="token number">1</span>] = Ar[i] + Ar[<span class="token number">0</span>];       <span class="token comment">// Ar[3] becomes 6</span>
+Ar[Ar[j]] = <span class="token number">12</span>;                <span class="token comment">// Ar[8] becomes 12</span>
+cin &gt;&gt; Ar[k];                  <span class="token comment">// المدخل التالي يوضع في Ar[4]</span></pre>
+                  </div>
+
+                  <!-- Initialization & Copying -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                      <h4 class="font-bold text-teal-400 mb-2">تهيئة المصفوفة (Initialization)</h4>
+                      <p class="font-mono text-sm text-gray-300 bg-dark-elevated p-2 rounded text-left" dir="ltr">
+                        int Ar[10] = {9,8,7,6,5,4,3,2,1,0};<br>
+                        Ar[3] = -1; // استبدال القيمة 6 (الموجودة في الفهرس 3) بـ -1
+                      </p>
+                    </div>
+                    <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                      <h4 class="font-bold text-teal-400 mb-2">نسخ المصفوفات (Copying Arrays)</h4>
+                      <p class="text-sm text-gray-300 mb-2">استخدام الصيغة <code class="text-red-400" dir="ltr">list = myList;</code> غير مسموح في C++. يجب نسخ كل عنصر على حدة باستخدام حلقة التكرار:</p>
+                      <pre class="font-mono text-xs text-gray-400 text-left" dir="ltr">
+for (int i = 0; i < ARRAY_SIZE; i++) {
+  list[i] = myList[i];
+}</pre>
+                    </div>
+                  </div>
+
+                  <!-- Algorithms -->
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                      <h4 class="font-bold text-teal-400 mb-2">جمع كل العناصر (Summing)</h4>
+                      <pre class="font-mono text-xs text-gray-400 text-left" dir="ltr">
+double total = 0;
+for (int i = 0; i < ARRAY_SIZE; i++) {
+  total += myList[i];
+}</pre>
+                    </div>
+                    <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                      <h4 class="font-bold text-teal-400 mb-2">إيجاد أكبر عنصر (Largest Element)</h4>
+                      <pre class="font-mono text-xs text-gray-400 text-left" dir="ltr">
+double max = myList[0];
+for (int i = 1; i < ARRAY_SIZE; i++) {
+  if (myList[i] > max)
+    max = myList[i];
+}</pre>
+                    </div>
+                  </div>
+
+                  <!-- Shifting -->
+                  <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-2">إزاحة العناصر لليسار (Shifting Left)</h4>
+                    <pre class="font-mono text-xs text-gray-400 text-left" dir="ltr">
+double temp = myList[0]; // حفظ العنصر الأول
+// إزاحة باقي العناصر لليسار
+for (int i = 1; i < myList.length; i++) {
+  myList[i-1] = myList[i];
+}
+// نقل العنصر الأول للمكان الأخير
+myList[myList.length - 1] = temp;</pre>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          `
+        },
+        quizzes: [
+          {
+            q: { en: "If you declare an array as <code>int Ar[10];</code>, what is the index of the last element?", ar: "إذا قمت بتعريف مصفوفة كـ <code>int Ar[10];</code>، ما هو فهرس العنصر الأخير؟" },
+            options: {
+              en: ["10", "9", "0", "Ar.length"],
+              ar: ["10", "9", "0", "Ar.length"]
+            },
+            answer: 1
+          },
+          {
+            q: { en: "Which of the following is the CORRECT way to copy the contents of <code>myList</code> into <code>list</code> in C++?", ar: "أي من الطرق التالية هي الطريقة الصحيحة لنسخ محتويات <code>myList</code> إلى <code>list</code> في لغة C++؟" },
+            options: {
+              en: ["list = myList;", "Copy(list, myList);", "Using a for loop to copy each element individually.", "list == myList;"],
+              ar: ["list = myList;", "Copy(list, myList);", "استخدام حلقة التكرار (for loop) لنسخ كل عنصر بشكل فردي.", "list == myList;"]
+            },
+            answer: 2
+          }
+        ]
+      },
+
+      // ================= LECTURE 4 =================
+      {
+        id: "lec4",
+        number: "Lecture 4",
+        title: { en: "Pointers and References", ar: "المؤشرات والمراجع (Pointers and References)" },
+        content: {
+          en: `
+            <div class="space-y-6">
+              <h1 class="text-2xl sm:text-3xl font-bold text-white">Lecture 4: Pointers and References</h1>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                  <h3 class="font-bold text-teal-400 mb-2">Variables in Memory</h3>
+                  <p class="text-sm text-gray-300">Every variable has a <strong>value</strong> and a <strong>memory address</strong>.</p>
+                  <p class="text-sm text-gray-300 font-mono mt-2 bg-dark-base p-2 rounded">
+                    int x = 10;<br>
+                    Address: 1000 | Value: 10
+                  </p>
+                </div>
+                <div class="p-4 rounded-lg bg-dark-elevated border-l-4 border-brand-500 text-sm">
+                  <h3 class="font-bold text-white mb-2">What is a Pointer?</h3>
+                  <p class="text-gray-300">A pointer is a variable that stores the memory address of another variable.</p>
+                  <pre class="font-mono mt-2 bg-dark-base p-2 rounded text-gray-400">
+int x = 10;
+int *p = &x;</pre>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">Pointer Operators</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                  <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-1">Address Operator (&)</h4>
+                    <p class="text-gray-300">The <code>&</code> operator returns the address of a variable.</p>
+                    <pre class="mt-2 font-mono text-xs text-gray-400">
+int x = 10;
+cout << &x;
+// Possible Output: 0x61ff08</pre>
+                  </div>
+                  <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-1">Dereference Operator (*)</h4>
+                    <p class="text-gray-300">The <code>*</code> operator accesses the value stored at an address.</p>
+                    <pre class="mt-2 font-mono text-xs text-gray-400">
+int x = 10;
+int *p = &x;
+cout << *p; // Output: 10</pre>
+                  </div>
+                </div>
+                
+                <div class="mt-4 p-4 rounded-lg bg-dark-elevated border border-dark-border text-sm">
+                  <h4 class="font-bold text-white mb-2">Understanding p vs *p</h4>
+                  <ul class="list-disc list-inside text-gray-300 space-y-1 font-mono">
+                    <li><strong class="text-teal-400">p</strong> -> Address stored in the pointer</li>
+                    <li><strong class="text-teal-400">*p</strong> -> Value stored at that address</li>
+                  </ul>
+                  <p class="mt-3 text-gray-400 italic">Memory Illustration: Variable x (Address 1000 -> Value 10). Pointer p (Address 2000 -> Value 1000).</p>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">Advanced Pointer Concepts</h2>
+                
+                <div class="space-y-4">
+                  <!-- Modifying via Pointer -->
+                  <div class="p-4 rounded-lg bg-dark-base border border-dark-border text-sm">
+                    <h4 class="font-bold text-teal-400 mb-2">Modifying Variables Using Pointers</h4>
+                    <pre class="font-mono text-gray-300">
+int x = 10;
+int *p = &x;
+*p = 25;
+cout << x; // Output: 25</pre>
+                  </div>
+
+                  <!-- Pointers and Arrays -->
+                  <div class="p-4 rounded-lg bg-dark-base border border-dark-border text-sm">
+                    <h4 class="font-bold text-teal-400 mb-2">Pointers and Arrays & Arithmetic</h4>
+                    <p class="text-gray-300 mb-2">The Array name represents the address of the first element (<code>arr</code> is the same as <code>&arr[0]</code>).</p>
+                    <pre class="font-mono text-gray-300">
+int arr[3] = {10, 20, 30};
+int *p = arr;
+*p = 10;
+*(p+1) = 20; // Pointer Arithmetic
+*(p+2) = 30;</pre>
+                  </div>
+
+                  <!-- Passing by Address -->
+                  <div class="p-4 rounded-lg bg-dark-base border border-dark-border text-sm">
+                    <h4 class="font-bold text-teal-400 mb-2">Passing by Address</h4>
+                    <p class="text-gray-300 mb-2">Pointers allow functions to modify original variables.</p>
+                    <pre class="font-mono text-gray-300">
+void changeValue(int *p) {
+  *p = 50;
+}
+// Calling: changeValue(&x); cout << x; Output: 50</pre>
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border text-sm text-gray-300">
+                  <h4 class="font-bold text-white mb-2">Advantages of Pointers</h4>
+                  <ul class="list-disc list-inside space-y-1">
+                    <li>Dynamic memory allocation</li>
+                    <li>Efficient data passing</li>
+                    <li>Working with arrays and strings</li>
+                    <li>Building data structures</li>
+                  </ul>
+                </div>
+                <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border text-sm text-gray-300">
+                  <h4 class="font-bold text-red-400 mb-2">Common Mistakes & Null Pointer</h4>
+                  <ul class="list-disc list-inside space-y-1">
+                    <li>Using uninitialized pointers.</li>
+                    <li>Forgetting the address operator (&).</li>
+                  </ul>
+                  <p class="mt-2 font-mono">int *p = nullptr; // Avoids invalid memory access</p>
+                </div>
+              </div>
+              
+              <div class="p-4 rounded-lg bg-dark-base border-l-4 border-brand-500 text-sm">
+                <p class="text-gray-300"><strong class="text-white">Real-Life Analogy:</strong> Variable value = House. Memory address = House location. Pointer = Paper containing the address.</p>
+              </div>
+
+            </div>
+          `,
+          ar: `
+            <div class="space-y-6">
+              <h1 class="text-2xl sm:text-3xl font-bold text-white">المحاضرة 4: المؤشرات والمراجع (Pointers and References)</h1>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                  <h3 class="font-bold text-teal-400 mb-2">المتغيرات في الذاكرة</h3>
+                  <p class="text-sm text-gray-300">كل متغير له <strong>قيمة (Value)</strong> و <strong>عنوان في الذاكرة (Memory Address)</strong>.</p>
+                  <p class="text-sm text-gray-300 font-mono mt-2 bg-dark-base p-2 rounded text-left" dir="ltr">
+                    int x = 10;<br>
+                    Address: 1000 | Value: 10
+                  </p>
+                </div>
+                <div class="p-4 rounded-lg bg-dark-elevated border-r-4 border-brand-500 text-sm">
+                  <h3 class="font-bold text-white mb-2">ما هو المؤشر (Pointer)؟</h3>
+                  <p class="text-gray-300">المؤشر هو متغير يقوم بتخزين عنوان الذاكرة الخاص بمتغير آخر.</p>
+                  <pre class="font-mono mt-2 bg-dark-base p-2 rounded text-gray-400 text-left" dir="ltr">
+int x = 10;
+int *p = &x;</pre>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">عوامل تشغيل المؤشرات (Pointer Operators)</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                  <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-1">عامل العنوان (&) Address Operator</h4>
+                    <p class="text-gray-300">يقوم المعامل <code>&</code> بإرجاع عنوان المتغير في الذاكرة.</p>
+                    <pre class="mt-2 font-mono text-xs text-gray-400 text-left" dir="ltr">
+int x = 10;
+cout << &x;
+// Output (مثال): 0x61ff08</pre>
+                  </div>
+                  <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-1">عامل إلغاء المرجعية (*) Dereference Operator</h4>
+                    <p class="text-gray-300">يقوم المعامل <code>*</code> بالوصول إلى القيمة المخزنة في ذلك العنوان.</p>
+                    <pre class="mt-2 font-mono text-xs text-gray-400 text-left" dir="ltr">
+int x = 10;
+int *p = &x;
+cout << *p; // المخرجات: 10</pre>
+                  </div>
+                </div>
+                
+                <div class="mt-4 p-4 rounded-lg bg-dark-elevated border border-dark-border text-sm">
+                  <h4 class="font-bold text-white mb-2">فهم الفرق بين p و *p</h4>
+                  <ul class="list-disc list-inside text-gray-300 space-y-1 font-mono" dir="ltr">
+                    <li class="text-right"><strong class="text-teal-400 text-left">p</strong> -> العنوان المخزن داخل المؤشر (Address)</li>
+                    <li class="text-right"><strong class="text-teal-400 text-left">*p</strong> -> القيمة المخزنة في ذلك العنوان (Value)</li>
+                  </ul>
+                  <p class="mt-3 text-gray-400 italic">توضيح للذاكرة: المتغير x (عنوان 1000 -> قيمة 10). المؤشر p (عنوان 2000 -> قيمة 1000).</p>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">مفاهيم متقدمة في المؤشرات</h2>
+                
+                <div class="space-y-4">
+                  <!-- Modifying via Pointer -->
+                  <div class="p-4 rounded-lg bg-dark-base border border-dark-border text-sm">
+                    <h4 class="font-bold text-teal-400 mb-2">تعديل المتغيرات باستخدام المؤشرات</h4>
+                    <pre class="font-mono text-gray-300 text-left" dir="ltr">
+int x = 10;
+int *p = &x;
+*p = 25;
+cout << x; // المخرجات: 25</pre>
+                  </div>
+
+                  <!-- Pointers and Arrays -->
+                  <div class="p-4 rounded-lg bg-dark-base border border-dark-border text-sm">
+                    <h4 class="font-bold text-teal-400 mb-2">المؤشرات والمصفوفات والحسابيات</h4>
+                    <p class="text-gray-300 mb-2">اسم المصفوفة يمثل عنوان العنصر الأول (<code>arr</code> يماثل تماماً <code>&arr[0]</code>).</p>
+                    <pre class="font-mono text-gray-300 text-left" dir="ltr">
+int arr[3] = {10, 20, 30};
+int *p = arr;
+*p = 10;
+*(p+1) = 20; // حسابيات المؤشر (Pointer Arithmetic)
+*(p+2) = 30;</pre>
+                  </div>
+
+                  <!-- Passing by Address -->
+                  <div class="p-4 rounded-lg bg-dark-base border border-dark-border text-sm">
+                    <h4 class="font-bold text-teal-400 mb-2">التمرير بالعنوان (Passing by Address)</h4>
+                    <p class="text-gray-300 mb-2">تسمح المؤشرات للدوال بتعديل المتغيرات الأصلية بشكل مباشر.</p>
+                    <pre class="font-mono text-gray-300 text-left" dir="ltr">
+void changeValue(int *p) {
+  *p = 50;
+}
+// استدعاء: changeValue(&x); cout << x; المخرجات: 50</pre>
+                  </div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border text-sm text-gray-300">
+                  <h4 class="font-bold text-white mb-2">مزايا المؤشرات (Advantages)</h4>
+                  <ul class="list-disc list-inside space-y-1">
+                    <li>التخصيص الديناميكي للذاكرة (Dynamic memory allocation).</li>
+                    <li>تمرير البيانات بكفاءة.</li>
+                    <li>العمل مع المصفوفات والسلاسل النصية.</li>
+                    <li>بناء هياكل البيانات (Data structures).</li>
+                  </ul>
+                </div>
+                <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border text-sm text-gray-300">
+                  <h4 class="font-bold text-red-400 mb-2">الأخطاء الشائعة والمؤشر الفارغ (Null Pointer)</h4>
+                  <ul class="list-disc list-inside space-y-1">
+                    <li>استخدام مؤشرات غير مهيأة (Uninitialized).</li>
+                    <li>نسيان وضع عامل العنوان (&).</li>
+                  </ul>
+                  <p class="mt-2 font-mono text-left" dir="ltr">int *p = nullptr; // يتجنب الوصول غير الصالح للذاكرة</p>
+                </div>
+              </div>
+              
+              <div class="p-4 rounded-lg bg-dark-base border-r-4 border-brand-500 text-sm">
+                <p class="text-gray-300"><strong class="text-white">تشبيه من الواقع:</strong> قيمة المتغير = المنزل. عنوان الذاكرة = موقع المنزل. المؤشر = ورقة مكتوب عليها العنوان.</p>
+              </div>
+
+            </div>
+          `
+        },
+        quizzes: [
+          {
+            q: { en: "If you have <code>int x = 10; int *p = &x;</code>, what does <code>cout << *p;</code> output?", ar: "إذا كان لديك الكود <code>int x = 10; int *p = &x;</code>، ماذا ستكون مخرجات <code>cout << *p;</code>؟" },
+            options: {
+              en: ["The memory address of x", "10", "An error", "0x61ff08"],
+              ar: ["عنوان الذاكرة للمتغير x", "10", "خطأ برمجي (Error)", "0x61ff08"]
+            },
+            answer: 1
+          },
+          {
+            q: { en: "In C++, the array name represents:", ar: "في لغة C++، يمثل اسم المصفوفة (Array name):" },
+            options: {
+              en: ["The total size of the array in bytes.", "The value of the last element.", "The address of the first element.", "A random memory location."],
+              ar: ["الحجم الإجمالي للمصفوفة بالبايت.", "قيمة العنصر الأخير.", "عنوان العنصر الأول (Address of the first element).", "موقع عشوائي في الذاكرة."]
+            },
+            answer: 2
+          }
+        ]
+      },
+
+      // ================= GLOSSARY =================
+      {
+        id: "glossary",
+        number: "Reference",
+        title: { en: "Glossary / Tech Vocabulary", ar: "قاموس المصطلحات (Glossary)" },
+        content: {
+          en: `
+            <div class="space-y-6">
+              <h1 class="text-2xl font-bold text-white mb-2">Glossary of Technical Terms</h1>
+              <p class="text-sm text-gray-300 mb-6">A bilingual dictionary of all C++ programming jargon and concepts covered in the course.</p>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Constants</strong>الثوابت</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Variables</strong>المتغيرات</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Methods / Procedures</strong>الدوال / الإجراءات</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Data Types</strong>أنواع البيانات</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Integer (int)</strong>عدد صحيح</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Real (float/double)</strong>رقم حقيقي / عشري</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Boolean (bool)</strong>منطقي (صواب أو خطأ)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">String</strong>سلسلة نصية</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Array</strong>مصفوفة</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Subscript / Index</strong>المؤشر / الفهرس</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Sequential Memory Locations</strong>مواقع ذاكرة متتالية</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Sorting</strong>فرز / ترتيب</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Pointer</strong>مؤشر (للعنوان)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Memory Address</strong>عنوان الذاكرة</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Address Operator (&)</strong>عامل العنوان</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Dereference Operator (*)</strong>عامل إلغاء المرجعية</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Dynamic Memory Allocation</strong>التخصيص الديناميكي للذاكرة</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Null Pointer</strong>مؤشر فارغ</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Pointer Arithmetic</strong>حسابيات المؤشر</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Passing by Address</strong>التمرير بالعنوان</div>
+              </div>
+            </div>
+          `,
+          ar: `
+            <div class="space-y-6">
+              <h1 class="text-2xl font-bold text-white mb-2">قاموس المصطلحات (Glossary)</h1>
+              <p class="text-sm text-gray-300 mb-6">قاموس ثنائي اللغة يضم جميع المفردات التقنية والمفاهيم الخاصة ببرمجة C++ المشمولة في المقرر.</p>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-sm" dir="ltr">
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Constants</strong>الثوابت</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Variables</strong>المتغيرات</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Methods / Procedures</strong>الدوال / الإجراءات</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Data Types</strong>أنواع البيانات</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Integer (int)</strong>عدد صحيح</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Real (float/double)</strong>رقم حقيقي / عشري</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Boolean (bool)</strong>منطقي (صواب أو خطأ)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">String</strong>سلسلة نصية</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Array</strong>مصفوفة</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Subscript / Index</strong>المؤشر / الفهرس</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Sequential Memory Locations</strong>مواقع ذاكرة متتالية</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Sorting</strong>فرز / ترتيب</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Pointer</strong>مؤشر (للعنوان)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Memory Address</strong>عنوان الذاكرة</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Address Operator (&)</strong>عامل العنوان</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Dereference Operator (*)</strong>عامل إلغاء المرجعية</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Dynamic Memory Allocation</strong>التخصيص الديناميكي للذاكرة</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Null Pointer</strong>مؤشر فارغ</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Pointer Arithmetic</strong>حسابيات المؤشر</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Passing by Address</strong>التمرير بالعنوان</div>
+              </div>
+            </div>
+          `
+        },
+        quizzes: null
+      },
+      
+      // ================= C++ CODE RUNNER (IFRAME API) =================
+      {
+        id: "coderunner",
+        number: "Practice",
+        title: { en: "C++ Interactive Runner", ar: "مترجم C++ التفاعلي" },
+        content: {
+          en: `
+         <!-- حاوية محرر الأكواد المتجاوبة -->
+<div class="rounded-2xl border border-dark-border bg-dark-surface/95 overflow-hidden shadow-xl my-4">
+  
+  <!-- شريط العنوان العلوي للمحرر -->
+  <div class="bg-dark-elevated px-4 py-2.5 border-b border-dark-border flex items-center justify-between">
+    <div class="flex items-center gap-2">
+      <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+      <span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span>
+      <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
+      <span class="text-xs mono text-brand-500 font-bold ms-2">&gt; Online C++ Compiler</span>
+    </div>
+    <span class="text-[11px] mono text-dark-muted">Powered by OneCompiler</span>
+  </div>
+
+  <!-- حاوية الـ Iframe مع ضبط الأبعاد تماماً -->
+  <div class="relative w-full h-[480px] bg-[#0f172a] overflow-hidden">
+    <iframe 
+      src="https://onecompiler.com/embed/cpp" 
+      class="absolute top-0 left-0 w-full h-full border-0"
+      style="color-scheme: dark;"
+      loading="lazy"
+      allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
+      sandbox="allow-forms allow-modals allow-popups allow-presentation allow-same-origin allow-scripts">
+    </iframe>
+  </div>
+</div>
+          `,
+          ar: `
+            <div class="space-y-6 flex flex-col h-full min-h-[600px]">
+              <h1 class="text-2xl font-bold text-white mb-2">مترجم C++ التفاعلي</h1>
+              <p class="text-sm text-gray-300 mb-2">اكتب، وترجم، وشغل أمثلة C++ الخاصة بك من المحاضرات بشكل تفاعلي هنا في المتصفح مباشرة.</p>
+              
+              <div class="flex-1 w-full rounded-xl overflow-hidden border-2 border-dark-border bg-dark-base relative shadow-lg h-[500px]">
+                <iframe src="https://onecompiler.com/embed/cpp" width="100%" height="100%" style="border:0;" title="C++ Compiler"></iframe>
+              </div>
+            </div>
+          `
+        },
+        quizzes: null
+      }
+    ];
+
+    // ================= APPLICATION STATE & CONTROLLER =================
+    let currentLang = 'en'; 
+    let currentIndex = 0;
+
+    const moduleList = document.getElementById('moduleList');
+    const contentArea = document.getElementById('contentArea');
+    const lectureNumber = document.getElementById('lectureNumber');
+    const quizSection = document.getElementById('quizSection');
+    const quizContainer = document.getElementById('quizContainer');
+    const langToggle = document.getElementById('langToggle');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+
+    function renderNav() {
+      moduleList.innerHTML = '';
+      courseData.forEach((mod, index) => {
+        const btn = document.createElement('button');
+        btn.className = `w-full text-start px-3 py-2.5 rounded-lg text-sm transition-all flex flex-col gap-0.5 ${
+          index === currentIndex ? 'nav-active' : 'text-dark-muted hover:bg-dark-elevated hover:text-white'
+        }`;
+        
+        btn.innerHTML = `
+          <span class="text-xs opacity-75 font-mono">${cleanText(mod.number)}</span>
+          <span class="truncate font-medium">${cleanText(mod.title[currentLang])}</span>
+        `;
+        
+        btn.onclick = () => { 
+          currentIndex = index;
+          renderAll();
+          if (window.innerWidth < 768) {
+            sidebar.classList.add('hidden');
+          }
+        };
+        moduleList.appendChild(btn);
+      });
+    }
+
+    function renderContent() {
+      const data = courseData[currentIndex];
+      
+      lectureNumber.textContent = `${cleanText(data.number)}`;
+      contentArea.innerHTML = cleanText(data.content[currentLang]);
+      
+      // Render Multiple Quizzes if available
+      if (data.quizzes && data.quizzes.length > 0) {
+        quizSection.style.display = 'block';
+        quizContainer.innerHTML = '';
+        
+        data.quizzes.forEach((qItem, qIdx) => {
+          const qBox = document.createElement('div');
+          qBox.className = "bg-dark-elevated rounded-xl p-5 border border-dark-border space-y-3";
+          
+          const qTitle = document.createElement('p');
+          qTitle.className = "font-bold text-white text-sm sm:text-base";
+          qTitle.innerHTML = `${qIdx + 1}. ${cleanText(qItem.q[currentLang])}`;
+          qBox.appendChild(qTitle);
+          
+          const optsWrapper = document.createElement('div');
+          optsWrapper.className = "space-y-2";
+          
+          qItem.options[currentLang].forEach((opt, optIdx) => {
+            const btn = document.createElement('button');
+            btn.className = "w-full text-start p-3 bg-dark-surface border border-dark-border rounded-lg hover:border-brand-500 hover:bg-dark-base transition flex items-center justify-between text-sm text-gray-300";
+            btn.innerHTML = `<span>${cleanText(opt)}</span><span class="w-4 h-4 rounded-full border border-dark-border inline-block shrink-0 ms-4"></span>`;
+            
+            btn.onclick = () => {
+              // Lock buttons for this question
+              Array.from(optsWrapper.children).forEach(c => {
+                c.disabled = true;
+                c.classList.add('cursor-not-allowed', 'opacity-70');
+              });
+              
+              if (optIdx === qItem.answer) {
+                btn.classList.remove('opacity-70');
+                btn.classList.add('border-green-500', 'bg-green-500/10', 'text-green-400');
+                btn.querySelector('span:last-child').outerHTML = `<span class="text-green-400 font-bold shrink-0 ms-4">✔</span>`;
+              } else {
+                btn.classList.remove('opacity-70');
+                btn.classList.add('border-red-500', 'bg-red-500/10', 'text-red-400');
+                btn.querySelector('span:last-child').outerHTML = `<span class="text-red-400 font-bold shrink-0 ms-4">✖</span>`;
+                
+                // Highlight correct option
+                const correctBtn = optsWrapper.children[qItem.answer];
+                correctBtn.classList.remove('opacity-70');
+                correctBtn.classList.add('border-green-500', 'bg-green-500/10', 'text-green-400');
+                correctBtn.querySelector('span:last-child').outerHTML = `<span class="text-green-400 font-bold shrink-0 ms-4">✔</span>`;
+              }
+            };
+            optsWrapper.appendChild(btn);
+          });
+          
+          qBox.appendChild(optsWrapper);
+          quizContainer.appendChild(qBox);
+        });
+      } else {
+        quizSection.style.display = 'none';
+      }
+
+      // Handle Navigation Buttons State
+      prevBtn.style.opacity = currentIndex === 0 ? '0.4' : '1';
+      prevBtn.style.cursor = currentIndex === 0 ? 'not-allowed' : 'pointer';
+      
+      nextBtn.style.opacity = currentIndex === courseData.length - 1 ? '0.4' : '1';
+      nextBtn.style.cursor = currentIndex === courseData.length - 1 ? 'not-allowed' : 'pointer';
+    }
+
+    function renderAll() {
+      document.documentElement.lang = currentLang;
+      document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+      
+      langToggle.textContent = currentLang === 'ar' ? 'English' : 'العربية';
+      document.getElementById('navTitle').textContent = currentLang === 'ar' ? 'وحدات المنهج' : 'Course Modules';
+      document.getElementById('quizTitle').textContent = currentLang === 'ar' ? 'اختبر فهمك السريع' : 'Interactive Self-Assessment';
+      prevBtn.innerHTML = currentLang === 'ar' ? '&rarr; السابق' : '&larr; Previous';
+      nextBtn.innerHTML = currentLang === 'ar' ? 'التالي &larr;' : 'Next &rarr;';
+      
+      renderNav();
+      renderContent();
+    }
+
+    // ================= EVENT LISTENERS =================
+    langToggle.onclick = () => { 
+      currentLang = currentLang === 'ar' ? 'en' : 'ar';
+      renderAll(); 
+    };
+
+    prevBtn.onclick = () => { 
+      if (currentIndex > 0) {
+        currentIndex--;
+        renderAll();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } 
+    };
+
+    nextBtn.onclick = () => { 
+      if (currentIndex < courseData.length - 1) {
+        currentIndex++;
+        renderAll();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } 
+    };
+
+    sidebarToggle.onclick = () => {
+      sidebar.classList.toggle('hidden');
+    };
+
+    // Initialize Portal
+    renderAll();
+  </script>
+</body>
+</html>

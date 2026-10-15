@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathematical Logic & Discrete Structures</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        slate: {
+                            850: '#151e2e',
+                            900: '#0f172a',
+                        }
+                    },
+                    fontFamily: {
+                        sansEn: ['Inter', 'sans-serif'],
+                        sansAr: ['Cairo', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+          body {
+    background-color: #0b0f17;
+    background-image: 
+      linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+        body.en { font-family: 'Inter', sans-serif; }
+        body.ar { font-family: 'Cairo', sans-serif; }
+        .quiz-btn.correct { background-color: #059669 !important; color: white; border-color: #059669; }
+        .quiz-btn.incorrect { background-color: #e11d48 !important; color: white; border-color: #e11d48; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 1rem; }
+        th, td { border: 1px solid #334155; padding: 0.5rem; text-align: center; }
+        th { background-color: #1e293b; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-200 min-h-screen flex flex-col en">
+
+    <!-- Header -->
+    <header class="bg-slate-800 border-b border-slate-700 p-4 flex justify-between items-center sticky top-0 z-50">
+         <div class="flex items-center gap-3 truncate pr-2">
+                <a href="index.html" class="px-3 py-1.5 rounded-lg bg-dark-elevated border border-dark-border text-xs sm:text-sm font-bold text-dark-muted hover:text-white hover:bg-dark-border transition flex items-center gap-1.5 shadow-sm shrink-0" title="الرئيسية">
+                    <span>&larr;</span> <span class="hidden sm:inline">الرئيسية</span>
+                </a>
+                <div class="h-5 w-[1px] bg-dark-border shrink-0"></div>
+                <h2 id="moduleTitle" class="text-lg md:text-2xl font-bold text-white truncate"></h2>
+            </div>
+        <div>
+            <h1 class="text-xl font-bold text-blue-400" id="site-title">Discrete Mathematics</h1>
+            <p class="text-xs text-slate-400" id="site-subtitle">Mathematical Logic & Structures</p>
+        </div>
+        <div class="flex items-center gap-4">
+            <button id="lang-toggle" class="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded transition font-semibold">
+                عربي
+            </button>
+            <button id="menu-toggle" class="lg:hidden bg-slate-700 p-2 rounded">
+                ☰
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- Sidebar -->
+        <aside id="sidebar" class="w-64 bg-slate-850 border-r border-slate-700 flex-shrink-0 overflow-y-auto transition-transform transform -translate-x-full lg:translate-x-0 absolute lg:relative z-40 h-full">
+            <nav id="nav-menu" class="p-4 space-y-2"></nav>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="flex-1 overflow-y-auto p-4 md:p-8 relative w-full">
+            <div id="content-container" class="max-w-4xl mx-auto space-y-8">
+                <!-- Dynamic Content Goes Here -->
+            </div>
+            
+            <!-- Quiz Section -->
+            <div id="quiz-container" class="max-w-4xl mx-auto mt-12 bg-slate-800 p-6 rounded-lg border border-slate-700 hidden">
+                <h3 class="text-2xl font-bold mb-4 text-blue-400" id="quiz-title">Knowledge Check</h3>
+                <div id="quiz-questions" class="space-y-6"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Application Logic and Data -->
+    <script>
+        const courseData = {
+            modules: [
+                {
+                    id: "mod-intro",
+                    titleEn: "Course Objectives & Logic Intro",
+                    titleAr: "أهداف المقرر ومقدمة في المنطق",
+                    content: [
+                        { type: "h2", en: "Course Objectives", ar: "أهداف المقرر" },
+                        { type: "ul", en: [
+                            "Introduce Mathematical Logic.",
+                            "Introduce Proof Techniques.",
+                            "Develop understanding of counting, functions and relations."
+                        ], ar: [
+                            "مقدمة في المنطق الرياضي.",
+                            "مقدمة في تقنيات الإثبات.",
+                            "تطوير فهم العد، الدوال، والعلاقات (Functions and relations)."
+                        ]},
+                        { type: "h2", en: "Course Outcomes", ar: "مخرجات المقرر" },
+                        { type: "ul", en: [
+                            "Distinguish between propositional logic and first order logic.",
+                            "Know how to check if a proposition is satisfiable.",
+                            "Apply induction and other proof techniques towards solving problems in elementary algebra.",
+                            "Understand elementary combinatorics.",
+                            "Distinguish between functions and relations."
+                        ], ar: [
+                            "التمييز بين المنطق الافتراضي ومنطق الدرجة الأولى.",
+                            "معرفة كيفية التحقق مما إذا كان الافتراض قابلاً للتحقيق.",
+                            "تطبيق الاستنتاج (Induction) وتقنيات الإثبات الأخرى لحل المشكلات في الجبر الأولي.",
+                            "فهم التوافيق الأولية.",
+                            "التمييز بين الدوال والعلاقات."
+                        ]},
+                        { type: "h2", en: "Propositional Logic", ar: "المنطق الافتراضي (Propositional Logic)" },
+                        { type: "p", en: "Logic is important for program design and used for designing electronic circuitry. Propositional Logic is a system based on propositions.", ar: "المنطق مهم لتصميم البرامج ويستخدم في تصميم الدوائر الإلكترونية. المنطق الافتراضي هو نظام يعتمد على الافتراضات." },
+                        { type: "alert", en: "A proposition is a (declarative) statement that is either true or false (not both). The truth value of a proposition is either true (T) or false (F), corresponding to 1 and 0 in digital circuits.", ar: "الافتراض (Proposition) هو عبارة (تقريرية) إما أن تكون صحيحة أو خاطئة (وليس كلاهما). قيمة الصواب للافتراض هي إما صحيح (T) أو خاطئ (F)، وهو ما يتوافق مع 1 و 0 في الدوائر الرقمية." },
+                        { type: "h3", en: "The Statement/Proposition Game", ar: "لعبة العبارة/الافتراض" },
+                        { type: "ul", en: [
+                            "'Elephants are bigger than mice.' -> Statement: Yes. Proposition: Yes. Truth value: True.",
+                            "'520 < 111' -> Statement: Yes. Proposition: Yes. Truth value: False.",
+                            "'y > 5' -> Statement: Yes. Proposition: No. Its truth value depends on the value of y, but this value is not specified. We call this type of statement a propositional function or open sentence.",
+                            "'Please do not fall asleep.' -> Statement: No. It's a request. Proposition: No. Only statements can be propositions.",
+                            "'x < y if and only if y > x.' -> Statement: Yes. Proposition: Yes. Truth value: True, because its truth value does not depend on specific values of x and y."
+                        ], ar: [
+                            "'الأفيال أكبر من الفئران.' -> عبارة: نعم. افتراض: نعم. القيمة: صحيح.",
+                            "'520 < 111' -> عبارة: نعم. افتراض: نعم. القيمة: خاطئ.",
+                            "'y > 5' -> عبارة: نعم. افتراض: لا. قيمتها تعتمد على قيمة y، وهي غير محددة. يسمى هذا النوع من العبارات دالة افتراضية (Propositional function) أو جملة مفتوحة.",
+                            "'من فضلك لا تنم.' -> عبارة: لا. هذا طلب. افتراض: لا. العبارات فقط يمكن أن تكون افتراضات.",
+                            "'x < y إذا وفقط إذا كان y > x.' -> عبارة: نعم. افتراض: نعم. القيمة: صحيح، لأن قيمتها لا تعتمد على قيم محددة لـ x و y."
+                        ]}
+                    ],
+                    quiz: [
+                        {
+                            en: "Which of the following is considered a proposition?",
+                            ar: "أي مما يلي يعتبر افتراضاً (Proposition)؟",
+                            options: [
+                                { en: "Please close the door.", ar: "من فضلك أغلق الباب.", correct: false },
+                                { en: "x + 5 = 10", ar: "x + 5 = 10", correct: false },
+                                { en: "Paris is the capital of France.", ar: "باريس عاصمة فرنسا.", correct: true }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: "mod-operators",
+                    titleEn: "Logical Operators & Equivalence",
+                    titleAr: "الروابط المنطقية والتكافؤ",
+                    content: [
+                        { type: "p", en: "One or more propositions can be combined to form a single compound proposition using logical operators (connectives). We denote propositions with letters such as p, q, r, s.", ar: "يمكن دمج افتراض واحد أو أكثر لتكوين افتراض مركب باستخدام الروابط المنطقية (Logical Operators). نرمز للافتراضات بأحرف مثل p, q, r, s." },
+                        { type: "ul", en: [
+                            "Negation (NOT, ¬)",
+                            "Conjunction (AND, ∧)",
+                            "Disjunction (OR, ∨)",
+                            "Exclusive-or (XOR, ⊕)",
+                            "Implication (if-then, →)",
+                            "Biconditional (if and only if, ↔)"
+                        ], ar: [
+                            "النفي (NOT, ¬)",
+                            "الربط/العطف (AND, ∧)",
+                            "الفصل (OR, ∨)",
+                            "الفصل الحصري (XOR, ⊕)",
+                            "الاستلزام (if-then, →)",
+                            "ثنائي الشرط (if and only if, ↔)"
+                        ]},
+                        { type: "h3", en: "Operator Definitions (Truth Tables)", ar: "تعريفات الروابط (جداول الصواب)" },
+                        { type: "table", 
+                          en: "<tr><th>P</th><th>Q</th><th>¬P</th><th>P ∧ Q (AND)</th><th>P ∨ Q (OR)</th><th>P ⊕ Q (XOR)</th><th>P → Q</th><th>P ↔ Q</th></tr><tr><td>T</td><td>T</td><td>F</td><td>T</td><td>T</td><td>F</td><td>T</td><td>T</td></tr><tr><td>T</td><td>F</td><td>F</td><td>F</td><td>T</td><td>T</td><td>F</td><td>F</td></tr><tr><td>F</td><td>T</td><td>T</td><td>F</td><td>T</td><td>T</td><td>T</td><td>F</td></tr><tr><td>F</td><td>F</td><td>T</td><td>F</td><td>F</td><td>F</td><td>T</td><td>T</td></tr>",
+                          ar: "<tr><th>P</th><th>Q</th><th>¬P</th><th>P ∧ Q (AND)</th><th>P ∨ Q (OR)</th><th>P ⊕ Q (XOR)</th><th>P → Q</th><th>P ↔ Q</th></tr><tr><td>T</td><td>T</td><td>F</td><td>T</td><td>T</td><td>F</td><td>T</td><td>T</td></tr><tr><td>T</td><td>F</td><td>F</td><td>F</td><td>T</td><td>T</td><td>F</td><td>F</td></tr><tr><td>F</td><td>T</td><td>T</td><td>F</td><td>T</td><td>T</td><td>T</td><td>F</td></tr><tr><td>F</td><td>F</td><td>T</td><td>F</td><td>F</td><td>F</td><td>T</td><td>T</td></tr>"
+                        },
+                        { type: "p", en: "Precedence among operators: ¬, ∧, ∨, →, ↔.", ar: "أولوية المعاملات المنطقية: ¬, ∧, ∨, →, ↔." },
+                        { type: "h3", en: "Tautologies, Contradictions & Equivalence", ar: "الطوطولوجيا، التناقضات والتكافؤ" },
+                        { type: "ul", en: [
+                            "A tautology is a statement that is always true (e.g., R ∨ ¬R).",
+                            "A contradiction is a statement that is always false (e.g., R ∧ ¬R).",
+                            "The negation of any tautology is a contradiction, and the negation of any contradiction is a tautology.",
+                            "Two propositional statements S1 and S2 are logically equivalent (S1 ≡ S2) if they have the same truth table, or S1 ↔ S2 is a tautology."
+                        ], ar: [
+                            "الطوطولوجيا (Tautology) هي عبارة صحيحة دائماً (مثل R ∨ ¬R).",
+                            "التناقض (Contradiction) هو عبارة خاطئة دائماً (مثل R ∧ ¬R).",
+                            "نفي أي طوطولوجيا هو تناقض، ونفي أي تناقض هو طوطولوجيا.",
+                            "العبارتان S1 و S2 متكافئتان منطقياً (S1 ≡ S2) إذا كان لهما نفس جدول الصواب، أو كان S1 ↔ S2 طوطولوجيا."
+                        ]},
+                        { type: "alert", en: "Equivalence Laws:\n- Identity: P ∧ T ≡ P, P ∨ F ≡ P\n- Domination: P ∨ T ≡ T, P ∧ F ≡ F\n- Idempotent: P ∨ P ≡ P, P ∧ P ≡ P\n- Double negation: ¬(¬P) ≡ P\n- Commutative: P ∧ Q ≡ Q ∧ P\n- Associative: P ∧ (Q ∧ R) ≡ (P ∧ Q) ∧ R\n- Distributive: P ∧ (Q ∨ R) ≡ (P ∧ Q) ∨ (P ∧ R)\n- De Morgan's: ¬(P ∧ Q) ≡ ¬P ∨ ¬Q\n- Law with implication: P → Q ≡ ¬P ∨ Q.", 
+                                       ar: "قوانين التكافؤ (Equivalence Laws):\n- المحايد: P ∧ T ≡ P, P ∨ F ≡ P\n- الهيمنة: P ∨ T ≡ T, P ∧ F ≡ F\n- التماثل: P ∨ P ≡ P, P ∧ P ≡ P\n- النفي المزدوج: ¬(¬P) ≡ P\n- الإبدال: P ∧ Q ≡ Q ∧ P\n- الدمج: P ∧ (Q ∧ R) ≡ (P ∧ Q) ∧ R\n- التوزيع: P ∧ (Q ∨ R) ≡ (P ∧ Q) ∨ (P ∧ R)\n- قانون دي مورغان (De Morgan's): ¬(P ∧ Q) ≡ ¬P ∨ ¬Q\n- قانون الاستلزام: P → Q ≡ ¬P ∨ Q." }
+                    ],
+                    quiz: [
+                        {
+                            en: "What is the equivalent expression for P → Q?",
+                            ar: "ما هو التعبير المكافئ لـ P → Q؟",
+                            options: [
+                                { en: "P ∨ ¬Q", ar: "P ∨ ¬Q", correct: false },
+                                { en: "¬P ∨ Q", ar: "¬P ∨ Q", correct: true },
+                                { en: "¬P ∧ Q", ar: "¬P ∧ Q", correct: false }
+                            ]
+                        },
+                        {
+                            en: "If P is True and Q is False, what is the value of P ⊕ Q (XOR)?",
+                            ar: "إذا كان P صحيحاً و Q خاطئاً، فما هي قيمة P ⊕ Q (XOR)؟",
+                            options: [
+                                { en: "True", ar: "صحيح", correct: true },
+                                { en: "False", ar: "خاطئ", correct: false }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: "mod-quantifiers",
+                    titleEn: "Propositional Functions & Quantifications",
+                    titleAr: "الدوال الافتراضية والمُكَمِّمات",
+                    content: [
+                        { type: "p", en: "A Propositional function (open sentence) is a statement involving one or more variables (e.g., x - 3 > 5). Let us call this P(x), where P is the predicate and x is the variable. When a variable is given a value, it is said to be instantiated.", ar: "الدالة الافتراضية (الجملة المفتوحة) هي عبارة تحتوي على متغير واحد أو أكثر (مثل x - 3 > 5). لنسمها P(x)، حيث P هو المسند (Predicate) و x هو المتغير. عندما يُعطى المتغير قيمة، يُقال أنه تم تجسيده." },
+                        { type: "h3", en: "Universal Quantification (∀)", ar: "المُكَمِّم الكلي (Universal Quantification ∀)" },
+                        { type: "p", en: "∀x P(x) means 'For all x in the universe of discourse P(x) is true'. Note: ∀x P(x) is either true or false, so it is a proposition, not a propositional function.", ar: "∀x P(x) تعني 'لجميع قيم x في مجال المقال P(x) صحيحة'. ملاحظة: ∀x P(x) إما صحيحة أو خاطئة، لذا فهي افتراض، وليست دالة افتراضية." },
+                        { type: "h3", en: "Existential Quantification (∃)", ar: "المُكَمِّم الوجودي (Existential Quantification ∃)" },
+                        { type: "p", en: "∃x P(x) means 'There is an x such that P(x) is true' or 'There is at least one x such that P(x)'.", ar: "∃x P(x) تعني 'يوجد x بحيث يكون P(x) صحيحاً' أو 'يوجد على الأقل x واحد بحيث P(x)'." },
+                        { type: "h3", en: "Disproof by Counterexample & Negation", ar: "الدحض بمثال معاكس والنفي" },
+                        { type: "p", en: "A counterexample to ∀x P(x) is an object c so that P(c) is false. Statement: 'All birds can fly.' Disproved by counterexample: Penguin.", ar: "المثال المعاكس لـ ∀x P(x) هو كائن c بحيث يكون P(c) خاطئاً. عبارة: 'كل الطيور تطير.' تُدحض بمثال معاكس: البطريق." },
+                        { type: "alert", en: "De Morgan's law for quantifiers:\n- ¬(∀x P(x)) is logically equivalent to ∃x (¬P(x)).\n- ¬(∃x P(x)) is logically equivalent to ∀x (¬P(x)).", 
+                                       ar: "قانون دي مورغان للمكممات:\n- ¬(∀x P(x)) يكافئ منطقياً ∃x (¬P(x)).\n- ¬(∃x P(x)) يكافئ منطقياً ∀x (¬P(x))." },
+                        { type: "h3", en: "Nested Quantifiers", ar: "المكممات المتداخلة (Nested Quantifiers)" },
+                        { type: "p", en: "A predicate can have more than one variable. Example: ∀x∃y (x + y = 320). 'For every x there exists a y so that x + y = 320.' This is true for real numbers, but false for natural numbers.", ar: "يمكن أن يحتوي المسند على أكثر من متغير. مثال: ∀x∃y (x + y = 320). 'لكل x يوجد y بحيث x + y = 320.' هذا صحيح للأعداد الحقيقية، ولكنه خاطئ للأعداد الطبيعية." }
+                    ],
+                    quiz: [
+                        {
+                            en: "What is the negation of ∀x P(x)?",
+                            ar: "ما هو نفي ∀x P(x)؟",
+                            options: [
+                                { en: "∀x ¬P(x)", ar: "∀x ¬P(x)", correct: false },
+                                { en: "∃x ¬P(x)", ar: "∃x ¬P(x)", correct: true },
+                                { en: "¬∃x P(x)", ar: "¬∃x P(x)", correct: false }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: "mod-sets",
+                    titleEn: "Set Theory",
+                    titleAr: "نظرية المجموعات (Set Theory)",
+                    content: [
+                        { type: "p", en: "A Set is a collection of objects (called elements). Order of elements is insignificant, and repetition doesn't count. Sets A and B are equal if and only if they contain exactly the same elements.", ar: "المجموعة هي تجمع من الكائنات (تسمى عناصر). ترتيب العناصر غير مهم، والتكرار لا يحسب. المجموعتان A و B متساويتان إذا وفقط إذا كانتا تحتويان على نفس العناصر بالضبط." },
+                        { type: "ul", en: [
+                            "N = {0, 1, 2, 3, ...} (Natural numbers)",
+                            "Z = {..., -2, -1, 0, 1, 2, ...} (Integers)",
+                            "Z+ = {1, 2, 3, 4, ...} (Positive Integers)",
+                            "R = Real Numbers",
+                            "Q = {a/b | a ∈ Z ∧ b ∈ Z+} (Rational Numbers)",
+                            "∅ = Empty set / null set"
+                        ], ar: [
+                            "N = {0, 1, 2, 3, ...} (الأعداد الطبيعية)",
+                            "Z = {..., -2, -1, 0, 1, 2, ...} (الأعداد الصحيحة)",
+                            "Z+ = {1, 2, 3, 4, ...} (الأعداد الصحيحة الموجبة)",
+                            "R = الأعداد الحقيقية",
+                            "Q = {a/b | a ∈ Z ∧ b ∈ Z+} (الأعداد النسبية)",
+                            "∅ = المجموعة الخالية"
+                        ]},
+                        { type: "h3", en: "Subsets & Cardinality", ar: "المجموعات الجزئية وحجم المجموعة (Cardinality)" },
+                        { type: "p", en: "A ⊆ B ('A is a subset of B') if and only if every element of A is also an element of B. Proper subset A ⊂ B means A is a subset of B but A ≠ B. Cardinality |A| is the number of distinct elements in a finite set.", ar: "A ⊆ B ('A مجموعة جزئية من B') إذا وفقط إذا كان كل عنصر في A هو أيضاً عنصر في B. المجموعة الجزئية الفعلية A ⊂ B تعني أن A جزئية من B ولكن A ≠ B. حجم المجموعة |A| هو عدد العناصر المميزة في مجموعة منتهية." },
+                        { type: "p", en: "Power Set P(A) contains all subsets of A. If A = {x, y, z}, then P(A) = {∅, {x}, {y}, {z}, {x, y}, {x, z}, {y, z}, {x, y, z}}.", ar: "مجموعة القوى P(A) تحتوي على جميع المجموعات الجزئية لـ A. إذا كان A = {x, y, z}، فإن P(A) = {∅, {x}, {y}, {z}, {x, y}, {x, z}, {y, z}, {x, y, z}}." },
+                        { type: "h3", en: "Set Operations", ar: "عمليات المجموعات" },
+                        { type: "ul", en: [
+                            "Cartesian Product: A × B = {(a, b) | a ∈ A ∧ b ∈ B}. |A × B| = |A| · |B|.",
+                            "Union: A ∪ B = {x | x ∈ A ∨ x ∈ B}.",
+                            "Intersection: A ∩ B = {x | x ∈ A ∧ x ∈ B}. If A ∩ B = ∅, sets are disjoint.",
+                            "Difference: A - B = {x | x ∈ A ∧ x ∉ B}.",
+                            "Complement: A^c = U - A."
+                        ], ar: [
+                            "الضرب الديكارتي: A × B = {(a, b) | a ∈ A ∧ b ∈ B}. وحجمها |A × B| = |A| · |B|.",
+                            "الاتحاد: A ∪ B = {x | x ∈ A ∨ x ∈ B}.",
+                            "التقاطع: A ∩ B = {x | x ∈ A ∧ x ∈ B}. إذا كان A ∩ B = ∅، المجموعتان منفصلتان.",
+                            "الفرق: A - B = {x | x ∈ A ∧ x ∉ B}.",
+                            "المكملة: A^c = U - A."
+                        ]},
+                        { type: "alert", en: "Set Identities (Mirror Logical Equivalences):\n- Identity: A ∪ ∅ = A, A ∩ U = A\n- Domination: A ∪ U = U, A ∩ ∅ = ∅\n- Idempotent: A ∪ A = A, A ∩ A = A\n- De Morgan's: (A ∪ B)^c = A^c ∩ B^c, (A ∩ B)^c = A^c ∪ B^c\n- Absorption: A ∪ (A ∩ B) = A, A ∩ (A ∪ B) = A.",
+                                       ar: "متطابقات المجموعات (تطابق التكافؤ المنطقي):\n- المحايد: A ∪ ∅ = A, A ∩ U = A\n- الهيمنة: A ∪ U = U, A ∩ ∅ = ∅\n- التماثل: A ∪ A = A, A ∩ A = A\n- قانون دي مورغان: (A ∪ B)^c = A^c ∩ B^c, (A ∩ B)^c = A^c ∪ B^c\n- الامتصاص: A ∪ (A ∩ B) = A, A ∩ (A ∪ B) = A." }
+                    ],
+                    quiz: [
+                        {
+                            en: "If A = {1, 2} and B = {a, b}, what is the cardinality of A × B?",
+                            ar: "إذا كان A = {1, 2} و B = {a, b}، فما هو حجم A × B؟",
+                            options: [
+                                { en: "2", ar: "2", correct: false },
+                                { en: "4", ar: "4", correct: true },
+                                { en: "8", ar: "8", correct: false }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: "mod-functions",
+                    titleEn: "Functions",
+                    titleAr: "الدوال (Functions)",
+                    content: [
+                        { type: "p", en: "A function f from a set A to a set B is an assignment of exactly one element of B to each element of A. We write f: A → B. A is the domain, B is the codomain. If f(a) = b, b is the image of a and a is the pre-image of b. The range of f is the set of all images of elements of A.", ar: "الدالة f من المجموعة A إلى المجموعة B هي تخصيص عنصر واحد فقط من B لكل عنصر من A. نكتب f: A → B. A هو المجال (Domain)، و B هو المجال المقابل (Codomain). إذا كان f(a) = b، فإن b هي صورة a و a هو الأصل لـ b. مدى الدالة (Range) هو مجموعة كل صور عناصر A." },
+                        { type: "h3", en: "Properties of Functions", ar: "خصائص الدوال" },
+                        { type: "ul", en: [
+                            "One-to-one (Injective): ∀x, y ∈ A (f(x) = f(y) → x = y). It does not map two distinct elements of A onto the same element of B.",
+                            "Onto (Surjective): For every element b ∈ B there is an element a ∈ A with f(a) = b. Its range is its entire codomain.",
+                            "Bijection (One-to-one correspondence): It is both one-to-one and onto. If f is a bijection and A/B are finite, then |A| = |B|.",
+                            "Strictly increasing: ∀x, y ∈ A (x < y → f(x) < f(y)). (These are always one-to-one)."
+                        ], ar: [
+                            "متباينة (Injective/One-to-one): ∀x, y ∈ A (f(x) = f(y) → x = y). لا تعين عنصرين مختلفين من A لنفس العنصر في B.",
+                            "شمولية (Surjective/Onto): لكل عنصر b ∈ B يوجد عنصر a ∈ A بحيث f(a) = b. المدى يساوي المجال المقابل بأكمله.",
+                            "تقابلية (Bijection): هي متباينة وشمولية في نفس الوقت. إذا كانت f تقابلية والمجموعات منتهية، فإن |A| = |B|.",
+                            "متزايدة بصرامة: ∀x, y ∈ A (x < y → f(x) < f(y)). (هذه الدوال دائماً متباينة)."
+                        ]},
+                        { type: "h3", en: "Inversion & Composition", ar: "المعكوس والتركيب" },
+                        { type: "p", en: "The inverse function of the bijection f: A → B is f⁻¹: B → A, with f⁻¹(b) = a whenever f(a) = b. Inversion is only possible for bijections.", ar: "الدالة العكسية للدالة التقابلية f: A → B هي f⁻¹: B → A، بحيث f⁻¹(b) = a عندما يكون f(a) = b. العكس ممكن فقط للدوال التقابلية." },
+                        { type: "p", en: "Composition of g: A → B and f: B → C is (f ◦ g)(a) = f(g(a)). The composition of a function and its inverse is the identity function i(x) = x.", ar: "تركيب الدالتين g: A → B و f: B → C هو (f ◦ g)(a) = f(g(a)). تركيب الدالة مع دالتها العكسية يعطي الدالة المحايدة i(x) = x." },
+                        { type: "h3", en: "Floor and Ceiling Functions", ar: "دوال السقف والأرضية" },
+                        { type: "p", en: "Floor ⌊r⌋ assigns largest z ∈ Z with z ≤ r (e.g., ⌊2.3⌋ = 2, ⌊-3.5⌋ = -4). Ceiling ⌈r⌉ assigns smallest z ∈ Z with z ≥ r (e.g., ⌈2.3⌉ = 3, ⌈-3.5⌉ = -3).", ar: "الأرضية ⌊r⌋ تعين أكبر z ∈ Z بحيث z ≤ r (مثل ⌊2.3⌋ = 2, ⌊-3.5⌋ = -4). السقف ⌈r⌉ يعين أصغر z ∈ Z بحيث z ≥ r (مثل ⌈2.3⌉ = 3, ⌈-3.5⌉ = -3)." }
+                    ],
+                    quiz: [
+                        {
+                            en: "A function that is both injective and surjective is called:",
+                            ar: "الدالة التي تكون متباينة وشمولية في نفس الوقت تسمى:",
+                            options: [
+                                { en: "Bijective", ar: "تقابلية (Bijective)", correct: true },
+                                { en: "Identity", ar: "محايدة", correct: false },
+                                { en: "Composition", ar: "مركبة", correct: false }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: "mod-boolean",
+                    titleEn: "Boolean Algebra & Gates",
+                    titleAr: "الجبر البولياني والبوابات",
+                    content: [
+                        { type: "p", en: "Boolean algebra provides rules for working with the set B = {0, 1}. Rules underlie electronic circuits.", ar: "يوفر الجبر البولياني قواعد للعمل مع المجموعة B = {0, 1}. هذه القواعد تشكل أساس الدوائر الإلكترونية." },
+                        { type: "ul", en: [
+                            "Complement (NOT): -0 = 1, -1 = 0.",
+                            "Boolean sum (OR, +): 1 + 1 = 1, 1 + 0 = 1, 0 + 1 = 1, 0 + 0 = 0.",
+                            "Boolean product (AND, ·): 1 · 1 = 1, 1 · 0 = 0, 0 · 1 = 0, 0 · 0 = 0."
+                        ], ar: [
+                            "المكمل (NOT): -0 = 1, -1 = 0.",
+                            "الجمع البولياني (OR, +): 1 + 1 = 1, 1 + 0 = 1, 0 + 1 = 1, 0 + 0 = 0.",
+                            "الضرب البولياني (AND, ·): 1 · 1 = 1, 1 · 0 = 0, 0 · 1 = 0, 0 · 0 = 0."
+                        ]},
+                        { type: "p", en: "Two different Boolean expressions that represent the same function are called equivalent. There are 2^(2^n) different Boolean functions of degree n.", ar: "التعبيران البوليانيان المختلفان اللذان يمثلان نفس الدالة يسميان متكافئين. يوجد 2^(2^n) دالة بوليانية مختلفة من الدرجة n." },
+                        { type: "alert", en: "A Boolean algebra is a set B with two binary operations ∨ and ∧, elements 0 and 1, and a unary operation – satisfying:\n- Identity: x ∨ 0 = x and x ∧ 1 = x\n- Complement: x ∨ (-x) = 1 and x ∧ (-x) = 0\n- Associativity: (x ∨ y) ∨ z = x ∨ (y ∨ z) and (x ∧ y) ∧ z = x ∧ (y ∧ z)\n- Commutativity: x ∨ y = y ∨ x and x ∧ y = y ∧ x\n- Distributivity: x ∨ (y ∧ z) = (x ∨ y) ∧ (x ∨ z) and x ∧ (y ∨ z) = (x ∧ y) ∨ (x ∧ z).",
+                                       ar: "الجبر البولياني هو مجموعة B مع عمليتين ثنائيتين ∨ و ∧، والعناصر 0 و 1، وعملية أحادية – تلبي الشروط:\n- المحايد: x ∨ 0 = x و x ∧ 1 = x\n- المكمل: x ∨ (-x) = 1 و x ∧ (-x) = 0\n- الدمج: (x ∨ y) ∨ z = x ∨ (y ∨ z) و (x ∧ y) ∧ z = x ∧ (y ∧ z)\n- الإبدال: x ∨ y = y ∨ x و x ∧ y = y ∧ x\n- التوزيع: x ∨ (y ∧ z) = (x ∨ y) ∧ (x ∨ z) و x ∧ (y ∨ z) = (x ∧ y) ∨ (x ∧ z)." },
+                        { type: "p", en: "All the properties of Boolean functions and expressions also apply to isomorphic structures such as propositions and sets. Electronic circuits consist of logic gates (OR, AND, NOT) corresponding to x+y, xy, and -x.", ar: "جميع خصائص الدوال والتعبيرات البوليانية تنطبق أيضاً على الهياكل المتشابهة مثل الافتراضات والمجموعات. تتكون الدوائر الإلكترونية من بوابات منطقية (OR, AND, NOT) تتوافق مع x+y، xy، و -x." }
+                    ],
+                    quiz: [
+                        {
+                            en: "How many different Boolean functions of degree 1 are there?",
+                            ar: "كم عدد الدوال البوليانية المختلفة من الدرجة الأولى؟",
+                            options: [
+                                { en: "2", ar: "2", correct: false },
+                                { en: "4", ar: "4", correct: true },
+                                { en: "8", ar: "8", correct: false }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: "mod-seq",
+                    titleEn: "Sequences & Summations",
+                    titleAr: "المتتاليات والمجاميع",
+                    content: [
+                        { type: "p", en: "A sequence is defined as a function from a subset of N to a set S. We use {a_n} to describe a sequence, where a_n is a term. Sequences represent ordered lists of elements. Finite sequences are also called strings. The length of a string is the number of terms. The empty string has length zero.", ar: "تُعرّف المتتالية بأنها دالة من مجموعة جزئية من N إلى مجموعة S. نستخدم {a_n} لوصف المتتالية، حيث a_n هو الحد. المتتاليات تمثل قوائم مرتبة من العناصر. المتتاليات المنتهية تسمى أيضاً السلاسل (Strings). طول السلسلة هو عدد حدودها. السلسلة الفارغة طولها صفر." },
+                        { type: "h3", en: "Summations", ar: "المجاميع" },
+                        { type: "p", en: "Summation (∑) represents the sum a_m + a_{m+1} + ... + a_n. The variable is the index of summation.", ar: "المجموع (∑) يمثل مجموع a_m + a_{m+1} + ... + a_n. المتغير يسمى مؤشر الجمع." },
+                        { type: "alert", en: "Useful Series Formulas:\n- Gauss Formula (Arithmetic): ∑(j=1 to n) j = n(n+1) / 2\n- Geometric Series: ∑(j=0 to n) a^j = (a^(n+1) - 1) / (a - 1)\n- Sum of squares: ∑(j=1 to n) j^2 = n(n+1)(2n+1) / 6\n- Sum of cubes: ∑(j=1 to n) j^3 = (n(n+1)/2)^2.",
+                                       ar: "صيغ مجاميع مفيدة:\n- صيغة غاوس (الحسابية): ∑(j=1 إلى n) j = n(n+1) / 2\n- المتسلسلة الهندسية: ∑(j=0 إلى n) a^j = (a^(n+1) - 1) / (a - 1)\n- مجموع المربعات: ∑(j=1 إلى n) j^2 = n(n+1)(2n+1) / 6\n- مجموع المكعبات: ∑(j=1 إلى n) j^3 = (n(n+1)/2)^2." },
+                        { type: "p", en: "Double Summations correspond to nested loops in programming (e.g., in C or Java).", ar: "المجاميع المزدوجة تقابل الحلقات المتداخلة في البرمجة (مثل C أو Java)." }
+                    ],
+                    quiz: [
+                        {
+                            en: "What is the formula for the sum of the first n positive integers?",
+                            ar: "ما هي صيغة مجموع أول n أعداد صحيحة موجبة؟",
+                            options: [
+                                { en: "n^2 / 2", ar: "n^2 / 2", correct: false },
+                                { en: "n(n+1) / 2", ar: "n(n+1) / 2", correct: true },
+                                { en: "n(n+1)(2n+1)/6", ar: "n(n+1)(2n+1)/6", correct: false }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: "mod-induction",
+                    titleEn: "Mathematical Induction",
+                    titleAr: "الاستنتاج الرياضي",
+                    content: [
+                        { type: "p", en: "The principle of Mathematical Induction is a useful tool for proving that a certain predicate is true for all natural numbers. It cannot be used to discover theorems, but only to prove them.", ar: "مبدأ الاستنتاج الرياضي هو أداة مفيدة لإثبات أن مسنداً معيناً صحيح لجميع الأعداد الطبيعية. لا يمكن استخدامه لاكتشاف النظريات، بل لإثباتها فقط." },
+                        { type: "h3", en: "Induction Steps", ar: "خطوات الاستنتاج" },
+                        { type: "ul", en: [
+                            "1. Basic Step: Show that P(0) or P(1) is true.",
+                            "2. Inductive Step: Show that if P(n) is true, then P(n + 1) is true for any n ∈ N.",
+                            "3. Conclusion: Then P(n) must be true for any n ∈ N."
+                        ], ar: [
+                            "1. الخطوة الأساسية: إثبات أن P(0) أو P(1) صحيح.",
+                            "2. الخطوة الاستقرائية: إثبات أنه إذا كان P(n) صحيحاً، فإن P(n + 1) صحيح لأي n ∈ N.",
+                            "3. الاستنتاج: إذن P(n) يجب أن يكون صحيحاً لأي n ∈ N."
+                        ]},
+                        { type: "alert", en: "Example Proof: n < 2^n\n- Basis step: For n=1, 1 < 2^1 (True).\n- Inductive step: Assume n < 2^n. We need to show n+1 < 2^(n+1). Since n < 2^n, n+1 < 2^n + 1 ≤ 2^n + 2^n = 2^(n+1). True..",
+                                       ar: "مثال للإثبات: n < 2^n\n- الخطوة الأساسية: من أجل n=1، 1 < 2^1 (صحيح).\n- الخطوة الاستقرائية: نفترض أن n < 2^n. نحتاج إثبات n+1 < 2^(n+1). بما أن n < 2^n، فإن n+1 < 2^n + 1 ≤ 2^n + 2^n = 2^(n+1). صحيح.." }
+                    ],
+                    quiz: [
+                        {
+                            en: "Mathematical Induction can be used to discover new theorems.",
+                            ar: "يمكن استخدام الاستنتاج الرياضي لاكتشاف نظريات جديدة.",
+                            options: [
+                                { en: "True", ar: "صحيح", correct: false },
+                                { en: "False", ar: "خاطئ", correct: true }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: "mod-glossary",
+                    titleEn: "Glossary / قاموس المصطلحات",
+                    titleAr: "قاموس المصطلحات / Glossary",
+                    content: [
+                        { type: "table",
+                          en: "<tr><th>English Term</th><th>Arabic Translation</th></tr><tr><td>Proposition</td><td>الافتراض / عبارة تقريرية</td></tr><tr><td>Tautology</td><td>الطوطولوجيا / تحصيل حاصل (دائماً صحيح)</td></tr><tr><td>Contradiction</td><td>التناقض (دائماً خاطئ)</td></tr><tr><td>Universal Quantifier (∀)</td><td>المكمم الكلي</td></tr><tr><td>Existential Quantifier (∃)</td><td>المكمم الوجودي</td></tr><tr><td>Set</td><td>المجموعة</td></tr><tr><td>Proper Subset</td><td>مجموعة جزئية فعلية</td></tr><tr><td>Cartesian Product</td><td>الضرب الديكارتي</td></tr><tr><td>Injective (One-to-one)</td><td>دالة متباينة</td></tr><tr><td>Surjective (Onto)</td><td>دالة شمولية</td></tr><tr><td>Bijective</td><td>دالة تقابلية</td></tr><tr><td>Boolean Algebra</td><td>الجبر البولياني</td></tr><tr><td>Sequence</td><td>متتالية</td></tr><tr><td>Mathematical Induction</td><td>الاستنتاج الرياضي</td></tr>",
+                          ar: "<tr><th>المصطلح الإنجليزي</th><th>الترجمة العربية</th></tr><tr><td>Proposition</td><td>الافتراض / عبارة تقريرية</td></tr><tr><td>Tautology</td><td>الطوطولوجيا / تحصيل حاصل (دائماً صحيح)</td></tr><tr><td>Contradiction</td><td>التناقض (دائماً خاطئ)</td></tr><tr><td>Universal Quantifier (∀)</td><td>المكمم الكلي</td></tr><tr><td>Existential Quantifier (∃)</td><td>المكمم الوجودي</td></tr><tr><td>Set</td><td>المجموعة</td></tr><tr><td>Proper Subset</td><td>مجموعة جزئية فعلية</td></tr><tr><td>Cartesian Product</td><td>الضرب الديكارتي</td></tr><tr><td>Injective (One-to-one)</td><td>دالة متباينة</td></tr><tr><td>Surjective (Onto)</td><td>دالة شمولية</td></tr><tr><td>Bijective</td><td>دالة تقابلية</td></tr><tr><td>Boolean Algebra</td><td>الجبر البولياني</td></tr><tr><td>Sequence</td><td>متتالية</td></tr><tr><td>Mathematical Induction</td><td>الاستنتاج الرياضي</td></tr>"
+                        }
+                    ],
+                    quiz: []
+                }
+            ]
+        };
+
+        let currentLang = 'en';
+        let currentModuleId = courseData.modules[0].id;
+
+        const body = document.body;
+        const langToggleBtn = document.getElementById('lang-toggle');
+        const navMenu = document.getElementById('nav-menu');
+        const contentContainer = document.getElementById('content-container');
+        const quizContainer = document.getElementById('quiz-container');
+        const quizQuestions = document.getElementById('quiz-questions');
+        const quizTitle = document.getElementById('quiz-title');
+        const menuToggleBtn = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+
+        // Toggle Language
+        langToggleBtn.addEventListener('click', () => {
+            currentLang = currentLang === 'en' ? 'ar' : 'en';
+            body.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+            body.className = `bg-slate-900 text-slate-200 min-h-screen flex flex-col ${currentLang}`;
+            langToggleBtn.textContent = currentLang === 'en' ? 'عربي' : 'English';
+            quizTitle.textContent = currentLang === 'en' ? 'Knowledge Check' : 'اختبار المعرفة';
+            renderApp();
+        });
+
+        // Mobile Menu
+        menuToggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+            if (currentLang === 'ar') {
+                sidebar.classList.toggle('translate-x-full');
+            }
+        });
+
+        function renderApp() {
+            renderSidebar();
+            renderContent(currentModuleId);
+        }
+
+        function renderSidebar() {
+            navMenu.innerHTML = '';
+            courseData.modules.forEach(mod => {
+                const btn = document.createElement('button');
+                btn.className = `w-full text-start px-4 py-3 rounded-lg font-semibold transition ${mod.id === currentModuleId ? 'bg-blue-600 text-white' : 'text-slate-300 hover:bg-slate-700 hover:text-white'}`;
+                btn.textContent = currentLang === 'en' ? mod.titleEn : mod.titleAr;
+                btn.onclick = () => {
+                    currentModuleId = mod.id;
+                    renderApp();
+                    if(window.innerWidth < 1024) sidebar.classList.add(currentLang === 'en' ? '-translate-x-full' : 'translate-x-full');
+                };
+                navMenu.appendChild(btn);
+            });
+        }
+
+        function renderContent(moduleId) {
+            const mod = courseData.modules.find(m => m.id === moduleId);
+            contentContainer.innerHTML = `<h2 class="text-3xl font-bold text-slate-100 mb-6 border-b border-slate-700 pb-2">${currentLang === 'en' ? mod.titleEn : mod.titleAr}</h2>`;
+            
+            mod.content.forEach(block => {
+                const text = block[currentLang];
+                let el;
+                
+                switch(block.type) {
+                    case 'h2':
+                        el = document.createElement('h2');
+                        el.className = 'text-2xl font-bold text-blue-300 mt-8 mb-4';
+                        el.textContent = text;
+                        break;
+                    case 'h3':
+                        el = document.createElement('h3');
+                        el.className = 'text-xl font-semibold text-blue-200 mt-6 mb-3';
+                        el.textContent = text;
+                        break;
+                    case 'p':
+                        el = document.createElement('p');
+                        el.className = 'text-slate-300 leading-relaxed mb-4 text-lg';
+                        el.textContent = text;
+                        break;
+                    case 'ul':
+                        el = document.createElement('ul');
+                        el.className = 'list-disc list-inside space-y-2 mb-4 text-slate-300 bg-slate-800 p-4 rounded-lg border border-slate-700 text-lg';
+                        text.forEach(item => {
+                            const li = document.createElement('li');
+                            li.textContent = item;
+                            el.appendChild(li);
+                        });
+                        break;
+                    case 'alert':
+                        el = document.createElement('div');
+                        el.className = 'bg-blue-900/30 border-l-4 border-blue-500 text-blue-100 p-4 rounded mb-4 whitespace-pre-line text-lg';
+                        el.textContent = text;
+                        break;
+                    case 'table':
+                        el = document.createElement('div');
+                        el.className = 'overflow-x-auto bg-slate-800 rounded-lg p-1 border border-slate-700 text-lg';
+                        const table = document.createElement('table');
+                        table.innerHTML = text;
+                        el.appendChild(table);
+                        break;
+                }
+                if(el) contentContainer.appendChild(el);
+            });
+
+            renderQuiz(mod.quiz);
+        }
+
+        function renderQuiz(quizArray) {
+            if (!quizArray || quizArray.length === 0) {
+                quizContainer.classList.add('hidden');
+                return;
+            }
+            quizContainer.classList.remove('hidden');
+            quizQuestions.innerHTML = '';
+
+            quizArray.forEach((q, qIndex) => {
+                const qDiv = document.createElement('div');
+                qDiv.className = 'bg-slate-850 p-4 rounded-md border border-slate-700';
+                
+                const qTitle = document.createElement('p');
+                qTitle.className = 'font-semibold text-lg mb-4 text-slate-200';
+                qTitle.textContent = `${qIndex + 1}. ${q[currentLang]}`;
+                qDiv.appendChild(qTitle);
+
+                const optsDiv = document.createElement('div');
+                optsDiv.className = 'space-y-2 flex flex-col';
+                
+                let answered = false;
+
+                q.options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'quiz-btn text-start px-4 py-3 rounded bg-slate-700 hover:bg-slate-600 border border-slate-600 transition text-slate-200';
+                    btn.textContent = opt[currentLang];
+                    
+                    btn.onclick = () => {
+                        if (answered) return;
+                        answered = true;
+                        if (opt.correct) {
+                            btn.classList.add('correct');
+                        } else {
+                            btn.classList.add('incorrect');
+                            // Highlight correct answer
+                            Array.from(optsDiv.children).forEach((childBtn, idx) => {
+                                if (q.options[idx].correct) childBtn.classList.add('correct');
+                            });
+                        }
+                    };
+                    optsDiv.appendChild(btn);
+                });
+
+                qDiv.appendChild(optsDiv);
+                quizQuestions.appendChild(qDiv);
+            });
+        }
+
+        // Init
+        renderApp();
+    </script>
+</body>
+</html>

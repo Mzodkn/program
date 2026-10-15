@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/it-logo.svg">
+    <title>IT Study Hub</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 500: 'rgb(var(--b5) / <alpha-value>)', 600: 'rgb(var(--b6) / <alpha-value>)' },
+                        dark: { base: '#060911', surface: '#0c101d', elevated: '#151c2c', border: '#30384b', text: '#f3f4f6', muted: '#94a3b8' },
+                        bg: { base: '#060911', surface: '#0c101d', elevated: '#151c2c' },
+                        border: { subtle: '#30384b', strong: '#475569' },
+                        text: { primary: '#f3f4f6', secondary: '#cbd5e1', muted: '#94a3b8' },
+                        accent: { blue: '#38bdf8', violet: '#a78bfa', teal: '#14b8a6' },
+                        status: { success: '#22c55e', warning: '#fbbf24' }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Cairo', 'sans-serif'],
+                        arabic: ['Cairo', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+      :root { 
+        --b5: 249 115 22; /* برتقالي ساطع */
+        --b6: 234 88 12; 
+      }
+      html[lang="en"] body { font-family: 'Inter', sans-serif; }
+      html[lang="ar"] body { font-family: 'Cairo', sans-serif; }
+      .mono { font-family: 'JetBrains Mono', monospace; }
+      
+      body {
+        background-color: #060911;
+        background-image: 
+          linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+          linear-gradient(to bottom, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+        background-size: 36px 36px;
+        animation: gridPan 50s linear infinite;
+        color: #f3f4f6;
+        overflow-x: hidden;
+      }
+      @keyframes gridPan {
+        from { transform: 0 0; }
+        to   { transform: 360px 360px; }
+      }
+
+      .bg-glow { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+      .bg-glow span {
+        position: absolute; border-radius: 50%; filter: blur(90px); will-change: transform;
+      }
+      .bg-glow .orb1 { width: 420px; height: 420px; top: -12%; left: -8%; background: rgb(var(--b5) / .35); animation: drift1 24s ease-in-out infinite; }
+      .bg-glow .orb2 { width: 360px; height: 360px; bottom: -14%; right: -8%; background: rgba(56,189,248,.28); animation: drift2 30s ease-in-out infinite; }
+      .bg-glow .orb3 { width: 300px; height: 300px; top: 45%; left: 60%; background: rgba(168,85,247,.18); animation: drift3 36s ease-in-out infinite; }
+      @keyframes drift1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(110px,70px) scale(1.15); } }
+      @keyframes drift2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-90px,-60px) scale(1.1); } }
+      @keyframes drift3 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-70px,50px) scale(1.2); } }
+
+      #netCanvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+      header, main, footer { position: relative; z-index: 1; }
+
+      ::-webkit-scrollbar { width: 8px; }
+      ::-webkit-scrollbar-track { background: #060911; }
+      ::-webkit-scrollbar-thumb { background: #30384b; border-radius: 4px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgb(var(--b6)); }
+
+      .active-card {
+          transition: all 0.3s ease;
+          border: 1px solid #30384b;
+      }
+      .active-card:hover {
+          transform: translateY(-4px);
+          border-color: rgb(var(--b5));
+          box-shadow: 0 10px 30px -10px rgba(249, 115, 22, 0.25);
+      }
+
+      @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+      .terminal-cursor { animation: blink 0.8s infinite; }
+    </style>
+</head>
+<body class="bg-dark-base text-dark-text min-h-screen flex flex-col">
+
+    <canvas id="netCanvas"></canvas>
+    <div class="bg-glow" aria-hidden="true"><span class="orb1"></span><span class="orb2"></span><span class="orb3"></span></div>
+
+    <header class="h-16 bg-dark-surface/95 backdrop-blur border-b border-dark-border flex items-center justify-between px-4 sm:px-8 sticky top-0 z-40">
+      <span class="font-bold text-brand-500 inline-flex items-center gap-2 align-middle mono text-base">
+        <img src="/it-logo.svg" alt="IT Logo" class="w-8 h-8 inline-block object-contain"> 
+        <span>IT <span id="typed-h" class="text-brand-500">&gt;</span></span>
+      </span>
+      <button id="langBtn" onclick="toggleLanguage()" class="px-4 py-1.5 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500 text-sm font-bold text-white transition shadow-md flex items-center gap-2 mono">
+          <span id="langBtnText">العربية</span> 🌐
+      </button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        
+        <!-- صندوق الترحيب البرمجي الشامل -->
+        <div class="rounded-2xl bg-dark-surface/95 backdrop-blur p-6 sm:p-8 mb-6 border-2 border-brand-500/40 shadow-2xl relative overflow-hidden">
+          
+          <div class="absolute top-3 left-4 flex items-center gap-1.5 opacity-70">
+            <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
+            <span class="text-[11px] mono text-dark-muted ms-2">It_hub.cpp</span>
+          </div>
+
+          <div class="absolute -right-10 -top-10 w-48 h-48 bg-brand-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
+          <div class="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-start relative z-10 mt-3 sm:mt-0">
+            
+            <div class="relative shrink-0 p-3.5 bg-dark-base/95 rounded-2xl border border-brand-500/30 shadow-inner">
+              <img src="/it-logo.svg" alt="IT Logo" style="width: 110px; height: 110px;" class="object-contain drop-shadow-[0_0_20px_rgba(249,115,22,0.4)]">
+            </div>
+
+            <div class="w-full">
+              <div class="text-xs sm:text-sm mono text-brand-500 mb-1 font-bold">&gt; g++ -o Semester1.cpp && ./run</div>
+              <h1 class="text-2xl sm:text-4xl font-extrabold mb-2 tracking-wide text-white font-mono" data-i18n="hero_title">
+                Study Materials Hub
+              </h1>
+              <p class="text-dark-muted text-xs sm:text-sm mono min-h-[24px]">
+                <span id="typed-text"></span><span class="text-brand-500 terminal-cursor">_</span>
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- خانة اختيار السمستر -->
+        <div class="flex items-center gap-3 rounded-2xl p-4 mb-8 border border-brand-500/40 bg-dark-surface/95 shadow-lg">
+          <span class="text-2xl">🎓</span>
+          <div class="flex-1">
+            <label for="semesterSelect" class="block text-xs mono text-brand-500 font-bold mb-1" data-i18n="select_label">
+              // Jump to Your Semester
+            </label>
+            <p class="text-dark-muted text-xs sm:text-sm mono min-h-[20px] mb-2">
+              <span id="typed-semester"></span><span class="text-brand-500 terminal-cursor">_</span>
+            </p>
+            <select id="semesterSelect" onchange="if(this.value) window.location.href=this.value;" class="w-full bg-dark-base border border-dark-border focus:border-brand-500 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-white outline-none transition cursor-pointer">
+              <option value="" disabled data-i18n="select_default">— Select Semester —</option>
+              <option value="index.html" selected data-i18n="sem1">Semester 1</option>
+              <option value="index_2.html" data-i18n="sem2">Semester 2</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Courses Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+
+            <!-- 1. Discrete Mathematics -->
+            <a href="Mathematics.html" class="active-card bg-dark-surface rounded-2xl p-6 flex flex-col h-full group relative overflow-hidden block text-left border-t-4 border-t-pink-500" dir="auto">
+                <div class="w-12 h-12 rounded-lg bg-dark-base border border-dark-border flex items-center justify-center text-2xl mb-4 shadow-sm">🧠</div>
+                <div class="flex-1">
+                    <span class="inline-block px-2.5 py-1 bg-status-success/10 text-status-success text-[10px] mono font-bold rounded-md mb-2 uppercase tracking-wide" data-i18n="badge_ready">Available</span>
+                    <h3 class="text-xl font-bold text-white mb-2" data-i18n="c1_title">Discrete Mathematics</h3>
+                    <p class="text-sm text-dark-muted leading-relaxed" data-i18n="c1_desc">Logic, sets, functions, Boolean algebra, and induction.</p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-dark-border font-semibold text-brand-500 text-sm flex items-center justify-between group-hover:text-amber-400 mono">
+                    <span data-i18n="btn_enter">Enter Course</span>
+                    <span class="transform group-hover:translate-x-1 transition" dir="ltr">&rarr;</span>
+                </div>
+            </a>
+
+            <!-- 2. Technical English II -->
+            <a href="eng.html" class="active-card bg-dark-surface rounded-2xl p-6 flex flex-col h-full group relative overflow-hidden block text-left border-t-4 border-t-red-500" dir="auto">
+                <div class="w-12 h-12 rounded-lg bg-dark-base border border-dark-border flex items-center justify-center text-2xl mb-4 shadow-sm">📘</div>
+                <div class="flex-1">
+                    <span class="inline-block px-2.5 py-1 bg-status-success/10 text-status-success text-[10px] mono font-bold rounded-md mb-2 uppercase tracking-wide" data-i18n="badge_ready">Available</span>
+                    <h3 class="text-xl font-bold text-white mb-2" data-i18n="c2_title">Technical English II</h3>
+                    <p class="text-sm text-dark-muted leading-relaxed" data-i18n="c2_desc">Technical writing, grammar, note-making, and documentation.</p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-dark-border font-semibold text-brand-500 text-sm flex items-center justify-between group-hover:text-amber-400 mono">
+                    <span data-i18n="btn_enter">Enter Course</span>
+                    <span class="transform group-hover:translate-x-1 transition" dir="ltr">&rarr;</span>
+                </div>
+            </a>
+
+            <!-- 3. Programming -->
+            <a href="Programming.html" class="active-card bg-dark-surface rounded-2xl p-6 flex flex-col h-full group relative overflow-hidden block text-left border-t-4 border-t-yellow-500" dir="auto">
+                <div class="w-12 h-12 rounded-lg bg-dark-base border border-dark-border flex items-center justify-center text-2xl mb-4 shadow-sm">💻</div>
+                <div class="flex-1">
+                    <span class="inline-block px-2.5 py-1 bg-status-success/10 text-status-success text-[10px] mono font-bold rounded-md mb-2 uppercase tracking-wide" data-i18n="badge_ready">Available</span>
+                    <h3 class="text-xl font-bold text-white mb-2" data-i18n="c3_title">Programming</h3>
+                    <p class="text-sm text-dark-muted leading-relaxed" data-i18n="c3_desc">Introduction to coding, algorithms, and data structures.</p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-dark-border font-semibold text-brand-500 text-sm flex items-center justify-between group-hover:text-amber-400 mono">
+                    <span data-i18n="btn_enter">Enter Course</span>
+                    <span class="transform group-hover:translate-x-1 transition" dir="ltr">&rarr;</span>
+                </div>
+            </a>
+
+            <!-- 4. Computer Ethics -->
+            <a href="Computer_Ethics.html" class="active-card bg-dark-surface rounded-2xl p-6 flex flex-col h-full group relative overflow-hidden block text-left border-t-4 border-t-green-500" dir="auto">
+                <div class="w-12 h-12 rounded-lg bg-dark-base border border-dark-border flex items-center justify-center text-2xl mb-4 shadow-sm">⚖️</div>
+                <div class="flex-1">
+                    <span class="inline-block px-2.5 py-1 bg-status-success/10 text-status-success text-[10px] mono font-bold rounded-md mb-2 uppercase tracking-wide" data-i18n="badge_ready">Available</span>
+                    <h3 class="text-xl font-bold text-white mb-2" data-i18n="c4_title">Computer Ethics</h3>
+                    <p class="text-sm text-dark-muted leading-relaxed" data-i18n="c4_desc">Exploring ethical, legal, and social issues in technology.</p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-dark-border font-semibold text-brand-500 text-sm flex items-center justify-between group-hover:text-amber-400 mono">
+                    <span data-i18n="btn_enter">Enter Course</span>
+                    <span class="transform group-hover:translate-x-1 transition" dir="ltr">&rarr;</span>
+                </div>
+            </a>
+
+            <!-- 5. Principles of Accounting -->
+            <a href="Principles_of_Accounting.html" class="active-card bg-dark-surface rounded-2xl p-6 flex flex-col h-full group relative overflow-hidden block text-left border-t-4 border-t-purple-500" dir="auto">
+                <div class="w-12 h-12 rounded-lg bg-dark-base border border-dark-border flex items-center justify-center text-2xl mb-4 shadow-sm">💰</div>
+                <div class="flex-1">
+                    <span class="inline-block px-2.5 py-1 bg-status-success/10 text-status-success text-[10px] mono font-bold rounded-md mb-2 uppercase tracking-wide" data-i18n="badge_ready">Available</span>
+                    <h3 class="text-xl font-bold text-white mb-2" data-i18n="c5_title">Principles of Accounting</h3>
+                    <p class="text-sm text-dark-muted leading-relaxed" data-i18n="c5_desc">Basic concepts for recording transactions and financial statements.</p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-dark-border font-semibold text-brand-500 text-sm flex items-center justify-between group-hover:text-amber-400 mono">
+                    <span data-i18n="btn_enter">Enter Course</span>
+                    <span class="transform group-hover:translate-x-1 transition" dir="ltr">&rarr;</span>
+                </div>
+            </a>
+
+            <!-- 6. Business -->
+            <a href="business.html" class="active-card bg-dark-surface rounded-2xl p-6 flex flex-col h-full group relative overflow-hidden block text-left border-t-4 border-t-teal-500" dir="auto">
+                <div class="w-12 h-12 rounded-lg bg-dark-base border border-dark-border flex items-center justify-center text-2xl mb-4 shadow-sm">📈</div>
+                <div class="flex-1">
+                    <span class="inline-block px-2.5 py-1 bg-status-success/10 text-status-success text-[10px] mono font-bold rounded-md mb-2 uppercase tracking-wide" data-i18n="badge_ready">Available</span>
+                    <h3 class="text-xl font-bold text-white mb-2" data-i18n="c6_title">Business</h3>
+                    <p class="text-sm text-dark-muted leading-relaxed" data-i18n="c6_desc">Overview of the business environment and management.</p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-dark-border font-semibold text-brand-500 text-sm flex items-center justify-between group-hover:text-amber-400 mono">
+                    <span data-i18n="btn_enter">Enter Course</span>
+                    <span class="transform group-hover:translate-x-1 transition" dir="ltr">&rarr;</span>
+                </div>
+            </a>
+
+            <!-- 7. Intro to IT -->
+            <a href="is_it.html" class="active-card bg-dark-surface rounded-2xl p-6 flex flex-col h-full group relative overflow-hidden block text-left border-t-4 border-t-blue-500" dir="auto">
+                <div class="w-12 h-12 rounded-lg bg-dark-base border border-dark-border flex items-center justify-center text-2xl mb-4 shadow-sm">⚙️</div>
+                <div class="flex-1">
+                    <span class="inline-block px-2.5 py-1 bg-status-success/10 text-status-success text-[10px] mono font-bold rounded-md mb-2 uppercase tracking-wide" data-i18n="badge_ready">Available</span>
+                    <h3 class="text-xl font-bold text-white mb-2" data-i18n="c7_title">Intro to IT</h3>
+                    <p class="text-sm text-dark-muted leading-relaxed" data-i18n="c7_desc">Study of fundamental computer hardware, software, and networking.</p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-dark-border font-semibold text-brand-500 text-sm flex items-center justify-between group-hover:text-amber-400 mono">
+                    <span data-i18n="btn_enter">Enter Course</span>
+                    <span class="transform group-hover:translate-x-1 transition" dir="ltr">&rarr;</span>
+                </div>
+            </a>
+
+            <!-- 8. Intro to IS -->
+            <a href="is.html" class="active-card bg-dark-surface rounded-2xl p-6 flex flex-col h-full group relative overflow-hidden block text-left border-t-4 border-t-orange-500" dir="auto">
+                <div class="w-12 h-12 rounded-lg bg-dark-base border border-dark-border flex items-center justify-center text-2xl mb-4 shadow-sm">🌐</div>
+                <div class="flex-1">
+                    <span class="inline-block px-2.5 py-1 bg-status-success/10 text-status-success text-[10px] mono font-bold rounded-md mb-2 uppercase tracking-wide" data-i18n="badge_ready">Available</span>
+                    <h3 class="text-xl font-bold text-white mb-2" data-i18n="c8_title">Intro to IS</h3>
+                    <p class="text-sm text-dark-muted leading-relaxed" data-i18n="c8_desc">Understanding how technology integrates with business processes.</p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-dark-border font-semibold text-brand-500 text-sm flex items-center justify-between group-hover:text-amber-400 mono">
+                    <span data-i18n="btn_enter">Enter Course</span>
+                    <span class="transform group-hover:translate-x-1 transition" dir="ltr">&rarr;</span>
+                </div>
+            </a>
+        </div>
+    </main>
+
+    <script>
+      const dict = {
+        en: {
+            header_title: "Semester 1 Portal",
+            hero_title: "Study Materials Hub",
+            badge_ready: "Available",
+            btn_enter: "Enter Course",
+            select_label: "// Jump to Your Semester",
+            select_default: "— Select Semester —",
+            sem1: "Semester 1",
+            sem2: "Semester 2",
+            c1_title: "Discrete Mathematics",
+            c1_desc: "Logic, sets, functions, Boolean algebra, and mathematical induction.",
+            c2_title: "Technical English II",
+            c2_desc: "Technical writing, grammar, note-making, and software documentation.",
+            c3_title: "Programming",
+            c3_desc: "Introduction to coding, algorithms, and basic data structures.",
+            c4_title: "Computer Ethics",
+            c4_desc: "Exploring ethical, legal, and social issues in technology use.",
+            c5_title: "Principles of Accounting",
+            c5_desc: "Basic concepts for recording transactions and preparing financial statements.",
+            c6_title: "Business",
+            c6_desc: "Overview of the business environment, management, and organizational behavior.",
+            c7_title: "Intro to IT",
+            c7_desc: "Study of fundamental computer hardware, software, and networking concepts.",
+            c8_title: "Intro to IS",
+            c8_desc: "Understanding how technology integrates with business processes to support decisions."
+        },
+        ar: {
+            header_title: "",
+            hero_title: "برالمة السمستر الاول IT",
+            badge_ready: "متاح الآن",
+            btn_enter: "دخول المقرر",
+            select_label: "// الانتقال السريع للسمستر",
+            select_default: "— اختر السمستر الدراسي —",
+            sem1: "السمستر الأول",
+            sem2: "السمستر الثاني",
+            c1_title: "الرياضيات المتقطعة",
+            c1_desc: "دراسة الهياكل الرياضية، تشمل المنطق، المجموعات، ونظرية الرسومات.",
+            c2_title: "الإنجليزية التقنية II",
+            c2_desc: "تطوير مهارات الكتابة التقنية، التواصل الأكاديمي، وتوثيق البرمجيات.",
+            c3_title: "أساسيات البرمجة",
+            c3_desc: "مقدمة في كتابة الأكواد، الخوارزميات، وهياكل البيانات لحل المشكلات.",
+            c4_title: "أخلاقيات الحاسوب",
+            c4_desc: "استكشاف القضايا الأخلاقية، القانونية، والاجتماعية المتعلقة بالتكنولوجيا.",
+            c5_title: "مبادئ المحاسبة",
+            c5_desc: "المفاهيم الأساسية لتسجيل وتحليل المعاملات وإعداد القوائم المالية.",
+            c6_title: "إدارة الأعمال",
+            c6_desc: "نظرة عامة على بيئة الأعمال، الإدارة، التسويق، والسلوك التنظيمي.",
+            c7_title: "مقدمة في تقنية المعلومات",
+            c7_desc: "دراسة المكونات الأساسية لأنظمة الحاسوب، الشبكات، والبرمجيات.",
+            c8_title: "مقدمة في نظم المعلومات",
+            c8_desc: "فهم كيفية دمج التقنية مع العمليات الإدارية لدعم اتخاذ القرار."
+        }
+      };
+
+      let currentLang = 'ar';
+
+      function toggleLanguage() {
+          currentLang = currentLang === 'ar' ? 'en' : 'ar';
+          updateLanguage();
+      }
+
+      function updateLanguage() {
+          const lang = currentLang;
+          document.documentElement.lang = lang;
+          document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+          
+          document.getElementById('langBtnText').textContent = lang === 'en' ? 'عربي' : 'English';
+          
+          document.querySelectorAll('[data-i18n]').forEach(el => {
+              const key = el.getAttribute('data-i18n');
+              if(dict[lang][key]) {
+                  el.textContent = dict[lang][key];
+              }
+          });
+
+          document.querySelectorAll('[dir="auto"]').forEach(el => {
+              el.style.textAlign = lang === 'ar' ? 'right' : 'left';
+          });
+
+          startTypewriter(lang === 'ar');
+      }
+
+      let typingInterval;
+      function startTypewriter(isAr) {
+        const el = document.getElementById('typed-text');
+        const els = document.getElementById('typed-semester');
+        const elh = document.getElementById('typed-h');
+
+        if(!el || !els || !elh) return;
+        
+        const texts = isAr ? [
+          '// تقنية معلومات فوووق',
+          '// واااا يا برلوم امشي اقراا',
+          '// يلا يا عاطل افتح وابدأ أقراااا%'
+        ] : [
+          '// IT Top on university !!',
+          '// Intelligent study hub for IT students',
+          '// Prepare for final exams and keep coding!'
+        ];
+
+        const texts_s = isAr ? [
+          '// السمستر النشط حالياً: الاول',
+          '// الخطة الدراسية نشطة ومحدثة',
+          '// اختر السمستر للانتقال الفوري'
+        ] : [
+          '// Active Semester: 1',
+          '// Study curriculum active',
+          '// Select semester to jump'
+        ];
+
+        let textIdx = 0, charIdx = 0, isDeleting = false;
+
+        clearInterval(typingInterval);
+        typingInterval = setInterval(() => {
+          const currentText = texts[textIdx];
+          const currentText_s = texts_s[textIdx];
+
+          if (!isDeleting) {
+            el.textContent = currentText.substring(0, charIdx + 1);
+            els.textContent = currentText_s.substring(0, charIdx + 1);
+            elh.textContent = "> _";
+            charIdx++;
+            if (charIdx > currentText.length) {
+              setTimeout(() => { isDeleting = true; }, 2000);
+            }
+          } else {
+            const safeIdx = Math.max(0, charIdx - 1);
+            el.textContent = currentText.substring(0, safeIdx);
+            els.textContent = currentText_s.substring(0, safeIdx);
+            elh.textContent = ">";
+            charIdx--;
+            if (charIdx <= 0) {
+              isDeleting = false;
+              textIdx = (textIdx + 1) % texts.length;
+              charIdx = 0;
+            }
+          }
+        }, 60);
+      }
+
+      (function networkBackground(){
+        const canvas = document.getElementById('netCanvas');
+        if(!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const colors = ['249,115,22','56,189,248'];
+        let w, h, particles = [], rafId = null;
+
+        function resize(){
+          w = canvas.width = window.innerWidth;
+          h = canvas.height = window.innerHeight;
+        }
+
+        function initParticles(){
+          const density = reduceMotion ? 0 : Math.min(60, Math.round((w * h) / 24000));
+          particles = Array.from({length: density}, () => ({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            vx: (Math.random() - 0.5) * 0.3,
+            vy: (Math.random() - 0.5) * 0.3,
+          }));
+        }
+
+        function step(){
+          ctx.clearRect(0, 0, w, h);
+          for(const p of particles){
+            p.x += p.vx; p.y += p.vy;
+            if(p.x < 0 || p.x > w) p.vx *= -1;
+            if(p.y < 0 || p.y > h) p.vy *= -1;
+          }
+          for(let i = 0; i < particles.length; i++){
+            const a = particles[i];
+            ctx.beginPath();
+            ctx.arc(a.x, a.y, 1.5, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(148,163,184,.55)';
+            ctx.fill();
+            for(let j = i + 1; j < particles.length; j++){
+              const b = particles[j];
+              const dx = a.x - b.x, dy = a.y - b.y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              if(dist < 130){
+                ctx.beginPath();
+                ctx.moveTo(a.x, a.y);
+                ctx.lineTo(b.x, b.y);
+                ctx.strokeStyle = `rgba(${colors[(i + j) % 2]},${0.16 * (1 - dist / 130)})`;
+                ctx.lineWidth = 1;
+                ctx.stroke();
+              }
+            }
+          }
+        }
+
+        function loop(){ step(); rafId = requestAnimationFrame(loop); }
+        function start(){ if(!rafId && !reduceMotion) rafId = requestAnimationFrame(loop); }
+        function stop(){ if(rafId){ cancelAnimationFrame(rafId); rafId = null; } }
+
+        window.addEventListener('resize', () => { resize(); initParticles(); });
+        document.addEventListener('visibilitychange', () => { document.hidden ? stop() : start(); });
+
+        resize();
+        initParticles();
+        if(reduceMotion){ step(); } else { start(); }
+      })();
+
+      document.addEventListener('DOMContentLoaded', () => {
+          updateLanguage();
+      });
+    </script>
+</body>
+</html>

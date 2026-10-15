@@ -164,16 +164,16 @@ function render(){
       <span class="text-2xl">🎓</span>
       <div class="flex-1">
         <label for="semesterSelect" class="block text-xs mono text-brand-500 font-bold mb-1">
-          ${ar ? '// تغير السمستر ' : '//  Jump to Your Semester  <ماشغالات  وكلها سمسترين العندي >'}
+          ${ar ? '// تغير السمستر ' : '//  Jump to Your Semester  <  كلها سمسترين العندي >'}
 
         </label>
         <p class="text-dark-muted text-xs sm:text-sm mono min-h-[24px] m-3">
             <span id="typed-semester"></span><span class="text-brand-500 terminal-cursor">_</span>
           </p>
         <select id="semesterSelect" onchange="if(this.value) window.location.href=this.value;" class="w-full bg-dark-base border border-dark-border focus:border-brand-500 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-white outline-none transition cursor-pointer">
-          <option value="" disabled selected>${ar ? '— اختر السمستر الدراسي —' : '— Select Semester —'}</option>
-          <option value="semester1.html">${ar ? 'السمستر الأول (Semester 1)' : 'Semester 1'}</option>
-          <option value="semester2.html">${ar ? 'السمستر الثاني (Semester 2)' : 'Semester 2'}</option>
+          <option value="" disabled >${ar ? '— اختر السمستر الدراسي —' : '— Select Semester —'}</option>
+          <option value="s1/index.html">${ar ? 'السمستر الأول ' : 'Semester 1'}</option>
+          <option value="index.html" selected >${ar ? 'السمستر الثاني ' : 'Semester 2'}</option>
 
         </select>
       </div>

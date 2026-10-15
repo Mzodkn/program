@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Technical English II - UGC Study Portal</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#f0fdfa', 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e' },
+            dark: { base: '#0b0f17', surface: '#111827', elevated: '#1f2937', border: '#374151', text: '#f3f4f6', muted: '#9ca3af' }
+          },
+          fontFamily: {
+            sans: ['Inter', 'Cairo', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+      body {
+    background-color: #0b0f17;
+    background-image: 
+      linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0b0f17; }
+    ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #374151; }
+    .nav-active {
+      background-color: #1f2937;
+      border-inline-start: 4px solid #14b8a6;
+      color: #14b8a6 !important;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body class="bg-dark-base text-dark-text font-sans antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-dark-surface/90 backdrop-blur border-b border-dark-border">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button id="sidebarToggle" class="p-2 md:hidden text-dark-muted hover:text-white">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+        </button>
+        
+        <!-- زر الرجوع للقائمة الرئيسية -->
+        <a href="index.html" class="px-3 py-1.5 rounded-lg bg-dark-elevated border border-dark-border text-xs sm:text-sm font-bold text-dark-muted hover:text-white hover:bg-dark-border transition flex items-center gap-1.5 shadow-sm shrink-0" title="الرئيسية">
+            <span>&larr;</span> <span class="hidden sm:inline">الرئيسية</span>
+        </a>
+        <div class="h-5 w-[1px] bg-dark-border shrink-0"></div>
+
+        <div class="w-9 h-9 rounded bg-gradient-to-tr from-brand-600 to-teal-400 flex items-center justify-center font-bold text-white">TE</div>
+        <div class="font-bold text-lg hidden sm:block">Technical English II</div>
+      </div>
+      
+      <!-- Lang Toggle -->
+      <button id="langToggle" class="px-4 py-1.5 rounded-lg bg-dark-elevated border border-dark-border text-sm font-semibold text-brand-500 hover:bg-dark-border transition">
+        العربية
+      </button>
+    </div>
+  </header>
+
+  <div class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 flex gap-6">
+    
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-64 bg-dark-surface border border-dark-border rounded-xl p-4 h-[calc(100vh-6rem)] sticky top-20 overflow-y-auto hidden md:block shrink-0 shadow-xl">
+      <div class="text-xs font-bold uppercase text-dark-muted px-3 mb-3" id="navTitle">Course Lectures</div>
+      <nav id="moduleList" class="space-y-1"></nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 min-w-0 bg-dark-surface border border-dark-border rounded-xl p-6 shadow-xl">
+      <div class="text-sm font-mono text-brand-500 mb-2" id="lectureNumber"></div>
+      
+      <article id="contentArea" class="space-y-8"></article>
+
+      <!-- Quiz Section -->
+      <section id="quizSection" class="mt-12 pt-8 border-t border-dark-border">
+        <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-brand-500"></span>
+          <span id="quizTitle">Knowledge Check</span>
+        </h3>
+        <div id="quizContainer" class="bg-dark-elevated rounded-xl p-6 border border-dark-border space-y-4"></div>
+      </section>
+
+      <!-- Navigation Footer -->
+      <div class="mt-12 pt-6 border-t border-dark-border flex items-center justify-between">
+        <button id="prevBtn" class="px-4 py-2 rounded bg-dark-elevated text-dark-muted hover:text-white transition">&larr; Previous</button>
+        <button id="nextBtn" class="px-4 py-2 rounded bg-brand-600 text-white hover:bg-brand-500 transition">Next &rarr;</button>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const courseData = [
+      // ================= LECTURE 1 =================
+      {
+        id: "lec1",
+        number: "Lecture 1",
+        title: { en: "Introduction to Technical English & Voice", ar: "مقدمة في الإنجليزية التقنية والمبني للمجهول" },
+        content: {
+          en: `
+            <div class="space-y-6">
+              <h1 class="text-2xl sm:text-3xl font-bold text-white">Introduction to Technical English</h1>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 rounded bg-dark-elevated border border-dark-border">
+                  <h3 class="font-bold text-teal-400 mb-2">Technical English</h3>
+                  <p class="text-sm">The form of English used in scientific, engineering, and computing fields. It emphasizes <strong>clarity</strong>, <strong>accuracy</strong>, and <strong>technical vocabulary</strong>. In short, a way to explain technical information without ambiguity.</p>
+                </div>
+                <div class="p-4 rounded bg-dark-elevated border border-dark-border">
+                  <h3 class="font-bold text-teal-400 mb-2">General English</h3>
+                  <p class="text-sm">The English used in daily life communication.</p>
+                </div>
+              </div>
+
+              <div>
+                <h3 class="font-bold text-white mb-2">Importance in the Technical Field:</h3>
+                <ol class="list-decimal list-inside text-sm text-gray-300 space-y-1">
+                  <li><strong>Understanding technical books and references:</strong> Most computer science books and research papers are written in English.</li>
+                  <li><strong>Using software and applications:</strong> Helps you understand menus, commands, and instructions in programs.</li>
+                  <li><strong>Understanding technical terms:</strong> Fields use many English terms such as database, network, and algorithm.</li>
+                </ol>
+              </div>
+
+              <div class="p-4 border-l-4 border-brand-500 bg-dark-elevated text-sm">
+                <strong class="text-white">Technical Vocabulary:</strong> The specialized vocabulary of any field which evolves due to the need for experts to communicate with clarity, precision, relevance, and brevity. Strategies to build it: knowing word origins, using a dictionary, inferring meaning from context, and understanding word formation (blending, compounding, coinage, borrowing, clipping, affixes).
+              </div>
+
+              <h2 class="text-xl font-bold text-white mt-8">Voice and Tense: Active vs Passive</h2>
+              <div class="space-y-2 text-sm text-gray-300">
+                <p><strong>1. Active Voice:</strong> The subject performs the action.<br><em>Example:</em> The operators conducted a test on the turbo generator.</p>
+                <p><strong>2. Passive Voice:</strong> The subject receives the action.<br><em>Example:</em> A test was conducted on the turbo generator by the operators.</p>
+              </div>
+
+              <div class="overflow-x-auto border border-dark-border rounded">
+                <table class="w-full text-left text-sm">
+                  <thead class="bg-dark-elevated text-brand-500">
+                    <tr><th class="p-3">Tense</th><th class="p-3">Active Voice</th><th class="p-3">Passive Voice</th></tr>
+                  </thead>
+                  <tbody class="divide-y divide-dark-border">
+                    <tr><td class="p-3">Simple Present</td><td class="p-3">analyses</td><td class="p-3">is analysed</td></tr>
+                    <tr><td class="p-3">Simple Past</td><td class="p-3">analysed</td><td class="p-3">was analysed</td></tr>
+                    <tr><td class="p-3">Present Perfect</td><td class="p-3">has analysed</td><td class="p-3">has been analysed</td></tr>
+                    <tr><td class="p-3">Future</td><td class="p-3">will analyse</td><td class="p-3">will be analysed</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div class="p-4 rounded bg-dark-elevated">
+                  <h3 class="font-bold text-teal-400 mb-2">When to use Active:</h3>
+                  <p>Gives importance to the doer. Used for clear, direct, and strong writing. (Crisp and unambiguous).</p>
+                </div>
+                <div class="p-4 rounded bg-dark-elevated">
+                  <h3 class="font-bold text-teal-400 mb-2">When to use Passive:</h3>
+                  <p>Gives importance to the action. Used in most formal writing (reports, proposals). (Note: Passive is verbose. Only transitive verbs can be transformed).</p>
+                </div>
+              </div>
+            </div>
+          `,
+          ar: `
+            <div class="space-y-6">
+              <h1 class="text-2xl sm:text-3xl font-bold text-white">مقدمة في الإنجليزية التقنية</h1>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 rounded bg-dark-elevated border border-dark-border">
+                  <h3 class="font-bold text-teal-400 mb-2">الإنجليزية التقنية (Technical English)</h3>
+                  <p class="text-sm">اللغة المستخدمة في المجالات العلمية والهندسية والحاسوبية. تؤكد على <strong>الوضوح</strong>، <strong>الدقة</strong>، و<strong>المفردات التقنية</strong>. هي طريقة لشرح المعلومات التقنية دون غموض (Ambiguity).</p>
+                </div>
+                <div class="p-4 rounded bg-dark-elevated border border-dark-border">
+                  <h3 class="font-bold text-teal-400 mb-2">الإنجليزية العامة (General English)</h3>
+                  <p class="text-sm">الإنجليزية المستخدمة في التواصل اليومي المعتاد.</p>
+                </div>
+              </div>
+
+              <div>
+                <h3 class="font-bold text-white mb-2">أهميتها في المجال التقني:</h3>
+                <ol class="list-decimal list-inside text-sm text-gray-300 space-y-1">
+                  <li><strong>فهم الكتب والمراجع:</strong> معظم كتب علوم الحاسوب والبحوث مكتوبة بالإنجليزية.</li>
+                  <li><strong>استخدام البرامج والتطبيقات:</strong> واجهات البرامج والأوامر تستخدم الإنجليزية.</li>
+                  <li><strong>فهم المصطلحات التقنية:</strong> استخدام كلمات معيارية عالمياً مثل database و algorithm.</li>
+                </ol>
+              </div>
+
+              <div class="p-4 border-r-4 border-brand-500 bg-dark-elevated text-sm">
+                <strong class="text-white">المفردات التقنية (Technical Vocabulary):</strong> مفردات متخصصة تطورت لحاجة الخبراء للتواصل بوضوح ودقة وإيجاز (Brevity). لزيادتها يجب: معرفة أصل الكلمة، استخدام القاموس، التخمين من السياق، وفهم تكوين الكلمة عبر الإضافات (السوابق واللواحق Affixes).
+              </div>
+
+              <h2 class="text-xl font-bold text-white mt-8">الصوت والزمن: المعلوم والمجهول (Active vs Passive)</h2>
+              <div class="space-y-2 text-sm text-gray-300">
+                <p><strong>1. المبني للمعلوم (Active):</strong> الفاعل يقوم بالفعل.<br><em>مثال:</em> أجرى المشغلون اختباراً على المولد.</p>
+                <p><strong>2. المبني للمجهول (Passive):</strong> الفاعل يتلقى الفعل.<br><em>مثال:</em> أُجري اختبار على المولد بواسطة المشغلين.</p>
+              </div>
+
+              <div class="overflow-x-auto border border-dark-border rounded">
+                <table class="w-full text-right text-sm">
+                  <thead class="bg-dark-elevated text-brand-500">
+                    <tr><th class="p-3">الزمن (Tense)</th><th class="p-3">المبني للمعلوم</th><th class="p-3">المبني للمجهول</th></tr>
+                  </thead>
+                  <tbody class="divide-y divide-dark-border">
+                    <tr><td class="p-3">المضارع البسيط</td><td class="p-3">analyses</td><td class="p-3">is analysed</td></tr>
+                    <tr><td class="p-3">الماضي البسيط</td><td class="p-3">analysed</td><td class="p-3">was analysed</td></tr>
+                    <tr><td class="p-3">المضارع التام</td><td class="p-3">has analysed</td><td class="p-3">has been analysed</td></tr>
+                    <tr><td class="p-3">المستقبل</td><td class="p-3">will analyse</td><td class="p-3">will be analysed</td></tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div class="p-4 rounded bg-dark-elevated">
+                  <h3 class="font-bold text-teal-400 mb-2">متى نستخدم المبني للمعلوم:</h3>
+                  <p>عندما يكون الفاعل هو الأهم. يستخدم للكتابة المباشرة والقوية الخالية من الغموض.</p>
+                </div>
+                <div class="p-4 rounded bg-dark-elevated">
+                  <h3 class="font-bold text-teal-400 mb-2">متى نستخدم المبني للمجهول:</h3>
+                  <p>في الكتابة الرسمية (التقارير). التركيز هنا على "الفعل" وليس "الفاعل". (ملاحظة: الأفعال المتعدية Transitive verbs فقط هي التي تتحول للمجهول).</p>
+                </div>
+              </div>
+            </div>
+          `
+        },
+        quiz: {
+          q: { en: "Which of the following describes Passive Voice?", ar: "أي مما يلي يصف المبني للمجهول (Passive Voice)؟" },
+          options: {
+            en: ["It gives importance to the doer of the action.", "It is only used with intransitive verbs.", "It gives importance to the action itself and is used in formal writing.", "It is crisp, direct, and unambiguous."],
+            ar: ["يعطي الأهمية لفاعل الحدث.", "يُستخدم فقط مع الأفعال اللازمة.", "يعطي الأهمية للحدث نفسه ويُستخدم في الكتابات الرسمية.", "موجز ومباشر وخالٍ من الغموض."]
+          },
+          answer: 2
+        }
+      },
+      // ================= LECTURE 2 =================
+      {
+        id: "lec2",
+        number: "Lecture 2",
+        title: { en: "Note Making & Summarizing", ar: "تدوين الملاحظات والتلخيص" },
+        content: {
+          en: `
+            <div class="space-y-6">
+              <h1 class="text-2xl font-bold text-white">Note Making & Summarizing</h1>
+              
+              <div class="p-4 rounded-lg bg-dark-elevated border-l-4 border-brand-500 text-sm">
+                <strong>Note Making</strong> is a systematic method of writing down quickly, briefly, and clearly the important points of a reading text. It integrates reading and writing skills.
+              </div>
+
+              <h3 class="font-bold text-white mt-4">Abbreviations in Note Making:</h3>
+              <p class="text-sm text-gray-300">Never write full sentences. Use standard abbreviations:</p>
+              <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                <li>Capitalized initials (Acronyms): USA, UK, USSR</li>
+                <li>First & last letters with apostrophe: can't (cannot), w'out (without)</li>
+                <li>First letters of phrases: Kg (Kilogram), CV (Curriculum Vitae)</li>
+                <li>General usage: e.g. (Example), viz (Namely), et al (and others)</li>
+              </ul>
+
+              <h2 class="text-xl font-bold text-white mt-8">Three Methods of Note Making</h2>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div class="p-4 border border-dark-border rounded">
+                  <h4 class="text-teal-400 font-bold">1. Topicalising</h4>
+                  <p>Main points are rephrased in bullet points. Redundant words are removed.</p>
+                </div>
+                <div class="p-4 border border-dark-border rounded">
+                  <h4 class="text-teal-400 font-bold">2. Schematizing</h4>
+                  <p>Organizing scientific text and processes into forms, tables, and diagrams.</p>
+                </div>
+                <div class="p-4 border border-dark-border rounded">
+                  <h4 class="text-teal-400 font-bold">3. Sequencing</h4>
+                  <p>Making a clear layout for fast interpretation. Arranging points logically.</p>
+                </div>
+              </div>
+
+              <h2 class="text-xl font-bold text-white mt-8">Summarizing (The 5 C's)</h2>
+              <p class="text-sm text-gray-300">A summary provides maximum information in a minimum number of words (Condensation).</p>
+              <div class="bg-dark-elevated p-4 rounded mt-4 space-y-2 text-sm border border-dark-border">
+                <p><strong class="text-brand-500">1. Completeness:</strong> Has all essential elements of the original.</p>
+                <p><strong class="text-brand-500">2. Compactness:</strong> All ideas form a compact whole (Unity).</p>
+                <p><strong class="text-brand-500">3. Conciseness:</strong> Brevity is the soul of wit. Clear and concise.</p>
+                <p><strong class="text-brand-500">4. Clarity:</strong> No vague statements.</p>
+                <p><strong class="text-brand-500">5. Coherence:</strong> Logical, chronological, and spatial order.</p>
+              </div>
+            </div>
+          `,
+          ar: `
+            <div class="space-y-6">
+              <h1 class="text-2xl font-bold text-white">تدوين الملاحظات والتلخيص</h1>
+              
+              <div class="p-4 rounded-lg bg-dark-elevated border-r-4 border-brand-500 text-sm">
+                <strong>تدوين الملاحظات (Note Making):</strong> طريقة منهجية لكتابة النقاط المهمة من النص بسرعة، وإيجاز، ووضوح. تدمج بين مهارتي القراءة والكتابة.
+              </div>
+
+              <h3 class="font-bold text-white mt-4">الاختصارات في تدوين الملاحظات:</h3>
+              <p class="text-sm text-gray-300">لا تكتب جملاً كاملة أبداً. استخدم الاختصارات القياسية:</p>
+              <ul class="list-disc list-inside text-sm text-gray-300 space-y-1" dir="ltr">
+                <li class="text-right">الحروف الأولى الكبيرة (Acronyms): USA, UK, USSR</li>
+                <li class="text-right">الحرف الأول والأخير مع فاصلة: can't (cannot), w'out (without)</li>
+                <li class="text-right">أوائل الكلمات في العبارات: Kg (Kilogram), CV (Curriculum Vitae)</li>
+                <li class="text-right">الاختصارات الشائعة: e.g. (مثال), viz (تحديداً), et al (وآخرون)</li>
+              </ul>
+
+              <h2 class="text-xl font-bold text-white mt-8">الطرق الثلاث لتدوين الملاحظات</h2>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                <div class="p-4 border border-dark-border rounded">
+                  <h4 class="text-teal-400 font-bold">1. التبويب (Topicalising)</h4>
+                  <p>إعادة صياغة النقاط الرئيسية وحذف الكلمات الزائدة (Redundant).</p>
+                </div>
+                <div class="p-4 border border-dark-border rounded">
+                  <h4 class="text-teal-400 font-bold">2. التخطيط (Schematizing)</h4>
+                  <p>تنظيم النصوص العلمية والعمليات في شكل جداول ومخططات.</p>
+                </div>
+                <div class="p-4 border border-dark-border rounded">
+                  <h4 class="text-teal-400 font-bold">3. التسلسل (Sequencing)</h4>
+                  <p>إنشاء تخطيط واضح للتفسير السريع بترتيب منطقي.</p>
+                </div>
+              </div>
+
+              <h2 class="text-xl font-bold text-white mt-8">عناصر التلخيص (The 5 C's)</h2>
+              <p class="text-sm text-gray-300">الملخص يقدم أقصى قدر من المعلومات بأقل عدد من الكلمات (تكثيف / Condensation).</p>
+              <div class="bg-dark-elevated p-4 rounded mt-4 space-y-2 text-sm border border-dark-border">
+                <p><strong class="text-brand-500">1. الاكتمال (Completeness):</strong> يحتوي على كافة العناصر الأساسية من الأصل.</p>
+                <p><strong class="text-brand-500">2. الترابط (Compactness):</strong> دمج الأفكار في كيان متماسك.</p>
+                <p><strong class="text-brand-500">3. الإيجاز (Conciseness):</strong> تقديم المعنى بكلمات أقل ودقيقة.</p>
+                <p><strong class="text-brand-500">4. الوضوح (Clarity):</strong> التعبير السليم وخلو النص من العبارات المبهمة (Vague).</p>
+                <p><strong class="text-brand-500">5. التناسق (Coherence):</strong> الترتيب المنطقي والزمني والانتقال السلس.</p>
+              </div>
+            </div>
+          `
+        },
+        quiz: {
+          q: { en: "Which note making method uses tables and diagrams to organize information?", ar: "أي طريقة لتدوين الملاحظات تستخدم الجداول والمخططات لتنظيم المعلومات؟" },
+          options: {
+            en: ["Topicalising", "Schematizing", "Sequencing", "Summarizing"],
+            ar: ["التبويب (Topicalising)", "التخطيط (Schematizing)", "التسلسل (Sequencing)", "التلخيص (Summarizing)"]
+          },
+          answer: 1
+        }
+      },
+      // ================= LECTURE 3 =================
+      {
+        id: "lec3",
+        number: "Lecture 3",
+        title: { en: "Compound Nouns & Negative Prefixes", ar: "الأسماء المركبة والسوابق النافية" },
+        content: {
+          en: `
+            <div class="space-y-6">
+              <h1 class="text-2xl font-bold text-white">Compound Nouns & Prefixes</h1>
+              
+              <h2 class="text-xl font-bold text-white mt-4">Types of Nouns</h2>
+              <ul class="grid grid-cols-2 gap-2 text-sm text-gray-300 mb-6">
+                <li><strong>Common:</strong> girl, boy, town</li>
+                <li><strong>Abstract:</strong> honesty, wisdom</li>
+                <li><strong>Collective:</strong> crowd, fleet, team</li>
+                <li><strong>Concrete:</strong> iron, gold, silver</li>
+                <li><strong>Countable:</strong> pens, chairs</li>
+                <li><strong>Uncountable:</strong> sugar</li>
+                <li><strong>Proper:</strong> Delhi, Rama</li>
+                <li><strong>Gerund:</strong> verb + 'ing' (singing)</li>
+              </ul>
+
+              <h2 class="text-xl font-bold text-white mt-6">Compound Nouns</h2>
+              <p class="text-sm">An expression made up of more than one word functioning as a noun. Formats:</p>
+              <ul class="list-disc list-inside text-sm text-gray-300 space-y-1 bg-dark-elevated p-4 rounded border border-dark-border">
+                <li><strong>One word:</strong> earring, database</li>
+                <li><strong>With hyphen:</strong> pen-name, data-processing</li>
+                <li><strong>Separate words:</strong> credit card, tin opener</li>
+              </ul>
+
+              <h2 class="text-xl font-bold text-white mt-8">Prefixes</h2>
+              <p class="text-sm">A syllable put at the beginning of a word to change its meaning. Negative prefixes include: <strong>a-, de-, dis-, il-, im-, in-, ir-, mis-, non-, un-</strong>.</p>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div class="p-4 border border-dark-border rounded bg-dark-elevated text-sm">
+                  <h3 class="font-bold text-teal-400 mb-2">Rules for "in-"</h3>
+                  <p>• Becomes <strong>im-</strong> before 'm' or 'p' (impatient, improbable).</p>
+                  <p>• Becomes <strong>il-</strong> before 'l' (illegal, illiterate).</p>
+                  <p>• Becomes <strong>ir-</strong> before 'r' (irreversible).</p>
+                </div>
+                <div class="p-4 border border-dark-border rounded bg-dark-elevated text-sm">
+                  <h3 class="font-bold text-teal-400 mb-2">Categories of Prefixes</h3>
+                  <p>• <strong>Reversative:</strong> Reversal of action (undo, decode, defrost).</p>
+                  <p>• <strong>Pejorative:</strong> Sense of ill, bad, wrong (misuse, malfunction).</p>
+                  <p>• <strong>Word-class changing:</strong> Noun to verb (power → empower, witch → bewitch).</p>
+                </div>
+              </div>
+            </div>
+          `,
+          ar: `
+            <div class="space-y-6">
+              <h1 class="text-2xl font-bold text-white">الأسماء المركبة والسوابق</h1>
+              
+              <h2 class="text-xl font-bold text-white mt-4">أنواع الأسماء (Noun Taxonomy)</h2>
+              <ul class="grid grid-cols-2 gap-2 text-sm text-gray-300 mb-6" dir="ltr">
+                <li class="text-right"><strong>Common (شائع):</strong> girl, boy, town</li>
+                <li class="text-right"><strong>Abstract (مجرد):</strong> honesty, wisdom</li>
+                <li class="text-right"><strong>Collective (جمعي):</strong> crowd, fleet, team</li>
+                <li class="text-right"><strong>Concrete (مادي):</strong> iron, gold, silver</li>
+                <li class="text-right"><strong>Countable (معدود):</strong> pens, chairs</li>
+                <li class="text-right"><strong>Uncountable (غير معدود):</strong> sugar</li>
+                <li class="text-right"><strong>Proper (علم):</strong> Delhi, Rama</li>
+                <li class="text-right"><strong>Gerund (اسم المصدر):</strong> فعل+ing (singing)</li>
+              </ul>
+
+              <h2 class="text-xl font-bold text-white mt-6">الأسماء المركبة (Compound Nouns)</h2>
+              <p class="text-sm">تعبير يتكون من أكثر من كلمة ويعمل كاسم واحد. طرق كتابتها:</p>
+              <ul class="list-disc list-inside text-sm text-gray-300 space-y-1 bg-dark-elevated p-4 rounded border border-dark-border">
+                <li><strong>كلمة واحدة (One word):</strong> earring, database</li>
+                <li><strong>بشرطة (Hyphen):</strong> pen-name, data-processing</li>
+                <li><strong>كلمات منفصلة (Separate):</strong> credit card, tin opener</li>
+              </ul>
+
+              <h2 class="text-xl font-bold text-white mt-8">السوابق (Prefixes)</h2>
+              <p class="text-sm">مقطع يُضاف بداية الكلمة لتغيير المعنى أو نفيه. من السوابق النافية: <strong>a-, de-, dis-, il-, im-, in-, ir-, mis-, non-, un-</strong>.</p>
+              
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                <div class="p-4 border border-dark-border rounded bg-dark-elevated text-sm">
+                  <h3 class="font-bold text-teal-400 mb-2">قواعد السابقة "in-" للمماثلة الصوتية</h3>
+                  <p>• تتحول لـ <strong>im-</strong> قبل حرفي 'm' أو 'p' (impatient, improbable).</p>
+                  <p>• تتحول لـ <strong>il-</strong> قبل حرف 'l' (illegal, illiterate).</p>
+                  <p>• تتحول لـ <strong>ir-</strong> قبل حرف 'r' (irreversible).</p>
+                </div>
+                <div class="p-4 border border-dark-border rounded bg-dark-elevated text-sm">
+                  <h3 class="font-bold text-teal-400 mb-2">أنواع السوابق الأخرى</h3>
+                  <p>• <strong>عكسية (Reversative):</strong> عكس اتجاه الفعل (undo, decode, defrost).</p>
+                  <p>• <strong>تحقيرية/للسوء (Pejorative):</strong> معنى الخطأ أو العطب (misuse, malfunction).</p>
+                  <p>• <strong>مغيرة للنوع (Word-class changing):</strong> تحويل الاسم لفعل (power → empower).</p>
+                </div>
+              </div>
+            </div>
+          `
+        },
+        quiz: {
+          q: { en: "Which of the following is a Pejorative prefix?", ar: "أي من السوابق التالية يُعتبر سابقة إفسادية (Pejorative) تدل على السوء أو الخطأ؟" },
+          options: {
+            en: ["re- (reappear)", "mis- (malfunction, misuse)", "im- (improbable)", "en- (empower)"],
+            ar: ["re- (مثل: reappear)", "mis- و mal- (مثل: misuse, malfunction)", "im- (مثل: improbable)", "en- (مثل: empower)"]
+          },
+          answer: 1
+        }
+      },
+      // ================= LECTURE 4 =================
+      {
+        id: "lec4",
+        number: "Lecture 4",
+        title: { en: "Requirements Engineering (SRS)", ar: "هندسة المتطلبات والمواصفات (SRS)" },
+        content: {
+          en: `
+            <div class="space-y-6">
+              <h1 class="text-2xl font-bold text-white">System & Software Requirements Engineering</h1>
+              
+              <div class="p-4 rounded-lg bg-dark-elevated border-l-4 border-brand-500 text-sm">
+                In the Software Development Life Cycle (SDLC), more projects fail due to <strong>poor, ambiguous, or incomplete requirements</strong> than due to coding errors.
+              </div>
+
+              <h2 class="text-xl font-bold text-white mt-6">SyRS vs SRS</h2>
+              <ul class="list-disc list-inside text-sm text-gray-300 space-y-2 mb-6 bg-dark-elevated p-4 rounded border border-dark-border">
+                <li><strong>System Requirements (SyRS):</strong> Broad operational needs of the entire system (Hardware + Software + People).</li>
+                <li><strong>Software Requirements (SRS):</strong> Detailed breakdown focusing <em>exclusively</em> on software features and data behavior.</li>
+              </ul>
+
+              <h2 class="text-xl font-bold text-white">Functional Requirements (FRs)</h2>
+              <p class="text-sm mb-2">Defines WHAT the system should do. Standard Syntax:</p>
+              <div class="p-3 bg-dark-base border border-dark-border rounded font-mono text-sm text-teal-400 mb-4">
+                [Subject] + [Modal Verb] + [System Action] + [Object] + [Condition]
+              </div>
+              <p class="text-sm text-gray-300"><em>Example:</em> The Authentication Module shall lock a user account for 15 minutes when three invalid attempts occur.</p>
+
+              <h2 class="text-xl font-bold text-white mt-8">Non-Functional Requirements (NFRs)</h2>
+              <p class="text-sm mb-2">Defines HOW WELL the system performs. Vague requirements must be replaced with testable, quantified metrics.</p>
+              <div class="overflow-x-auto border border-dark-border rounded-lg mt-2">
+                <table class="w-full text-left text-sm">
+                  <thead class="bg-dark-elevated text-dark-muted border-b border-dark-border">
+                    <tr><th class="p-3">Category</th><th class="p-3 text-red-400">Bad (Vague)</th><th class="p-3 text-teal-400">Good (Quantified Metric)</th></tr>
+                  </thead>
+                  <tbody class="divide-y divide-dark-border bg-dark-surface">
+                    <tr><td class="p-3 font-semibold text-white">Performance</td><td class="p-3 text-gray-400">"Must load quickly."</td><td class="p-3 text-gray-200">"Render within 1.5 seconds under 500 concurrent users."</td></tr>
+                    <tr><td class="p-3 font-semibold text-white">Security</td><td class="p-3 text-gray-400">"Must be secure."</td><td class="p-3 text-gray-200">"Encrypt data at rest using AES-256."</td></tr>
+                    <tr><td class="p-3 font-semibold text-white">Availability</td><td class="p-3 text-gray-400">"Almost never go down."</td><td class="p-3 text-gray-200">"Operational uptime of 99.95% per month."</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          `,
+          ar: `
+            <div class="space-y-6">
+              <h1 class="text-2xl font-bold text-white">هندسة متطلبات الأنظمة والبرمجيات</h1>
+              
+              <div class="p-4 rounded-lg bg-dark-elevated border-r-4 border-brand-500 text-sm">
+                في دورة حياة تطوير البرمجيات (SDLC)، تفشل المشاريع البرمجية في الغالب بسبب <strong>المتطلبات السيئة أو الغامضة أو غير المكتملة</strong> أكثر من فشلها بسبب أخطاء الأكواد.
+              </div>
+
+              <h2 class="text-xl font-bold text-white mt-6">متطلبات النظام (SyRS) مقابل البرمجيات (SRS)</h2>
+              <ul class="list-disc list-inside text-sm text-gray-300 space-y-2 mb-6 bg-dark-elevated p-4 rounded border border-dark-border">
+                <li><strong>متطلبات النظام (SyRS):</strong> تغطي الاحتياجات التشغيلية للنظام الكلي (العتاد Hardware + البرمجيات Software + البشر).</li>
+                <li><strong>متطلبات البرمجيات (SRS):</strong> تحليل تفصيلي يركز حصرياً على ميزات البرنامج، وسلوك البيانات، والواجهات.</li>
+              </ul>
+
+              <h2 class="text-xl font-bold text-white">المتطلبات الوظيفية (FRs)</h2>
+              <p class="text-sm mb-2">تحدد "ماذا" يجب أن يفعل النظام. وتُكتب بالصيغة القياسية:</p>
+              <div class="p-3 bg-dark-base border border-dark-border rounded font-mono text-sm text-teal-400 mb-4 text-left" dir="ltr">
+                [Subject] + [Modal Verb] + [System Action] + [Object] + [Condition]
+              </div>
+              <p class="text-sm text-gray-300"><em>مثال:</em> يجب أن تقوم وحدة المصادقة بقفل حساب المستخدم لمدة 15 دقيقة عند إدخال كلمة مرور خاطئة 3 مرات.</p>
+
+              <h2 class="text-xl font-bold text-white mt-8">المتطلبات غير الوظيفية (NFRs)</h2>
+              <p class="text-sm mb-2">تحدد "كيف" وبأي جودة يعمل النظام. يجب ألا تكون غامضة (Vague)، بل يجب أن تُكتب بمقاييس قابلة للاختبار (Quantified).</p>
+              <div class="overflow-x-auto border border-dark-border rounded-lg mt-2">
+                <table class="w-full text-right text-sm">
+                  <thead class="bg-dark-elevated text-dark-muted border-b border-dark-border">
+                    <tr><th class="p-3">الفئة</th><th class="p-3 text-red-400">مثال سيء (مبهم/Vague)</th><th class="p-3 text-teal-400">مثال هندسي دقيق (كمي)</th></tr>
+                  </thead>
+                  <tbody class="divide-y divide-dark-border bg-dark-surface">
+                    <tr><td class="p-3 font-semibold text-white">الأداء (Performance)</td><td class="p-3 text-gray-400">"يجب أن يحمّل النظام بسرعة."</td><td class="p-3 text-gray-200">"يعرض الواجهة خلال 1.5 ثانية تحت ضغط 500 مستخدم."</td></tr>
+                    <tr><td class="p-3 font-semibold text-white">الأمان (Security)</td><td class="p-3 text-gray-400">"يجب أن يكون آمناً."</td><td class="p-3 text-gray-200">"تشفير البيانات المخزنة باستخدام معيار AES-256."</td></tr>
+                    <tr><td class="p-3 font-semibold text-white">التوفر (Availability)</td><td class="p-3 text-gray-400">"لا يتوقف النظام عن العمل أبداً."</td><td class="p-3 text-gray-200">"يحافظ على معدل تشغيل Uptime بنسبة 99.95% شهرياً."</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          `
+        },
+        quiz: {
+          q: { en: "Why is the requirement 'The system must load pages quickly' considered a flawed Non-Functional Requirement (NFR)?", ar: "لماذا يُعتبر المطلب 'يجب أن يحمّل النظام الصفحات بسرعة' متطلباً غير وظيفي (NFR) معيباً؟" },
+          options: {
+            en: ["It is a functional requirement.", "It lacks a testable, quantified metric.", "It does not mention security encryption.", "It uses active voice instead of passive voice."],
+            ar: ["لأنه في الأصل متطلب وظيفي (FR).", "لأنه يفتقر إلى مقياس كمي دقيق وقابل للاختبار الفعلي.", "لأنه لا يذكر معايير التشفير الأمني.", "لأنه استخدم المبني للمعلوم بدلاً من المجهول."]
+          },
+          answer: 1
+        }
+      },
+      // ================= LECTURE 5 =================
+      {
+        id: "lec5",
+        number: "Lecture 5",
+        title: { en: "Software & Process Documentation", ar: "التوثيق التقني للبرمجيات والعمليات" },
+        content: {
+          en: `
+            <div class="space-y-6">
+              <h1 class="text-2xl font-bold text-white">Software Documentation</h1>
+              
+              <p class="text-sm text-gray-300">Software documentation refers to the structured written materials, visual guides, and specifications that assist end-users, system administrators, and software engineers.</p>
+
+              <h2 class="text-xl font-bold text-white mt-6">The 5 Core Principles of Technical Writing:</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                <div class="p-3 bg-dark-elevated rounded border border-dark-border"><strong class="text-brand-500">1. Conciseness:</strong> Convey critical steps in minimal sentences (No fluff).</div>
+                <div class="p-3 bg-dark-elevated rounded border border-dark-border"><strong class="text-brand-500">2. Clarity:</strong> Use plain language; zero ambiguity.</div>
+                <div class="p-3 bg-dark-elevated rounded border border-dark-border"><strong class="text-brand-500">3. Consistency:</strong> Uniform terminology and naming styles.</div>
+                <div class="p-3 bg-dark-elevated rounded border border-dark-border"><strong class="text-brand-500">4. Accuracy:</strong> Strict verification against actual APIs/interfaces.</div>
+                <div class="p-3 bg-dark-elevated rounded border border-dark-border"><strong class="text-brand-500">5. Accessibility:</strong> Logical navigation and searchable index.</div>
+              </div>
+
+              <h2 class="text-xl font-bold text-white mt-8">Standard Documentation Types</h2>
+              <ul class="list-disc list-inside space-y-2 text-sm text-gray-300">
+                <li><strong>User Manuals:</strong> Step-by-step instructions for operating software. Includes Prerequisites, Installation, Navigation, Core Tasks, and Troubleshooting.</li>
+                <li><strong>Process Descriptions:</strong> Uses 6 steps (Process Title, Objective, Triggers, Inputs, Execution Steps, Outputs). Uses UML Diagrams.</li>
+                <li><strong>API Documentation:</strong> Explains how systems integrate (Endpoints, HTTP methods, JSON formats).</li>
+                <li><strong>Troubleshooting Guides:</strong> Helps diagnose and repair failures (Symptom → Cause → Solution).</li>
+              </ul>
+            </div>
+          `,
+          ar: `
+            <div class="space-y-6">
+              <h1 class="text-2xl font-bold text-white">التوثيق التقني للبرمجيات</h1>
+              
+              <p class="text-sm text-gray-300">توثيق البرمجيات (Software Documentation) يشير إلى المواد المكتوبة المنظمة والأدلة المرئية التي تساعد المستخدمين النهائيين ومسؤولي النظام ومهندسي البرمجيات في التشغيل.</p>
+
+              <h2 class="text-xl font-bold text-white mt-6">المبادئ الخمسة الأساسية للكتابة التقنية:</h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                <div class="p-3 bg-dark-elevated rounded border border-dark-border"><strong class="text-brand-500">1. الإيجاز (Conciseness):</strong> نقل خطوات التشغيل بأقل عدد من الجمل (بدون حشو).</div>
+                <div class="p-3 bg-dark-elevated rounded border border-dark-border"><strong class="text-brand-500">2. الوضوح (Clarity):</strong> استخدام لغة بسيطة ومنع الغموض (Ambiguity).</div>
+                <div class="p-3 bg-dark-elevated rounded border border-dark-border"><strong class="text-brand-500">3. الاتساق (Consistency):</strong> توحيد المصطلحات والتنسيقات وأسماء المتغيرات.</div>
+                <div class="p-3 bg-dark-elevated rounded border border-dark-border"><strong class="text-brand-500">4. الدقة (Accuracy):</strong> مطابقة التوثيق المكتوب مع سلوك واجهات البرمجة الفعلية.</div>
+                <div class="p-3 bg-dark-elevated rounded border border-dark-border"><strong class="text-brand-500">5. سهولة الوصول (Accessibility):</strong> توفير فهرس قابل للبحث وتنظيم هرمي منطقي.</div>
+              </div>
+
+              <h2 class="text-xl font-bold text-white mt-8">أنماط التوثيق القياسية</h2>
+              <ul class="list-disc list-inside space-y-2 text-sm text-gray-300">
+                <li><strong>أدلة المستخدم (User Manuals):</strong> تعليمات خطوة بخطوة للتشغيل. تتضمن: المتطلبات، التثبيت، المهام الأساسية، واستكشاف الأخطاء (Troubleshooting).</li>
+                <li><strong>توصيف العمليات (Process Descriptions):</strong> يكتب من 6 أجزاء (العنوان، الهدف، المحفزات Triggers، المدخلات، الخطوات، والمخرجات). يُستخدم معه رسومات UML.</li>
+                <li><strong>توثيق الـ API:</strong> يشرح كيفية تكامل الأنظمة مع بعضها (الروابط، دوال HTTP، التنسيقات).</li>
+                <li><strong>أدلة استكشاف الأخطاء (Troubleshooting Guides):</strong> تساعد في التشخيص وتتبع منهجية (العَرَض → السبب → الحل).</li>
+              </ul>
+            </div>
+          `
+        },
+        quiz: {
+          q: { en: "Which documentation section uses the 'Symptom → Cause → Solution' format?", ar: "أي قسم من التوثيق يستخدم هيكلية (العَرَض ← السبب ← الحل)؟" },
+          options: {
+            en: ["API Documentation", "Process Description (UML)", "Troubleshooting Guides & Post-Mortems", "System Prerequisites"],
+            ar: ["توثيق واجهات برمجة التطبيقات (API Documentation)", "وصف العمليات البرمجية (Process Descriptions)", "أدلة استكشاف الأخطاء وتقارير الحوادث (Troubleshooting)", "المتطلبات الأساسية للنظام (Prerequisites)"]
+          },
+          answer: 2
+        }
+      },
+      // ================= GLOSSARY =================
+      {
+        id: "glossary",
+        number: "Reference",
+        title: { en: "Glossary / Tech Vocabulary", ar: "قاموس المصطلحات والمفردات الصعبة" },
+        content: {
+          en: `
+            <div class="space-y-6">
+              <h1 class="text-2xl font-bold text-white mb-4">Glossary of Important Terms</h1>
+              <p class="text-sm text-gray-300 mb-6">This section compiles all the difficult and critical technical terms used across the 5 lectures, along with their Arabic translations.</p>
+              
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Ambiguity</strong>غموض / التباس</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Brevity</strong>إيجاز / اختصار</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Redundant</strong>زائد عن الحاجة / حشو مكرر</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Affixes (Prefixes & Suffixes)</strong>الإضافات الصرفية (سوابق ولواحق)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Transitive verbs</strong>الأفعال المتعدية (تحتاج مفعولاً به)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Topicalising</strong>التبويب / تحويل النص لنقاط موضوعية</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Schematizing</strong>التخطيط (تحويل البيانات لرسوم/جداول)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Sequencing</strong>التسلسل / الترتيب المنطقي</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Conciseness</strong>الإيجاز والوضوح المباشر</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Coherence</strong>التناسق والتسلسل المنطقي للأفكار</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Gerund Noun</strong>الاسم المصدر المشتق بإضافة ing</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Reversative Prefixes</strong>السوابق العكسية (تعكس اتجاه الفعل)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Pejorative Prefixes</strong>السوابق الإفسادية (للتعبير عن الخلل/السوء)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Taxonomy</strong>تصنيف / هيكلة منهجية</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">SDLC</strong>دورة حياة تطوير البرمجيات</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Vague</strong>مبهم / غير محدد المعالم</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Throughput</strong>الإنتاجية (معدل معالجة البيانات)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Latency</strong>زمن الاستجابة / التأخير</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Troubleshooting</strong>استكشاف الأخطاء وإصلاحها</div>
+              </div>
+            </div>
+          `,
+          ar: `
+            <div class="space-y-6">
+              <h1 class="text-2xl font-bold text-white mb-4">قاموس المصطلحات الأكاديمية والتقنية</h1>
+              <p class="text-sm text-gray-300 mb-6">يضم هذا القسم حصرًا لكافة الكلمات الإنجليزية والتقنية الصعبة التي وردت في محتوى المحاضرات (من 1 إلى 5) مع ترجمتها المباشرة الدقيقة لتسهيل استيعاب المادة.</p>
+              
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-sm" dir="ltr">
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Ambiguity</strong>غموض / التباس</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Brevity</strong>إيجاز / اختصار</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Redundant</strong>زائد عن الحاجة / حشو مكرر</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Affixes (Prefixes & Suffixes)</strong>الإضافات الصرفية (سوابق ولواحق)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Transitive verbs</strong>الأفعال المتعدية (تحتاج مفعولاً به)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Topicalising</strong>التبويب / تحويل النص لنقاط موضوعية</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Schematizing</strong>التخطيط (تحويل البيانات لرسوم/جداول)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Sequencing</strong>التسلسل / الترتيب المنطقي</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Conciseness</strong>الإيجاز والوضوح المباشر</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Coherence</strong>التناسق والتسلسل المنطقي للأفكار</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Gerund Noun</strong>الاسم المصدر المشتق بإضافة ing</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Reversative Prefixes</strong>السوابق العكسية (تعكس اتجاه الفعل)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Pejorative Prefixes</strong>السوابق الإفسادية (للتعبير عن الخلل/السوء)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Taxonomy</strong>تصنيف / هيكلة منهجية</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">SDLC</strong>دورة حياة تطوير البرمجيات</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Vague</strong>مبهم / غير محدد المعالم</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Throughput</strong>الإنتاجية (معدل معالجة البيانات)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Latency</strong>زمن الاستجابة / التأخير</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Troubleshooting</strong>استكشاف الأخطاء وإصلاحها</div>
+              </div>
+            </div>
+          `
+        },
+        quiz: null
+      }
+    ];
+
+    // ================= APP ENGINE =================
+    let currentLang = 'ar';
+    let currentIndex = 0;
+
+    const moduleList = document.getElementById('moduleList');
+    const contentArea = document.getElementById('contentArea');
+    const lectureNumber = document.getElementById('lectureNumber');
+    const quizSection = document.getElementById('quizSection');
+    const quizContainer = document.getElementById('quizContainer');
+    const langToggle = document.getElementById('langToggle');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const sidebar = document.getElementById('sidebar');
+
+    function renderNav() {
+      moduleList.innerHTML = '';
+      courseData.forEach((mod, index) => {
+        const btn = document.createElement('button');
+        btn.className = `w-full text-start px-3 py-2.5 rounded-lg text-sm transition-all flex flex-col gap-0.5 ${
+          index === currentIndex ? 'nav-active' : 'text-dark-muted hover:bg-dark-elevated hover:text-white'
+        }`;
+        btn.innerHTML = `
+          <span class="text-xs opacity-75 font-mono">${mod.number}</span>
+          <span class="truncate font-medium">${mod.title[currentLang]}</span>
+        `;
+        btn.onclick = () => { 
+          currentIndex = index; 
+          renderAll(); 
+          if(window.innerWidth < 768) sidebar.classList.add('hidden');
+        };
+        moduleList.appendChild(btn);
+      });
+    }
+
+    function renderContent() {
+      const data = courseData[currentIndex];
+      lectureNumber.textContent = `${data.number}`;
+      contentArea.innerHTML = data.content[currentLang];
+      
+      if (data.quiz) {
+        quizSection.style.display = 'block';
+        const qData = data.quiz;
+        quizContainer.innerHTML = `<p class="font-bold text-white mb-3">${qData.q[currentLang]}</p>`;
+        
+        qData.options[currentLang].forEach((opt, idx) => {
+          const btn = document.createElement('button');
+          btn.className = "w-full text-start p-3 bg-dark-surface border border-dark-border rounded hover:border-brand-500 hover:bg-dark-base transition flex items-center justify-between text-sm text-gray-300 mb-2";
+          btn.innerHTML = `<span>${opt}</span><span class="w-4 h-4 rounded-full border border-dark-border"></span>`;
+          
+          btn.onclick = () => {
+            Array.from(quizContainer.children).forEach(c => c.disabled = true);
+            
+            if (idx === qData.answer) {
+              btn.classList.add('border-green-500', 'bg-green-500/10', 'text-green-400');
+              const icon = btn.querySelector('span:last-child');
+              icon.outerHTML = `<span class="text-green-400 text-lg">✔</span>`;
+            } else {
+              btn.classList.add('border-red-500', 'bg-red-500/10', 'text-red-400');
+              const icon = btn.querySelector('span:last-child');
+              icon.outerHTML = `<span class="text-red-400 text-lg">✖</span>`;
+              
+              const correctBtn = quizContainer.children[qData.answer + 1];
+              correctBtn.classList.add('border-green-500', 'bg-green-500/10', 'text-green-400');
+              correctBtn.querySelector('span:last-child').outerHTML = `<span class="text-green-400 text-lg">✔</span>`;
+            }
+          };
+          quizContainer.appendChild(btn);
+        });
+      } else {
+        quizSection.style.display = 'none';
+      }
+
+      prevBtn.style.opacity = currentIndex === 0 ? '0.4' : '1';
+      prevBtn.style.cursor = currentIndex === 0 ? 'not-allowed' : 'pointer';
+      
+      nextBtn.style.opacity = currentIndex === courseData.length - 1 ? '0.4' : '1';
+      nextBtn.style.cursor = currentIndex === courseData.length - 1 ? 'not-allowed' : 'pointer';
+    }
+
+    function renderAll() {
+      document.documentElement.lang = currentLang;
+      document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+      
+      langToggle.textContent = currentLang === 'ar' ? 'English' : 'العربية';
+      document.getElementById('navTitle').textContent = currentLang === 'ar' ? 'وحدات المنهج' : 'Course Lectures';
+      document.getElementById('quizTitle').textContent = currentLang === 'ar' ? 'اختبر فهمك السريع' : 'Knowledge Check';
+      prevBtn.innerHTML = currentLang === 'ar' ? '&rarr; السابق' : '&larr; Previous';
+      nextBtn.innerHTML = currentLang === 'ar' ? 'التالي &larr;' : 'Next &rarr;';
+      
+      renderNav();
+      renderContent();
+    }
+
+    langToggle.onclick = () => { 
+      currentLang = currentLang === 'ar' ? 'en' : 'ar'; 
+      renderAll(); 
+    };
+
+    prevBtn.onclick = () => { 
+      if (currentIndex > 0) { 
+        currentIndex--; 
+        renderAll(); 
+        window.scrollTo(0,0); 
+      } 
+    };
+
+    nextBtn.onclick = () => { 
+      if (currentIndex < courseData.length - 1) { 
+        currentIndex++; 
+        renderAll(); 
+        window.scrollTo(0,0); 
+      } 
+    };
+
+    document.getElementById('sidebarToggle').onclick = () => {
+      sidebar.classList.toggle('hidden');
+    };
+
+    renderAll();
+  </script>
+</body>
+</html>

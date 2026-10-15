@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="dark" translate="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>intro_IT_S2.pdf - Educational Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 500: '#14b8a6', 600: '#0d9488' },
+                        dark: { base: '#0b0f17', surface: '#111827', elevated: '#1f2937', border: '#374151', text: '#f3f4f6', muted: '#9ca3af' }
+                    },
+                    fontFamily: {
+                        en: ['Inter', 'sans-serif'],
+                        ar: ['Cairo', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+          body {
+    background-color: #0b0f17;
+    background-image: 
+      linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+        body { background-color: #0b0f17; color: #f3f4f6; transition: all 0.3s ease; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #111827; }
+        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #14b8a6; }
+        .ltr { direction: ltr; font-family: 'Inter', sans-serif; }
+        .rtl { direction: rtl; font-family: 'Cairo', sans-serif; }
+        .code-font { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Custom Alert Boxes */
+        .alert-box { border-left: 4px solid #14b8a6; }
+        .rtl .alert-box { border-left: none; border-right: 4px solid #14b8a6; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-dark-text antialiased ltr">
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-64 bg-dark-surface border-r border-dark-border flex-col h-full transition-all duration-300 hidden md:flex absolute md:relative z-50">
+        <div class="p-4 border-b border-dark-border flex justify-between items-center bg-dark-surface">
+            <h1 id="siteTitle" class="text-xl font-bold text-brand-500 truncate" title="intro_IT_S2.pdf">intro_IT_S2.pdf</h1>
+            <button id="closeSidebar" class="md:hidden text-dark-muted hover:text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+           <a href="index.html" class="px-3 py-1.5 rounded-lg bg-dark-elevated border border-dark-border text-xs sm:text-sm font-bold text-dark-muted hover:text-white hover:bg-dark-border transition flex items-center gap-1.5 shadow-sm shrink-0" title="الرئيسية">
+                    <span>&larr;</span> <span class="hidden sm:inline">الرئيسية</span>
+                </a>
+        <div class="p-4 flex-1 overflow-y-auto" id="navLinks">
+            <!-- Nav links injected via JS -->
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col h-full bg-dark-base relative overflow-y-auto">
+        <header class="p-6 border-b border-dark-border bg-dark-surface/80 backdrop-blur sticky top-0 z-10 flex justify-between items-center">
+            <h2 id="moduleTitle" class="text-2xl font-bold text-white truncate pr-4"></h2>
+            <div class="flex items-center gap-3 shrink-0">
+                <button id="langToggle" class="bg-dark-elevated hover:bg-dark-border px-4 py-2 rounded font-bold border border-dark-border transition-colors text-brand-500 shadow-md">عربي</button>
+                <button id="menuToggle" class="md:hidden p-2 bg-dark-elevated rounded border border-dark-border">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                </button>
+            </div>
+        </header>
+
+        <div class="p-6 max-w-5xl mx-auto w-full pb-24" id="contentArea">
+            <!-- Content injected via JS -->
+        </div>
+    </main>
+
+    <script>
+        // Data Payload mapping exactly to intro_IT_S2.pdf contents (Zero Loss)
+        const courseData = [
+            {
+                id: 1,
+                tE: "Lecture 1: Introduction to IS and IT",
+                tA: "المحاضرة 1: مقدمة في نظم المعلومات وتكنولوجيا المعلومات",
+                content: [
+                    { t: "h2", e: "Data, Information & Process", a: "البيانات، المعلومات، والعمليات (Data, Information & Process)" },
+                    { t: "p", e: "Data consists of raw facts, such as an employee number, total hours worked in a week, an inventory part number. Data represents real-world things.", a: "تتكون البيانات (Data) من حقائق خام، مثل رقم الموظف، إجمالي ساعات العمل في الأسبوع، ورقم قطعة المخزون. البيانات تمثل أشياء من العالم الحقيقي." },
+                    { t: "h3", e: "Types of Data", a: "أنواع البيانات (Types of Data)" },
+                    { t: "table",
+                      he: ["Data", "Represented by"], ha: ["البيانات (Data)", "ممثلة بـ (Represented by)"],
+                      r: [
+                          [{e: "Alphanumeric data", a: "بيانات أبجدية رقمية (Alphanumeric)"}, {e: "Numbers, letters, and other characters", a: "أرقام، حروف، ورموز أخرى"}],
+                          [{e: "Image data", a: "بيانات صورية (Image)"}, {e: "Graphic images and pictures", a: "صور ورسومات"}],
+                          [{e: "Audio data", a: "بيانات صوتية (Audio)"}, {e: "Sounds, noises, or tones", a: "أصوات، ضوضاء، أو نغمات"}],
+                          [{e: "Video data", a: "بيانات مرئية (Video)"}, {e: "Moving images or pictures", a: "صور متحركة أو فيديو"}]
+                      ]
+                    },
+                    { t: "p", e: "Information is a collection of data organized and processed so that it has additional value beyond the value of the individual facts.", a: "المعلومات (Information) هي مجموعة من البيانات المنظمة والمعالجة بحيث يكون لها قيمة إضافية تتجاوز قيمة الحقائق الفردية." },
+                    { t: "p", e: "Process: a set of logically related tasks performed to achieve a defined outcome.", a: "العملية (Process): مجموعة من المهام المرتبطة منطقياً يتم أداؤها لتحقيق نتيجة محددة." },
+                    { t: "h2", e: "Knowledge & Knowledge Management", a: "المعرفة وإدارة المعرفة (Knowledge & Knowledge Management)" },
+                    { t: "p", e: "The process of defining relationships among data to create useful information requires knowledge. Knowledge is the awareness and understanding of a set of information and the ways that information can be made useful to support a specific task or reach a decision.", a: "عملية تحديد العلاقات بين البيانات لإنشاء معلومات مفيدة تتطلب المعرفة. المعرفة (Knowledge) هي الوعي والفهم لمجموعة من المعلومات والطرق التي يمكن جعل هذه المعلومات مفيدة لدعم مهمة معينة أو اتخاذ قرار." },
+                    { t: "p", e: "Knowledge workers (KWs) are people who create, use, and disseminate knowledge and are usually professionals in science, engineering, business, and other areas.", a: "عمال المعرفة (Knowledge Workers - KWs) هم أشخاص يقومون بإنشاء واستخدام ونشر المعرفة، وعادة ما يكونون محترفين في العلوم، الهندسة، الأعمال التجارية، ومجالات أخرى." },
+                    { t: "p", e: "Knowledge management is a strategy by which an organization determinedly and systematically gathers, organizes, stores, analyzes, and shares its collective knowledge and experience.", a: "إدارة المعرفة (Knowledge Management) هي استراتيجية تقوم من خلالها المؤسسة بجمع وتنظيم وتخزين وتحليل ومشاركة معرفتها وخبراتها الجماعية بشكل حازم ومنهجي." },
+                    { t: "alert", e: "Process of transforming data into information starts by selecting data, then organizing it, and finally manipulating the data.", a: "عملية تحويل البيانات إلى معلومات تبدأ باختيار البيانات (Selecting data)، ثم تنظيمها (Organizing data)، وأخيراً معالجة البيانات (Manipulating data)." },
+                    { t: "h3", e: "Characteristics of Valuable Information", a: "خصائص المعلومات القيمة (Characteristics of Valuable Information)" },
+                    { t: "table",
+                      he: ["Characteristics", "Definitions"], ha: ["الخصائص (Characteristics)", "التعريفات (Definitions)"],
+                      r: [
+                          [{e: "Accessible", a: "يمكن الوصول إليها (Accessible)"}, {e: "Information should be easily accessible by authorized users.", a: "يجب أن تكون المعلومات سهلة الوصول من قبل المستخدمين المصرح لهم."}],
+                          [{e: "Accurate", a: "دقيقة (Accurate)"}, {e: "Accurate information is error free.", a: "المعلومات الدقيقة خالية من الأخطاء."}],
+                          [{e: "Complete", a: "كاملة (Complete)"}, {e: "Complete information contains all the important facts.", a: "المعلومات الكاملة تحتوي على جميع الحقائق المهمة."}],
+                          [{e: "Flexible", a: "مرنة (Flexible)"}, {e: "Flexible information can be used for a variety of purposes.", a: "يمكن استخدام المعلومات المرنة لأغراض متنوعة."}],
+                          [{e: "Reliable", a: "موثوقة (Reliable)"}, {e: "Reliable information can be trusted by users.", a: "المعلومات الموثوقة يمكن أن يثق بها المستخدمون."}],
+                          [{e: "Secure", a: "آمنة (Secure)"}, {e: "Information should be secure from access by unauthorized users.", a: "يجب أن تكون المعلومات آمنة من الوصول من قبل المستخدمين غير المصرح لهم."}],
+                          [{e: "Simple", a: "بسيطة (Simple)"}, {e: "Information should be simple, not complex.", a: "يجب أن تكون المعلومات بسيطة وليست معقدة."}],
+                          [{e: "Timely", a: "في الوقت المناسب (Timely)"}, {e: "Timely information is delivered when it is needed.", a: "يتم تسليم المعلومات في الوقت الذي يُحتاج إليها فيه."}],
+                          [{e: "Verifiable", a: "قابلة للتحقق (Verifiable)"}, {e: "This means that you can check it to make sure it is correct.", a: "هذا يعني أنه يمكنك التحقق منها للتأكد من صحتها."}]
+                      ]
+                    },
+                    { t: "h2", e: "Information System (IS) vs Information Technology (IT)", a: "نظام المعلومات (IS) مقابل تكنولوجيا المعلومات (IT)" },
+                    { t: "p", e: "An Information System is a set of interrelated components that collect (input), manipulate (processing), store, and disseminate (output) data and information and provide a feedback mechanism to meet an objective.", a: "نظام المعلومات (Information System - IS) هو مجموعة من المكونات المترابطة التي تقوم بجمع (إدخال)، معالجة، تخزين، ونشر (إخراج) البيانات والمعلومات وتوفير آلية تغذية راجعة لتلبية هدف معين." },
+                    { t: "p", e: "In IS, Input is gathering/capturing raw data. Processing is converting/transforming data into useful outputs (manually or with computer assistance). Output involves producing useful info (documents/reports). Feedback is info used to make changes to input/processing. Forecasting is predicting future events to avoid problems.", a: "في نظم المعلومات، الإدخال (Input) هو جمع البيانات الخام. المعالجة (Processing) هي تحويل البيانات لمخرجات مفيدة. الإخراج (Output) هو إنتاج معلومات مفيدة. التغذية الراجعة (Feedback) هي معلومات تستخدم لإجراء تغييرات. التنبؤ (Forecasting) هو توقع الأحداث المستقبلية لتجنب المشاكل." },
+                    { t: "p", e: "Information Technology (IT) is the use of computers, storage, networking and physical devices, infrastructure and processes to create, process, store, secure and exchange electronic data. Used in enterprise operations (commercial encompasses computer tech and telephony). Includes physical equipment (hardware), virtualization/automation tools, OS, and applications (software).", a: "تكنولوجيا المعلومات (IT) هي استخدام أجهزة الكمبيوتر والتخزين والشبكات والأجهزة المادية لإنشاء ومعالجة وتخزين البيانات الإلكترونية. تُستخدم في عمليات المؤسسات (تشمل تكنولوجيا الكمبيوتر والاتصالات الهاتفية). تتضمن الأجهزة (Hardware)، أدوات الافتراضية، أنظمة التشغيل، والتطبيقات (Software)." },
+                    { t: "alert", e: "IT (Hardware, Software, Databases, Networks) are used to build Information Systems (Payroll, Inventory, Marketing, Customer Service systems).", a: "تستخدم تكنولوجيا المعلومات (الأجهزة، البرمجيات، قواعد البيانات، الشبكات) لبناء نظم المعلومات (مثل نظم الرواتب، المخزون، التسويق، وخدمة العملاء)." }
+                ],
+                quiz: [
+                    { q: { e: "What is data that has been organized and processed to have additional value?", a: "ما هي البيانات التي تم تنظيمها ومعالجتها ليكون لها قيمة إضافية؟" },
+                      opts: [ {e: "Raw Facts", a: "حقائق خام", c:false}, {e: "Information", a: "المعلومات", c:true}, {e: "Hardware", a: "الأجهزة", c:false}, {e: "Forecasting", a: "التنبؤ", c:false} ] },
+                    { q: { e: "Which characteristic means information is error free?", a: "أي خاصية تعني أن المعلومات خالية من الأخطاء؟" },
+                      opts: [ {e: "Timely", a: "في الوقت المناسب", c:false}, {e: "Flexible", a: "مرنة", c:false}, {e: "Accurate", a: "دقيقة", c:true}, {e: "Verifiable", a: "قابلة للتحقق", c:false} ] }
+                ]
+            },
+            {
+                id: 2,
+                tE: "Lecture 2: Hardware and Software",
+                tA: "المحاضرة 2: الأجهزة والبرمجيات (Hardware and Software)",
+                content: [
+                    { t: "h2", e: "Introduction to Hardware", a: "مقدمة في الأجهزة (Introduction to Hardware)" },
+                    { t: "p", e: "Hardware refers to the physical components of a computer that perform input, processing, storage, and output activities. Software consists of the computer programs that govern operation.", a: "الأجهزة (Hardware) تشير إلى المكونات المادية للكمبيوتر التي تؤدي أنشطة الإدخال والمعالجة والتخزين والإخراج. البرمجيات (Software) تتكون من برامج الكمبيوتر التي تحكم التشغيل." },
+                    { t: "h3", e: "Hardware Components", a: "مكونات الأجهزة (Hardware Components)" },
+                    { t: "p", e: "CPU (Processor): sequences and executes instructions. Memory: provides working storage area for CPU. Input/output devices: provide data and receive results. Bus: electronic circuits used to route data/instructions.", a: "وحدة المعالجة المركزية (CPU): تسلسل وتنفذ التعليمات. الذاكرة (Memory): توفر مساحة تخزين عمل للمعالج. أجهزة الإدخال/الإخراج: توفر البيانات وتستقبل النتائج. الناقل (Bus): دوائر إلكترونية لتوجيه البيانات والتعليمات." },
+                    { t: "p", e: "CPU consists of: 1) Arithmetic/logic unit (ALU): math/logical comparisons. 2) Control unit: sequentially accesses, decodes, and coordinates data flow. 3) Registers: high-speed temporary storage for small units of instructions/data before, during, after execution.", a: "تتكون وحدة المعالجة المركزية من: 1) وحدة الحساب والمنطق (ALU): للحسابات الرياضية والمقارنات المنطقية. 2) وحدة التحكم (Control Unit): للوصول وفك التشفير وتنسيق تدفق البيانات. 3) السجلات (Registers): تخزين مؤقت عالي السرعة لوحدات صغيرة من التعليمات/البيانات." },
+                    { t: "h3", e: "Processing and Memory Devices", a: "أجهزة المعالجة والذاكرة (Processing and Memory Devices)" },
+                    { t: "p", e: "Primary storage (Main memory) holds program instructions/data and is closely associated with CPU. Clock speed affects machine cycle time, measured in Gigahertz (GHz, billions of cycles per second). Storage capacity is measured in bytes (1 byte = 1 character).", a: "التخزين الأساسي (الذاكرة الرئيسية) يحتفظ بتعليمات البرامج والبيانات وهو مرتبط بشكل وثيق بوحدة المعالجة. سرعة الساعة (Clock speed) تؤثر على وقت دورة الآلة وتُقاس بالجيجاهرتز (GHz). سعة التخزين تقاس بالبايت (Byte)." },
+                    { t: "table",
+                      he: ["Memory Type", "Characteristics"], ha: ["نوع الذاكرة", "الخصائص"],
+                      r: [
+                          [{e: "RAM (Random Access Memory)", a: "ذاكرة الوصول العشوائي (RAM)"}, {e: "Instructions/data temporarily stored (volatile).", a: "تخزن التعليمات والبيانات بشكل مؤقت (متطايرة)."}],
+                          [{e: "ROM (Read-Only Memory)", a: "ذاكرة القراءة فقط (ROM)"}, {e: "Nonvolatile, permanent storage, circuit states are fixed.", a: "تخزين دائم غير متطاير، حالات الدوائر ثابتة."}]
+                      ]
+                    },
+                    { t: "p", e: "Multiprocessing: simultaneous execution of 2+ instructions. Multicore Microprocessors combine 2+ independent processors in a single computer. Parallel Computing executes the same task on multiple processors (modeling, big data). Massively parallel processing links hundreds/thousands of processors. Grid Computing uses a collection of computers owned by multiple entities to solve a common problem (low cost).", a: "المعالجة المتعددة (Multiprocessing): تنفيذ متزامن لتعليمات متعددة. الحوسبة المتوازية (Parallel Computing): تنفيذ نفس المهمة على معالجات متعددة. الحوسبة الشبكية (Grid Computing): استخدام مجموعة من أجهزة الكمبيوتر المملوكة لجهات متعددة لحل مشكلة مشتركة بتكلفة منخفضة." },
+                    { t: "h3", e: "Secondary Storage & Enterprise Options", a: "التخزين الثانوي وخيارات المؤسسات (Secondary Storage & Enterprise Options)" },
+                    { t: "p", e: "Access methods: Sequential access (must pass in order, SASD e.g., Magnetic Tapes for backups). Direct access (retrieved directly, DASD e.g., Magnetic Disks/HDD). RAID generates extra bits to rebuild lost data if a drive fails. Solid State Secondary Storage (SSD) uses memory chips (faster, less power). Optical storage uses lasers.", a: "طرق الوصول: الوصول التسلسلي (Sequential access، مثل الأشرطة المغناطيسية). الوصول المباشر (Direct access، مثل الأقراص الصلبة HDD). مصفوفة RAID تُنشئ بتات إضافية لإعادة بناء البيانات المفقودة. أقراص SSD تستخدم شرائح الذاكرة (أسرع وتستهلك طاقة أقل)." },
+                    { t: "p", e: "Enterprise Storage: Storage Area Networks (SAN - high-speed network integrating different storage devices). Storage as a Service (rent space via Internet).", a: "تخزين المؤسسات: شبكات منطقة التخزين (SAN - شبكة عالية السرعة تدمج أجهزة تخزين مختلفة). التخزين كخدمة (Storage as a Service - استئجار مساحة عبر الإنترنت)." },
+                    { t: "h3", e: "Types of Computer Systems", a: "أنواع أنظمة الكمبيوتر (Types of Computer Systems)" },
+                    { t: "p", e: "Mobile (Smartphones with system on a chip, Laptops), Thin Clients (low-cost, centrally managed, no internal storage, cloud-environment), Desktop, Workstations (high-end processing for math/CAD), Servers (running network apps), Mainframes (large, powerful, shared by dozens/hundreds), Supercomputers (most powerful, e.g., Tianhe-2 at 33.86 petaflops/s).", a: "أنظمة الكمبيوتر تشمل: الأجهزة المحمولة، العملاء النحيفين (Thin Clients - أجهزة منخفضة التكلفة بدون تخزين داخلي)، الحواسيب المكتبية، محطات العمل (Workstations)، الخوادم (Servers)، الحواسيب المركزية (Mainframes)، والحواسيب الفائقة (Supercomputers - الأقوى مثل Tianhe-2)." },
+                    { t: "alert", e: "Server farm: facility housing many servers. Virtual server: dividing a physical server into logical servers via a Hypervisor. Data center: climate-controlled building. Green computing: environmentally responsible design/operation.", a: "مزرعة الخوادم (Server farm): منشأة تضم خوادم عديدة. الخادم الافتراضي: تقسيم خادم مادي إلى خوادم منطقية عبر Hypervisor. الحوسبة الخضراء (Green computing): تصميم وتشغيل صديق للبيئة." }
+                ],
+                quiz: [
+                    { q: { e: "Which CPU component performs mathematical calculations?", a: "أي مكون من مكونات وحدة المعالجة المركزية يقوم بإجراء الحسابات الرياضية؟" },
+                      opts: [ {e: "Control Unit", a: "وحدة التحكم", c:false}, {e: "ALU", a: "وحدة الحساب والمنطق", c:true}, {e: "Registers", a: "السجلات", c:false}, {e: "Bus", a: "الناقل", c:false} ] },
+                    { q: { e: "Which memory type is volatile and loses contents when power is removed?", a: "أي نوع من الذاكرة متطاير ويفقد محتوياته عند انقطاع التيار الكهربائي؟" },
+                      opts: [ {e: "RAM", a: "ذاكرة الوصول العشوائي", c:true}, {e: "ROM", a: "ذاكرة القراءة فقط", c:false}, {e: "HDD", a: "القرص الصلب", c:false}, {e: "Magnetic Tape", a: "الشريط المغناطيسي", c:false} ] }
+                ]
+            },
+            {
+                id: 3,
+                tE: "Lecture 3: An Overview of Software",
+                tA: "المحاضرة 3: نظرة عامة على البرمجيات (An Overview of Software)",
+                content: [
+                    { t: "h2", e: "Systems Software", a: "برمجيات النظام (Systems Software)" },
+                    { t: "p", e: "System software controls hardware operations and supports application programs. It includes operating systems, utilities, and middleware.", a: "تتحكم برمجيات النظام في عمليات الأجهزة وتدعم برامج التطبيقات. وتشمل أنظمة التشغيل، الأدوات المساعدة، والبرمجيات الوسيطة." },
+                    { t: "p", e: "Operating Systems (OS): controls hardware and acts as interface. Configurations: Single computer/single user, Single computer/multiple users (Server/UNIX), Multiple computers/multiple users (Network server OSs), Special-purpose.", a: "نظام التشغيل (OS): يتحكم في الأجهزة ويعمل كواجهة. تكويناته: كمبيوتر واحد/مستخدم واحد، كمبيوتر واحد/مستخدمين متعددين (UNIX)، أجهزة متعددة/مستخدمين متعددين، وأجهزة ذات غرض خاص." },
+                    { t: "p", e: "Kernel is the heart of the operating system that controls the most critical processes. Common OS: Windows, Mac OS, Linux, Ubuntu. Workgroup OS: UNIX, Windows Server, Red Hat Linux, Mac OS X Server.", a: "النواة (Kernel) هي قلب نظام التشغيل وتتحكم في العمليات الحرجة. أنظمة شائعة: Windows، Mac، Linux. أنظمة مجموعات العمل: UNIX و Windows Server." },
+                    { t: "alert", e: "Utility Programs help perform maintenance or correct problems. Middleware provides messaging services allowing different apps to communicate. EAI (Enterprise Application Integration) ties disparate apps together. SOA (Service-oriented architecture) uses discrete software modules for specific functions.", a: "البرامج المساعدة (Utility Programs) تساعد في أداء الصيانة أو تصحيح المشاكل. البرمجيات الوسيطة (Middleware) توفر خدمات المراسلة لتواصل التطبيقات. تكامل تطبيقات المؤسسة (EAI) يربط التطبيقات المتباينة معًا." },
+                    { t: "h2", e: "Application Software", a: "البرمجيات التطبيقية (Application Software)" },
+                    { t: "p", e: "Applies the power of a computer to enable people to solve problems/perform tasks. Proprietary software is one-of-a-kind designed for specific application. Off-the-shelf software is produced by vendors for common needs.", a: "تُطبق قوة الكمبيوتر لتمكين الناس من حل المشاكل. البرمجيات الاحتكارية (Proprietary software) مصممة خصيصاً لجهة معينة. البرمجيات الجاهزة (Off-the-shelf software) تنتجها شركات لتلبية احتياجات شائعة." },
+                    { t: "p", e: "SaaS (Software as a service): allows businesses to subscribe to Web-delivered app software. Types: Personal (individual needs), Workgroup (teamwork), Enterprise (entire organization).", a: "البرمجيات كخدمة (SaaS): تتيح للشركات الاشتراك في تطبيقات عبر الويب. الأنواع: شخصية، مجموعات عمل، ومؤسسية (تفيد المنظمة بأكملها)." },
+                    { t: "p", e: "Programming Languages: Sets of keywords, commands, symbols, and rules (Syntax) for constructing statements to communicate instructions to a computer.", a: "لغات البرمجة (Programming Languages): مجموعات من الكلمات الرئيسية، الأوامر، والرموز والقواعد (بناء الجملة - Syntax) لتوصيل التعليمات للكمبيوتر." }
+                ],
+                quiz: [
+                    { q: { e: "Which part of the operating system controls the most critical processes?", a: "أي جزء من نظام التشغيل يتحكم في العمليات الأكثر حرجاً؟" },
+                      opts: [ {e: "Utility Programs", a: "البرامج المساعدة", c:false}, {e: "Kernel", a: "النواة (Kernel)", c:true}, {e: "Middleware", a: "البرمجيات الوسيطة", c:false} ] },
+                    { q: { e: "What type of software is one-of-a-kind and designed for a specific application?", a: "ما نوع البرمجيات الفريدة من نوعها والمصممة لتطبيق محدد؟" },
+                      opts: [ {e: "Off-the-shelf software", a: "البرمجيات الجاهزة", c:false}, {e: "Proprietary software", a: "البرمجيات الاحتكارية", c:true}, {e: "System software", a: "برمجيات النظام", c:false} ] }
+                ]
+            },
+            {
+                id: 4,
+                tE: "Lecture 4: Introduction to Network",
+                tA: "المحاضرة 4: مقدمة في الشبكات (Introduction to Network)",
+                content: [
+                    { t: "h2", e: "Key Components & Importance", a: "المكونات الرئيسية والأهمية (Key Components & Importance)" },
+                    { t: "p", e: "A network is a collection of interconnected computing devices that communicate to share data, resources, and services. Importance: Resource sharing, Communication, Data exchange, Internet access.", a: "الشبكة هي مجموعة من أجهزة الحوسبة المترابطة التي تتواصل لمشاركة البيانات والموارد. الأهمية: مشاركة الموارد، التواصل، تبادل البيانات، والوصول للإنترنت." },
+                    { t: "p", e: "Components: Nodes (devices), Transmission Media (cables, radio waves), Networking Devices (routers, switches), Interconnecting devices, Network protocols (rules/formats for sending info).", a: "المكونات: العقد (Nodes - الأجهزة)، وسائط النقل (الكابلات، الموجات)، أجهزة الشبكات (الموجهات، المحولات)، وبروتوكولات الشبكة (قواعد وتنسيقات إرسال المعلومات)." },
+                    { t: "h3", e: "Types of Networks by Geographical Area", a: "أنواع الشبكات حسب المنطقة الجغرافية" },
+                    { t: "table",
+                      he: ["Type", "Coverage & Tech"], ha: ["النوع", "التغطية والتقنيات"],
+                      r: [
+                          [{e: "PAN (Personal Area Network)", a: "شبكة المنطقة الشخصية (PAN)"}, {e: "1-10 meters. Bluetooth, NFC, IR. (e.g., phone to earbuds).", a: "من 1 إلى 10 أمتار. تقنيات بلوتوث، NFC."}],
+                          [{e: "LAN (Local Area Network)", a: "شبكة المنطقة المحلية (LAN)"}, {e: "Room, building, campus. Ethernet, Wi-Fi.", a: "غرفة، مبنى، حرم جامعي. إيثرنت، واي فاي."}],
+                          [{e: "MAN (Metropolitan Area Network)", a: "شبكة منطقة العاصمة (MAN)"}, {e: "City. Fiber Optics, Microwave.", a: "مدينة. الألياف البصرية، الميكروويف."}],
+                          [{e: "WAN (Wide Area Network)", a: "شبكة المنطقة الواسعة (WAN)"}, {e: "Country/global. Leased lines, Satellite, Internet.", a: "دولة أو عالمية. خطوط مؤجرة، أقمار صناعية، إنترنت."}]
+                      ]
+                    },
+                    { t: "h3", e: "Network Topologies", a: "الطوبولوجيا (الهياكل) للشبكات (Network Topologies)" },
+                    { t: "p", e: "Topology is the physical arrangement of devices. 1) Star: all devices connect to a central hub node. Hub failure isolates network. 2) Bus: common backbone, broadcast message sent, only intended recipient processes. 3) Ring: circular fashion, packet passed to next computer. 4) Mesh: fully or partially connected devices.", a: "الطوبولوجيا هي الترتيب المادي للأجهزة. 1) النجمة (Star): جميع الأجهزة تتصل بموزع مركزي. 2) الناقل (Bus): عمود فقري مشترك. 3) الحلقة (Ring): ترتيب دائري لتمرير الحزم. 4) الشبكية (Mesh): اتصال كامل أو جزئي بين الأجهزة." },
+                    { t: "h3", e: "Network Devices", a: "أجهزة الشبكة (Network Devices)" },
+                    { t: "alert", e: "NIC: physical interface between computer and cabling. Hub: Layer 1, multi-port repeater, broadcasts data (inefficient). Switch: Data link layer, inspects packets, determines destination and forwards appropriately. Router: highly intelligent, connects multiple network types (LANs), determines best path.", a: "بطاقة الشبكة (NIC): واجهة مادية. الموزع (Hub): طبقة 1، يبث البيانات للجميع (غير فعال). المحول (Switch): طبقة ربط البيانات، يفحص الحزم ويوجهها بشكل مناسب. الموجه (Router): ذكي جداً، يربط شبكات مختلفة ويحدد أفضل مسار." }
+                ],
+                quiz: [
+                    { q: { e: "Which network topology connects all devices to a single common backbone?", a: "أي هيكل شبكة يربط جميع الأجهزة بعمود فقري مشترك واحد؟" },
+                      opts: [ {e: "Star", a: "نجمة", c:false}, {e: "Ring", a: "حلقة", c:false}, {e: "Bus", a: "ناقل", c:true}, {e: "Mesh", a: "شبكية", c:false} ] },
+                    { q: { e: "Which device operates at the data link layer and inspects data packets to forward them appropriately?", a: "أي جهاز يعمل في طبقة ربط البيانات ويفحص حزم البيانات لتوجيهها بشكل مناسب؟" },
+                      opts: [ {e: "Hub", a: "الموزع", c:false}, {e: "Switch", a: "المحول", c:true}, {e: "NIC", a: "بطاقة الشبكة", c:false} ] }
+                ]
+            },
+            {
+                id: 5,
+                tE: "Lecture 5: The Internet & World Wide Web",
+                tA: "المحاضرة 5: الإنترنت والشبكة العالمية (The Internet & World Wide Web)",
+                content: [
+                    { t: "h2", e: "The Internet History & Operation", a: "تاريخ وعمل الإنترنت (The Internet History & Operation)" },
+                    { t: "p", e: "Internet is a collection of connected networks maintained by ISPs. Ancestor was ARPANET (1969, US DoD), linking networks to survive local disasters. Sponsored by DARPA, shifted to academic research.", a: "الإنترنت هو مجموعة من الشبكات المتصلة التي يديرها مزودو خدمات الإنترنت (ISPs). السلف كان شبكة ARPANET (عام 1969، وزارة الدفاع الأمريكية)." },
+                    { t: "p", e: "Communications companies (NSPs like Verizon, AT&T) connected their networks. The Internet Protocol (IP) enables routing traffic. Internet backbone consists of high-speed links (fiber-optic). Data is transmitted in chunks called packets. TCP (Transmission Control Protocol) is the best known protocol used with IP.", a: "بروتوكول الإنترنت (IP) يُمكّن توجيه حركة المرور. العمود الفقري للإنترنت (Internet backbone) يتكون من روابط عالية السرعة. تُنقل البيانات في قطع تسمى الحزم (Packets). بروتوكول TCP هو الأكثر شهرة." },
+                    { t: "p", e: "Each computer has an IP address. Domain Name System (DNS) maps words (e.g., yahoo.com) to IP addresses.", a: "كل كمبيوتر لديه عنوان IP. نظام أسماء النطاقات (DNS) يربط الكلمات (مثل yahoo.com) بعناوين IP." },
+                    { t: "h3", e: "Accessing the Internet", a: "الوصول إلى الإنترنت (Accessing the Internet)" },
+                    { t: "alert", e: "1) Via LAN Server (businesses use a router on LAN). 2) Via ISPs (companies/residences without direct connections). 3) Wireless Connection (Wi-Fi in public spaces).", a: "طرق الوصول: 1) عبر خادم الشبكة المحلية (LAN). 2) عبر مزودي خدمة الإنترنت (ISPs). 3) الاتصال اللاسلكي (Wi-Fi)." },
+                    { t: "h2", e: "The World Wide Web (WWW)", a: "الشبكة العنكبوتية العالمية (WWW)" },
+                    { t: "p", e: "Developed by Tim Berners-Lee at CERN. Combined internet tech with hypertext (linked documents). Hyperlink: clicked text/graphics that opens related content. Hypertext is transferred using HTTP. URL (Uniform Resource Locator) specifies exact location.", a: "تم تطويرها بواسطة Tim Berners-Lee في CERN. تجمع بين الإنترنت والنص التشعبي (Hypertext). الارتباط التشعبي (Hyperlink) يفتح محتوى ذي صلة. يتم النقل باستخدام بروتوكول HTTP. عنوان URL يحدد الموقع الدقيق." },
+                    { t: "p", e: "Affiliations: .com (business), .edu (education), .gov (government), .net (networking), .org (nonprofit).", a: "الامتدادات: com. للأعمال، edu. للتعليم، gov. للحكومة، org. للمنظمات غير الربحية." },
+                    { t: "p", e: "Website: stored data freely accessed. Web browser: client software. Cookies: hidden info stored on hard disk. Internet cache: saved copy of info. FTP (File Transfer Protocol): transferring data over internet.", a: "الموقع الإلكتروني: بيانات مخزنة يمكن الوصول إليها. متصفح الويب: برنامج العميل. ملفات تعريف الارتباط (Cookies): معلومات مخفية تُحفظ على القرص الصلب. ذاكرة التخزين المؤقت للإنترنت (Cache): نسخة محفوظة من المعلومات. بروتوكول FTP: لنقل الملفات." }
+                ],
+                quiz: [
+                    { q: { e: "What translates user-friendly domain names into IP addresses?", a: "ما الذي يترجم أسماء النطاقات سهلة الاستخدام إلى عناوين IP؟" },
+                      opts: [ {e: "TCP", a: "بروتوكول TCP", c:false}, {e: "DNS", a: "نظام أسماء النطاقات (DNS)", c:true}, {e: "FTP", a: "بروتوكول نقل الملفات", c:false}, {e: "HTTP", a: "بروتوكول HTTP", c:false} ] },
+                    { q: { e: "Which protocol is used for transferring data from one place to another over the internet?", a: "أي بروتوكول يُستخدم لنقل البيانات من مكان إلى آخر عبر الإنترنت؟" },
+                      opts: [ {e: "HTTP", a: "بروتوكول HTTP", c:false}, {e: "IP", a: "بروتوكول IP", c:false}, {e: "FTP", a: "بروتوكول نقل الملفات (FTP)", c:true} ] }
+                ]
+            },
+            {
+                id: 6,
+                tE: "Lecture 6: Introduction to Database",
+                tA: "المحاضرة 6: مقدمة في قواعد البيانات (Introduction to Database)",
+                content: [
+                    { t: "h2", e: "Introduction to Database", a: "مقدمة في قواعد البيانات (Introduction to Database)" },
+                    { t: "p", e: "Database: a well-designed, organized, and carefully managed collection of related data.", a: "قاعدة البيانات (Database): مجموعة مصممة جيدًا ومنظمة ومدارة بعناية من البيانات ذات الصلة." },
+                    { t: "table",
+                      he: ["Examples of Database Types", "Usage"], ha: ["أمثلة على أنواع قواعد البيانات", "الاستخدام"],
+                      r: [
+                          [{e: "Traditional", a: "التقليدية"}, {e: "Store textual or numeric information", a: "تخزين المعلومات النصية أو الرقمية"}],
+                          [{e: "Multimedia", a: "الوسائط المتعددة"}, {e: "Store images, audio clips, video streams digitally", a: "تخزين الصور ومقاطع الصوت والفيديو رقميًا"}],
+                          [{e: "GIS (Geographic Information Systems)", a: "نظم المعلومات الجغرافية (GIS)"}, {e: "Store and analyze maps, weather data, satellite images", a: "تخزين وتحليل الخرائط وبيانات الطقس وصور الأقمار الصناعية"}],
+                          [{e: "Data Warehouses & OLAP", a: "مستودعات البيانات و OLAP"}, {e: "Extract/analyze useful info from very large databases for decision making", a: "استخراج وتحليل معلومات مفيدة من قواعد بيانات كبيرة جداً لدعم اتخاذ القرار"}],
+                          [{e: "Real-time & Active", a: "الوقت الفعلي والنشطة"}, {e: "Control industrial and manufacturing processes", a: "التحكم في العمليات الصناعية والتصنيعية"}]
+                      ]
+                    },
+                    { t: "h3", e: "DBMS (Database Management System)", a: "نظام إدارة قواعد البيانات (DBMS)" },
+                    { t: "p", e: "A group of programs used to access and manage a database, providing an interface between the database, users, and apps. It is a central repository of shared data, managed by a controlling agent, stored in a standardized form.", a: "مجموعة من البرامج تُستخدم للوصول إلى قاعدة البيانات وإدارتها، وتوفر واجهة بين قاعدة البيانات والمستخدمين والتطبيقات. هي مستودع مركزي للبيانات المشتركة، تُدار بواسطة وكيل تحكم، وتُخزن بشكل موحد." },
+                    { t: "h2", e: "Data Fundamentals & Database Approach", a: "أساسيات البيانات ونهج قواعد البيانات" },
+                    { t: "alert", e: "Hierarchy of Data: Bit (0/1) -> Character (letters/digits) -> Field (name/number describing business object) -> Record (collection of data fields related to one object) -> File (collection of related records) -> Database (integrated related files).", a: "التسلسل الهرمي للبيانات: بت (Bit) -> حرف (Character) -> حقل (Field) -> سجل (Record) -> ملف (File) -> قاعدة بيانات (Database)." },
+                    { t: "p", e: "Data Entities, Attributes, and Keys: Entity (person, place, thing data is collected for). Attribute (characteristic of an entity). Data item (specific value of an attribute). Primary key (field/set of fields that uniquely identifies the record).", a: "كيانات البيانات والسمات والمفاتيح: الكيان (Entity - شخص، مكان، شيء). السمة (Attribute - خاصية للكيان). عنصر البيانات (Data item - القيمة المحددة للسمة). المفتاح الأساسي (Primary key - حقل يحدد السجل بشكل فريد)." },
+                    { t: "p", e: "Database approach: multiple information systems share a pool of related data. DBMS acts as a buffer between application programs and the database itself.", a: "نهج قواعد البيانات: أنظمة معلومات متعددة تتشارك في مجموعة من البيانات ذات الصلة. يعمل نظام إدارة قواعد البيانات كمخزن مؤقت (Buffer) بين برامج التطبيقات وقاعدة البيانات." }
+                ],
+                quiz: [
+                    { q: { e: "What is a collection of related records called?", a: "ماذا تسمى مجموعة السجلات ذات الصلة؟" },
+                      opts: [ {e: "Field", a: "حقل", c:false}, {e: "File", a: "ملف", c:true}, {e: "Character", a: "حرف", c:false}, {e: "Database", a: "قاعدة بيانات", c:false} ] },
+                    { q: { e: "Which term refers to a field that uniquely identifies a record?", a: "أي مصطلح يشير إلى الحقل الذي يحدد السجل بشكل فريد؟" },
+                      opts: [ {e: "Attribute", a: "سمة", c:false}, {e: "Entity", a: "كيان", c:false}, {e: "Primary Key", a: "المفتاح الأساسي", c:true} ] }
+                ]
+            },
+            {
+                id: 7,
+                tE: "Lecture 7: Business Information Systems",
+                tA: "المحاضرة 7: نظم معلومات الأعمال (Business Information Systems)",
+                content: [
+                    { t: "h2", e: "Electronic and Mobile Commerce", a: "التجارة الإلكترونية والمتنقلة (Electronic and Mobile Commerce)" },
+                    { t: "p", e: "E-commerce involves electronic business transactions between companies (B2B), companies & consumers (B2C), consumers (C2C), and public sector. M-commerce uses mobile/wireless devices to conduct business.", a: "تتضمن التجارة الإلكترونية (E-commerce) المعاملات بين الشركات (B2B)، الشركات والمستهلكين (B2C)، والمستهلكين (C2C). التجارة المتنقلة (M-commerce) تستخدم الأجهزة المحمولة/اللاسلكية لإجراء الأعمال." },
+                    { t: "p", e: "E-business goes beyond e-commerce/e-procurement by using info systems for accounting, finance, marketing, and HR activities.", a: "الأعمال الإلكترونية (E-business) تتجاوز التجارة الإلكترونية لتشمل أنظمة المحاسبة، التمويل، التسويق، والموارد البشرية." },
+                    { t: "h2", e: "Enterprise Systems", a: "أنظمة المؤسسات (Enterprise Systems)" },
+                    { t: "p", e: "Transaction Processing Systems (TPS): Transaction is any business-related exchange (e.g., payments). TPS is an organized collection of people, procedures, software, databases, devices to perform/record business transactions (first computer apps developed).", a: "نظم معالجة المعاملات (TPS): المعاملة هي أي تبادل متعلق بالعمل. TPS هو نظام لجمع وإجراء وتسجيل المعاملات (كانت أول تطبيقات الكمبيوتر)." },
+                    { t: "p", e: "Enterprise Resource Planning (ERP): set of integrated programs managing vital operations for an entire multisite, global organization (customer service, HR, sales). Benefits: easing adoption of improved work processes, increasing access to timely data.", a: "تخطيط موارد المؤسسة (ERP): مجموعة من البرامج المتكاملة تدير العمليات الحيوية لمؤسسة عالمية متعددة المواقع. الفوائد: تسهيل تبني عمليات عمل محسنة وزيادة الوصول للبيانات في الوقت المناسب." },
+                    { t: "h3", e: "Information and Decision Support Systems", a: "نظم المعلومات ودعم اتخاذ القرار" },
+                    { t: "alert", e: "MIS (Management Info System): provides routine info/standard reports from TPS/ERP. Helps organization 'do things right'. DSS (Decision Support System): supports problem-specific decision making. Helps manager 'do the right thing'. DSS includes model base (MMS), database (DBMS), and user interface.", a: "نظم المعلومات الإدارية (MIS): توفر معلومات وتقارير روتينية وتساعد المؤسسة على 'القيام بالأشياء بشكل صحيح'. نظم دعم القرار (DSS): تدعم اتخاذ قرارات لحل مشاكل محددة وتساعد المدير على 'القيام بالشيء الصحيح'. تتضمن قاعدة نماذج وقاعدة بيانات وواجهة مستخدم." },
+                    { t: "h3", e: "Specialized Business Information Systems", a: "نظم معلومات الأعمال المتخصصة" },
+                    { t: "p", e: "Knowledge Management System (KMS): stores/retrieves knowledge, improves collaboration, captures/uses knowledge for future use.", a: "نظام إدارة المعرفة (KMS): يخزن ويسترجع المعرفة، يحسن التعاون، ويحتفظ بالمعرفة المتخصصة للاستخدام المستقبلي." },
+                    { t: "p", e: "Artificial Intelligence (AI): computer system takes on characteristics of human intelligence.", a: "الذكاء الاصطناعي (AI): يتخذ نظام الكمبيوتر خصائص الذكاء البشري." }
+                ],
+                quiz: [
+                    { q: { e: "Which system helps an organization 'do things right' by providing routine standard reports?", a: "أي نظام يساعد المؤسسة على 'القيام بالأشياء بشكل صحيح' من خلال توفير تقارير قياسية روتينية؟" },
+                      opts: [ {e: "DSS", a: "نظم دعم القرار", c:false}, {e: "MIS", a: "نظم المعلومات الإدارية", c:true}, {e: "AI", a: "الذكاء الاصطناعي", c:false}, {e: "KMS", a: "نظام إدارة المعرفة", c:false} ] },
+                    { q: { e: "Which system integrates and manages vital business operations for an entire multisite global organization?", a: "أي نظام يدمج ويدير العمليات التجارية الحيوية لمؤسسة عالمية بأكملها؟" },
+                      opts: [ {e: "ERP", a: "تخطيط موارد المؤسسة", c:true}, {e: "TPS", a: "نظم معالجة المعاملات", c:false}, {e: "DSS", a: "نظم دعم القرار", c:false} ] }
+                ]
+            },
+            {
+                id: 8,
+                tE: "Lecture 8: Business Intelligence and Analytics",
+                tA: "المحاضرة 8: ذكاء الأعمال والتحليلات (Business Intelligence and Analytics)",
+                content: [
+                    { t: "h2", e: "Business Intelligence and Analytics", a: "ذكاء الأعمال والتحليلات (Business Intelligence and Analytics)" },
+                    { t: "p", e: "Business analytics is the extensive use of data/quantitative analysis to support fact-based decision making. Used to understand performance, reveal patterns, optimize ops, and forecast.", a: "تحليلات الأعمال هي الاستخدام المكثف للبيانات والتحليل الكمي لدعم اتخاذ القرار القائم على الحقائق. تُستخدم لفهم الأداء، كشف الأنماط، تحسين العمليات، والتنبؤ." },
+                    { t: "p", e: "Business intelligence (BI): applications, practices, tech for extraction, transformation, integration, visualization, analysis, interpretation, presentation of data. Data is pulled into data warehouses, data marts, data lakes. Goal is to get value and present results easily to laymen.", a: "ذكاء الأعمال (BI): تطبيقات وتقنيات لاستخراج وتحويل ودمج وتصور وتحليل البيانات. تُسحب البيانات إلى مستودعات وبحيرات البيانات. الهدف هو الحصول على قيمة وعرض النتائج بسهولة لغير المختصين." },
+                    { t: "h3", e: "Benefits Achieved from BI and Analytics", a: "الفوائد المحققة من ذكاء الأعمال والتحليلات" },
+                    { t: "table",
+                      he: ["Benefit", "Example Case"], ha: ["الفائدة (Benefit)", "مثال الحالة (Example Case)"],
+                      r: [
+                          [{e: "Detect fraud", a: "كشف الاحتيال"}, {e: "MetLife used analytical software to help its unit identify medical provider/attorney/repair shop fraud.", a: "استخدمت MetLife برامج تحليلية لمساعدة وحدتها في تحديد الاحتيال."}],
+                          [{e: "Improve forecasting", a: "تحسين التنبؤ"}, {e: "Kroger developed inventory management, reducing out-of-stock by 1.5M/yr, increasing sales by $80M/yr.", a: "طورت Kroger نظام إدارة المخزون، مما قلل نفاد المخزون وزاد المبيعات بمقدار 80 مليون دولار."}],
+                          [{e: "Increase Sales", a: "زيادة المبيعات"}, {e: "DaimlerChrysler implemented price-elasticity model, generating additional annual sales of $500M.", a: "طبقت DaimlerChrysler نموذج مرونة السعر، مما أدى إلى مبيعات إضافية بـ 500 مليون دولار."}],
+                          [{e: "Reduce costs", a: "تقليل التكاليف"}, {e: "Coca-Cola Enterprises implemented vehicle-routing optimization, saving $45M a year.", a: "نفذت شركة Coca-Cola تحسين توجيه المركبات، ووفرت 45 مليون دولار سنوياً."}]
+                      ]
+                    },
+                    { t: "h2", e: "The Role of a Data Scientist", a: "دور عالم البيانات (The Role of a Data Scientist)" },
+                    { t: "p", e: "Combine strong business acumen, deep understanding of analytics, and appreciation of limitations of data/tools. Inquisitive, perform 'what-if' analysis, challenge assumptions. Requires mastery of stats, math, programming (Hadoop, Hive, SQL, Python, R, Java).", a: "يجمعون بين الفطنة التجارية القوية والفهم العميق للتحليلات وتقدير قيود البيانات/الأدوات. هم فضوليون، يجرون تحليلات 'ماذا لو'، ويتحدون الافتراضات. يتطلب ذلك إتقان الإحصاء، الرياضيات، والبرمجة (Hadoop, SQL, Python)." },
+                    { t: "h3", e: "Components for Effective BI & Tools", a: "مكونات وأدوات ذكاء الأعمال الفعالة" },
+                    { t: "alert", e: "Components: Solid data management program (data governance), Creative data scientists, Strong commitment to data-driven decision making from management.", a: "المكونات: برنامج إدارة بيانات قوي (حوكمة البيانات)، علماء بيانات مبدعون، التزام قوي من الإدارة باتخاذ القرارات بناءً على البيانات." },
+                    { t: "p", e: "BI Tools: Spreadsheets, Reporting and Querying Tools, Data Visualization Tools, Online Analytical Processing (OLAP), Data Mining, Dashboards.", a: "أدوات ذكاء الأعمال: جداول البيانات، أدوات التقارير والاستعلام، أدوات تصور البيانات، المعالجة التحليلية عبر الإنترنت (OLAP)، التنقيب في البيانات، ولوحات المعلومات." }
+                ],
+                quiz: [
+                    { q: { e: "What is the role of Data Governance and management commitment in Business Intelligence?", a: "ما هو دور حوكمة البيانات والتزام الإدارة في ذكاء الأعمال؟" },
+                      opts: [ {e: "They are required components for effective BI and analytics.", a: "إنها مكونات مطلوبة لذكاء الأعمال والتحليلات الفعالة.", c:true}, {e: "They are exclusively used to detect fraud.", a: "تُستخدم حصرياً لكشف الاحتيال.", c:false} ] },
+                    { q: { e: "Which skill is rigorously required for a data scientist?", a: "أي مهارة مطلوبة بشدة لعالم البيانات؟" },
+                      opts: [ {e: "Hardware assembly", a: "تجميع الأجهزة", c:false}, {e: "Mastery of statistics, math, and programming", a: "إتقان الإحصاء والرياضيات والبرمجة", c:true}, {e: "Telephony management", a: "إدارة الاتصالات الهاتفية", c:false} ] }
+                ]
+            }
+        ];
+
+        const glossary = [
+            { e: "Alphanumeric Data", a: "بيانات أبجدية رقمية" },
+            { e: "Data Governance", a: "حوكمة البيانات" },
+            { e: "Data Lake", a: "بحيرة البيانات" },
+            { e: "Database Management System (DBMS)", a: "نظام إدارة قواعد البيانات" },
+            { e: "Enterprise Application Integration (EAI)", a: "تكامل تطبيقات المؤسسة" },
+            { e: "E-procurement", a: "المشتريات الإلكترونية" },
+            { e: "Hypervisor", a: "مراقب الأجهزة الافتراضية" },
+            { e: "Information System (IS)", a: "نظام المعلومات" },
+            { e: "Local Area Network (LAN)", a: "شبكة منطقة محلية" },
+            { e: "Packet", a: "حزمة بيانات" },
+            { e: "Primary Key", a: "المفتاح الأساسي" },
+            { e: "Service-Oriented Architecture (SOA)", a: "بنية موجهة للخدمات" },
+            { e: "Virtualization", a: "الافتراضية" }
+        ];
+
+        let currentLang = 'en';
+        let currentModule = 1;
+
+        // Safely construct citation regex via string concatenation to prevent the platform from truncating it
+        const marker = "\\[" + "cite: \\d+\\]";
+        const citeRegex = new RegExp(marker, "g");
+        
+        const sanitize = (text) => {
+            if (!text) return '';
+            return text.replace(citeRegex, '').trim();
+        };
+
+        function closeMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            if (window.innerWidth < 768 && sidebar.classList.contains('flex')) {
+                sidebar.classList.add('hidden');
+                sidebar.classList.remove('flex');
+            }
+        }
+
+        document.getElementById('closeSidebar').addEventListener('click', closeMobileSidebar);
+
+        function renderSidebar() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.innerHTML = '';
+            courseData.forEach(mod => {
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left p-3 mb-2 rounded transition-colors text-sm font-semibold ${currentModule === mod.id ? 'bg-brand-500 text-white' : 'text-dark-muted hover:bg-dark-elevated hover:text-white'}`;
+                btn.innerText = currentLang === 'en' ? mod.tE : mod.tA;
+                btn.onclick = () => { 
+                    currentModule = mod.id; 
+                    renderContent(); 
+                    renderSidebar(); 
+                    closeMobileSidebar(); 
+                };
+                navLinks.appendChild(btn);
+            });
+
+            const glossBtn = document.createElement('button');
+            glossBtn.className = `w-full text-left p-3 mt-4 border-t border-dark-border transition-colors text-sm font-semibold ${currentModule === 'glossary' ? 'bg-brand-500 text-white' : 'text-brand-500 hover:bg-dark-elevated'}`;
+            glossBtn.innerText = currentLang === 'en' ? "Glossary" : "قاموس المصطلحات (Glossary)";
+            glossBtn.onclick = () => { 
+                currentModule = 'glossary'; 
+                renderContent(); 
+                renderSidebar(); 
+                closeMobileSidebar(); 
+            };
+            navLinks.appendChild(glossBtn);
+        }
+
+        function renderContent() {
+            const contentArea = document.getElementById('contentArea');
+            const moduleTitle = document.getElementById('moduleTitle');
+            contentArea.innerHTML = '';
+
+            if (currentModule === 'glossary') {
+                moduleTitle.innerText = currentLang === 'en' ? "Glossary" : "قاموس المصطلحات (Glossary)";
+                const grid = document.createElement('div');
+                grid.className = 'grid grid-cols-1 md:grid-cols-2 gap-4';
+                glossary.forEach(item => {
+                    const card = document.createElement('div');
+                    card.className = 'bg-dark-elevated border border-dark-border rounded-lg p-4 flex flex-col justify-center shadow-lg';
+                    card.innerHTML = `<h3 class="text-brand-500 font-bold text-lg font-mono">${item.e}</h3><p class="text-white mt-1 ${currentLang === 'en' ? 'font-ar text-right' : 'font-ar'}">${item.a}</p>`;
+                    grid.appendChild(card);
+                });
+                contentArea.appendChild(grid);
+                return;
+            }
+
+            const mod = courseData.find(m => m.id === currentModule);
+            moduleTitle.innerText = currentLang === 'en' ? mod.tE : mod.tA;
+
+            mod.content.forEach(blk => {
+                if (blk.t === 'table') {
+                    const ths = (currentLang === 'en' ? blk.he : blk.ha).map(h => `<th class="px-4 py-3 bg-dark-elevated text-left text-brand-500 font-semibold border-b border-dark-border">${sanitize(h)}</th>`).join('');
+                    const trs = blk.r.map(row => {
+                        const cell1 = sanitize(currentLang === 'en' ? row[0].e : row[0].a);
+                        const cell2 = sanitize(currentLang === 'en' ? row[1].e : row[1].a);
+                        return `<tr class="border-b border-dark-border/50 hover:bg-dark-elevated/50 transition-colors"><td class="px-4 py-3 font-semibold text-white">${cell1}</td><td class="px-4 py-3 text-dark-muted">${cell2}</td></tr>`;
+                    }).join('');
+                    contentArea.innerHTML += `<div class="overflow-x-auto my-6 shadow-lg rounded-lg border border-dark-border"><table class="w-full text-sm text-left"><thead class="text-xs uppercase">${ths}</thead><tbody>${trs}</tbody></table></div>`;
+                } else {
+                    const text = sanitize(currentLang === 'en' ? blk.e : blk.a);
+                    if (blk.t === 'h2') {
+                        contentArea.innerHTML += `<h2 class="text-xl font-bold text-brand-500 mt-8 mb-4 border-b border-dark-border pb-2">${text}</h2>`;
+                    } else if (blk.t === 'h3') {
+                        contentArea.innerHTML += `<h3 class="text-lg font-semibold text-white mt-6 mb-3">${text}</h3>`;
+                    } else if (blk.t === 'p') {
+                        contentArea.innerHTML += `<p class="text-dark-muted mb-4 leading-relaxed">${text}</p>`;
+                    } else if (blk.t === 'alert') {
+                        contentArea.innerHTML += `<div class="bg-dark-elevated p-4 my-4 rounded alert-box shadow-md text-dark-text italic">${text}</div>`;
+                    }
+                }
+            });
+
+            contentArea.innerHTML += `<h2 class="text-2xl font-bold text-white mt-12 mb-6 pt-6 border-t border-dark-border">${currentLang === 'en' ? 'Module Quiz' : 'اختبار الوحدة'}</h2>`;
+            const quizContainer = document.createElement('div');
+            quizContainer.className = 'space-y-6';
+
+            mod.quiz.forEach((q, qIndex) => {
+                const qBox = document.createElement('div');
+                qBox.className = 'bg-dark-elevated border border-dark-border rounded-lg p-6 shadow-lg';
+                qBox.innerHTML = `<h3 class="text-lg font-semibold text-white mb-4">${qIndex + 1}. ${currentLang === 'en' ? q.q.e : q.q.a}</h3>`;
+                
+                const optContainer = document.createElement('div');
+                optContainer.className = 'flex flex-col space-y-2';
+                
+                q.opts.forEach(opt => {
+                    const optBtn = document.createElement('button');
+                    optBtn.className = 'text-left px-4 py-3 rounded border border-dark-border bg-dark-surface hover:bg-dark-border transition-colors text-dark-text font-medium';
+                    optBtn.innerText = currentLang === 'en' ? opt.e : opt.a;
+                    optBtn.dataset.correct = opt.c;
+                    optBtn.onclick = function() {
+                        Array.from(optContainer.children).forEach(child => {
+                            child.disabled = true;
+                            child.classList.add('opacity-50', 'cursor-not-allowed');
+                        });
+                        this.classList.remove('opacity-50', 'bg-dark-surface', 'hover:bg-dark-border');
+                        if (opt.c) {
+                            this.classList.add('bg-green-600', 'text-white', 'border-green-500');
+                        } else {
+                            this.classList.add('bg-red-600', 'text-white', 'border-red-500');
+                            Array.from(optContainer.children).forEach(child => {
+                                if(child.dataset.correct === 'true') {
+                                    child.classList.remove('opacity-50', 'bg-dark-surface');
+                                    child.classList.add('bg-green-600/30', 'border-green-500', 'text-white', 'ring-2', 'ring-green-500');
+                                }
+                            });
+                        }
+                    };
+                    optContainer.appendChild(optBtn);
+                });
+                qBox.appendChild(optContainer);
+                quizContainer.appendChild(qBox);
+            });
+            contentArea.appendChild(quizContainer);
+        }
+
+        document.getElementById('langToggle').addEventListener('click', () => {
+            currentLang = currentLang === 'en' ? 'ar' : 'en';
+            const body = document.body;
+            const html = document.documentElement;
+
+            if (currentLang === 'ar') {
+                body.classList.remove('ltr');
+                body.classList.add('rtl');
+                html.setAttribute('dir', 'rtl');
+                html.setAttribute('lang', 'ar');
+                document.getElementById('langToggle').innerText = 'English';
+            } else {
+                body.classList.remove('rtl');
+                body.classList.add('ltr');
+                html.setAttribute('dir', 'ltr');
+                html.setAttribute('lang', 'en');
+                document.getElementById('langToggle').innerText = 'عربي';
+            }
+            renderSidebar();
+            renderContent();
+        });
+
+        document.getElementById('menuToggle').addEventListener('click', () => {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
+            sidebar.classList.toggle('flex');
+        });
+
+        // Initialize App safely
+        try {
+            renderSidebar();
+            renderContent();
+        } catch (error) {
+            console.error("Rendering error:", error);
+            document.getElementById('contentArea').innerHTML = `<div class="text-red-500 bg-red-100 p-4 rounded border border-red-500 mt-4"><h3>Error Loading Content:</h3><p>${error.message}</p></div>`;
+        }
+    </script>
+</body>
+</html>

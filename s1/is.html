@@ -1,0 +1,1169 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Business Administration & IT Environments - Interactive Course</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              500: '#14b8a6',
+              600: '#0d9488',
+            },
+            dark: {
+              base: '#0b0f17',
+              surface: '#111827',
+              elevated: '#1f2937',
+              border: '#374151',
+              text: '#f3f4f6',
+              muted: '#9ca3af',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'Cairo', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+      body {
+    background-color: #0b0f17;
+    background-image: 
+      linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0b0f17;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #374151;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #14b8a6;
+    }
+  </style>
+</head>
+<body class="bg-dark-base text-dark-text font-sans antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+
+  <!-- Top Navigation Bar -->
+  <header class="bg-dark-surface border-b border-dark-border sticky top-0 z-50 px-4 lg:px-8 py-3 flex items-center justify-between shadow-md">
+    <div class="flex items-center space-x-3 rtl:space-x-reverse">
+      <button id="sidebar-toggle" class="lg:hidden p-2 text-dark-muted hover:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 rounded-lg">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        </svg>
+      </button>
+      <a href="index.html" class="px-3 py-1.5 rounded-lg bg-dark-elevated border border-dark-border text-xs sm:text-sm font-bold text-dark-muted hover:text-white hover:bg-dark-border transition flex items-center gap-1.5 shadow-sm shrink-0" title="الرئيسية">
+            <span>&larr;</span> <span class="hidden sm:inline">الرئيسية</span>
+        </a>
+      <div class="flex items-center space-x-2 rtl:space-x-reverse">
+        <div class="w-9 h-9 rounded-xl bg-brand-500 flex items-center justify-center text-dark-base font-bold text-lg font-mono shadow-inner">
+          BA
+        </div>
+        <div>
+          <h1 class="font-bold text-sm lg:text-base tracking-tight text-white" id="nav-title">IS</h1>
+          <p class="text-xs text-dark-muted hidden sm:block" id="nav-subtitle"></p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="flex items-center space-x-3 rtl:space-x-reverse">
+      <!-- Language Toggle Button -->
+      <button id="lang-toggle" class="px-3 py-1.5 text-xs font-semibold bg-dark-elevated border border-dark-border rounded-lg hover:border-brand-500 text-brand-500 transition-all flex items-center space-x-1.5 rtl:space-x-reverse shadow-sm">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+        </svg>
+        <span id="lang-label">العربية</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Layout -->
+  <div class="flex-1 flex overflow-hidden relative">
+    
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-72 bg-dark-surface border-r border-dark-border flex-shrink-0 flex flex-col transition-transform duration-300 absolute lg:relative inset-y-0 left-0 z-40 transform -translate-x-full lg:translate-x-0 rtl:translate-x-full rtl:lg:translate-x-0 rtl:right-0 rtl:left-auto rtl:border-l rtl:border-r-0">
+      <div class="p-4 border-b border-dark-border">
+        <h2 class="text-xs font-bold uppercase tracking-wider text-dark-muted" id="sidebar-heading">Course Modules</h2>
+      </div>
+      <nav id="module-nav" class="flex-1 overflow-y-auto p-3 space-y-1.5">
+        <!-- Dynamically populated via JS -->
+      </nav>
+      <div class="p-3 border-t border-dark-border text-center">
+        <span class="text-xs text-dark-muted font-mono" id="course-stats">7 Modules + Glossary</span>
+      </div>
+    </aside>
+
+    <!-- Backdrop for mobile sidebar -->
+    <div id="sidebar-backdrop" class="fixed inset-0 bg-black/60 z-30 hidden lg:hidden backdrop-blur-sm"></div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10 max-w-5xl mx-auto w-full">
+      <div id="content-container" class="space-y-8 pb-16">
+        <!-- Dynamically rendered content -->
+      </div>
+    </main>
+  </div>
+
+  <!-- JavaScript Data & Logic -->
+  <script>
+    // Complete structured educational content in both English and Arabic (Zero Content Loss)
+    const courseData = [
+      {
+        id: 'intro',
+        title: { en: 'IS', ar: 'مقدمة في الأعمال وبيئة الأعمال (IS' },
+        content: {
+          en: [
+            { type: 'heading', text: 'Introduction to Business and the Business Environment (Lecture 1)' },
+            { type: 'paragraph', text: 'A business is an organization or entity engaged in commercial, industrial, or professional activities. Businesses produce goods or services to satisfy customer needs and generate profit.' },
+            { type: 'heading', text: 'Key Components of Business' },
+            { type: 'list', items: [
+              'Resources: Human resources (employees), Financial resources (capital), Physical resources (equipment), Information resources (data, software).',
+              'Goods: Tangible products that customers can physically use. Examples: Computers, Smartphones, Networking devices.',
+              'Services: Intangible activities provided to customers. Examples: Software development, Cloud hosting, Technical support.'
+            ]},
+            { type: 'heading', text: 'Why Businesses Exist' },
+            { type: 'list', items: [
+              '1. Produce Goods and Services: Businesses create products that meet customer needs. Example: An IT company develops mobile applications for online shopping.',
+              '2. Generate Profit: Profit is the main financial goal of most businesses. Profit Formula: Profit = Revenue − Expenses. Example: Revenue from software sales = $50,000, Operating costs = $30,000, Profit = $20,000.',
+              '3. Create Employment: Businesses provide jobs for people including software engineers, network administrators, IT support specialists, data analysts.',
+              '4. Promote Innovation: Businesses often invest in research and development to introduce new technologies such as Artificial Intelligence, Cloud computing, Blockchain technology.'
+            ]},
+            { type: 'heading', text: 'Types of Businesses' },
+            { type: 'list', items: [
+              '1. Manufacturing Businesses: Produce physical goods. Examples: Computer hardware manufacturers, Electronics companies.',
+              '2. Service Businesses: Provide services instead of physical products. Examples: Software companies, IT consulting firms.',
+              '3. Retail Businesses: Sell products directly to customers. Examples: Online stores, Electronics retailers.'
+            ]},
+            { type: 'heading', text: 'The Business Environment' },
+            { type: 'paragraph', text: 'Businesses operate within a business environment that influences their success:' },
+            { type: 'list', items: [
+              'Internal Environment: Factors inside the organization. Examples: Employees, Company culture, Technology systems, Management.',
+              'External Environment: Factors outside the organization. Examples: Economic conditions, Government regulations, Competitors, Technology trends.'
+            ]},
+            { type: 'heading', text: 'Technology and Business' },
+            { type: 'paragraph', text: 'Technology has dramatically transformed business operations. Key Technologies Affecting Business include Cloud Computing, E-commerce, Artificial Intelligence, Data Analytics, and Cybersecurity.' },
+            { type: 'example', text: 'Example: Online businesses rely on cloud infrastructure to store customer data and run applications.' }
+          ],
+          ar: [
+            { type: 'heading', text: 'مقدمة في الأعمال وبيئة الأعمال (Introduction to Business)' },
+            { type: 'paragraph', text: 'الـ Business (الأعمال) هي منظمة أو كيان مشارك في أنشطة تجارية أو صناعية أو مهنية. تنتج الشركات السلع أو الخدمات لتلبية احتياجات العملاء وتحقيق الربح (Profit).' },
+            { type: 'heading', text: 'المكونات الرئيسية للأعمال (Key Components of Business)' },
+            { type: 'list', items: [
+              'الموارد (Resources): الموارد البشرية (الموظفون)، الموارد المالية (رأس المال)، الموارد المادية (المعدات)، موارد المعلومات (البيانات، البرمجيات).',
+              'السلع (Goods): منتجات ملموسة يمكن للعملاء استخدامها جسدياً. أمثلة: أجهزة الكمبيوتر، الهواتف الذكية، أجهزة الشبكات.',
+              'الخدمات (Services): أنشطة غير ملموسة (Intangible activities) تقدم للعملاء. أمثلة: تطوير البرمجيات، الاستضافة السحابية (Cloud hosting)، الدعم الفني.'
+            ]},
+            { type: 'heading', text: 'لماذا توجد الشركات؟ (Why Businesses Exist)' },
+            { type: 'list', items: [
+              '1. إنتاج السلع والخدمات (Produce Goods and Services): تخلق الشركات منتجات تلبي احتياجات العملاء. مثال: شركة تكنولوجيا معلومات تطور تطبيقات محمول للتسوق عبر الإنترنت.',
+              '2. تحقيق الربح (Generate Profit): الربح هو الهدف المالي الرئيسي لمعظم الشركات. معادلة الربح: الربح (Profit) = الإيرادات (Revenue) − المصروفات (Expenses). مثال: الإيرادات من مبيعات البرمجيات = 50,000 دولار، تكاليف التشغيل = 30,000 دولار، الربح = 20,000 دولار.',
+              '3. خلق فرص العمل (Create Employment): توفر الشركات وظائف للأشخاص بما في ذلك مهندسو البرمجيات، مسؤولو الشبكات، أخصائيو الدعم الفني، محللو البيانات.',
+              '4. تعزيز الابتكار (Promote Innovation): غالباً ما تستثمر الشركات في البحث والتطوير (Research and development) لتقديم تقنيات جديدة مثل الذكاء الاصطناعي (Artificial Intelligence)، الحوسبة السحابية (Cloud computing)، وتقنية البلوكشين (Blockchain technology).'
+            ]},
+            { type: 'heading', text: 'أنواع الشركات (Types of Businesses)' },
+            { type: 'list', items: [
+              '1. الشركات المصنعة (Manufacturing Businesses): تنتج السلع المادية. أمثلة: مصنعي أجهزة الكمبيوتر، شركات الألكترونيات.',
+              '2. شركات الخدمات (Service Businesses): تقدم خدمات بدلاً من المنتجات المادية. أمثلة: شركات البرمجيات، شركات الاستشارات التقنية.',
+              '3. شركات التجزئة (Retail Businesses): تبيع المنتجات مباشرة للعملاء. أمثلة: المتاجر عبر الإنترنت، تجار تجزئة الألكترونيات.'
+            ]},
+            { type: 'heading', text: 'بيئة الأعمال (The Business Environment)' },
+            { type: 'paragraph', text: 'تعمل الشركات ضمن بيئة أعمال تؤثر على نجاحها:' },
+            { type: 'list', items: [
+              'البيئة الداخلية (Internal Environment): العوامل داخل المنظمة. أمثلة: الموظفون، ثقافة الشركة، أنظمة التكنولوجيا، الإدارة.',
+              'البيئة الخارجية (External Environment): العوامل خارج المنظمة. أمثلة: الظروف الاقتصادية، اللوائح الحكومية، المنافسون، اتجاهات التكنولوجيا.'
+            ]},
+            { type: 'heading', text: 'التكنولوجيا والأعمال (Technology and Business)' },
+            { type: 'paragraph', text: 'لقد غيرت التكنولوجيا بشكل كبير عمليات الأعمال. وتشمل التقنيات الرئيسية التي تؤثر على الأعمال: الحوسبة السحابية (Cloud Computing)، التجارة الإلكترونية (E-commerce)، الذكاء الاصطناعي (Artificial Intelligence)، تحليلات البيانات (Data Analytics)، والأمن السيبراني (Cybersecurity).' },
+            { type: 'example', text: 'مثال: تعتمد الشركات عبر الإنترنت على البنية التحتية السحابية (Cloud infrastructure) لتخزين بيانات العملاء وتشغيل التطبيقات.' }
+          ]
+        },
+        quiz: [
+          {
+            question: { en: 'What is the primary financial goal of most businesses?', ar: 'ما هو الهدف المالي الأساسي لمعظم الشركات؟' },
+            options: {
+              en: ['Maximizing employee count', 'Generating Profit', 'Eliminating all taxes', 'Decreasing customer base'],
+              ar: ['تعظيم عدد الموظفين', 'تحقيق الربح (Generating Profit)', 'إلغاء جميع الضرائب', 'تقليل قاعدة العملاء']
+            },
+            correct: 1
+          },
+          {
+            question: { en: 'Which of the following is classified as a tangible product?', ar: 'أي مما يلي يصنف على أنه منتج ملموس (Tangible product)?' },
+            options: {
+              en: ['Software development', 'Cloud hosting', 'Computer hardware', 'Technical support'],
+              ar: ['تطوير البرمجيات', 'الاستضافة السحابية', 'أجهزة الكمبيوتر (Computer hardware)', 'الدعم الفني']
+            },
+            correct: 2
+          }
+        ]
+      },
+      {
+        id: 'module1',
+        title: { en: 'Module 1: Economic, Tech & Social Environments', ar: 'الوحدة 1: البيئة الاقتصادية والتكنولوجية والاجتماعية' },
+        content: {
+          en: [
+            { type: 'heading', text: 'Economic, Technological, and Social Environments (Lecture 1 Cont.)' },
+            { type: 'heading', text: 'Economic Environment' },
+            { type: 'paragraph', text: 'The economic environment refers to the economic conditions that affect businesses. Examples include inflation, unemployment, interest rates, and economic growth.' },
+            { type: 'example', text: 'Example: During economic recessions, customers may reduce spending on technology products.' },
+            { type: 'heading', text: 'Technological Environment' },
+            { type: 'paragraph', text: 'Technology plays a major role in modern business operations. Advancements in technology can create new business opportunities and increase efficiency. Examples include artificial intelligence, cloud computing, big data analytics, and cybersecurity systems. Businesses must continuously adapt to technological changes.' },
+            { type: 'heading', text: 'Social and Cultural Environment' },
+            { type: 'paragraph', text: 'The social environment includes social values, attitudes, lifestyles, and cultural factors that influence consumer behavior.' },
+            { type: 'list', items: [
+              'Increasing use of digital services',
+              'Preference for online shopping',
+              'Growing concern for environmental sustainability'
+            ]},
+            { type: 'paragraph', text: 'Companies must understand social trends to meet customer expectations.' },
+            { type: 'heading', text: 'Stakeholders in Business' },
+            { type: 'paragraph', text: 'Stakeholders are individuals or groups who are affected by the activities of a business. Businesses must consider the interests of different stakeholders.' },
+            { type: 'heading', text: 'Main Types of Stakeholders' },
+            { type: 'list', items: [
+              'Owners / Shareholders: Owners invest money in the business and expect profits.',
+              'Employees: Employees work for the organization and contribute to its success. Examples include software developers, managers, and technicians.',
+              'Customers: Customers purchase the company products or services. Customer satisfaction is critical for business success.',
+              'Suppliers: Suppliers provide materials, equipment, or services needed for business operations. Example: A company purchasing computer hardware from a supplier.',
+              'Government: Governments regulate business activities through laws and regulations. Examples include tax laws, labor regulations, and data protection laws.'
+            ]}
+          ],
+          ar: [
+            { type: 'heading', text: 'البيئة الاقتصادية والتكنولوجية والاجتماعية (Economic, Technological, and Social Environments)' },
+            { type: 'heading', text: 'البيئة الاقتصادية (Economic Environment)' },
+            { type: 'paragraph', text: 'تشير البيئة الاقتصادية إلى الظروف الاقتصادية التي تؤثر على الشركات. وتشمل الأمثلة: التضخم (Inflation)، البطالة (Unemployment)، أسعار الفائدة (Interest rates)، والنمو الاقتصادي (Economic growth).' },
+            { type: 'example', text: 'مثال: خلال حالات الركود الاقتصادي (Economic recessions)، قد يقلل العملاء من الإنفاق على المنتجات التكنولوجية.' },
+            { type: 'heading', text: 'البيئة التكنولوجية (Technological Environment)' },
+            { type: 'paragraph', text: 'تلعب التكنولوجيا دوراً رئيسياً في عمليات الأعمال الحديثة. يمكن أن تقود التطورات التكنولوجية إلى خلق فرص عمل جديدة وزيادة الكفاءة. وتشمل الأمثلة: الذكاء الاصطناعي (Artificial intelligence)، الحوسبة السحابية (Cloud computing)، تحليلات البيانات الضخمة (Big data analytics)، وأنظمة الأمن السيبراني (Cybersecurity systems). يجب على الشركات التكيف باستمرار مع التغيرات التكنولوجية.' },
+            { type: 'heading', text: 'البيئة الاجتماعية والثقافية (Social and Cultural Environment)' },
+            { type: 'paragraph', text: 'تتضمن البيئة الاجتماعية القيم الاجتماعية، والاتجاهات، وأنماط الحياة، والعوامل الثقافية التي تؤثر على سلوك المستهلك.' },
+            { type: 'list', items: [
+              'الاستخدام المتزايد للخدمات الرقمية (Increasing use of digital services)',
+              'التفضيل للتسوق عبر الإنترنت (Preference for online shopping)',
+              'القلق المتزايد بشأن الاستدامة البيئية (Growing concern for environmental sustainability)'
+            ]},
+            { type: 'paragraph', text: 'يجب على الشركات فهم الاتجاهات الاجتماعية لتلبية توقعات العملاء.' },
+            { type: 'heading', text: 'أصحاب المصلحة في الأعمال (Stakeholders in Business)' },
+            { type: 'paragraph', text: 'أصحاب المصلحة (Stakeholders) هم الأفراد أو المجموعات الذين يتأثرون بأنشطة الشركة. يجب على الشركات مراعاة مصالح مختلف أصحاب المصلحة.' },
+            { type: 'heading', text: 'الأنواع الرئيسية لأصحاب المصلحة (Main Types of Stakeholders)' },
+            { type: 'list', items: [
+              'المالك / المساهمون (Owners / Shareholders): يستثمر المالك الأموال في الشركة ويتوقعون الأرباح.',
+              'الموظفون (Employees): يعمل الموظفون في المنظمة ويساهمون في نجاحها. وتشمل الأمثلة: مطوري البرمجيات، المديرين، الفنيين.',
+              'العملاء (Customers): يشتري العملاء منتجات أو خدمات الشركة. رضا العملاء أمر بالغ الأهمية لنجاح الأعمال.',
+              'الموردون (Suppliers): يوفر الموردون المواد أو المعدات أو الخدمات اللازمة لعمليات الأعمال. مثال: شركة تشتري أجهزة كمبيوتر من مورد.',
+              'الحكومة (Government): تنظم الحكومات أنشطة الأعمال من خلال القوانين واللوائح. وتشمل الأمثلة: قوانين الضرائب، لوائح العمل، وقوانين حماية البيانات.'
+            ]}
+          ]
+        },
+        quiz: [
+          {
+            question: { en: 'Which factor is part of the economic environment?', ar: 'أي عامل يعتبر جزءاً من البيئة الاقتصادية؟' },
+            options: {
+              en: ['Social values', 'Inflation rates', 'Software algorithms', 'Company culture'],
+              ar: ['القيم الاجتماعية', 'معدلات التضخم (Inflation rates)', 'خوارزميات البرمجيات', 'ثقافة الشركة']
+            },
+            correct: 1
+          },
+          {
+            question: { en: 'Who provides materials, equipment, or services needed for operations?', ar: 'من يقدم المواد أو المعدات أو الخدمات اللازمة للعمليات؟' },
+            options: {
+              en: ['Suppliers', 'Competitors', 'Shareholders only', 'Government regulators'],
+              ar: ['الموردون (Suppliers)', 'المنافسون', 'المساهمون فقط', 'المنظمون الحكوميون']
+            },
+            correct: 0
+          }
+        ]
+      },
+      {
+        id: 'module2',
+        title: { en: 'Module 2: Forms of Business Ownership', ar: 'الوحدة 2: أشكال ملكية الأعمال (Forms of Business Ownership)' },
+        content: {
+          en: [
+            { type: 'heading', text: 'Forms of Business Ownership (Lecture 2)' },
+            { type: 'paragraph', text: 'A business ownership structure refers to the legal form of an organization that determines who owns the business, who is responsible for business decisions, how profits are distributed, and the level of legal responsibility (liability) of the owners. Choosing the correct structure affects taxation, legal responsibilities, ability to raise capital, management structure, and growth opportunities.' },
+            { type: 'heading', text: 'Four Common Forms of Business Ownership' },
+            { type: 'list', items: [
+              '1. Sole Proprietorship',
+              '2. Partnership',
+              '3. Corporation',
+              '4. Limited Liability Company (LLC)'
+            ]},
+            { type: 'heading', text: '1. Sole Proprietorship' },
+            { type: 'paragraph', text: 'A sole proprietorship is a business owned and managed by one individual. It is the simplest and most common form. The owner is responsible for all business decisions and receives all profits, but is personally responsible for all debts (unlimited liability).' },
+            { type: 'list', items: [
+              'Characteristics: Owned by 1 person, easy to establish, full control, receives all profits, unlimited liability.',
+              'Examples: Freelance web developers, small IT consultants, online shop owners, independent app developers.',
+              'Advantages: Easy to start, minimal legal procedures, full control, keep all profits, low startup cost.',
+              'Disadvantages: Unlimited liability (personal responsibility for debts), limited financial resources, limited business growth (depends on owner), high workload.'
+            ]},
+            { type: 'heading', text: '2. Partnership' },
+            { type: 'paragraph', text: 'A partnership is a business owned by two or more individuals who share responsibility for managing the business and sharing profits.' },
+            { type: 'list', items: [
+              'Types: General Partnership (all share management/liabilities) & Limited Partnership (some invest money but do not participate in management).',
+              'Characteristics: Owned by 2+ people, shared decision making, shared profits/losses, partnership agreement required.',
+              'Examples: Two software developers creating a startup, IT consultants working together, small tech firms.',
+              'Advantages: More financial resources, shared responsibilities, more expertise, easier to start than corporations.',
+              'Disadvantages: Unlimited liability, potential conflicts, profit sharing, shared risk (one partner mistake affects all).'
+            ]},
+            { type: 'heading', text: '3. Corporation' },
+            { type: 'paragraph', text: 'A corporation is a legal entity separate from its owners. It can own property, enter contracts, sue or be sued. Ownership is represented by shares of stock.' },
+            { type: 'list', items: [
+              'Characteristics: Separate legal entity, ownership divided into shares, managed by a board of directors, shareholders are owners.',
+              'Examples: Major global technology companies.',
+              'Advantages: Limited liability, ability to raise capital (selling shares), business continuity, large growth potential.',
+              'Disadvantages: Complex and expensive to establish, more government regulations, possible double taxation, less direct control by owners.'
+            ]},
+            { type: 'heading', text: '4. Limited Liability Company (LLC)' },
+            { type: 'paragraph', text: 'An LLC is a hybrid structure combining features of partnerships and corporations, providing limited liability protection while maintaining flexible management.' },
+            { type: 'list', items: [
+              'Characteristics: Owners called members, limited liability, flexible management, combines partnership and corporate features.',
+              'Examples: IT service companies, software development firms, consulting businesses.',
+              'Advantages: Limited liability, flexible management, less regulation than corporations, tax advantages.',
+              'Disadvantages: More complex than sole proprietorship, may require legal documentation, regulations vary by country.'
+            ]},
+            { type: 'heading', text: 'Comparison of Business Ownership Types' },
+            { type: 'table', headers: ['Type', 'Owners', 'Liability', 'Ease of Setup', 'Capital'], rows: [
+              ['Sole Proprietorship', '1', 'Unlimited', 'Very Easy', 'Limited'],
+              ['Partnership', '2 or more', 'Unlimited', 'Easy', 'Moderate'],
+              ['Corporation', 'Shareholders', 'Limited', 'Complex', 'High'],
+              ['LLC', 'Members', 'Limited', 'Moderate', 'Moderate']
+            ]},
+            { type: 'heading', text: 'Choosing the Right Business Structure' },
+            { type: 'paragraph', text: 'Entrepreneurs consider: number of owners, level of liability protection, capital requirements, management structure, tax considerations, and future growth. Technology startups often decide between partnerships (e.g., two developers creating an app) and corporations (e.g., planning to attract global investors and expand rapidly).' }
+          ],
+          ar: [
+            { type: 'heading', text: 'أشكال ملكية الأعمال (Forms of Business Ownership)' },
+            { type: 'paragraph', text: 'يشير هيكل ملكية الأعمال إلى الشكل القانوني للمنظمة الذي يحدد: من يملك الشركة، ومن المسؤول عن القرارات التجارية، وكيف يتم توزع الأرباح، ومستوى المسؤولية القانونية (المسؤولية القانونية أو الـ Liability) للمالكين. اختيار الهيكل الصحيح يؤثر على الضرائب، المسؤوليات القانونية، القدرة على جمع رأس المال، هيكل الإدارة، وفرص النمو.' },
+            { type: 'heading', text: 'الأشكال الأربعة الشائعة لملكية الأعمال' },
+            { type: 'list', items: [
+              '1. الملكية الفردية (Sole Proprietorship)',
+              '2. الشراكة (Partnership)',
+              '3. الشركة المساهمة / كوربوريشن (Corporation)',
+              '4. الشركة ذات المسؤولية المحدودة (Limited Liability Company - LLC)'
+            ]},
+            { type: 'heading', text: '1. الملكية الفردية (Sole Proprietorship)' },
+            { type: 'paragraph', text: 'الملكية الفردية هي شركة يمتلكها ويديرها فرد واحد. وهي أبسط وأكثر أشكال ملكية الأعمال شيوعاً. يكون المالك مسؤولاً عن جميع القرارات التجارية ويحصل على جميع الأرباح، ولكنه مسؤول شخصياً عن جميع الديون (مسؤولية غير محدودة - Unlimited liability).' },
+            { type: 'list', items: [
+              'الخصائص: يمتلكها شخص واحد، سهلة التأسيس، تحكم كامل للمالك، يحصل على كل الأرباح، مسؤولية شخصية عن الديون.',
+              'أمثلة: مطورو الويب المستقلون (Freelance web developers)، استشاريو تكنولوجيا المعلومات الصغار، أصحاب المتاجر عبر الإنترنت، مطورو التطبيقات المستقلون.',
+              'المزايا: سهلة البدء، تتطلب إجراءات قانونية ضئيلة، تحكم كامل، الاحتفاظ بكل الأرباح، تكلفة بدء منخفضة.',
+              'العيوب: مسؤولية غير محدودة (Unlimited liability)، موارد مالية محدودة، نمو تجاري محدود (تعتمد بشدة على مهارات المالك)، عبء عمل مرتفع.'
+            ]},
+            { type: 'heading', text: '2. الشراكة (Partnership)' },
+            { type: 'paragraph', text: 'الشراكة هي شركة يمتلكها شخصان أو أكثر يتشاركون المسؤولية عن إدارة الأعمال وتقاسم الأرباح.' },
+            { type: 'list', items: [
+              'الأنواع: شراكة عامة (General Partnership - جميع الشركاء يتشاركون الإدارة والمسؤوليات) وشراكة محدودة (Limited Partnership - بعض الشركاء يستثمرون الأموال ولا يشاركون في الإدارة).',
+              'الخصائص: يمتلكها شخصان أو أكثر، اتخاذ قرارات مشترك، تقاسم الأرباح والخسائر، غالباً ما تتطلب اتفاقية شراكة.',
+              'أمثلة: مطورا برمجيات ينشئان شركة ناشئة، استشاريو تكنولوجيا المعلومات الذين يعملون معاً، الشركات التكنولوجية الصغيرة.',
+              'المزايا: موارد مالية أكثر، مسؤوليات مشتركة، خبرات أكثر، أسهل في البدء مقارنة بالشركات المساهمة.',
+              'العيوب: مسؤولية غير محدودة (Unlimited liability)، صراعات محتملة بين الشركاء، تقاسم الأرباح، المخاطر المشتركة (خطأ شريك واحد يؤثر على الشركة بأكملها).'
+            ]},
+            { type: 'heading', text: '3. الشركة المساهمة (Corporation)' },
+            { type: 'paragraph', text: 'الشركة المساهمة (Corporation) هي كيان قانوني منفصل عن أصحابها. هذا يعني أن الشركة نفسها يمكنها: امتلاك ممتلكات، إبرام عقود، مقاضاة الآخرين أو مقاضاتها. يتم تمثيل الملكية بأسهم (Shares of stock).' },
+            { type: 'list', items: [
+              'الخصائص: كيان قانوني منفصل، الملكية مقسمة إلى أسهم، تُدار بواسطة مجلس إدارة (Board of directors)، المساهمون هم أصحاب الشركة.',
+              'أمثلة: شركات التكنولوجيا الكبرى التي تبيع منتجاتها على مستوى العالم.',
+              'المزايا: مسؤولية محدودة (Limited liability)، القدرة على جمع رأس المال (بيع الأسهم للمستثمرين)، استمرارية العمل، إمكانات نمو كبيرة.',
+              'Disadvantages (العيوب): معقدة ومكلفة في التأسيس، لوائح حكومية أكثر، احتمال ازدواج ضريبي (Double taxation)، سيطرة مباشرة أقل من قبل المالكين.'
+            ]},
+            { type: 'heading', text: '4. الشركة ذات المسؤولية المحدودة (Limited Liability Company - LLC)' },
+            { type: 'paragraph', text: 'الشركة ذات المسؤولية المحدودة (LLC) هي هيكل هجين يجمع بين ميزات الشراكة والشركات المساهمة. توفر حماية المسؤولية المحدودة مع الحفاظ على إدارة مرنة.' },
+            { type: 'list', items: [
+              'الخصائص: يُسمى المالكين أعضاء (Members)، يحظى الأعضاء بمسؤولية محدودة، هيكل إدارة مرن، تجمع بين ميزات الشراكة والشركات.',
+              'أمثلة: العديد من الشركات الصغيرة والمتوسطة مثل شركات خدمات تكنولوجيا المعلومات، شركات تطوير البرمجيات، أعمال الاستشارات.',
+              'المزايا: مسؤولية محدودة، إدارة مرنة، تنظيم أقل من الشركات المساهمة، مزايا ضريبية (Tax advantages).',
+              'العيوب: أكثر تعقيداً من الملكية الفردية، قد تتطلب توثيقاً قانونياً، اللوائح تختلف حسب الدولة.'
+            ]},
+            { type: 'heading', text: 'مقارنة بين أنواع ملكية الأعمال (Comparison of Business Ownership Types)' },
+            { type: 'table', headers: ['النوع (Type)', 'المالكون (Owners)', 'المسؤولية (Liability)', 'سهولة التأسيس (Setup)', 'رأس المال (Capital)'], rows: [
+              ['الملكية الفردية (Sole Proprietorship)', '1', 'غير محدودة (Unlimited)', 'سهلة جداً (Very Easy)', 'محدودة (Limited)'],
+              ['الشراكة (Partnership)', '2 أو أكثر', 'غير محدودة (Unlimited)', 'سهلة (Easy)', 'معتدلة (Moderate)'],
+              ['الشركة (Corporation)', 'المساهمون (Shareholders)', 'محدودة (Limited)', 'معقدة (Complex)', 'عالية (High)'],
+              ['الشركة ذات المسؤولية المحدودة (LLC)', 'الأعضاء (Members)', 'محدودة (Limited)', 'معتدلة (Moderate)', 'معتدلة (Moderate)']
+            ]},
+            { type: 'heading', text: 'اختيار الهيكل التجاري المناسب (Choosing the Right Business Structure)' },
+            { type: 'paragraph', text: 'يجب على رواد الأعمال مراعاة عوامل مثل: عدد المالكين، مستوى حماية المسؤولية، متطلبات رأس المال، هيكل الإدارة، الاعتبارات الضريبية، والنمو المستقبلي. على سبيل المثال، قد تقرر الشركات الناشئة في مجال التكنولوجيا العمل كشراكة (مطوران ينشئان تطبيق محمول) أو شركة مساهمة (تخطط لجذب مستثمرين والتوسع عالمياً).' }
+          ]
+        },
+        quiz: [
+          {
+            question: { en: 'Which business structure is owned and managed by a single individual?', ar: 'أي هيكل تجاري يمتلكه ويديره فرد واحد؟' },
+            options: {
+              en: ['Corporation', 'Partnership', 'Sole Proprietorship', 'LLC'],
+              ar: ['الشركة المساهمة (Corporation)', 'الشراكة (Partnership)', 'الملكية الفردية (Sole Proprietorship)', 'الشركة ذات المسؤولية المحدودة (LLC)']
+            },
+            correct: 2
+          },
+          {
+            question: { en: 'What is a key advantage of a Corporation for its shareholders?', ar: 'ما هي الميزة الرئيسية للشركة المساهمة (Corporation) للمساهمين فيها؟' },
+            options: {
+              en: ['Unlimited personal liability', 'Limited liability protection', 'Zero government regulations', 'Low establishment cost'],
+              ar: ['مسؤولية شخصية غير محدودة', 'حماية المسؤولية المحدودة (Limited liability protection)', 'عدم وجود لوائح حكومية', 'انخفاض تكلفة التأسيس']
+            },
+            correct: 1
+          }
+        ]
+      },
+      {
+        id: 'module3',
+        title: { en: 'Module 3: Business Ethics & Social Responsibility', ar: 'الوحدة 3: أخلاقيات الأعمال والمسؤولية الاجتماعية' },
+        content: {
+          en: [
+            { type: 'heading', text: 'Business Ethics and Social Responsibility (Lecture 3)' },
+            { type: 'heading', text: 'Definition of Business Ethics' },
+            { type: 'paragraph', text: 'Business ethics refers to the moral principles and standards that guide behavior in the world of business. It involves doing what is right, fair, and honest in business practices.' },
+            { type: 'heading', text: 'Why Business Ethics is Important' },
+            { type: 'list', items: [
+              '1. Builds trust with customers',
+              '2. Improves company reputation',
+              '3. Encourages fair competition',
+              '4. Reduces legal risks',
+              '5. Promotes long-term success'
+            ]},
+            { type: 'heading', text: 'Examples of Ethical vs. Unethical Behavior' },
+            { type: 'list', items: [
+              'Ethical: Honest advertising, fair pricing, respecting customer privacy, treating employees fairly.',
+              'Unethical: False advertising, selling low-quality products knowingly, misusing customer data, corruption or bribery.'
+            ]},
+            { type: 'heading', text: 'Ethical Decision Making Steps' },
+            { type: 'paragraph', text: 'Ethical decision making is the process of choosing actions that are morally correct:' },
+            { type: 'list', items: [
+              '1. Identify the Problem: Recognize the ethical issue (Example: Should a company collect user data without consent?).',
+              '2. Gather Information: Understand all facts and stakeholders involved.',
+              '3. Evaluate Alternatives: Consider different possible actions.',
+              '4. Make a Decision: Choose the most ethical option.',
+              '5. Take Action: Implement the decision.',
+              '6. Review the Outcome: Evaluate the consequences.'
+            ]},
+            { type: 'heading', text: 'Ethical Principles' },
+            { type: 'paragraph', text: 'Honesty, Integrity, Fairness, Responsibility, Accountability.' },
+            { type: 'heading', text: 'Corporate Social Responsibility (CSR)' },
+            { type: 'paragraph', text: 'CSR means that businesses have a responsibility to contribute positively to society, focusing on social impact, environmental impact, and ethical responsibilities.' },
+            { type: 'list', items: [
+              'Types of CSR: 1. Economic Responsibility (profitable/sustainable), 2. Legal Responsibility (follow laws), 3. Ethical Responsibility (do right beyond laws), 4. Philanthropic Responsibility (donations/community support).',
+              'Examples of CSR Activities: Supporting education programs, donating to charities, promoting sustainability, providing fair working conditions.'
+            ]},
+            { type: 'heading', text: 'Environmental Responsibility & IT' },
+            { type: 'paragraph', text: 'Businesses must minimize negative environmental impact (reducing pollution, conserving energy, recycling materials, sustainable resources). Even IT companies affect the environment through data centers (energy consumption), electronic waste, and hardware production, requiring green IT practices.' },
+            { type: 'heading', text: 'Ethical Issues in Technology' },
+            { type: 'list', items: [
+              '1. Data Privacy: Protecting personal info, avoiding collection without consent or insecure storage.',
+              '2. Protection of Customer Data: Securing payment details using encryption and preventing breaches.',
+              '3. Ethical Use of Artificial Intelligence: Avoiding bias in algorithms, lack of transparency, and unfair AI hiring decisions.',
+              '4. Intellectual Property Rights: Respecting ownership of software, digital content, and preventing illegal copying.',
+              '5. Cybersecurity Ethics: Protecting systems/users from cyber threats and reporting security issues.'
+            ]}
+          ],
+          ar: [
+            { type: 'heading', text: 'أخلاقيات الأعمال والمسؤولية الاجتماعية (Business Ethics and Social Responsibility)' },
+            { type: 'heading', text: 'تعريف أخلاقيات الأعمال (Definition of Business Ethics)' },
+            { type: 'paragraph', text: 'تشير أخلاقيات الأعمال (Business ethics) إلى المبادئ والمعايير الأخلاقية التي توجه السلوك في عالم الأعمال. وهي تتضمن فعل ما هو صحيح وعادل وصادق في ممارسات الأعمال.' },
+            { type: 'heading', text: 'لماذا تعتبر أخلاقيات الأعمال مهمة؟ (Why Business Ethics is Important)' },
+            { type: 'list', items: [
+              '1. بناء الثقة مع العملاء (Builds trust with customers)',
+              '2. تحسين سمعة الشركة (Improves company reputation)',
+              '3. تشجيع المنافسة العادلة (Encourages fair competition)',
+              '4. تقليل المخاطر القانونية (Reduces legal risks)',
+              '5. تعزيز النجاح على المدى الطويل (Promotes long-term success)'
+            ]},
+            { type: 'heading', text: 'أمثلة على السلوكيات الأخلاقية وغير الأخلاقية' },
+            { type: 'list', items: [
+              'أخلاقيات: الإعلان الصادق، التسعير العادل، احترام خصوصية العملاء، معاملة الموظفين بإنصاف.',
+              'غير أخلاقية: الإعلان الكاذب، بيع منتجات منخفضة الجودة عن علم، سوء استخدام بيانات العملاء، الفساد او الرشاوي (Bribery).'
+            ]},
+            { type: 'heading', text: 'خطوات صنع القرار الأخلاقي (Ethical Decision Making Steps)' },
+            { type: 'paragraph', text: 'صنع القرار الأخلاقي هو عملية اختيار الإجراءات الصحيحة أخلاقياً:' },
+            { type: 'list', items: [
+              '1. تحديد المشكلة (Identify the Problem): التعرف على القضية الأخلاقية (مثال: هل يجب على الشركة جمع بيانات المستخدمين دون موافقة؟).',
+              '2. جمع المعلومات (Gather Information): فهم جميع الحقائق وأصحاب المصلحة المعنيين.',
+              '3. تقييم البدائل (Evaluate Alternatives): النظر في الإجراءات المختلفة الممكنة.',
+              '4. اتخاذ القرار (Make a Decision): اختيار الخيار الأكثر أخلاقية.',
+              '5. اتخاذ الإجراء (Take Action): تنفيذ القرار.',
+              '6. مراجعة النتيجة (Review the Outcome): تقييم العواقب.'
+            ]},
+            { type: 'heading', text: 'المبادئ الأخلاقية (Ethical Principles)' },
+            { type: 'paragraph', text: 'الصدق (Honesty)، النزاهة (Integrity)، العدالة (Fairness)، المسؤولية (Responsibility)، المساءلة (Accountability).' },
+            { type: 'heading', text: 'المسؤولية الاجتماعية للشركات (Corporate Social Responsibility - CSR)' },
+            { type: 'paragraph', text: 'تعني المسؤولية الاجتماعية للشركات أن الشركات تحمل مسؤولية المساهمة بشكل إيجابي في المجتمع، مع مراعاة التأثير الاجتماعي والبيئي والأخلاقي.' },
+            { type: 'list', items: [
+              'أنواع المسؤولية الاجتماعية: 1. المسؤولية الاقتصادية (الربحية والاستدامة)، 2. المسؤولية القانونية (اتباع القوانين)، 3. المسؤولية الأخلاقية (فعل الصواب بما يتجاوز القانون)، 4. المسؤولية الإنسانية / الخيرية (Philanthropic - المساهمة من خلال التبرعات أو دعم المجتمع).',
+              'أمثلة لأنشطة المسؤولية الاجتماعية: دعم برامج التعليم، التبرع للجمعيات الخيرية، تعزيز الاستدامة، توفير ظروف عمل عادلة.'
+            ]},
+            { type: 'heading', text: 'المسؤولية البيئية وتكنولوجيا المعلومات (Environmental Responsibility & IT)' },
+            { type: 'paragraph', text: 'يجب على الشركات تقليل تأثيرها البيئي السلبي (تقليل التلوث، الحفظ على الطاقة، إعادة تدوير المواد، الموارد المستدامة). حتى شركات تكنولوجيا المعلومات تؤثر على البيئة من خلال مراكز البيانات (استهلاك الطاقة)، النفايات الإلكترونية، وإنتاج الأجهزة، مما يتطلب تبني ممارسات تكنولوجيا خضراء (Green IT).' },
+            { type: 'heading', text: 'القضايا الأخلاقية في التكنولوجيا (Ethical Issues in Technology)' },
+            { type: 'list', items: [
+              '1. خصوصية البيانات (Data Privacy): حماية المعلومات الشخصية، وتجنب جمع البيانات دون موافقة أو تخزينها بشكل غير آمن.',
+              '2. حماية بيانات العملاء (Protection of Customer Data): تأمين تفاصيل الدفع باستخدام التشفير ومنع خرق البيانات.',
+              '3. الاستخدام الأخلاقي للذكاء الاصطناعي (Ethical Use of AI): تجنب الانحياز في الخوارزميات (Bias)، نقص الشفافية، وقرارات التوظيف غير العادلة.',
+              '4. حقوق الملكية الفكرية (Intellectual Property Rights): احترام ملكية البرمجيات والمحتوى الرقمي ومنع النسخ غير القانوني.',
+              '5. أخلاقيات الأمن السيبراني (Cybersecurity Ethics): حماية الأنظمة والمستخدمين من التهديدات السيبرانية والإبلاغ عن المشكلات الأمنية.'
+            ]}
+          ]
+        },
+        quiz: [
+          {
+            question: { en: 'What does CSR stand for in business?', ar: 'ماذا تعني اختصار CSR في الأعمال؟' },
+            options: {
+              en: ['Computer System Regulations', 'Corporate Social Responsibility', 'Customer Service Revenue', 'Commercial Security Resources'],
+              ar: ['لوائح أنظمة الكمبيوتر', 'المسؤولية الاجتماعية للشركات (Corporate Social Responsibility)', 'إيرادات خدمة العملاء', 'موارد الأمن التجاري']
+            },
+            correct: 1
+          },
+          {
+            question: { en: 'Which of the following is considered an unethical IT practice?', ar: 'أي مما يلي يعتبر ممارسة غير أخلاقية في تكنولوجيا المعلومات؟' },
+            options: {
+              en: ['Using database encryption', 'Reporting security vulnerabilities', 'Collecting user data without consent', 'Providing fair working conditions'],
+              ar: ['استخدام تشفير قواعد البيانات', 'الإبلاغ عن الثغرات الأمنية', 'جمع بيانات المستخدمين بدون موافقة (Collecting user data without consent)', 'توفير ظروف عمل عادلة']
+            },
+            correct: 2
+          }
+        ]
+      },
+      {
+        id: 'module4',
+        title: { en: 'Module 4: Business in a Global Environment', ar: 'الوحدة 4: الأعمال في بيئة عالمية (Global Environment)' },
+        content: {
+          en: [
+            { type: 'heading', text: 'Business in a Global Environment (Lecture 4)' },
+            { type: 'heading', text: 'Globalization' },
+            { type: 'paragraph', text: 'Globalization is the process by which businesses and economies become connected and integrated across the world, allowing companies to operate beyond local markets.' },
+            { type: 'list', items: [
+              'Key Features: Free movement of goods/services, international investment, global communication, technology-driven connectivity.',
+              'Drivers: Technology (internet, cloud), Transportation (faster logistics), Trade agreements, Global communication systems.'
+            ]},
+            { type: 'heading', text: 'International Trade' },
+            { type: 'paragraph', text: 'International trade refers to the exchange of goods and services between countries.' },
+            { type: 'list', items: [
+              'Exports: Goods and services sold to other countries (e.g., selling software internationally).',
+              'Imports: Goods and services purchased from other countries (e.g., buying computer hardware).',
+              'Benefits: Access to new markets, increased revenue, diverse products, lower production costs.',
+              'Challenges: Trade restrictions (tariffs/taxes), currency differences, political risks, legal regulations.'
+            ]},
+            { type: 'heading', text: 'Global Markets & Multinational Companies (MNCs)' },
+            { type: 'paragraph', text: 'A global market is where businesses sell across multiple countries with large customer bases and high competition. An MNC operates in more than one country with a global workforce and international management structure.' },
+            { type: 'list', items: [
+              'MNC Advantages: Global resources, larger markets, increased profits, economies of scale.',
+              'MNC Challenges: Cultural differences, legal/regulatory differences, communication barriers, political risks.'
+            ]},
+            { type: 'heading', text: 'Cultural Differences in Business' },
+            { type: 'paragraph', text: 'Culture involves values, beliefs, behaviors, and customs. Understanding language, communication styles, work habits, etiquette, and decision-making styles helps businesses communicate effectively and build strong global relationships.' },
+            { type: 'heading', text: 'Impact of Globalization & Role of IT' },
+            { type: 'list', items: [
+              'Positive Impacts: Market expansion, increased innovation, cost reduction (outsourcing), access to talent.',
+              'Negative Impacts: Increased competition, cultural challenges, economic risks, job displacement.',
+              'Role of IT: E-commerce, Cloud Computing, Digital communication (video/messaging tools), and Remote work.'
+            ]}
+          ],
+          ar: [
+            { type: 'heading', text: 'الأعمال في بيئة عالمية (Business in a Global Environment)' },
+            { type: 'heading', text: 'العولمة (Globalization)' },
+            { type: 'paragraph', text: 'العولمة هي العملية التي تصبح من خلالها الشركات والاقتصادات مترابطة ومتكاملة عبر العالم، مما يسمح للشركات بالعمل خارج أسواقها المحلية والوصول إلى العملاء عالمياً.' },
+            { type: 'list', items: [
+              'السمات الرئيسية: الحركة الحرة للسلع والخدمات، الاستثمار الدولي، الاتصال العالمي، الاتصال مدفوع التكنولوجيا.',
+              'محركات العولمة: التكنولوجيا (الإنترنت، الحوسبة السحابية)، النقل (لوجستيات وشحن أسرع)، اتفاقيات التجارة بين الدول، أنظمة الاتصالات العالمية.'
+            ]},
+            { type: 'heading', text: 'التجارة الدولية (International Trade)' },
+            { type: 'paragraph', text: 'تشير التجارة الدولية إلى تبادل السلع والخدمات بين الدول.' },
+            { type: 'list', items: [
+              'الصادرات (Exports): السلع والخدمات المباعة لدول أخرى (مثال: شركة تبيع برمجيات لعملاء دوليين).',
+              'الواردات (Imports): السلع والخدمات المشتراة من دول أخرى (مثال: شراء أجهزة كمبيوتر من دولة أخرى).',
+              'فوائد التجارة الدولية: الوصول إلى أسواق جديدة، فرص زيادة الإيرادات، توفر منتجات متنوعة، انخفاض تكاليف الإنتاج.',
+              'تحديات التجارة الدولية: القيود التجارية (التعريفات الجمركية والضرائب)، اختلافات العملات، المخاطر السياسية، اللوائح القانونية.'
+            ]},
+            { type: 'heading', text: 'الأسواق العالمية والشركات متعددة الجنسيات (MNCs)' },
+            { type: 'paragraph', text: 'السوق العالمي هو سوق تبيع فيه الشركات المنتجات أو الخدمات عبر عدة دول. الشركة متعددة الجنسيات (MNC - Multinational Company) هي شركة تعمل في أكثر من دولة ولها قوة عمل عالمية.' },
+            { type: 'list', items: [
+              'مزايا الشركات متعددة الجنسيات: الوصول إلى الموارد العالمية، أسواق أكبر، أرباح متزايدة، وفورات الحجم (Economies of scale).',
+              'تحديات الشركات متعددة الجنسيات: الاختلافات الثقافية، الاختلافات القانونية والتنظيمية، حواجز الاتصال، المخاطر السياسية.'
+            ]},
+            { type: 'heading', text: 'الاختلافات الثقافية في الأعمال (Cultural Differences in Business)' },
+            { type: 'paragraph', text: 'تشير الثقافة إلى القيم والمعتقدات والسلوكيات والعادات لمجموعة من الناس. يساعد فهم اللغة، أسلوب الاتصال، عادات العمل، آداب السلوك، وأساليب اتخاذ القرار الشركات على التواصل بفعالية وبناء علاقات قوية في الأسواق العالمية.' },
+            { type: 'heading', text: 'تأثير العولمة ودور تكنولوجيا المعلومات (Impact of Globalization & Role of IT)' },
+            { type: 'list', items: [
+              'التأثيرات الإيجابية: توسيع السوق، زيادة الابتكار، خفض التكاليف (الاستعانة بمصادر خارجية - Outsourcing)، الوصول إلى المواهب.',
+              'التأثيرات السلبية: زيادة المنافسة، التحديات الثقافية، المخاطر الاقتصادية، نزوح الوظائف.',
+              'دور تكنولوجيا المعلومات: التجارة الإلكترونية (E-commerce)، الحوسبة السحابية (Cloud computing)، الاتصالات الرقمية، والعمل عن بعد (Remote work).'
+            ]}
+          ]
+        },
+        quiz: [
+          {
+            question: { en: 'What are goods and services sold to other countries called?', ar: 'ماذا تسمى السلع والخدمات المباعة لدول أخرى؟' },
+            options: {
+              en: ['Imports', 'Exports', 'Domestic tariffs', 'Subsidies'],
+              ar: ['الواردات (Imports)', 'الصادرات (Exports)', 'التعريفات الجمركية المحلية', 'الإعانات']
+            },
+            correct: 1
+          },
+          {
+            question: { en: 'What does MNC stand for in global business?', ar: 'ماذا تعني MNC في الأعمال العالمية؟' },
+            options: {
+              en: ['Managed Network Corporation', 'Multinational Company', 'Modern New Commerce', 'Market National Council'],
+              ar: ['Managed Network Corporation', 'شركة متعددة الجنسيات (Multinational Company)', 'Modern New Commerce', 'Market National Council']
+            },
+            correct: 1
+          }
+        ]
+      },
+      {
+        id: 'module5',
+        title: { en: 'Module 5: Entrepreneurship & Startups', ar: 'الوحدة 5: ريادة الأعمال والشركات الناشئة (Entrepreneurship)' },
+        content: {
+          en: [
+            { type: 'heading', text: 'Entrepreneurship and Starting a Business (Lecture 5)' },
+            { type: 'heading', text: 'What is Entrepreneurship?' },
+            { type: 'paragraph', text: 'Entrepreneurship is the process of identifying a business opportunity and creating, organizing, and managing a new business while taking risks in order to make a profit. An entrepreneur is a person who starts and manages a business. Importance: creates new jobs, encourages innovation, promotes economic growth, introduces new products/services.' },
+            { type: 'heading', text: 'Characteristics of Entrepreneurs' },
+            { type: 'list', items: [
+              'Creativity: Ability to generate new ideas and solutions.',
+              'Risk-Taking: Willingness to take financial and business risks.',
+              'Innovation: Developing new products, services, or processes.',
+              'Leadership: Ability to manage and motivate a team.',
+              'Persistence: Continuing efforts despite challenges and failures.',
+              'Problem-Solving Skills: Ability to identify and solve business problems.',
+              'Vision: Ability to plan for the future and set goals.'
+            ]},
+            { type: 'heading', text: 'Startup Businesses' },
+            { type: 'paragraph', text: 'A startup is a newly established business designed to develop a unique and scalable product or service. Common in tech sectors (Mobile app startups, SaaS companies, E-commerce platforms, AI startups).' },
+            { type: 'heading', text: 'Business Planning & Components' },
+            { type: 'paragraph', text: 'A business plan is a written document outlining a business idea and how it will be implemented (guides operations, secures funding, reduces risks). Key Components: 1. Business Idea, 2. Market Analysis, 3. Marketing Strategy, 4. Operations Plan, 5. Financial Plan, 6. Management Team.' },
+            { type: 'heading', text: 'Sources of Business Ideas & Challenges' },
+            { type: 'list', items: [
+              'Sources: Personal experience, market needs, technology trends (AI, cloud), innovation, customer feedback, competitor analysis.',
+              'Challenges: Financial constraints, market competition, lack of experience, risk of failure, legal/regulatory issues, managing growth, technology challenges.'
+            ]}
+          ],
+          ar: [
+            { type: 'heading', text: 'ريادة الأعمال وبتدء الشركات (Entrepreneurship and Starting a Business)' },
+            { type: 'heading', text: 'ما هي ريادة الأعمال؟ (What is Entrepreneurship?)' },
+            { type: 'paragraph', text: 'ريادة الأعمال هي عملية تحديد فرصة تجارية وإنشاء وتنظيم وإدارة أعمال تجارية جديدة، مع تحمل المخاطر من أجل تحقيق الربح. رائد الأعمال (Entrepreneur) هو الشخص الذي يبدأ ويدير عمله الخاص. الأهمية: يخلق وظائف جديدة، يشجع الابتكار، يعزز النمو الاقتصادي، ويقدم منتجات وخدمات جديدة.' },
+            { type: 'heading', text: 'خصائص رواد الأعمال (Characteristics of Entrepreneurs)' },
+            { type: 'list', items: [
+              'الإبداع (Creativity): القدرة على توليد أفكار وحلول جديدة.',
+              'تحمل المخاطر (Risk-Taking): الاستعداد لتحمل المخاطر المالية والتجارية.',
+              'الابتكار (Innovation): تطوير منتجات أو خدمات أو عمليات جديدة.',
+              'القيادة (Leadership): القدرة على إدارة وتحفيز الفريق.',
+              'المثابرة (Persistence): مواصلة الجهود رغم التحديات والفشل.',
+              'مهارات حل المشكلات (Problem-Solving Skills): القدرة على تحديد وحل مشكلات العمل.',
+              'الرؤية (Vision): القدرة على التخطيط للمستقبل وتحديد الأهداف.'
+            ]},
+            { type: 'heading', text: 'الشركات الناشئة (Startup Businesses)' },
+            { type: 'paragraph', text: 'الشركة الناشئة (Startup) هي شركة حديثة التأسيس مصممة لتطوير منتج أو خدمة فريدة وقابلة للتوسع. شائعة في قطاع التكنولوجيا (شركات تطبيقات الهاتف المحمول، شركات البرمجيات كخدمة SaaS، منصات التجارة الإلكترونية، شركات الذكاء الاصطناعي الناشئة).' },
+            { type: 'heading', text: 'خطة العمل ومكوناتها (Business Planning)' },
+            { type: 'paragraph', text: 'خطة العمل (Business plan) هي وثيقة مكتوبة توضح فكرة العمل وكيفية تنفيذها (توجيه العمليات، تأمين التمويل، تقليل المخاطر). المكونات الرئيسية: 1. فكرة العمل، 2. تحليل السوق، 3. استراتيجية التسويق، 4. خطة العمليات، 5. الخطة المالية، 6. فريق الإدارة.' },
+            { type: 'heading', text: 'مصادر أفكار الأعمال والتحديات (Sources of Business Ideas & Challenges)' },
+            { type: 'list', items: [
+              'المصادر: الخبرة الشخصية، احتياجات السوق، اتجاهات التكنولوجيا (الذكاء الاصطناعي، السحابية)، الابتكار، ملاحظات العملاء، تحليل المنافسين.',
+              'التحديات: القيود المالية، منافسة السوق، نقص الخبرة، خطر الفشل، القضايا القانونية والتنظيمية، إدارة النمو، التحديات التكنولوجية.'
+            ]}
+          ]
+        },
+        quiz: [
+          {
+            question: { en: 'What is a newly established business designed to develop a scalable product called?', ar: 'ماذا تسمى الشركة حديثة التأسيس المصممة لتطوير منتج قابل للتوسع؟' },
+            options: {
+              en: ['Startup', 'Monopoly', 'Non-profit trust', 'Conglomerate'],
+              ar: ['شركة ناشئة (Startup)', 'احتكار', 'صندوق غير ربحي', 'تكتل تجاري']
+            },
+            correct: 0
+          },
+          {
+            question: { en: 'Which component is part of a written business plan?', ar: 'أي مكون يعد جزءاً من خطة العمل المكتوبة؟' },
+            options: {
+              en: ['Financial Plan', 'Personal Diary', 'Weather Forecast', 'Social Media Feed'],
+              ar: ['الخطة المالية (Financial Plan)', 'مذكرة شخصية', 'توقعات الطقس', 'تغذية وسائل التواصل']
+            },
+            correct: 0
+          }
+        ]
+      },
+      {
+        id: 'module6',
+        title: { en: 'Module 6: Management & HRM', ar: 'الوحدة 6: الإدارة وإدارة الموارد البشرية (Management & HRM)' },
+        content: {
+          en: [
+            { type: 'heading', text: 'Management and Human Resource Management (Lecture 6)' },
+            { type: 'heading', text: 'What is Management?' },
+            { type: 'paragraph', text: 'Management is the process of planning, organizing, leading, and controlling resources to achieve organizational goals efficiently and effectively.' },
+            { type: 'heading', text: 'Four Main Functions of Management' },
+            { type: 'list', items: [
+              '1. Planning: Setting goals and deciding how to achieve them (e.g., planning a new mobile app development).',
+              '2. Organizing: Arranging resources and tasks, assigning responsibilities and structure (e.g., assigning developers, designers, testers).',
+              '3. Leading: Motivating and guiding employees through communication and team management (e.g., project manager guiding a dev team).',
+              '4. Controlling: Monitoring performance, comparing results with goals, and making corrections.'
+            ]},
+            { type: 'heading', text: 'Levels of Management' },
+            { type: 'list', items: [
+              'Top-Level Management: Overall direction, strategic decisions (e.g., CEO).',
+              'Middle-Level Management: Implementing strategies, managing teams (e.g., IT Manager, Department Head).',
+              'Operational (Lower-Level) Management: Daily operations, overseeing tasks (e.g., Team Leaders, Supervisors).'
+            ]},
+            { type: 'heading', text: 'Human Resource Management (HRM)' },
+            { type: 'paragraph', text: 'HRM is the process of recruiting, developing, and managing employees as the most important resource.' },
+            { type: 'list', items: [
+              'Recruitment & Selection: Attracting candidates via ads/portals and selecting the best via interviews and skill tests.',
+              'Training & Development: Teaching job skills and preparing employees for long-term growth and leadership.',
+              'Employee Motivation & Retention: Financial (salary, bonuses) vs Non-financial (recognition, career growth) motivation to retain talented staff.',
+              'HRM in IT: Essential due to specialized skills, continuous training, teamwork, and high competition.'
+            ]}
+          ],
+          ar: [
+            { type: 'heading', text: 'الإدارة وإدارة الموارد البشرية (Management and Human Resource Management)' },
+            { type: 'heading', text: 'ما هي الإدارة؟ (What is Management?)' },
+            { type: 'paragraph', text: 'الإدارة هي عملية التخطيط والتنظيم والقيادة والتحكم في الموارد لتحقيق أهداف المنظمة بكفاءة وفعالية.' },
+            { type: 'heading', text: 'الوظائف الأربع الرئيسية للإدارة (Four Main Functions of Management)' },
+            { type: 'list', items: [
+              '1. التخطيط (Planning): تحديد الأهداف وتقرر كيفية تحقيقها (مثال: تخطيط تطوير تطبيق محمول جديد).',
+              '2. التنظيم (Organizing): ترتيب الموارد والمهام، وتخصيص المسؤوليات والهيكل التنظيمي (مثال: تعيين المطورين والمصممين والمختبرين).',
+              '3. القيادة (Leading): تحفيز وتوجيه الموظفين من خلال التواصل وإدارة الفريق (مثال: مدير مشروع يوجه فريق تطوير).',
+              '4. الرقابة والتحكم (Controlling): مراقبة الأداء، مقارنة النتائج بالأهداف، وإجراء التحسينات التصحيحية.'
+            ]},
+            { type: 'heading', text: 'مستويات الإدارة (Levels of Management)' },
+            { type: 'list', items: [
+              'الإدارة العليا (Top-Level Management): الاتجاه العام والقرارات الاستراتيجية (مثل: الرئيس التنفيذي CEO).',
+              'الإدارة الوسطى (Middle-Level Management): تنفيذ الاستراتيجيات وإدارة الفرق (مثل: مدير تكنولوجيا المعلومات، رئيس القسم).',
+              'الإدارة التشغيلية / الدنيا (Operational Management): العمليات اليومية الإشرافية (مثل: قادة الفرق، المشرفون).'
+            ]},
+            { type: 'heading', text: 'إدارة الموارد البشرية (Human Resource Management - HRM)' },
+            { type: 'paragraph', text: 'إدارة الموارد البشرية هي عملية توظيف وتطوير وإدارة الموظفين باعتبارهم المورد الأهم في المنظمة.' },
+            { type: 'list', items: [
+              'التوظيف والاختيار (Recruitment & Selection): جذب المرشحين عبر الإعلانات واختيار الأفضل عبر المقابلات واختبارات المهارات.',
+              'التدريب والتطوير (Training & Development): تعليم الموظفين مهارات الوظيفة وإعدادهم للنمو طويل الأجل والقيادة.',
+              'تحفيز والاحتفاظ بالموظفين (Motivation & Retention): التحفيز المالي (الرواتب، المكافآت) وغير المالي (التقدير، النمو الوظيفي) للاحتفاظ بالموظفين الموهوبين.',
+              'الموارد البشرية في تكنولوجيا المعلومات (HRM in IT): ضرورية نظراً للمهارات المتخصصة المطلوبة، التدريب المستمر، العمل الجماعي، والمنافسة العالية.'
+            ]}
+          ]
+        },
+        quiz: [
+          {
+            question: { en: 'Which management function involves monitoring performance and making corrections?', ar: 'أي وظيفة إدارية تتضمن مراقبة الأداء وإجراء التصحيحات؟' },
+            options: {
+              en: ['Planning', 'Controlling', 'Recruiting', 'Outsourcing'],
+              ar: ['التخطيط (Planning)', 'الرقابة والتحكم (Controlling)', 'التوظيف', 'الاستعانة بمصادر خارجية']
+            },
+            correct: 1
+          },
+          {
+            question: { en: 'Who belongs to top-level management?', ar: 'من ينتمي إلى الإدارة العليا (Top-level management)?' },
+            options: {
+              en: ['Team Supervisor', 'Department Head', 'Chief Executive Officer (CEO)', 'Junior Developer'],
+              ar: ['مشرف الفريق', 'رئيس القسم', 'الرئيس التنفيذي (CEO)', 'مطور مبتدئ']
+            },
+            correct: 2
+          }
+        ]
+      },
+      {
+        id: 'module7',
+        title: { en: 'Module 7: Marketing & Operations Management', ar: 'الوحدة 7: التسويق وإدارة العمليات (Marketing & Operations)' },
+        content: {
+          en: [
+            { type: 'heading', text: 'Marketing and Operations Management (Lecture 7)' },
+            { type: 'heading', text: 'What is Marketing?' },
+            { type: 'paragraph', text: 'Marketing is the process of identifying customer needs and satisfying them by creating and delivering value through products or services.' },
+            { type: 'heading', text: 'Customer Value & The Marketing Mix (4Ps)' },
+            { type: 'paragraph', text: 'Customer Value = Benefits − Cost (Functional, Emotional, Social value). The Marketing Mix consists of:' },
+            { type: 'list', items: [
+              '1. Product: Goods/services offered (design, features, quality, branding).',
+              '2. Price: Amount customers pay (pricing strategies, subscriptions).',
+              '3. Place: Where/how products are distributed (physical stores, online platforms, app stores).',
+              '4. Promotion: Communication activities (advertising, social media marketing, email campaigns).'
+            ]},
+            { type: 'heading', text: 'Operations Management' },
+            { type: 'paragraph', text: 'Operations management is the process of planning, organizing, and controlling the production of goods and services to improve efficiency and reduce costs.' },
+            { type: 'list', items: [
+              'Manufacturing vs. Service Operations: Manufacturing produces physical goods (tangible, can be stored). Service operations provide intangible outputs produced and consumed simultaneously (e.g., software development, cloud services).',
+              'Supply Chain Management: Network of suppliers, manufacturers, distributors, and retailers.',
+              'Quality Management: Quality control (checking products) and quality assurance (preventing defects).'
+            ]}
+          ],
+          ar: [
+            { type: 'heading', text: 'التسويق وإدارة العمليات (Marketing and Operations Management)' },
+            { type: 'heading', text: 'ما هو التسويق؟ (What is Marketing?)' },
+            { type: 'paragraph', text: 'التسويق هو عملية تحديد احتياجات العملاء وإشباعها من خلال إنشاء وتقديم القيمة عبر المنتجات أو الخدمات.' },
+            { type: 'heading', text: 'قيمة العملاء ومزيج التسويق (The Marketing Mix - 4Ps)' },
+            { type: 'paragraph', text: 'قيمة العملاء (Customer Value) = الفوائد − التكلفة (قيمة وظيفية، عاطفية، واجتماعية). يتكون مزيج التسويق من العناصر الأربعة (4Ps):' },
+            { type: 'list', items: [
+              '1. المنتج (Product): السلع أو الخدمات المعروضة (التصميم، الميزات، الجودة، العلامة التجارية).',
+              '2. السعر (Price): المبلغ الذي يدفعه العملاء (استراتيجيات التسعير، الاشتراكات).',
+              '3. المكان (Place): أين وكيف يتم توزيع المنتجات (المتاجر المادية، المنصات عبر الإنترنت، متاجر التطبيقات).',
+              '4. الترويج (Promotion): أنشطة الاتصال والتواصل مع العملاء (الإعلان، تسويق وسائل التواصل الاجتماعي، البريد الإلكتروني).'
+            ]},
+            { type: 'heading', text: 'إدارة العمليات (Operations Management)' },
+            { type: 'paragraph', text: 'إدارة العمليات هي عملية التخطيط والتنظيم والتحكم في إنتاج السلع والخدمات لتحسين الكفاءة وتقليل التكاليف.' },
+            { type: 'list', items: [
+              'عمليات التصنيع مقابل عمليات الخدمات: التصنيع ينتج سلعاً مادية (ملموسة، يمكن تخزينها). عمليات الخدمات تقدم مخرجات غير ملموسة يتم إنتاجها واستهلاكها في نفس الوقت (مثل تطوير البرمجيات، الخدمات السحابية).',
+              'إدارة سلسلة الإمداد (Supply Chain Management): شبكة الموردين والمصنعين والموزعين وتجار التجزئة.',
+              'إدارة الجودة (Quality Management): مراقبة الجودة (فحص المنتجات) وضمان الجودة (منع العيوب).'
+            ]}
+          ]
+        },
+        quiz: [
+          {
+            question: { en: 'What are the 4Ps of the marketing mix?', ar: 'ما هي العناصر الأربعة (4Ps) لمزيج التسويق؟' },
+            options: {
+              en: ['Product, Price, Place, Promotion', 'Planning, Production, People, Profit', 'Private, Public, Partnership, Policy', 'Power, Performance, Process, Price'],
+              ar: ['المنتج، السعر، المكان، الترويج (Product, Price, Place, Promotion)', 'التخطيط، الإنتاج، الأشخاص، الربح', 'خاص، عام، شراكة، سياسة', 'طاقة، أداء، عملية، سعر']
+            },
+            correct: 0
+          },
+          {
+            question: { en: 'Which operation type involves intangible outputs produced and consumed at the same time?', ar: 'أي نوع من العمليات يتضمن مخرجات غير ملموسة يتم إنتاجها واستهلاكها في نفس الوقت؟' },
+            options: {
+              en: ['Manufacturing operations', 'Service operations', 'Heavy assembly', 'Agricultural harvesting'],
+              ar: ['عمليات التصنيع', 'عمليات الخدمات (Service operations)', 'التجميع الثقيل', 'الحصاد الزراعي']
+            },
+            correct: 1
+          }
+        ]
+      },
+      {
+        id: 'glossary',
+        title: { en: 'Glossary / قاموس المصطلحات', ar: 'قاموس المصطلحات (Glossary)' },
+        isGlossary: true,
+        content: {
+          en: [
+            { term: 'Business', translation: 'أعمال / شركة' },
+            { term: 'Stakeholders', translation: 'أصحاب المصلحة' },
+            { term: 'Sole Proprietorship', translation: 'ملكية فردية' },
+            { term: 'Partnership', translation: 'شراكة' },
+            { term: 'Corporation', translation: 'شركة مساهمة' },
+            { term: 'Limited Liability Company (LLC)', translation: 'شركة ذات مسؤولية محدودة' },
+            { term: 'Business Ethics', translation: 'أخلاقيات الأعمال' },
+            { term: 'Corporate Social Responsibility (CSR)', translation: 'المسؤولية الاجتماعية للشركات' },
+            { term: 'Globalization', translation: 'العولمة' },
+            { term: 'Multinational Company (MNC)', translation: 'شركة متعددة الجنسيات' },
+            { term: 'Entrepreneurship', translation: 'ريادة الأعمال' },
+            { term: 'Startup', translation: 'شركة ناشئة' },
+            { term: 'Management', translation: 'الإدارة' },
+            { term: 'Human Resource Management (HRM)', translation: 'إدارة الموارد البشرية' },
+            { term: 'Marketing Mix (4Ps)', translation: 'مزيج التسويق (العناصر الأربعة)' },
+            { term: 'Operations Management', translation: 'إدارة العمليات' },
+            { term: 'Supply Chain Management', translation: 'إدارة سلسلة الإمداد' },
+            { term: 'Intellectual Property', translation: 'الملكية الفكرية' },
+            { term: 'Cybersecurity', translation: 'الأمن السيبراني' },
+            { term: 'Cloud Computing', translation: 'الحوسبة السحابية' },
+            { term: 'Inflation', translation: 'التضخم' },
+            { term: 'Unemployment', translation: 'البطالة' },
+            { term: 'Profit', translation: 'الربح' },
+            { term: 'Revenue', translation: 'الإيرادات' },
+            { term: 'Liability', translation: 'المسؤولية القانونية / الالتزامات' }
+          ]
+        }
+      }
+    ];
+
+    // App State
+    let currentLang = 'en'; // 'en' or 'ar'
+    let currentModuleId = 'intro';
+
+    // DOM Elements
+    const navTitle = document.getElementById('nav-title');
+    const navSubtitle = document.getElementById('nav-subtitle');
+    const sidebarHeading = document.getElementById('sidebar-heading');
+    const moduleNav = document.getElementById('module-nav');
+    const contentContainer = document.getElementById('content-container');
+    const langToggle = document.getElementById('lang-toggle');
+    const langLabel = document.getElementById('lang-label');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+
+    // Initialize App
+    function init() {
+      renderSidebar();
+      renderContent();
+      updateLanguageUI();
+
+      // Event Listeners
+      langToggle.addEventListener('click', toggleLanguage);
+      sidebarToggle.addEventListener('click', toggleMobileSidebar);
+      sidebarBackdrop.addEventListener('click', toggleMobileSidebar);
+    }
+
+    function toggleLanguage() {
+      currentLang = currentLang === 'en' ? 'ar' : 'en';
+      document.documentElement.setAttribute('lang', currentLang);
+      document.documentElement.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+      updateLanguageUI();
+      renderSidebar();
+      renderContent();
+    }
+
+    function updateLanguageUI() {
+      if (currentLang === 'ar') {
+        langLabel.textContent = 'English';
+        navTitle.textContent = 'IS';
+        navSubtitle.textContent = 'دورة تعليمية تفاعلية';
+        sidebarHeading.textContent = 'وحدات الدورة';
+      } else {
+        langLabel.textContent = 'العربية';
+        navTitle.textContent = 'IS';
+        navSubtitle.textContent = 'Interactive Educational Course';
+        sidebarHeading.textContent = 'Course Modules';
+      }
+    }
+
+    function toggleMobileSidebar() {
+      sidebar.classList.toggle('-translate-x-full');
+      sidebar.classList.toggle('rtl:translate-x-full');
+      sidebarBackdrop.classList.toggle('hidden');
+    }
+
+    function renderSidebar() {
+      moduleNav.innerHTML = '';
+      courseData.forEach((mod, index) => {
+        const btn = document.createElement('button');
+        const isActive = mod.id === currentModuleId;
+        btn.className = `w-full text-left rtl:text-right px-3.5 py-2.5 rounded-xl text-xs lg:text-sm font-medium transition-all flex items-center justify-between group ${
+          isActive 
+            ? 'bg-brand-500 text-dark-base font-semibold shadow-md' 
+            : 'text-dark-muted hover:bg-dark-elevated hover:text-white'
+        }`;
+        
+        const titleText = mod.title[currentLang];
+        btn.innerHTML = `
+          <span class="truncate">${titleText}</span>
+          <span class="text-[10px] font-mono px-1.5 py-0.5 rounded ${isActive ? 'bg-dark-base/20 text-dark-base' : 'bg-dark-elevated text-dark-muted'}">0${index + 1}</span>
+        `;
+        
+        btn.addEventListener('click', () => {
+          currentModuleId = mod.id;
+          renderSidebar();
+          renderContent();
+          if (window.innerWidth < 1024) {
+            toggleMobileSidebar();
+          }
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        moduleNav.appendChild(btn);
+      });
+    }
+
+    function renderContent() {
+      const module = courseData.find(m => m.id === currentModuleId);
+      if (!module) return;
+
+      contentContainer.innerHTML = '';
+
+      // Module Header Card
+      const headerCard = document.createElement('div');
+      headerCard.className = 'bg-dark-surface border border-dark-border rounded-2xl p-6 shadow-xl relative overflow-hidden';
+      headerCard.innerHTML = `
+        <div class="absolute top-0 right-0 w-32 h-32 bg-brand-500/10 rounded-full blur-2xl pointer-events-none"></div>
+        <span class="text-xs font-mono text-brand-500 uppercase tracking-widest font-semibold">Module Content</span>
+        <h2 class="text-2xl lg:text-3xl font-bold text-white mt-1 mb-2">${module.title[currentLang]}</h2>
+        <div class="h-1 w-16 bg-brand-500 rounded-full"></div>
+      `;
+      contentContainer.appendChild(headerCard);
+
+      // Render Glossary if it's the glossary module
+      if (module.isGlossary) {
+        const glossaryCard = document.createElement('div');
+        glossaryCard.className = 'bg-dark-surface border border-dark-border rounded-2xl p-6 shadow-lg space-y-4';
+        
+        let html = `
+          <div class="mb-4">
+            <input type="text" id="glossary-search" placeholder="${currentLang === 'ar' ? 'بحث في المصطلحات...' : 'Search glossary terms...'}" 
+              class="w-full px-4 py-2.5 rounded-xl bg-dark-base border border-dark-border text-white text-sm focus:outline-none focus:border-brand-500">
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="glossary-grid">
+        `;
+
+        module.content.en.forEach((item, idx) => {
+          html += `
+            <div class="glossary-item bg-dark-elevated p-4 rounded-xl border border-dark-border flex flex-col justify-between hover:border-brand-500/50 transition-colors">
+              <span class="font-mono font-bold text-brand-500 text-sm">${item.term}</span>
+              <span class="text-dark-text text-sm mt-1 font-semibold">${item.translation}</span>
+            </div>
+          `;
+        });
+
+        html += `</div>`;
+        glossaryCard.innerHTML = html;
+        contentContainer.appendChild(glossaryCard);
+
+        // Add search functionality
+        setTimeout(() => {
+          const searchInput = document.getElementById('glossary-search');
+          if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+              const query = e.target.value.toLowerCase();
+              const items = document.querySelectorAll('.glossary-item');
+              items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(query) ? 'flex' : 'none';
+              });
+            });
+          }
+        }, 100);
+
+        return;
+      }
+
+      // Render Standard Module Content
+      const contentList = module.content[currentLang] || [];
+      contentList.forEach(block => {
+        if (block.type === 'heading') {
+          const h = document.createElement('h3');
+          h.className = 'text-lg lg:text-xl font-bold text-white mt-6 mb-3 flex items-center space-x-2 rtl:space-x-reverse';
+          h.innerHTML = `<span class="w-2 h-2 rounded-full bg-brand-500 inline-block"></span><span>${block.text}</span>`;
+          contentContainer.appendChild(h);
+        } else if (block.type === 'paragraph') {
+          const p = document.createElement('p');
+          p.className = 'text-dark-muted text-sm lg:text-base leading-relaxed';
+          p.textContent = block.text;
+          contentContainer.appendChild(p);
+        } else if (block.type === 'list') {
+          const ul = document.createElement('ul');
+          ul.className = 'space-y-2 my-3';
+          block.items.forEach(item => {
+            const li = document.createElement('li');
+            li.className = 'flex items-start space-x-3 rtl:space-x-reverse text-dark-muted text-sm lg:text-base bg-dark-surface/50 p-3 rounded-xl border border-dark-border/50';
+            li.innerHTML = `
+              <svg class="w-5 h-5 text-brand-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              <span>${item}</span>
+            `;
+            ul.appendChild(li);
+          });
+          contentContainer.appendChild(ul);
+        } else if (block.type === 'example') {
+          const ex = document.createElement('div');
+          ex.className = 'bg-dark-elevated border-l-4 rtl:border-r-4 rtl:border-l-0 border-brand-500 p-4 rounded-r-xl rtl:rounded-r-none rtl:rounded-l-xl my-4 shadow-sm';
+          ex.innerHTML = `<p class="text-xs font-mono text-brand-500 font-bold mb-1 uppercase tracking-wider">Example / مثال</p><p class="text-sm text-dark-text">${block.text}</p>`;
+          contentContainer.appendChild(ex);
+        } else if (block.type === 'table') {
+          const tableWrapper = document.createElement('div');
+          tableWrapper.className = 'overflow-x-auto my-4 rounded-xl border border-dark-border bg-dark-surface shadow-md';
+          
+          let tableHTML = `<table class="w-full text-left rtl:text-right border-collapse"><thead><tr class="bg-dark-elevated border-b border-dark-border">`;
+          block.headers.forEach(h => {
+            tableHTML += `<th class="px-4 py-3 text-xs font-mono uppercase tracking-wider text-brand-500 font-bold">${h}</th>`;
+          });
+          tableHTML += `</tr></thead><tbody class="divide-y divide-dark-border text-sm text-dark-text">`;
+          
+          block.rows.forEach(row => {
+            tableHTML += `<tr class="hover:bg-dark-elevated/50 transition-colors">`;
+            row.forEach(cell => {
+              tableHTML += `<td class="px-4 py-3">${cell}</td>`;
+            });
+            tableHTML += `</tr>`;
+          });
+          
+          tableHTML += `</tbody></table>`;
+          tableWrapper.innerHTML = tableHTML;
+          contentContainer.appendChild(tableWrapper);
+        }
+      });
+
+      // Render Interactive Quiz if available
+      if (module.quiz && module.quiz.length > 0) {
+        const quizContainer = document.createElement('div');
+        quizContainer.className = 'bg-dark-surface border border-dark-border rounded-2xl p-6 shadow-xl mt-10 space-y-6';
+        
+        let quizHTML = `
+          <div class="flex items-center space-x-3 rtl:space-x-reverse border-b border-dark-border pb-4">
+            <div class="w-8 h-8 rounded-lg bg-brand-500/20 text-brand-500 flex items-center justify-center font-bold font-mono">Q</div>
+            <div>
+              <h3 class="text-lg font-bold text-white">${currentLang === 'ar' ? 'اختبار ذاتي تفاعلي' : 'Interactive Self-Assessment Quiz'}</h3>
+              <p class="text-xs text-dark-muted">${currentLang === 'ar' ? 'اختر الإجابة الصحيحة لعرض النتيجة الفورية' : 'Select the correct option for instant visual feedback'}</p>
+            </div>
+          </div>
+          <div class="space-y-6">
+        `;
+
+        module.quiz.forEach((q, qIdx) => {
+          const qText = q.question[currentLang];
+          const options = q.options[currentLang];
+          
+          quizHTML += `
+            <div class="quiz-question bg-dark-elevated p-5 rounded-xl border border-dark-border space-y-3" data-correct="${q.correct}">
+              <p class="font-semibold text-white text-sm lg:text-base"><span class="text-brand-500 font-mono mr-2 rtl:ml-2">0${qIdx + 1}.</span>${qText}</p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-2">
+          `;
+
+          options.forEach((opt, optIdx) => {
+            quizHTML += `
+              <button class="quiz-option text-left rtl:text-right px-4 py-3 rounded-xl border border-dark-border bg-dark-surface text-dark-muted hover:border-brand-500 hover:text-white text-xs lg:text-sm font-medium transition-all flex items-center justify-between group" data-option="${optIdx}" data-question="${qIdx}">
+                <span>${opt}</span>
+                <span class="w-4 h-4 rounded-full border border-dark-border group-hover:border-brand-500 flex items-center justify-center flex-shrink-0"></span>
+              </button>
+            `;
+          });
+
+          quizHTML += `</div></div>`;
+        });
+
+        quizHTML += `</div>`;
+        quizContainer.innerHTML = quizHTML;
+        contentContainer.appendChild(quizContainer);
+
+        // Add Quiz Interactivity Logic
+        setTimeout(() => {
+          const questionCards = quizContainer.querySelectorAll('.quiz-question');
+          questionCards.forEach(card => {
+            const correctIndex = parseInt(card.getAttribute('data-correct'));
+            const options = card.querySelectorAll('.quiz-option');
+
+            options.forEach(optBtn => {
+              optBtn.addEventListener('click', (e) => {
+                // Disable all options in this question once answered
+                options.forEach(btn => btn.disabled = true);
+
+                const selectedIndex = parseInt(optBtn.getAttribute('data-option'));
+                
+                if (selectedIndex === correctIndex) {
+                  optBtn.classList.remove('border-dark-border', 'bg-dark-surface', 'text-dark-muted');
+                  optBtn.classList.add('border-emerald-500', 'bg-emerald-500/20', 'text-emerald-400', 'font-bold');
+                  optBtn.querySelector('span:last-child').innerHTML = `
+                    <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                  `;
+                } else {
+                  optBtn.classList.remove('border-dark-border', 'bg-dark-surface', 'text-dark-muted');
+                  optBtn.classList.add('border-rose-500', 'bg-rose-500/20', 'text-rose-400', 'font-bold');
+                  optBtn.querySelector('span:last-child').innerHTML = `
+                    <svg class="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                  `;
+
+                  // Highlight correct option
+                  options[correctIndex].classList.remove('border-dark-border', 'bg-dark-surface', 'text-dark-muted');
+                  options[correctIndex].classList.add('border-emerald-500', 'bg-emerald-500/20', 'text-emerald-400', 'font-bold');
+                }
+              });
+            });
+          });
+        }, 100);
+      }
+    }
+
+    // Run initialization on load
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>

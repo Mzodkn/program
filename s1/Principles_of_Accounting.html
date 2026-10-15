@@ -1,0 +1,1500 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Principles of Accounting - Study Portal</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#f0fdfa', 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e' },
+            dark: { base: '#0b0f17', surface: '#111827', elevated: '#1f2937', border: '#374151', text: '#f3f4f6', muted: '#9ca3af' }
+          },
+          fontFamily: {
+            sans: ['Inter', 'Cairo', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+      body {
+    background-color: #0b0f17;
+    background-image: 
+      linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0b0f17; }
+    ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #374151; }
+    .nav-active {
+      background-color: #1f2937;
+      border-inline-start: 4px solid #14b8a6;
+      color: #14b8a6 !important;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body class="bg-dark-base text-dark-text font-sans antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-dark-surface/90 backdrop-blur border-b border-dark-border">
+    
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button id="sidebarToggle" class="p-2 md:hidden text-dark-muted hover:text-white" aria-label="Toggle Navigation">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+        </button>
+        <!-- Header Actions (Home & Language Toggle) -->
+      <div class="flex items-center gap-2">
+        <a href="index.html" class="px-3 py-1.5 rounded-lg bg-dark-elevated border border-dark-border text-xs sm:text-sm font-bold text-dark-muted hover:text-white hover:bg-dark-border transition flex items-center gap-1.5 shadow-sm shrink-0" title="الرئيسية">
+          <span>&larr;</span> <span class="hidden sm:inline">الرئيسية</span>
+        </a>
+     
+      </div>
+        <div class="w-9 h-9 rounded bg-gradient-to-tr from-brand-600 to-teal-400 flex items-center justify-center font-bold text-white shadow-lg">PA</div>
+        <div>
+          <div class="font-bold text-lg hidden sm:block leading-tight">Principles of Accounting</div>
+          <div class="text-xs text-dark-muted hidden sm:block">Dr. Omer Mohd Abdelaal</div>
+        </div>
+      </div>
+      
+      <!-- Language Toggle Button -->
+      <button id="langToggle" class="px-4 py-1.5 rounded-lg bg-dark-elevated border border-dark-border text-sm font-semibold text-brand-500 hover:bg-dark-border transition shadow-sm">
+        العربية
+      </button>
+    </div>
+  </header>
+  
+  <div class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 flex gap-6">
+    
+     <div class="flex items-center gap-3 truncate pr-2">
+               
+                <div class="h-5 w-[1px] bg-dark-border shrink-0"></div>
+                <h2 id="moduleTitle" class="text-lg md:text-2xl font-bold text-white truncate"></h2>
+              =
+            </div>
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-72 bg-dark-surface border border-dark-border rounded-xl p-4 h-[calc(100vh-6rem)] sticky top-20 overflow-y-auto hidden md:block shrink-0 shadow-xl">
+      <div class="text-xs font-bold uppercase text-dark-muted px-3 mb-3 tracking-wider" id="navTitle">Course Modules</div>
+      <nav id="moduleList" class="space-y-1"></nav>
+    </aside>
+    
+    <!-- Main Content Area -->
+    <main class="flex-1 min-w-0 bg-dark-surface border border-dark-border rounded-xl p-6 sm:p-8 shadow-xl">
+      <div class="text-sm font-mono text-brand-500 mb-2 font-semibold" id="lectureNumber"></div>
+      
+      <article id="contentArea" class="space-y-8 leading-relaxed"></article>
+
+      <!-- Quiz Section -->
+      <section id="quizSection" class="mt-12 pt-8 border-t border-dark-border">
+        <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-brand-500"></span>
+          <span id="quizTitle">Interactive Self-Assessment</span>
+        </h3>
+        <div id="quizContainer" class="space-y-6"></div>
+      </section>
+
+      <!-- Navigation Footer -->
+      <div class="mt-12 pt-6 border-t border-dark-border flex items-center justify-between">
+        <button id="prevBtn" class="px-5 py-2.5 rounded-lg bg-dark-elevated border border-dark-border text-dark-muted hover:text-white transition font-medium text-sm">&larr; Previous</button>
+        <button id="nextBtn" class="px-5 py-2.5 rounded-lg bg-brand-600 text-white hover:bg-brand-500 transition font-medium text-sm shadow-md">Next &rarr;</button>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Safe Cleaner: Only strips cite tags without altering HTML markup or slashes
+    function cleanText(text) {
+      if (!text) return '';
+      const citeRegex = new RegExp('\\[' + 'cite' + ':[^\\]]+\\]', 'gi');
+      return text.replace(citeRegex, '').trim();
+    }
+
+    const courseData = [
+      // ================= CHAPTER 1 =================
+      {
+        id: "ch1",
+        number: "Chapter 1",
+        title: { en: "Introduction to Accounting", ar: "مقدمة في المحاسبة (Introduction to Accounting)" },
+        content: {
+          en: `
+            <div class="space-y-6">
+              <h1 class="text-2xl sm:text-3xl font-bold text-white">Chapter 1: Introduction to Accounting</h1>
+              <p class="text-xs text-dark-muted font-mono">Instructor: Dr. Omer Mohd Abdelaal | Contact: 0912900371 - 0922007596 | Omar.m.mutaal@gmail.com</p>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                  <h3 class="font-bold text-teal-400 mb-2">Course Overview</h3>
+                  <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li>Introduction to accounting concepts and operating characteristics of accounting systems.</li>
+                    <li>Focuses on the definitions and core concepts of accounting.</li>
+                    <li>Teaches the proper and correct way of journalizing and posting transactions in books of accounts, preparing financial statements, and interpreting financial reports.</li>
+                  </ul>
+                </div>
+                <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                  <h3 class="font-bold text-teal-400 mb-2">Learning Objectives</h3>
+                  <ol class="list-decimal list-inside text-sm text-gray-300 space-y-1">
+                    <li>Know what a business is.</li>
+                    <li>Know the role of accounting in relation to business.</li>
+                    <li>Distinguish types and forms of business organization.</li>
+                    <li>Identify characteristics of forms of business organization.</li>
+                    <li>Learn the nature, definition, and functions of accounting.</li>
+                    <li>Journalize transactions and post to the general ledger.</li>
+                    <li>Prepare the Trial Balance and Financial Reports.</li>
+                  </ol>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">Introduction to Business</h2>
+                <div class="p-4 rounded-lg bg-dark-elevated border-l-4 border-brand-500 text-sm text-gray-300 space-y-2">
+                  <p><strong>Definition:</strong> A business is an organization or economic system where goods and services are exchanged for one another or for money.</p>
+                  <p><strong>Every business requires:</strong> Some form of investment and enough customers to whom output can be sold on a consistent basis in order to make a profit.</p>
+                  <p><strong>People involved in business:</strong></p>
+                  <ul class="list-disc list-inside pl-2 space-y-1">
+                    <li><strong>Buyer:</strong> The person who buys or purchases products/commodities and services from the seller.</li>
+                    <li><strong>Seller:</strong> The person who sells or offers products/commodities or services to buyers.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">Types of Business</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-1">1. Manufacturing Business</h4>
+                    <p class="text-gray-300">Converts raw materials into finished goods suitable for use and then sells those goods to others.</p>
+                  </div>
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-1">2. Wholesaling Business</h4>
+                    <p class="text-gray-300">Buys goods in large quantities, typically from manufacturers, and resells them in smaller batches to retailers.</p>
+                  </div>
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-1">3. Retailing Business</h4>
+                    <p class="text-gray-300">Buys goods, often from wholesalers, and resells them directly to consumers (end buyers). Can be physical stores or online. Requires a reseller's permit. (Wholesale and retail are trade businesses).</p>
+                  </div>
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-1">4. Service Business</h4>
+                    <p class="text-gray-300">Provides intangible services and professional activities to customers for a fee.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">Legal Forms of Business Organization</h2>
+                <div class="space-y-3 text-sm">
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <strong class="text-teal-400 text-base">1. Sole Proprietorship:</strong>
+                    <p class="text-gray-300 mt-1">Owned and run by only one (1) person (Sole Proprietor). It is the most common form of business organization since there are so few legal requirements to set up.</p>
+                  </div>
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <strong class="text-teal-400 text-base">2. Partnership:</strong>
+                    <p class="text-gray-300 mt-1">A group consisting of two or more people who run and own a business together. The owners are called partners.</p>
+                  </div>
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <strong class="text-teal-400 text-base">3. Corporation:</strong>
+                    <p class="text-gray-300 mt-1">Has a separate legal identity from its owners, giving owners limited liability. There is no limit on the number of owners. Proof of ownership is stock. The owners are called Stockholders or Shareholders.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-5 rounded-lg bg-dark-base border border-brand-500/30 text-sm space-y-4">
+                <h3 class="text-base font-bold text-brand-500 uppercase tracking-wide">Chapter 1 Exercises & Applied Tasks</h3>
+                
+                <div class="border-t border-dark-border pt-3">
+                  <p class="font-semibold text-white mb-2">Exercise 1: Classify the following advantages/disadvantages into (a) Sole Proprietorship, (b) Partnership, or (c) Corporation:</p>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono text-gray-300">
+                    <p>1. Easy to dissolve</p><p>2. Few government regulations</p>
+                    <p>3. Greater government regulations</p><p>4. Easy and inexpensive to establish</p>
+                    <p>5. Greater access to capital</p><p>6. Easy transfer of ownership</p>
+                    <p>7. Greater business continuity (often difficult to dissolve)</p><p>8. Must share profits</p>
+                    <p>9. Greater tax burden</p><p>10. Easy to organize</p>
+                  </div>
+                </div>
+
+                <div class="border-t border-dark-border pt-3">
+                  <p class="font-semibold text-white mb-1">Exercise 2 (Case Problem):</p>
+                  <p class="text-gray-300">Awab owns and operates a jewelry store. During the past month, she sold a necklace to a customer worth 135,000 pounds. Awab paid 85,000 pounds for the necklace.</p>
+                  <p class="text-teal-400 font-semibold mt-1">Requirement: What type of business does Awab own? (Manufacturing, Merchandising/Retailing, or Service Business). Explain.</p>
+                </div>
+
+                <div class="border-t border-dark-border pt-3">
+                  <p class="font-semibold text-white mb-1">Exercise 3 (Essay Questions):</p>
+                  <ul class="list-disc list-inside text-gray-300 space-y-1">
+                    <li>What is the relationship of business to accounting?</li>
+                    <li>List down the 3 kinds of business and give examples of each.</li>
+                    <li>Which form of business organization requires the most capital?</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          `,
+          ar: `
+            <div class="space-y-6">
+              <h1 class="text-2xl sm:text-3xl font-bold text-white">الفصل 1: مقدمة في المحاسبة (Introduction to Accounting)</h1>
+              <p class="text-xs text-dark-muted font-mono">المحاضر: د. عمر محمد عبد العال | هاتف: 0912900371 - 0922007596 | Omar.m.mutaal@gmail.com</p>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                  <h3 class="font-bold text-teal-400 mb-2">نظرة عامة على المقرر (Overview)</h3>
+                  <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
+                    <li>مقدمة لمفاهيم المحاسبة والخصائص التشغيلية للأنظمة المحاسبية (Accounting Systems).</li>
+                    <li>التركيز على تعريف المحاسبة ومفاهيمها الأساسية.</li>
+                    <li>تعليم الطلاب الطريقة السليمة لتسجيل وترحيل المعاملات (Journalizing & Posting)، وإعداد القوائم المالية وتفسيرها.</li>
+                  </ul>
+                </div>
+                <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                  <h3 class="font-bold text-teal-400 mb-2">أهداف التعلم (Learning Objectives)</h3>
+                  <ol class="list-decimal list-inside text-sm text-gray-300 space-y-1">
+                    <li>معرفة مفهوم العمل التجاري (Business).</li>
+                    <li>معرفة دور المحاسبة بالنسبة للأعمال التجارية.</li>
+                    <li>التمييز بين أنواع وأشكال منظمات الأعمال المختلفة.</li>
+                    <li>التعرف على خصائص أشكال منظمات الأعمال.</li>
+                    <li>تعلم طبيعة وتعريف ووظائف المحاسبة.</li>
+                    <li>إتقان قيود اليومية والترحيل لدفتر الأستاذ العام (General Ledger).</li>
+                    <li>إعداد ميزان المراجعة (Trial Balance) والتقارير المالية.</li>
+                  </ol>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">مقدمة في الأعمال التجارية (Business)</h2>
+                <div class="p-4 rounded-lg bg-dark-elevated border-r-4 border-brand-500 text-sm text-gray-300 space-y-2">
+                  <p><strong>التعريف:</strong> العمل التجاري هو منظمة أو نظام اقتصادي يتم فيه تبادل السلع والخدمات مقابل بعضها البعض أو مقابل المال.</p>
+                  <p><strong>متطلبات العمل التجاري:</strong> يتطلب شكلاً من أشكال الاستثمار، وتوفير قاعدة كافية من العملاء لبيع المخرجات بشكل منتظم لتحقيق الربح (Profit).</p>
+                  <p><strong>أطراف المعاملة التجارية:</strong></p>
+                  <ul class="list-disc list-inside pr-2 space-y-1">
+                    <li><strong>المشتري (Buyer):</strong> الشخص الذي يشتري المنتجات/السلع والخدمات من البائع.</li>
+                    <li><strong>البائع (Seller):</strong> الشخص الذي يبيع أو يعرض المنتجات/السلع أو الخدمات للمشترين.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">أنواع الأعمال التجارية (Types of Business)</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-1">1. الأعمال الصناعية (Manufacturing)</h4>
+                    <p class="text-gray-300">تقوم بتحويل المواد الخام إلى سلع تامة الصنع صالحة للاستخدام ثم بيعها للآخرين.</p>
+                  </div>
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-1">2. تجارة الجملة (Wholesaling)</h4>
+                    <p class="text-gray-300">شراء البضائع بكميات كبيرة من المصنعين وإعادة بيعها في دفعات أصغر لتجار التجزئة.</p>
+                  </div>
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-1">3. تجارة التجزئة (Retailing)</h4>
+                    <p class="text-gray-300">شراء البضائع من تجار الجملة وإعادة بيعها مباشرة للمستهلك النهائي. (أعمال الجملة والتجزئة تُعرف بالأعمال التجارية Trade Businesses).</p>
+                  </div>
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <h4 class="font-bold text-teal-400 mb-1">4. الأعمال الخدمية (Service Business)</h4>
+                    <p class="text-gray-300">تقديم خدمات وأنشطة مهنية للعملاء مقابل أتعاب أو رسوم محددة (Fee).</p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">الأشكال القانونية لمنظمات الأعمال (Legal Forms)</h2>
+                <div class="space-y-3 text-sm">
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <strong class="text-teal-400 text-base">1. المنشأة الفردية (Sole Proprietorship):</strong>
+                    <p class="text-gray-300 mt-1">يملكها ويديرها شخص واحد فقط (Sole Proprietor). هي الشكل الأكثر شيوعاً نظراً لقلة المتطلبات القانونية لإنشائها.</p>
+                  </div>
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <strong class="text-teal-400 text-base">2. شركة التضامن / الأشخاص (Partnership):</strong>
+                    <p class="text-gray-300 mt-1">تتكون من شخصين أو أكثر يديرون ويمتلكون العمل معاً كشركاء (Partners).</p>
+                  </div>
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <strong class="text-teal-400 text-base">3. الشركة المساهمة (Corporation):</strong>
+                    <p class="text-gray-300 mt-1">كيان ذو شخصية اعتبارية قانونية مستقلة عن الملاك، وبالتالي يتمتع الملاك بمسؤولية محدودة (Limited liability). لا حد أقصى لعدد الملاك، ودليل الملكية هو الأسهم (Stocks)، ويسمون مساهمين (Stockholders).</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-5 rounded-lg bg-dark-base border border-brand-500/30 text-sm space-y-4">
+                <h3 class="text-base font-bold text-brand-500 uppercase tracking-wide">تمارين وتطبيقات الفصل الأول</h3>
+                
+                <div class="border-t border-dark-border pt-3">
+                  <p class="font-semibold text-white mb-2">تمرين 1: صنف المزايا والعيوب التالية إلى (أ) منشأة فردية، (ب) شركة تضامن، (ج) شركة مساهمة:</p>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-mono text-gray-300">
+                    <p>1. سهلة التصفية / الحل</p><p>2. قيود حكومية قليلة</p>
+                    <p>3. قيود ولوائح حكومية أكبر</p><p>4. سهلة وغير مكلفة في التأسيس</p>
+                    <p>5. قدرة وصول أكبر لرأس المال</p><p>6. سهولة نقل الملكية</p>
+                    <p>7. استمرارية أكبر ويصعب تصفيتها</p><p>8. وجوب اقتسام الأرباح</p>
+                    <p>9. عبء ضريبي أكبر</p><p>10. سهلة التنظيم</p>
+                  </div>
+                </div>
+
+                <div class="border-t border-dark-border pt-3">
+                  <p class="font-semibold text-white mb-1">تمرين 2 (حالة عملية):</p>
+                  <p class="text-gray-300">تمتلك أواب وتدير متجر مجوهرات. خلال الشهر الماضي، باعت قلادة لعميل بمبلغ 135,000 جنيه، وكانت قد اشترت القلادة بمبلغ 85,000 جنيه.</p>
+                  <p class="text-teal-400 font-semibold mt-1">المطلوب: ما نوع العمل التجاري الذي تمتلكه أواب؟ (تصنيع، تجزئة/تجارة، أم خدمي). وضح إجابتك.</p>
+                </div>
+
+                <div class="border-t border-dark-border pt-3">
+                  <p class="font-semibold text-white mb-1">تمرين 3 (أسئلة مقالية):</p>
+                  <ul class="list-disc list-inside text-gray-300 space-y-1">
+                    <li>ما هي علاقة العمل التجاري بالمحاسبة؟</li>
+                    <li>اذكر الأنواع الثلاثة للأعمال مع ذكر مثال لكل منها.</li>
+                    <li>أي شكل من أشكال منظمات الأعمال يحتاج إلى أكبر رأس مال؟</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          `
+        },
+        quizzes: [
+          {
+            q: { en: "Which legal form of business provides its owners with limited liability and separate legal identity?", ar: "أي شكل قانوني من أشكال الأعمال يوفر لملاكه مسؤولية محدودة وشخصية اعتبارية مستقلة؟" },
+            options: {
+              en: ["Sole Proprietorship", "Partnership", "Corporation", "Service Business"],
+              ar: ["المنشأة الفردية (Sole Proprietorship)", "شركة التضامن (Partnership)", "الشركة المساهمة (Corporation)", "الشركة الخدمية (Service Business)"]
+            },
+            answer: 2
+          },
+          {
+            q: { en: "A company that buys raw materials and converts them into finished products for sale is a:", ar: "الشركة التي تشتري المواد الخام وتحولها إلى سلع جاهزة لبيعها هي شركة:" },
+            options: {
+              en: ["Wholesaling Business", "Manufacturing Business", "Retailing Business", "Trade Business"],
+              ar: ["تجارة جملة (Wholesaling)", "تصنيعية (Manufacturing)", "تجزئة (Retailing)", "شركة خدمية (Service)"]
+            },
+            answer: 1
+          }
+        ]
+      },
+
+      // ================= CHAPTER 2 =================
+      {
+        id: "ch2",
+        number: "Chapter 2",
+        title: { en: "Nature of Accounting", ar: "طبيعة المحاسبة ووظائفها (Nature of Accounting)" },
+        content: {
+          en: `
+            <div class="space-y-6">
+              <h1 class="text-2xl sm:text-3xl font-bold text-white">Chapter 2: Nature of Accounting</h1>
+
+              <div class="p-4 rounded-lg bg-dark-elevated border-l-4 border-brand-500 text-sm text-gray-300 space-y-3">
+                <h3 class="font-bold text-white text-base">The Nature of Accounting</h3>
+                <p>Accounting is a <strong>service activity</strong> whose function is to provide quantitative information, primarily financial in nature, about economic entities that is intended to be useful in making economic decisions.</p>
+                <p>The phrase <em>"financial in nature"</em> means that the necessary financial information provided is expressed in monetary terms.</p>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">Formal Definitions of Accounting</h2>
+                <div class="space-y-3 text-sm text-gray-300">
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border">
+                    <p><strong>Operational Definition:</strong> Accounting is the process of recording financial transactions pertaining to a business. It includes summarizing, analyzing, and reporting these transactions to oversight agencies, regulators, and tax collection entities.</p>
+                  </div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border">
+                    <p><strong>Systemic Definition:</strong> Accounting is the process of systematically recording, measuring, and communicating information about financial transactions. It is a practice and body of knowledge concerned with internal audits, management reporting, and taxation advice.</p>
+                  </div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border">
+                    <p><strong>AICPA Comprehensive Definition (Committee on Terminology):</strong> "Accounting is the art of recording, classifying, summarizing, in a significant manner and in terms of money transactions and events, which are in part at least of a financial character, and interpreting the results thereof."</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                <h3 class="font-bold text-teal-400 mb-2">Historical Note: Luca Pacioli</h3>
+                <p class="text-sm text-gray-300">In <strong>1494</strong>, the first book describing double-entry accounting was published by <strong>Luca Pacioli</strong> (a Franciscan friar, also referred to as Friar Luca). While recognized as the <em>"Father of Accounting"</em>, he documented rather than invented the system.</p>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">The 5 Core Functions of Accounting</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 text-center text-sm">
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><span class="font-bold text-teal-400 block">1. Analyzing</span>Examining source documents</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><span class="font-bold text-teal-400 block">2. Recording</span>Bookkeeping entries</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><span class="font-bold text-teal-400 block">3. Classifying</span>Grouping similar accounts</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><span class="font-bold text-teal-400 block">4. Summarizing</span>Preparing Trial Balance</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><span class="font-bold text-teal-400 block">5. Interpreting</span>Financial statement analysis</div>
+                </div>
+                <p class="text-xs text-dark-muted mt-2"><em>Bookkeeping:</em> The occupation or activity of keeping records of the financial affairs of a business.</p>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">Users of Accounting Information</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-300">
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><strong class="text-white">1. Owners:</strong> Track earnings, future prospects, and business solvency.</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><strong class="text-white">2. Managers & Supervisors:</strong> Plan budgets, control operations, and measure performance.</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><strong class="text-white">3. Creditors (Banks/Suppliers):</strong> Assess creditworthiness and debt repayment ability.</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><strong class="text-white">4. Government Agencies:</strong> Verify tax compliance (income, sales, and payroll taxes).</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><strong class="text-white">5. Financial Analysts:</strong> Issue investment ratings and recommendations.</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><strong class="text-white">6. Employees:</strong> Gauge company stability, bonuses, and career growth.</div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                  <h3 class="font-bold text-teal-400 mb-1">GAAP</h3>
+                  <p class="text-gray-300"><strong>Generally Accepted Accounting Principles:</strong> Standard rules and conventions followed when compiling financial statements.</p>
+                </div>
+                <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                  <h3 class="font-bold text-teal-400 mb-1">FASB</h3>
+                  <p class="text-gray-300"><strong>Financial Accounting Standards Board:</strong> The independent body responsible for developing and maintaining accounting rules in the US.</p>
+                </div>
+              </div>
+
+              <div class="p-4 rounded-lg bg-dark-base border border-dark-border text-sm">
+                <strong class="text-brand-500 uppercase">Chapter 2 Discussion Questions:</strong>
+                <ol class="list-decimal list-inside text-gray-300 mt-2 space-y-1">
+                  <li>List down the different functions of accounting and explain each.</li>
+                  <li>What is meant by systematic recording of business transactions?</li>
+                  <li>What is the primary purpose of accounting?</li>
+                  <li>Who developed the rules and guidelines in the accounting process?</li>
+                </ol>
+              </div>
+            </div>
+          `,
+          ar: `
+            <div class="space-y-6">
+              <h1 class="text-2xl sm:text-3xl font-bold text-white">الفصل 2: طبيعة المحاسبة ووظائفها (Nature of Accounting)</h1>
+
+              <div class="p-4 rounded-lg bg-dark-elevated border-r-4 border-brand-500 text-sm text-gray-300 space-y-3">
+                <h3 class="font-bold text-white text-base">طبيعة المحاسبة (Nature of Accounting)</h3>
+                <p>المحاسبة هي <strong>نشاط خدمي (Service Activity)</strong> وظيفته الأساسية تقديم معلومات كمية، ذات طابع مالي بالدرجة الأولى، عن الوحدات الاقتصادية بهدف المساعدة في اتخاذ القرارات الاقتصادية الرشيدة.</p>
+                <p>عبارة <em>"ذات طابع مالي"</em> تعني أن المعلومات المحاسبية يعبَّر عنها دائماً في صورة وحدات نقدية (Monetary Terms).</p>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">تعريفات المحاسبة المعتمدة</h2>
+                <div class="space-y-3 text-sm text-gray-300">
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border">
+                    <p><strong>التعريف الإجرائي:</strong> المحاسبة هي عملية تسجيل المعاملات المالية المتعلقة بالمنشأة، وتشمل تلخيص وتحليل ورفع التقارير للجهات الرقابية والتنظيمية ومصالح الضرائب.</p>
+                  </div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border">
+                    <p><strong>التعريف المنهجي:</strong> المحاسبة هي علم ونظام ممارسة يُعنى بتسجيل وقياس ونقل المعلومات المالية وإجراء التدقيق الداخلي وتقديم المشورة الضريبية للإدارة.</p>
+                  </div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border">
+                    <p><strong>تعريف المعهد الأمريكي للمحاسبين (AICPA):</strong> "المحاسبة هي فن تسجيل وتبويب وتلخيص العمليات والأحداث ذات الطابع المالي بطريقة ذات دلالة وفي صورة نقدية، وتفسير النتائج المترتبة عليها."</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                <h3 class="font-bold text-teal-400 mb-2">إضاءة تاريخية: لوكا باتشولي (Luca Pacioli)</h3>
+                <p class="text-sm text-gray-300">في عام <strong>1494م</strong>، ألّف الراهب الإيطالي <strong>لوكا باتشولي</strong> أول كتاب يشرح نظام القيد المزدوج (Double-entry). ويُلقب بـ <em>"أبو المحاسبة"</em> مع أنه لم يخترع النظام بنفسه بل قام بتوثيقه.</p>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">وظائف المحاسبة الخمس (Functions of Accounting)</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-5 gap-2 text-center text-sm">
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><span class="font-bold text-teal-400 block">1. التحليل</span>فحص المستندات المؤيدة</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><span class="font-bold text-teal-400 block">2. التسجيل</span>إمساك الدفاتر (Bookkeeping)</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><span class="font-bold text-teal-400 block">3. التبويب</span>ترحيل الحسابات وتصنيفها</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><span class="font-bold text-teal-400 block">4. التلخيص</span>إعداد ميزان المراجعة</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><span class="font-bold text-teal-400 block">5. التفسير</span>قراءة وتحليل القوائم المالية</div>
+                </div>
+                <p class="text-xs text-dark-muted mt-2"><em>إمساك الدفاتر (Bookkeeping):</em> مهنة أو نشاط حفظ القيود اليومية للشؤون المالية الخاصة بالمنشأة.</p>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">مستخدمو المعلومات المحاسبية (Users of Accounting)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-300">
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><strong class="text-white">1. الملاك (Owners):</strong> مراقبة الأرباح والاطمئنان على قدرة الشركة على سداد ديونها.</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><strong class="text-white">2. الإدارة والمشرفون:</strong> التخطيط، إعداد الموازنات، وتقييم كفاءة الأداء التشغيلي.</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><strong class="text-white">3. الدائنون والمقرضون (Creditors):</strong> تقييم الملاءة المالية وضمان استرداد أموالهم.</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><strong class="text-white">4. الجهات الحكومية:</strong> التحقق من سلامة الضرائب (دخل، مبيعات، رواتب).</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><strong class="text-white">5. المحللون الماليون:</strong> بناء التوصيات الاستثمارية وتقدير القيمة العادلة.</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><strong class="text-white">6. الموظفون:</strong> الاطمئنان على استقرار وظائفهم والعلاوات المرتبطة بالأرباح.</div>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                  <h3 class="font-bold text-teal-400 mb-1">المبادئ المحاسبية المقبولة عموماً (GAAP)</h3>
+                  <p class="text-gray-300">مجموعة القواعد والمعايير الإرشادية الواجب اتباعها عند إعداد القوائم المالية.</p>
+                </div>
+                <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                  <h3 class="font-bold text-teal-400 mb-1">مجلس معايير المحاسبة المالية (FASB)</h3>
+                  <p class="text-gray-300">الجهة المهنية المسؤولة عن تطوير وتحديث معايير المحاسبة المالية في الولايات المتحدة.</p>
+                </div>
+              </div>
+            </div>
+          `
+        },
+        quizzes: [
+          {
+            q: { en: "Who published the first book on double-entry accounting in 1494?", ar: "من هو العالم الذي نشر أول كتاب عن المحاسبة بنظام القيد المزدوج عام 1494م؟" },
+            options: {
+              en: ["John N. Myer", "Luca Pacioli", "Adam Smith", "C. Taylor"],
+              ar: ["جون ن. ماير", "لوكا باتشولي (Luca Pacioli)", "آدم سميث", "سي. تايلور"]
+            },
+            answer: 1
+          },
+          {
+            q: { en: "Which independent board is responsible for formulating Generally Accepted Accounting Principles (GAAP)?", ar: "ما هي الهيئة المسؤولة عن تطوير مبادئ المحاسبة المقبولة عموماً (GAAP)؟" },
+            options: {
+              en: ["FASB", "AICPA", "SEC", "Internal Revenue Service"],
+              ar: ["مجلس معايير المحاسبة المالية (FASB)", "المعهد الأمريكي (AICPA)", "هيئة الأوراق المالية (SEC)", "مصلحة الضرائب"]
+            },
+            answer: 0
+          }
+        ]
+      },
+
+      // ================= CHAPTER 3 =================
+      {
+        id: "ch3",
+        number: "Chapter 3",
+        title: { en: "Basic Accounting Elements", ar: "العناصر والمعادلة المحاسبية (Basic Accounting Elements)" },
+        content: {
+          en: `
+            <div class="space-y-6">
+              <h1 class="text-2xl sm:text-3xl font-bold text-white">Chapter 3: Basic Accounting Elements & Equation</h1>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">The Primary Accounting Elements</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <h3 class="font-bold text-teal-400 mb-2">1. Assets</h3>
+                    <p class="text-gray-300 mb-2">Properties or economic resources owned/controlled by the entity that have VALUE and entail probable future economic benefits.</p>
+                    <p class="text-xs text-dark-muted">Types: Tangible & Intangible.<br>Examples: Cash, Accounts Receivable, Inventories, Office Supplies, Equipment, Land, Buildings.</p>
+                  </div>
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <h3 class="font-bold text-teal-400 mb-2">2. Liabilities</h3>
+                    <p class="text-gray-300 mb-2">Debts or obligations owed to creditors arising in the course of business operations.</p>
+                    <p class="text-xs text-dark-muted">Parties: Creditor (lender) & Debtor (borrower).<br>Examples: Accounts Payable, Bank Notes, Accrued Obligations.</p>
+                  </div>
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <h3 class="font-bold text-teal-400 mb-2">3. Owner's Equity (Capital)</h3>
+                    <p class="text-gray-300 mb-2">The owner's residual claim or interest in the assets after deducting all liabilities (Net Assets = Assets - Liabilities).</p>
+                    <p class="text-xs text-dark-muted">Components: Capital Contributions, Retained Earnings, Owner Withdrawals.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-6 rounded-lg bg-dark-elevated border border-brand-500 text-center space-y-3">
+                <h3 class="text-base font-bold uppercase tracking-wider text-dark-muted">The Fundamental Accounting Equation</h3>
+                <div class="text-2xl sm:text-3xl font-mono font-bold text-teal-400">Assets = Liabilities + Owner's Equity</div>
+                <p class="text-xs text-gray-400">Items Owned = Amounts Owed to Creditors + Owner's Capital Claim</p>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                  <h4 class="font-bold text-white mb-2">Illustration Case 1 (100% Equity):</h4>
+                  <p class="text-gray-300">Total assets value = SDG 80,000, and the business has zero debt against the assets.</p>
+                  <p class="font-mono text-teal-400 mt-2">Assets (80,000) = Liabilities (0) + Owner's Equity (80,000)</p>
+                </div>
+                <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                  <h4 class="font-bold text-white mb-2">Illustration Case 2 (Debt & Equity):</h4>
+                  <p class="text-gray-300">A delivery truck costs SDG 35,000. Owner invested SDG 12,000, and borrowed the remainder from the bank.</p>
+                  <p class="font-mono text-teal-400 mt-2">Assets (35,000) = Liabilities (23,000) + Equity (12,000)</p>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">Additional Operational Elements</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border">
+                    <strong class="text-teal-400">4. Revenue:</strong>
+                    <p class="text-gray-300 mt-1">Gross income/sales coming in from clients for goods sold or services rendered. <em>(Increases Assets / Equity)</em>.</p>
+                  </div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border">
+                    <strong class="text-teal-400">5. Expense:</strong>
+                    <p class="text-gray-300 mt-1">Cost of doing business; operational outflows/payments incurred to produce revenue. <em>(Decreases Assets / Equity)</em>.</p>
+                  </div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border">
+                    <strong class="text-teal-400">6. Drawing (Personal):</strong>
+                    <p class="text-gray-300 mt-1">Withdrawals of cash or assets by the owner for personal use. <em>(Reduces Owner's Equity directly)</em>.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-4 rounded-lg bg-dark-base border border-dark-border text-sm space-y-3">
+                <h3 class="font-bold text-brand-500 uppercase">Chapter 3 Computational Exercises:</h3>
+                <p class="text-gray-300 font-medium">Calculate the missing values using the Accounting Equation:</p>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-left text-xs font-mono">
+                    <thead class="bg-dark-elevated text-dark-muted border-b border-dark-border">
+                      <tr><th class="p-2">Case</th><th class="p-2">Assets</th><th class="p-2">Liabilities</th><th class="p-2">Owner's Equity</th><th class="p-2 text-teal-400">Solution</th></tr>
+                    </thead>
+                    <tbody class="divide-y divide-dark-border">
+                      <tr><td class="p-2">Case 1</td><td class="p-2">10,000</td><td class="p-2">2,000</td><td class="p-2 text-red-400">?</td><td class="p-2 text-teal-400">Equity = 8,000 (10,000 - 2,000)</td></tr>
+                      <tr><td class="p-2">Case 2</td><td class="p-2">31,000</td><td class="p-2 text-red-400">?</td><td class="p-2">20,000</td><td class="p-2 text-teal-400">Liabilities = 11,000 (31,000 - 20,000)</td></tr>
+                      <tr><td class="p-2">Case 3</td><td class="p-2 text-red-400">?</td><td class="p-2">20,000</td><td class="p-2">80,000</td><td class="p-2 text-teal-400">Assets = 100,000 (20,000 + 80,000)</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          `,
+          ar: `
+            <div class="space-y-6">
+              <h1 class="text-2xl sm:text-3xl font-bold text-white">الفصل 3: العناصر والمعادلة المحاسبية (Basic Accounting Elements)</h1>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">العناصر المحاسبية الأساسية</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <h3 class="font-bold text-teal-400 mb-2">1. الأصول (Assets)</h3>
+                    <p class="text-gray-300 mb-2">الموارد والممتلكات الاقتصادية التي تمتلكها أو تسيطر عليها المنشأة وتكون لها قيمة اقتصادية ومنافع مستقبلية مؤكدة.</p>
+                    <p class="text-xs text-dark-muted">أنواعها: ملموسة وغير ملموسة.<br>أمثلة: النقد، المدينون، المخزون، الأدوات المكتبية، الآلات، الأراضي، المباني.</p>
+                  </div>
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <h3 class="font-bold text-teal-400 mb-2">2. الخصوم / الالتزامات (Liabilities)</h3>
+                    <p class="text-gray-300 mb-2">ديون والتزامات على المنشأة للغير (الدائنين) ناتجة عن معاملات سابقة وتستوجب السداد مستقبلاً.</p>
+                    <p class="text-xs text-dark-muted">الأطراف: الدائن (Creditor) والمدين (Debtor).<br>أمثلة: الدائنون (Accounts Payable)، القروض.</p>
+                  </div>
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                    <h3 class="font-bold text-teal-400 mb-2">3. حقوق الملكية (Owner's Equity)</h3>
+                    <p class="text-gray-300 mb-2">الحصة المتبقية للمالك في أصول المنشأة بعد خصم جميع الخصوم (صافي الأصول = الأصول - الخصوم).</p>
+                    <p class="text-xs text-dark-muted">مكوناتها: رأس المال المستثمر، الأرباح المحتجزة، مطروحاً منها المسحوبات الشخصية.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-6 rounded-lg bg-dark-elevated border border-brand-500 text-center space-y-3">
+                <h3 class="text-base font-bold uppercase tracking-wider text-dark-muted">معادلة الميزانية الأساسية (The Accounting Equation)</h3>
+                <div class="text-2xl sm:text-3xl font-mono font-bold text-teal-400" dir="ltr">Assets = Liabilities + Owner's Equity</div>
+                <p class="text-xs text-gray-400">الأصول المملوكة = الالتزامات المستحقة للدائنين + حقوق الملاك في رأس المال</p>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                  <h4 class="font-bold text-white mb-2">الحالة 1 (تمويل ذاتي بالكامل):</h4>
+                  <p class="text-gray-300">قيمة الأصول 80,000 جنيه سوداني، والمنشأة لا تدين بأي مبلغ للدائنين.</p>
+                  <p class="font-mono text-teal-400 mt-2" dir="ltr">80,000 = 0 + 80,000</p>
+                </div>
+                <div class="p-4 rounded-lg bg-dark-base border border-dark-border">
+                  <h4 class="font-bold text-white mb-2">الحالة 2 (تمويل مشترك بديون ورأس مال):</h4>
+                  <p class="text-gray-300">شراء شاحنة بمبلغ 35,000 جنيه. دفع المالك 12,000 جنيه واقترض الباقي (23,000 جنيه) من البنك.</p>
+                  <p class="font-mono text-teal-400 mt-2" dir="ltr">35,000 = 23,000 + 12,000</p>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">عناصر تشغيلية مكملة</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border">
+                    <strong class="text-teal-400">4. الإيرادات (Revenue):</strong>
+                    <p class="text-gray-300 mt-1">كافة المبيعات والأموال المحصلة من تقديم الخدمات أو بيع السلع (تؤدي لزيادة الأصول وحقوق الملكية).</p>
+                  </div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border">
+                    <strong class="text-teal-400">5. المصروفات (Expenses):</strong>
+                    <p class="text-gray-300 mt-1">تكلفة أداء الأعمال؛ التدفقات النقدية الخارجة لتشغيل المنشأة (تؤدي لتخفيض الأصول وحقوق الملكية).</p>
+                  </div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border">
+                    <strong class="text-teal-400">6. المسحوبات (Drawing):</strong>
+                    <p class="text-gray-300 mt-1">مبالغ أو أصول يسحبها المالك من المنشأة لاستهلاكه الشخصي (تخفض رأس المال مباشرة).</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `
+        },
+        quizzes: [
+          {
+            q: { en: "If a company has Assets of $120,000 and Liabilities of $45,000, what is its Owner's Equity?", ar: "إذا كانت أصول الشركة 120,000 دولار وخصومها 45,000 دولار، فكم تبلغ حقوق الملكية؟" },
+            options: {
+              en: ["$165,000", "$75,000", "$45,000", "$90,000"],
+              ar: ["165,000 دولار", "75,000 دولار", "45,000 دولار", "90,000 دولار"]
+            },
+            answer: 1
+          },
+          {
+            q: { en: "Which accounting element directly decreases the Owner's Equity when the owner takes cash for personal use?", ar: "أي عنصر محاسبي يخفض حقوق الملكية مباشرة عند سحب المالك لأموال لاستخدامه الشخصي؟" },
+            options: {
+              en: ["Accounts Payable", "Drawing (Personal)", "Operating Expense", "Depreciation"],
+              ar: ["الحسابات الدائنة", "المسحوبات الشخصية (Drawing)", "المصروفات التشغيلية", "مجمع الإهلاك"]
+            },
+            answer: 1
+          }
+        ]
+      },
+
+      // ================= CHAPTER 4 =================
+      {
+        id: "ch4",
+        number: "Chapter 4",
+        title: { en: "Chart of Accounts & Rules", ar: "دليل الحسابات وقواعد القيد (Chart of Accounts)" },
+        content: {
+          en: `
+            <div class="space-y-6">
+              <h1 class="text-2xl sm:text-3xl font-bold text-white">Chapter 4: Chart of Accounts & The Rules of Debit & Credit</h1>
+
+              <div class="p-4 rounded-lg bg-dark-elevated border-l-4 border-brand-500 text-sm text-gray-300">
+                <h3 class="font-bold text-white text-base mb-1">What is a Chart of Accounts (COA)?</h3>
+                <p>A created listing of all accounts used by a business entity to define each class of items for which money or its equivalent is spent or received. It organizes finances and segregates expenditures, revenue, assets, and liabilities to give a clear view of financial health.</p>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">Official Course Chart of Accounts (COA)</h2>
+                <div class="overflow-x-auto border border-dark-border rounded-lg">
+                  <table class="w-full text-left text-xs font-mono">
+                    <thead class="bg-dark-elevated text-dark-muted border-b border-dark-border">
+                      <tr><th class="p-3">Account Number</th><th class="p-3 text-white">Account Name</th><th class="p-3 text-teal-400">Account Classification</th></tr>
+                    </thead>
+                    <tbody class="divide-y divide-dark-border bg-dark-surface">
+                      <tr><td class="p-2">1000</td><td class="p-2 font-semibold text-white">Cash</td><td class="p-2 text-teal-400">Assets (Current)</td></tr>
+                      <tr><td class="p-2">1010</td><td class="p-2 font-semibold text-white">Accounts Receivable</td><td class="p-2 text-teal-400">Assets (Current)</td></tr>
+                      <tr><td class="p-2">1020</td><td class="p-2 font-semibold text-white">Inventory</td><td class="p-2 text-teal-400">Assets (Current)</td></tr>
+                      <tr><td class="p-2">1030</td><td class="p-2 font-semibold text-white">Vehicles & Equipment</td><td class="p-2 text-teal-400">Assets (Fixed)</td></tr>
+                      <tr><td class="p-2">2000</td><td class="p-2 font-semibold text-white">Accounts Payable</td><td class="p-2 text-yellow-400">Liability (Short-term)</td></tr>
+                      <tr><td class="p-2">2010</td><td class="p-2 font-semibold text-white">Payroll Tax Liability</td><td class="p-2 text-yellow-400">Liability (Short-term)</td></tr>
+                      <tr><td class="p-2">2020</td><td class="p-2 font-semibold text-white">Sales Tax Liability</td><td class="p-2 text-yellow-400">Liability (Short-term)</td></tr>
+                      <tr><td class="p-2">3000</td><td class="p-2 font-semibold text-white">Owner's Capital</td><td class="p-2 text-purple-400">Owner's Equity</td></tr>
+                      <tr><td class="p-2">3010</td><td class="p-2 font-semibold text-white">Owner's Withdrawals</td><td class="p-2 text-purple-400">Owner's Equity</td></tr>
+                      <tr><td class="p-2">3020</td><td class="p-2 font-semibold text-white">Retained Earnings</td><td class="p-2 text-purple-400">Owner's Equity</td></tr>
+                      <tr><td class="p-2">4000</td><td class="p-2 font-semibold text-white">Sales</td><td class="p-2 text-green-400">Revenue</td></tr>
+                      <tr><td class="p-2">4010</td><td class="p-2 font-semibold text-white">Returns and Allowances</td><td class="p-2 text-green-400">Revenue (Contra)</td></tr>
+                      <tr><td class="p-2">4020</td><td class="p-2 font-semibold text-white">Cost of Goods Sold</td><td class="p-2 text-green-400">Revenue/Expense</td></tr>
+                      <tr><td class="p-2">5000</td><td class="p-2 font-semibold text-white">Marketing and Advertising</td><td class="p-2 text-red-400">Expenses</td></tr>
+                      <tr><td class="p-2">5010</td><td class="p-2 font-semibold text-white">Office Supplies</td><td class="p-2 text-red-400">Expenses</td></tr>
+                      <tr><td class="p-2">5020</td><td class="p-2 font-semibold text-white">Salaries and Wages</td><td class="p-2 text-red-400">Expenses</td></tr>
+                      <tr><td class="p-2">5030</td><td class="p-2 font-semibold text-white">Payroll Taxes</td><td class="p-2 text-red-400">Expenses</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">The Universal Rules of Debit & Credit</h2>
+                <div class="overflow-x-auto border border-dark-border rounded-lg">
+                  <table class="w-full text-left text-sm">
+                    <thead class="bg-dark-elevated text-dark-muted border-b border-dark-border">
+                      <tr><th class="p-3">Financial Classification</th><th class="p-3">Accounts</th><th class="p-3 text-teal-400">Increase (+)</th><th class="p-3 text-red-400">Decrease (-)</th><th class="p-3">Normal Balance</th></tr>
+                    </thead>
+                    <tbody class="divide-y divide-dark-border bg-dark-surface">
+                      <tr><td class="p-3 font-semibold text-white">Balance Sheet Items</td><td class="p-3">Assets</td><td class="p-3 font-bold text-teal-400">DEBIT (Dr)</td><td class="p-3 font-bold text-red-400">CREDIT (Cr)</td><td class="p-3 font-mono font-bold text-teal-400">DEBIT</td></tr>
+                      <tr><td class="p-3 font-semibold text-white">Balance Sheet Items</td><td class="p-3">Liabilities</td><td class="p-3 font-bold text-teal-400">CREDIT (Cr)</td><td class="p-3 font-bold text-red-400">DEBIT (Dr)</td><td class="p-3 font-mono font-bold text-yellow-400">CREDIT</td></tr>
+                      <tr><td class="p-3 font-semibold text-white">Balance Sheet Items</td><td class="p-3">Owner's Equity</td><td class="p-3 font-bold text-teal-400">CREDIT (Cr)</td><td class="p-3 font-bold text-red-400">DEBIT (Dr)</td><td class="p-3 font-mono font-bold text-yellow-400">CREDIT</td></tr>
+                      <tr><td class="p-3 font-semibold text-white">Profit & Loss Items</td><td class="p-3">Expenses</td><td class="p-3 font-bold text-teal-400">DEBIT (Dr)</td><td class="p-3 font-bold text-red-400">CREDIT (Cr)</td><td class="p-3 font-mono font-bold text-teal-400">DEBIT</td></tr>
+                      <tr><td class="p-3 font-semibold text-white">Profit & Loss Items</td><td class="p-3">Revenue / Income</td><td class="p-3 font-bold text-teal-400">CREDIT (Cr)</td><td class="p-3 font-bold text-red-400">DEBIT (Dr)</td><td class="p-3 font-mono font-bold text-yellow-400">CREDIT</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          `,
+          ar: `
+            <div class="space-y-6">
+              <h1 class="text-2xl sm:text-3xl font-bold text-white">الفصل 4: دليل الحسابات وقواعد القيد (Chart of Accounts)</h1>
+
+              <div class="p-4 rounded-lg bg-dark-elevated border-r-4 border-brand-500 text-sm text-gray-300">
+                <h3 class="font-bold text-white text-base mb-1">ما هو دليل الحسابات (Chart of Accounts)؟</h3>
+                <p>قائمة منظمة لجميع الحسابات المستخدمة في المنشأة لتعريف وتصنيف كل عنصر يُصرف أو يُحصّل فيه مال. يُستخدم لترتيب الوضع المالي وفصل الأصول، الخصوم، الإيرادات، والمصروفات.</p>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">دليل الحسابات المعتمد في المنهج (COA)</h2>
+                <div class="overflow-x-auto border border-dark-border rounded-lg">
+                  <table class="w-full text-right text-xs font-mono">
+                    <thead class="bg-dark-elevated text-dark-muted border-b border-dark-border">
+                      <tr><th class="p-3">رقم الحساب</th><th class="p-3 text-white">اسم الحساب</th><th class="p-3 text-teal-400">نوع وتصنيف الحساب</th></tr>
+                    </thead>
+                    <tbody class="divide-y divide-dark-border bg-dark-surface">
+                      <tr><td class="p-2">1000</td><td class="p-2 font-semibold text-white">النقدية (Cash)</td><td class="p-2 text-teal-400">أصول متداولة (Current Assets)</td></tr>
+                      <tr><td class="p-2">1010</td><td class="p-2 font-semibold text-white">المدينون (Accounts Receivable)</td><td class="p-2 text-teal-400">أصول متداولة (Current Assets)</td></tr>
+                      <tr><td class="p-2">1020</td><td class="p-2 font-semibold text-white">المخزون السلعي (Inventory)</td><td class="p-2 text-teal-400">أصول متداولة (Current Assets)</td></tr>
+                      <tr><td class="p-2">1030</td><td class="p-2 font-semibold text-white">المركبات والمعدات (Vehicles & Equip)</td><td class="p-2 text-teal-400">أصول ثابتة (Fixed Assets)</td></tr>
+                      <tr><td class="p-2">2000</td><td class="p-2 font-semibold text-white">الدائنون (Accounts Payable)</td><td class="p-2 text-yellow-400">خصوم متداولة (Short-term)</td></tr>
+                      <tr><td class="p-2">2010</td><td class="p-2 font-semibold text-white">ضريبة الرواتب المستحقة (Payroll Tax)</td><td class="p-2 text-yellow-400">خصوم قصيرة الأجل</td></tr>
+                      <tr><td class="p-2">2020</td><td class="p-2 font-semibold text-white">ضريبة المبيعات المستحقة (Sales Tax)</td><td class="p-2 text-yellow-400">خصوم قصيرة الأجل</td></tr>
+                      <tr><td class="p-2">3000</td><td class="p-2 font-semibold text-white">رأس مال المالك (Owner's Capital)</td><td class="p-2 text-purple-400">حقوق ملكية (Owner's Equity)</td></tr>
+                      <tr><td class="p-2">3010</td><td class="p-2 font-semibold text-white">مسحوبات المالك (Withdrawals)</td><td class="p-2 text-purple-400">حقوق ملكية (تخفيض)</td></tr>
+                      <tr><td class="p-2">3020</td><td class="p-2 font-semibold text-white">الأرباح المحتجزة (Retained Earnings)</td><td class="p-2 text-purple-400">حقوق ملكية</td></tr>
+                      <tr><td class="p-2">4000</td><td class="p-2 font-semibold text-white">المبيعات (Sales)</td><td class="p-2 text-green-400">إيرادات (Revenue)</td></tr>
+                      <tr><td class="p-2">4010</td><td class="p-2 font-semibold text-white">مردودات ومسموحات المبيعات</td><td class="p-2 text-green-400">إيرادات مقابلة (Contra-Revenue)</td></tr>
+                      <tr><td class="p-2">4020</td><td class="p-2 font-semibold text-white">تكلفة البضاعة المباعة (COGS)</td><td class="p-2 text-green-400">تكلفة/مصروف</td></tr>
+                      <tr><td class="p-2">5000</td><td class="p-2 font-semibold text-white">التسويق والإعلان</td><td class="p-2 text-red-400">مصروفات (Expenses)</td></tr>
+                      <tr><td class="p-2">5010</td><td class="p-2 font-semibold text-white">الأدوات والمهمات المكتبية</td><td class="p-2 text-red-400">مصروفات تشغيلية</td></tr>
+                      <tr><td class="p-2">5020</td><td class="p-2 font-semibold text-white">الرواتب والأجور (Salaries & Wages)</td><td class="p-2 text-red-400">مصروفات تشغيلية</td></tr>
+                      <tr><td class="p-2">5030</td><td class="p-2 font-semibold text-white">ضرائب الرواتب (Payroll Taxes)</td><td class="p-2 text-red-400">مصروفات تشغيلية</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">قواعد المدين والدائن الشاملة (Rules of Debit & Credit)</h2>
+                <div class="overflow-x-auto border border-dark-border rounded-lg">
+                  <table class="w-full text-right text-sm">
+                    <thead class="bg-dark-elevated text-dark-muted border-b border-dark-border">
+                      <tr><th class="p-3">مكان البند</th><th class="p-3">نوع الحساب</th><th class="p-3 text-teal-400">يزداد بـ (+)</th><th class="p-3 text-red-400">ينقص بـ (-)</th><th class="p-3">الرصيد الطبيعي</th></tr>
+                    </thead>
+                    <tbody class="divide-y divide-dark-border bg-dark-surface">
+                      <tr><td class="p-3 font-semibold text-white">الميزانية العمومية</td><td class="p-3">الأصول (Assets)</td><td class="p-3 font-bold text-teal-400">مدين (Debit)</td><td class="p-3 font-bold text-red-400">دائن (Credit)</td><td class="p-3 font-mono font-bold text-teal-400">مدين (Debit)</td></tr>
+                      <tr><td class="p-3 font-semibold text-white">الميزانية العمومية</td><td class="p-3">الخصوم (Liabilities)</td><td class="p-3 font-bold text-teal-400">دائن (Credit)</td><td class="p-3 font-bold text-red-400">مدين (Debit)</td><td class="p-3 font-mono font-bold text-yellow-400">دائن (Credit)</td></tr>
+                      <tr><td class="p-3 font-semibold text-white">الميزانية العمومية</td><td class="p-3">حقوق الملكية (Equity)</td><td class="p-3 font-bold text-teal-400">دائن (Credit)</td><td class="p-3 font-bold text-red-400">مدين (Debit)</td><td class="p-3 font-mono font-bold text-yellow-400">دائن (Credit)</td></tr>
+                      <tr><td class="p-3 font-semibold text-white">قائمة الأرباح والخسائر</td><td class="p-3">المصروفات (Expenses)</td><td class="p-3 font-bold text-teal-400">مدين (Debit)</td><td class="p-3 font-bold text-red-400">دائن (Credit)</td><td class="p-3 font-mono font-bold text-teal-400">مدين (Debit)</td></tr>
+                      <tr><td class="p-3 font-semibold text-white">قائمة الأرباح والخسائر</td><td class="p-3">الإيرادات (Income)</td><td class="p-3 font-bold text-teal-400">دائن (Credit)</td><td class="p-3 font-bold text-red-400">مدين (Debit)</td><td class="p-3 font-mono font-bold text-yellow-400">دائن (Credit)</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          `
+        },
+        quizzes: [
+          {
+            q: { en: "What is the normal balance of an Expense account and an Asset account?", ar: "ما هو الرصيد الطبيعي لحساب المصروفات وحساب الأصول؟" },
+            options: {
+              en: ["Credit balance", "Debit balance", "Zero balance", "Contra balance"],
+              ar: ["رصيد دائن (Credit)", "رصيد مدين (Debit)", "رصيد صفري", "رصيد متقلب"]
+            },
+            answer: 1
+          },
+          {
+            q: { en: "Under account numbering conventions, accounts starting with '2' (e.g., 2000) typically belong to:", ar: "في الترقيم المعياري للحسابات، الأرقام التي تبدأ بـ '2' (مثل 2000) تعبر عن:" },
+            options: {
+              en: ["Assets", "Liabilities", "Revenues", "Expenses"],
+              ar: ["الأصول (Assets)", "الخصوم والالتزامات (Liabilities)", "الإيرادات", "المصروفات"]
+            },
+            answer: 1
+          }
+        ]
+      },
+
+      // ================= CHAPTER 5 =================
+      {
+        id: "ch5",
+        number: "Chapter 5",
+        title: { en: "Recording Business Transactions", ar: "تسجيل المعاملات وإمساك الدفاتر (Recording Transactions)" },
+        content: {
+          en: `
+            <div class="space-y-6">
+              <h1 class="text-2xl sm:text-3xl font-bold text-white">Chapter 5: Recording Transactions & Posting to Ledger</h1>
+
+              <div class="p-4 rounded-lg bg-dark-elevated border-l-4 border-brand-500 text-sm text-gray-300">
+                Only transactions affecting the business are entered into the <strong>two (2) Books of Accounts</strong>:<br>
+                <strong>(1) The General Journal</strong> (Book of original entry)<br>
+                <strong>(2) The General Ledger</strong> (Book of final entry / T-Accounts)
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                  <h4 class="font-bold text-teal-400 mb-1">Single-Entry Transaction</h4>
+                  <p class="text-gray-300">A journal entry containing exactly one debit entry and one credit entry.</p>
+                </div>
+                <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                  <h4 class="font-bold text-teal-400 mb-1">Compound Entry</h4>
+                  <p class="text-gray-300">A journal entry containing more than one debit or more than one credit entry.</p>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">The 4 Sequential Steps in Journalizing & Posting</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-sm">
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><span class="text-teal-400 font-bold block mb-1">Step 1</span>Analyze transactions and source documents.</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><span class="text-teal-400 font-bold block mb-1">Step 2</span>Apply double-entry rule (Assets = Liabilities + Equity).</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><span class="text-teal-400 font-bold block mb-1">Step 3</span>Record journal entry in the General Journal.</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><span class="text-teal-400 font-bold block mb-1">Step 4</span>Post entry to General Ledger T-accounts (Debit Left, Credit Right).</div>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">FastForward Practical Journalizing Examples</h2>
+                <div class="space-y-3 font-mono text-xs text-gray-300">
+                  <div class="p-3 rounded bg-dark-base border border-dark-border">
+                    <p class="font-bold text-white font-sans mb-1">Transaction 1: Owner invested $30,000 cash on Dec. 1.</p>
+                    <p class="text-teal-400">Dr. Cash (Account 101) .................... 30,000</p>
+                    <p class="text-yellow-400 pl-4">Cr. C. Taylor, Capital (Account 301) ...... 30,000</p>
+                    <p class="text-gray-400 font-sans mt-1"><em>Effect: Cash increases (Asset Dr), Capital increases (Equity Cr).</em></p>
+                  </div>
+
+                  <div class="p-3 rounded bg-dark-base border border-dark-border">
+                    <p class="font-bold text-white font-sans mb-1">Transaction 2: FastForward purchased supplies paying $2,500 cash.</p>
+                    <p class="text-teal-400">Dr. Supplies (Account 126) ................ 2,500</p>
+                    <p class="text-yellow-400 pl-4">Cr. Cash (Account 101) .................... 2,500</p>
+                    <p class="text-gray-400 font-sans mt-1"><em>Effect: Supplies increases (Asset Dr), Cash decreases (Asset Cr).</em></p>
+                  </div>
+
+                  <div class="p-3 rounded bg-dark-base border border-dark-border">
+                    <p class="font-bold text-white font-sans mb-1">Transaction 3: Purchased equipment paying $26,000 cash.</p>
+                    <p class="text-teal-400">Dr. Equipment (Account 167) ............... 26,000</p>
+                    <p class="text-yellow-400 pl-4">Cr. Cash (Account 101) .................... 26,000</p>
+                  </div>
+
+                  <div class="p-3 rounded bg-dark-base border border-dark-border">
+                    <p class="font-bold text-white font-sans mb-1">Transaction 4: Purchased $7,100 of supplies on credit (on account).</p>
+                    <p class="text-teal-400">Dr. Supplies (Account 126) ................ 7,100</p>
+                    <p class="text-yellow-400 pl-4">Cr. Accounts Payable (Account 201) ........ 7,100</p>
+                    <p class="text-gray-400 font-sans mt-1"><em>Effect: Asset increases (Supplies Dr), Liability increases (AP Cr).</em></p>
+                  </div>
+
+                  <div class="p-3 rounded bg-dark-base border border-dark-border">
+                    <p class="font-bold text-white font-sans mb-1">Transaction 5: Provided consulting services and collected $4,200 cash.</p>
+                    <p class="text-teal-400">Dr. Cash (Account 101) .................... 4,200</p>
+                    <p class="text-yellow-400 pl-4">Cr. Consulting Revenue (Account 403) ...... 4,200</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-4 rounded-lg bg-dark-base border border-dark-border text-sm space-y-2">
+                <h3 class="font-bold text-brand-500 uppercase">Mohit Comprehensive Transaction Problem:</h3>
+                <p class="text-gray-300">Record each of the following in the accounting equation:</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 text-xs font-mono text-gray-300">
+                  <p>a. Business started with cash: 1,75,000</p><p>b. Purchased goods from Rohit: 50,000</p>
+                  <p>c. Sold goods to Manish on credit (Cost 17,500): 20,000</p><p>d. Purchased furniture for office: 10,000</p>
+                  <p>e. Paid cash to Rohit in full settlement: 48,500</p><p>f. Received cash from Manish: 20,000</p>
+                  <p>g. Rent paid: 1,000</p><p>h. Cash withdrew for personal use: 3,000</p>
+                </div>
+              </div>
+            </div>
+          `,
+          ar: `
+            <div class="space-y-6">
+              <h1 class="text-2xl sm:text-3xl font-bold text-white">الفصل 5: تسجيل المعاملات والترحيل لدفتر الأستاذ (Recording Transactions)</h1>
+
+              <div class="p-4 rounded-lg bg-dark-elevated border-r-4 border-brand-500 text-sm text-gray-300">
+                يتم تسجيل المعاملات المالية المؤثرة في <strong>دفتري حسابات رسميين</strong>:<br>
+                <strong>(1) دفتر اليومية العام (General Journal):</strong> دفتر القيد الأولي والتاريخي.<br>
+                <strong>(2) دفتر الأستاذ العام (General Ledger):</strong> دفتر القيد النهائي وتجميع حسابات حرف T.
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                  <h4 class="font-bold text-teal-400 mb-1">القيد البسيط (Single Entry)</h4>
+                  <p class="text-gray-300">قيد يومية يتكون من حساب مدين واحد وحساب دائن واحد فقط.</p>
+                </div>
+                <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border">
+                  <h4 class="font-bold text-teal-400 mb-1">القيد المركب (Compound Entry)</h4>
+                  <p class="text-gray-300">قيد يومية يحتوي على أكثر من طرف مدين أو أكثر من طرف دائن.</p>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">الخطوات الأربع لإجراء القيد والترحيل</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-sm">
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><span class="text-teal-400 font-bold block mb-1">الخطوة 1</span>تحليل المعاملة ومستنداتها المصدرية.</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><span class="text-teal-400 font-bold block mb-1">الخطوة 2</span>تطبيق قاعدة القيد المزدوج ومعادلة الميزانية.</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><span class="text-teal-400 font-bold block mb-1">الخطوة 3</span>تسجيل قيد اليومية في دفتر اليومية العام.</div>
+                  <div class="p-3 rounded bg-dark-elevated border border-dark-border"><span class="text-teal-400 font-bold block mb-1">الخطوة 4</span>الترحيل لحسابات الأستاذ (المدين يساراً، الدائن يميناً).</div>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">حالات عملية محلولة لقيود اليومية (FastForward)</h2>
+                <div class="space-y-3 font-mono text-xs text-gray-300">
+                  <div class="p-3 rounded bg-dark-base border border-dark-border" dir="ltr">
+                    <p class="font-bold text-white font-sans mb-1 text-right" dir="rtl">1. استثمار المالك 30,000 دولار نقداً في 1 ديسمبر:</p>
+                    <p class="text-teal-400">Dr. Cash (101) .................... 30,000</p>
+                    <p class="text-yellow-400 pl-4">Cr. C. Taylor, Capital (301) ...... 30,000</p>
+                  </div>
+
+                  <div class="p-3 rounded bg-dark-base border border-dark-border" dir="ltr">
+                    <p class="font-bold text-white font-sans mb-1 text-right" dir="rtl">2. شراء مهمات مكتبية بمبلغ 2,500 دولار نقداً:</p>
+                    <p class="text-teal-400">Dr. Supplies (126) ................ 2,500</p>
+                    <p class="text-yellow-400 pl-4">Cr. Cash (101) .................... 2,500</p>
+                  </div>
+
+                  <div class="p-3 rounded bg-dark-base border border-dark-border" dir="ltr">
+                    <p class="font-bold text-white font-sans mb-1 text-right" dir="rtl">3. شراء معدات بمبلغ 26,000 دولار نقداً:</p>
+                    <p class="text-teal-400">Dr. Equipment (167) ............... 26,000</p>
+                    <p class="text-yellow-400 pl-4">Cr. Cash (101) .................... 26,000</p>
+                  </div>
+
+                  <div class="p-3 rounded bg-dark-base border border-dark-border" dir="ltr">
+                    <p class="font-bold text-white font-sans mb-1 text-right" dir="rtl">4. شراء مهمات بمبلغ 7,100 دولار على الحساب (بالأجل):</p>
+                    <p class="text-teal-400">Dr. Supplies (126) ................ 7,100</p>
+                    <p class="text-yellow-400 pl-4">Cr. Accounts Payable (201) ........ 7,100</p>
+                  </div>
+
+                  <div class="p-3 rounded bg-dark-base border border-dark-border" dir="ltr">
+                    <p class="font-bold text-white font-sans mb-1 text-right" dir="rtl">5. تقديم خدمات استشارية وتحصيل 4,200 دولار نقداً:</p>
+                    <p class="text-teal-400">Dr. Cash (101) .................... 4,200</p>
+                    <p class="text-yellow-400 pl-4">Cr. Consulting Revenue (403) ...... 4,200</p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="p-4 rounded-lg bg-dark-base border border-dark-border text-sm space-y-2">
+                <h3 class="font-bold text-brand-500 uppercase">تمرين موهيت الشامل على المعادلة المحاسبية:</h3>
+                <p class="text-gray-300">وضح أثر العمليات الآتية على عناصر المعادلة المحاسبية:</p>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 text-xs font-mono text-gray-300">
+                  <p>أ. بدء النشاط بنقدية قدرها: 175,000</p><p>ب. شراء بضاعة من روهيت: 50,000</p>
+                  <p>ج. بيع بضاعة لمانيش بالأجل تكلفتها 17,500 بمبلغ: 20,000</p><p>د. شراء أثاث مكتبي: 10,000</p>
+                  <p>هـ. سداد المستحق لروهيت نقداً كصلح نهائي: 48,500</p><p>و. تحصيل المستحق من مانيش نقداً: 20,000</p>
+                  <p>ز. سداد إيجار: 1,000</p><p>ح. سحب نقدية للاستخدام الشخصي: 3,000</p>
+                </div>
+              </div>
+            </div>
+          `
+        },
+        quizzes: [
+          {
+            q: { en: "When supplies are purchased on credit (on account), what is the correct journal entry?", ar: "عند شراء مهمات مكتبية على الحساب (بالأجل)، ما هو قيد اليومية الصحيح؟" },
+            options: {
+              en: ["Debit Cash, Credit Supplies", "Debit Supplies, Credit Cash", "Debit Supplies, Credit Accounts Payable", "Debit Accounts Payable, Credit Supplies"],
+              ar: ["مدين النقدية، دائن المهمات", "مدين المهمات، دائن النقدية", "مدين المهمات (Supplies)، دائن الحسابات الدائنة (AP)", "مدين الحسابات الدائنة، دائن المهمات"]
+            },
+            answer: 2
+          },
+          {
+            q: { en: "A journal entry that contains more than one debit or more than one credit is known as a:", ar: "قيد اليومية الذي يحتوي على أكثر من طرف مدين أو أكثر من طرف دائن يُعرف بـ:" },
+            options: {
+              en: ["Single entry", "Compound entry", "Reversing entry", "Closing entry"],
+              ar: ["قيد بسيط", "قيد مركب (Compound entry)", "قيد عكسي", "قيد إقفال"]
+            },
+            answer: 1
+          }
+        ]
+      },
+
+      // ================= CHAPTER 6 =================
+      {
+        id: "ch6",
+        number: "Chapter 6",
+        title: { en: "Trial Balance & Financial Statements", ar: "ميزان المراجعة والقوائم المالية (Trial Balance & Statements)" },
+        content: {
+          en: `
+            <div class="space-y-6">
+              <h1 class="text-2xl sm:text-3xl font-bold text-white">Chapter 6: Trial Balance & Financial Statements</h1>
+
+              <div class="p-4 rounded-lg bg-dark-elevated border-l-4 border-brand-500 text-sm text-gray-300 space-y-2">
+                <h3 class="font-bold text-white text-base">What is a Trial Balance Sheet?</h3>
+                <p>A trial balance sheet is a report that lists the ending balances of each account from the chart of accounts in balance sheet order. It consolidates all T-accounts into one document and verifies that total debits equal total credits.</p>
+                <p><strong>4 Steps to Prepare:</strong> (1) Prepare a 3-column worksheet, (2) Fill account titles and balances, (3) Total debits and credits, (4) Verify that Debit Total = Credit Total.</p>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">FastForward Trial Balance (As of December 31, 2011)</h2>
+                <div class="overflow-x-auto border border-dark-border rounded-lg">
+                  <table class="w-full text-left text-xs font-mono">
+                    <thead class="bg-dark-elevated text-dark-muted border-b border-dark-border">
+                      <tr><th class="p-3 text-white">Account Title</th><th class="p-3 text-teal-400">Debits ($)</th><th class="p-3 text-yellow-400">Credits ($)</th></tr>
+                    </thead>
+                    <tbody class="divide-y divide-dark-border bg-dark-surface">
+                      <tr><td class="p-2">Cash</td><td class="p-2 text-teal-400">4,350</td><td class="p-2">-</td></tr>
+                      <tr><td class="p-2">Accounts Receivable</td><td class="p-2 text-teal-400">-</td><td class="p-2">-</td></tr>
+                      <tr><td class="p-2">Supplies</td><td class="p-2 text-teal-400">9,720</td><td class="p-2">-</td></tr>
+                      <tr><td class="p-2">Prepaid Insurance</td><td class="p-2 text-teal-400">2,400</td><td class="p-2">-</td></tr>
+                      <tr><td class="p-2">Equipment</td><td class="p-2 text-teal-400">26,000</td><td class="p-2">-</td></tr>
+                      <tr><td class="p-2">Accounts Payable</td><td class="p-2">-</td><td class="p-2 text-yellow-400">6,200</td></tr>
+                      <tr><td class="p-2">Unearned Consulting Revenue</td><td class="p-2">-</td><td class="p-2 text-yellow-400">3,000</td></tr>
+                      <tr><td class="p-2">C. Taylor, Capital</td><td class="p-2">-</td><td class="p-2 text-yellow-400">30,000</td></tr>
+                      <tr><td class="p-2">Owner's Withdrawals</td><td class="p-2 text-teal-400">200</td><td class="p-2">-</td></tr>
+                      <tr><td class="p-2">Consulting Revenue</td><td class="p-2">-</td><td class="p-2 text-yellow-400">5,800</td></tr>
+                      <tr><td class="p-2">Rental Revenue</td><td class="p-2">-</td><td class="p-2 text-yellow-400">300</td></tr>
+                      <tr><td class="p-2">Salaries Expense</td><td class="p-2 text-teal-400">1,400</td><td class="p-2">-</td></tr>
+                      <tr><td class="p-2">Rent Expense</td><td class="p-2 text-teal-400">1,000</td><td class="p-2">-</td></tr>
+                      <tr><td class="p-2">Utilities Expense</td><td class="p-2 text-teal-400">230</td><td class="p-2">-</td></tr>
+                      <tr class="bg-dark-elevated font-bold"><td class="p-3 text-white">Total Balanced Sums</td><td class="p-3 text-teal-400">$45,300</td><td class="p-3 text-yellow-400">$45,300</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">Core Financial Statements</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border text-sm">
+                    <h3 class="font-bold text-teal-400 mb-1">Paul's Guitar Shop, Inc. - Income Statement</h3>
+                    <p class="text-xs text-dark-muted mb-3 font-mono">For the Year Ended December 31, 2015</p>
+                    
+                    <div class="space-y-1 text-xs font-mono">
+                      <p class="font-bold text-white">Revenues:</p>
+                      <p class="flex justify-between"><span>Merchandise Sales</span><span>$24,800</span></p>
+                      <p class="flex justify-between"><span>Music Lesson Income</span><span>$3,000</span></p>
+                      <p class="flex justify-between font-bold text-teal-400 border-t border-dark-border pt-1"><span>Total Revenues:</span><span>$27,800</span></p>
+                      
+                      <p class="font-bold text-white mt-3">Expenses:</p>
+                      <p class="flex justify-between"><span>Cost of Goods Sold</span><span>$10,200</span></p>
+                      <p class="flex justify-between"><span>Depreciation Expense</span><span>$2,000</span></p>
+                      <p class="flex justify-between"><span>Wage Expense</span><span>$750</span></p>
+                      <p class="flex justify-between"><span>Rent Expense</span><span>$500</span></p>
+                      <p class="flex justify-between"><span>Interest Expense</span><span>$500</span></p>
+                      <p class="flex justify-between"><span>Supplies Expense</span><span>$500</span></p>
+                      <p class="flex justify-between"><span>Utilities Expense</span><span>$400</span></p>
+                      <p class="flex justify-between font-bold text-red-400 border-t border-dark-border pt-1"><span>Total Expenses:</span><span>$14,850</span></p>
+                      
+                      <p class="flex justify-between font-bold text-base text-brand-500 border-t-2 border-brand-500 pt-2 mt-2"><span>Net Income:</span><span>$12,950</span></p>
+                    </div>
+                  </div>
+
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border text-sm">
+                    <h3 class="font-bold text-teal-400 mb-1">Innovative Products, Inc. - Balance Sheet</h3>
+                    <p class="text-xs text-dark-muted mb-3 font-mono">As At December 31, 2012</p>
+                    
+                    <div class="space-y-1 text-xs font-mono">
+                      <p class="font-bold text-white">Assets:</p>
+                      <p class="flex justify-between"><span>Cash</span><span>$7,22,500</span></p>
+                      <p class="flex justify-between"><span>Accounts Receivable</span><span>$9,00,000</span></p>
+                      <p class="flex justify-between"><span>Marketable Securities</span><span>$1,00,000</span></p>
+                      <p class="flex justify-between"><span>Inventory</span><span>$5,00,000</span></p>
+                      <p class="flex justify-between"><span>Prepaid Expenses</span><span>$30,000</span></p>
+                      <p class="flex justify-between text-teal-400 font-bold border-t border-dark-border pt-1"><span>Total Current Assets:</span><span>$22,52,500</span></p>
+                      
+                      <p class="font-bold text-white mt-2">Property, Plant & Equip (PPE):</p>
+                      <p class="flex justify-between"><span>Land, Buildings, Mach, Furn, Veh</span><span>$38,00,000</span></p>
+                      <p class="flex justify-between"><span>Less: Accumulated Depreciation</span><span>($5,00,000)</span></p>
+                      <p class="flex justify-between text-teal-400 font-bold"><span>Net PPE:</span><span>$33,00,000</span></p>
+                      <p class="flex justify-between font-bold text-white border-t border-dark-border pt-1"><span>Total Assets:</span><span>$55,52,500</span></p>
+                      
+                      <p class="font-bold text-white mt-2">Liabilities:</p>
+                      <p class="flex justify-between"><span>Total Current Liabilities</span><span>$11,50,000</span></p>
+                      <p class="flex justify-between"><span>Long-Term Debt</span><span>$33,00,000</span></p>
+                      <p class="flex justify-between font-bold text-yellow-400 border-t border-dark-border pt-1"><span>Total Liabilities:</span><span>$44,50,000</span></p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border text-sm space-y-2">
+                <h3 class="font-bold text-teal-400 text-base">Closing Entries (End of Cycle)</h3>
+                <p class="text-gray-300">Journal entries made at the end of an accounting period to transfer balances from <strong>temporary (nominal) accounts</strong> to <strong>permanent accounts</strong>. This resets temporary account balances to zero for the next period.</p>
+                <ul class="list-disc list-inside text-gray-400 space-y-1">
+                  <li><strong>Temporary Accounts:</strong> All Revenue accounts, all Expense accounts, and Owner's Withdrawals.</li>
+                  <li><strong>Permanent Accounts:</strong> Assets, Liabilities, and Capital accounts (NEVER closed).</li>
+                </ul>
+                <p class="text-center font-serif italic text-brand-500 pt-2">"Life is like accounting: everything must be balanced." - Unknown</p>
+              </div>
+            </div>
+          `,
+          ar: `
+            <div class="space-y-6">
+              <h1 class="text-2xl sm:text-3xl font-bold text-white">الفصل 6: ميزان المراجعة والقوائم المالية (Trial Balance & Statements)</h1>
+
+              <div class="p-4 rounded-lg bg-dark-elevated border-r-4 border-brand-500 text-sm text-gray-300 space-y-2">
+                <h3 class="font-bold text-white text-base">ما هو ميزان المراجعة (Trial Balance)؟</h3>
+                <p>تقرير محاسبي يسرد الأرصدة الختامية لجميع الحسابات بدفتر الأستاذ مرتبة حسب ظهورها في الميزانية. يهدف لتأكيد الدقة الحسابية والتأكد من تطابق مجموع الأرصدة المدينة مع مجموع الأرصدة الدائنة قبل الانتقال للقوائم الختامية.</p>
+                <p><strong>خطوات الإعداد:</strong> (1) إعداد جدول بثلاثة أعمدة، (2) تفريغ أسماء الحسابات وأرصدتها، (3) جمع الأعمدة، (4) مطابقة مجاميع المدين والدائن.</p>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">ميزان مراجعة شركة FastForward (في 31 ديسمبر 2011)</h2>
+                <div class="overflow-x-auto border border-dark-border rounded-lg">
+                  <table class="w-full text-right text-xs font-mono">
+                    <thead class="bg-dark-elevated text-dark-muted border-b border-dark-border">
+                      <tr><th class="p-3 text-white">اسم الحساب</th><th class="p-3 text-teal-400">أرصدة مدينة (Debit)</th><th class="p-3 text-yellow-400">أرصدة دائنة (Credit)</th></tr>
+                    </thead>
+                    <tbody class="divide-y divide-dark-border bg-dark-surface">
+                      <tr><td class="p-2">النقدية (Cash)</td><td class="p-2 text-teal-400">4,350</td><td class="p-2">-</td></tr>
+                      <tr><td class="p-2">المهمات (Supplies)</td><td class="p-2 text-teal-400">9,720</td><td class="p-2">-</td></tr>
+                      <tr><td class="p-2">تأمين مدفوع مقدماً (Prepaid Insurance)</td><td class="p-2 text-teal-400">2,400</td><td class="p-2">-</td></tr>
+                      <tr><td class="p-2">المعدات (Equipment)</td><td class="p-2 text-teal-400">26,000</td><td class="p-2">-</td></tr>
+                      <tr><td class="p-2">الدائنون (Accounts Payable)</td><td class="p-2">-</td><td class="p-2 text-yellow-400">6,200</td></tr>
+                      <tr><td class="p-2">إيرادات استشارات غير مكتسبة</td><td class="p-2">-</td><td class="p-2 text-yellow-400">3,000</td></tr>
+                      <tr><td class="p-2">رأس مال المالك (C. Taylor, Capital)</td><td class="p-2">-</td><td class="p-2 text-yellow-400">30,000</td></tr>
+                      <tr><td class="p-2">مسحوبات المالك (Withdrawals)</td><td class="p-2 text-teal-400">200</td><td class="p-2">-</td></tr>
+                      <tr><td class="p-2">إيرادات استشارات (Revenue)</td><td class="p-2">-</td><td class="p-2 text-yellow-400">5,800</td></tr>
+                      <tr><td class="p-2">إيرادات إيجار (Rental Revenue)</td><td class="p-2">-</td><td class="p-2 text-yellow-400">300</td></tr>
+                      <tr><td class="p-2">مصروف الرواتب (Salaries Expense)</td><td class="p-2 text-teal-400">1,400</td><td class="p-2">-</td></tr>
+                      <tr><td class="p-2">مصروف الإيجار (Rent Expense)</td><td class="p-2 text-teal-400">1,000</td><td class="p-2">-</td></tr>
+                      <tr><td class="p-2">مصروف الكهرباء والمياه (Utilities)</td><td class="p-2 text-teal-400">230</td><td class="p-2">-</td></tr>
+                      <tr class="bg-dark-elevated font-bold"><td class="p-3 text-white">المجموع الإجمالي المتطابق</td><td class="p-3 text-teal-400">$45,300</td><td class="p-3 text-yellow-400">$45,300</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div>
+                <h2 class="text-xl font-bold text-white mb-3">القوائم المالية الختامية</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border text-sm">
+                    <h3 class="font-bold text-teal-400 mb-1">قائمة الدخل - متجر بول للآلات الموسيقية</h3>
+                    <p class="text-xs text-dark-muted mb-3 font-mono">عن السنة المنتهية في 31 ديسمبر 2015</p>
+                    
+                    <div class="space-y-1 text-xs font-mono">
+                      <p class="font-bold text-white">الإيرادات (Revenues):</p>
+                      <p class="flex justify-between"><span>مبيعات بضائع</span><span>$24,800</span></p>
+                      <p class="flex justify-between"><span>إيراد دروس موسيقى</span><span>$3,000</span></p>
+                      <p class="flex justify-between font-bold text-teal-400 border-t border-dark-border pt-1"><span>إجمالي الإيرادات:</span><span>$27,800</span></p>
+                      
+                      <p class="font-bold text-white mt-3">المصروفات (Expenses):</p>
+                      <p class="flex justify-between"><span>تكلفة البضاعة المباعة</span><span>$10,200</span></p>
+                      <p class="flex justify-between"><span>مصروف الإهلاك</span><span>$2,000</span></p>
+                      <p class="flex justify-between"><span>مصروف الأجور</span><span>$750</span></p>
+                      <p class="flex justify-between"><span>مصروف الإيجار</span><span>$500</span></p>
+                      <p class="flex justify-between"><span>مصروف الفوائد</span><span>$500</span></p>
+                      <p class="flex justify-between"><span>مهمات ومنافع</span><span>$900</span></p>
+                      <p class="flex justify-between font-bold text-red-400 border-t border-dark-border pt-1"><span>إجمالي المصروفات:</span><span>$14,850</span></p>
+                      
+                      <p class="flex justify-between font-bold text-base text-brand-500 border-t-2 border-brand-500 pt-2 mt-2"><span>صافي الدخل (Net Income):</span><span>$12,950</span></p>
+                    </div>
+                  </div>
+
+                  <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border text-sm">
+                    <h3 class="font-bold text-teal-400 mb-1">الميزانية العمومية - شركة المنتجات المبتكرة</h3>
+                    <p class="text-xs text-dark-muted mb-3 font-mono">كما في 31 ديسمبر 2012</p>
+                    
+                    <div class="space-y-1 text-xs font-mono">
+                      <p class="font-bold text-white">الأصول (Assets):</p>
+                      <p class="flex justify-between"><span>إجمالي الأصول المتداولة</span><span>$22,52,500</span></p>
+                      <p class="flex justify-between"><span>صافي الأصول الثابتة (PPE)</span><span>$33,00,000</span></p>
+                      <p class="flex justify-between font-bold text-teal-400 border-t border-dark-border pt-1"><span>إجمالي الأصول:</span><span>$55,52,500</span></p>
+                      
+                      <p class="font-bold text-white mt-3">الخصوم (Liabilities):</p>
+                      <p class="flex justify-between"><span>إجمالي الخصوم المتداولة</span><span>$11,50,000</span></p>
+                      <p class="flex justify-between"><span>ديون طويلة الأجل</span><span>$33,00,000</span></p>
+                      <p class="flex justify-between font-bold text-yellow-400 border-t border-dark-border pt-1"><span>إجمالي الالتزامات:</span><span>$44,50,000</span></p>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="p-4 rounded-lg bg-dark-elevated border border-dark-border text-sm space-y-2">
+                <h3 class="font-bold text-teal-400 text-base">قيود الإقفال (Closing Entries)</h3>
+                <p class="text-gray-300">قيود تجرى في نهاية الفترة المحاسبية لتحويل أرصدة <strong>الحسابات المؤقتة (الإيرادات والمصروفات والمسحوبات)</strong> إلى حسابات رأس المال الدائمة، وتصفيرها لتكون جاهزة للفترة القادمة. الحسابات الدائمة (الأصول والخصوم ورأس المال) لا تقفل أبداً.</p>
+              </div>
+            </div>
+          `
+        },
+        quizzes: [
+          {
+            q: { en: "Which financial statement reports a company's financial position at a specific point in time?", ar: "أي قائمة مالية توضح المركز المالي للمنشأة في لحظة زمنية محددة؟" },
+            options: {
+              en: ["Income Statement", "Trial Balance", "Balance Sheet", "Cash Flow Statement"],
+              ar: ["قائمة الدخل", "ميزان المراجعة", "الميزانية العمومية (Balance Sheet)", "قائمة التدفقات النقدية"]
+            },
+            answer: 2
+          },
+          {
+            q: { en: "Which of the following accounts is a temporary account that must be closed at the end of the period?", ar: "أي من الحسابات الآتية يُعتبر حساباً مؤقتاً يجب إقفاله في نهاية الفترة؟" },
+            options: {
+              en: ["Cash", "Equipment", "Accounts Payable", "Salaries Expense"],
+              ar: ["النقدية", "المعدات", "الدائنون", "مصروف الرواتب (Salaries Expense)"]
+            },
+            answer: 3
+          }
+        ]
+      },
+
+      // ================= GLOSSARY =================
+      {
+        id: "glossary",
+        number: "Reference",
+        title: { en: "Glossary / Tech Vocabulary", ar: "قاموس المصطلحات المحاسبية (Glossary)" },
+        content: {
+          en: `
+            <div class="space-y-6">
+              <h1 class="text-2xl font-bold text-white mb-2">Comprehensive Accounting Glossary</h1>
+              <p class="text-sm text-gray-300 mb-6">Complete bilingual vocabulary of all accounting terminology and jargon across all lectures.</p>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Accounting</strong>المحاسبة</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Assets</strong>الأصول والموجودات</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Liabilities</strong>الخصوم والالتزامات</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Owner's Equity</strong>حقوق الملكية / صافي الأصول</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Revenue</strong>الإيرادات والمبيعات</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Expenses</strong>المصروفات التشغيلية</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Sole Proprietorship</strong>المنشأة الفردية</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Partnership</strong>شركة التضامن / الأشخاص</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Corporation</strong>الشركة المساهمة</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Bookkeeping</strong>إمساك الدفاتر المحاسبية</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">General Journal</strong>دفتر اليومية العام</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">General Ledger</strong>دفتر الأستاذ العام</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Posting</strong>ترحيل القيود للأستاذ</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Debit (Dr)</strong>مدين (الجانب الأيمن/الأيسر حسب اللغة)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Credit (Cr)</strong>دائن</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Trial Balance</strong>ميزان المراجعة</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Balance Sheet</strong>الميزانية العمومية (قائمة المركز المالي)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Income Statement</strong>قائمة الدخل / حساب الأرباح والخسائر</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Closing Entries</strong>قيود الإقفال الختامية</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Temporary Accounts</strong>الحسابات المؤقتة (الاسمية)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Permanent Accounts</strong>الحسابات الدائمة (الحقيقية)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">GAAP</strong>مبادئ المحاسبة المقبولة عموماً</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">FASB</strong>مجلس معايير المحاسبة المالية</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border"><strong class="text-teal-400 block mb-1">Drawings</strong>المسحوبات الشخصية للمالك</div>
+              </div>
+            </div>
+          `,
+          ar: `
+            <div class="space-y-6">
+              <h1 class="text-2xl font-bold text-white mb-2">قاموس المصطلحات والمفاهيم المحاسبية</h1>
+              <p class="text-sm text-gray-300 mb-6">حصر شامل ومزدوج اللغة لكافة المصطلحات والمفردات المهنية الواردة في المنهج الأكاديمي.</p>
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-sm" dir="ltr">
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Accounting</strong>المحاسبة</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Assets</strong>الأصول والموجودات</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Liabilities</strong>الخصوم والالتزامات</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Owner's Equity</strong>حقوق الملكية / صافي الأصول</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Revenue</strong>الإيرادات والمبيعات</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Expenses</strong>المصروفات التشغيلية</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Sole Proprietorship</strong>المنشأة الفردية</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Partnership</strong>شركة التضامن / الأشخاص</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Corporation</strong>الشركة المساهمة</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Bookkeeping</strong>إمساك الدفاتر المحاسبية</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">General Journal</strong>دفتر اليومية العام</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">General Ledger</strong>دفتر الأستاذ العام</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Posting</strong>ترحيل القيود للأستاذ</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Debit (Dr)</strong>مدين</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Credit (Cr)</strong>دائن</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Trial Balance</strong>ميزان المراجعة</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Balance Sheet</strong>الميزانية العمومية (قائمة المركز المالي)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Income Statement</strong>قائمة الدخل / حساب الأرباح والخسائر</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Closing Entries</strong>قيود الإقفال الختامية</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Temporary Accounts</strong>الحسابات المؤقتة (الاسمية)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Permanent Accounts</strong>الحسابات الدائمة (الحقيقية)</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">GAAP</strong>مبادئ المحاسبة المقبولة عموماً</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">FASB</strong>مجلس معايير المحاسبة المالية</div>
+                <div class="bg-dark-elevated p-3 rounded border border-dark-border text-right"><strong class="text-teal-400 block mb-1">Drawings</strong>المسحوبات الشخصية للمالك</div>
+              </div>
+            </div>
+          `
+        },
+        quizzes: null
+      }
+    ];
+
+    // ================= APPLICATION STATE & CONTROLLER =================
+    let currentLang = 'ar'; // Default language Arabic
+    let currentIndex = 0;
+
+    const moduleList = document.getElementById('moduleList');
+    const contentArea = document.getElementById('contentArea');
+    const lectureNumber = document.getElementById('lectureNumber');
+    const quizSection = document.getElementById('quizSection');
+    const quizContainer = document.getElementById('quizContainer');
+    const langToggle = document.getElementById('langToggle');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarToggle = document.getElementById('sidebarToggle');
+
+    function renderNav() {
+      moduleList.innerHTML = '';
+      courseData.forEach((mod, index) => {
+        const btn = document.createElement('button');
+        btn.className = `w-full text-start px-3 py-2.5 rounded-lg text-sm transition-all flex flex-col gap-0.5 ${
+          index === currentIndex ? 'nav-active' : 'text-dark-muted hover:bg-dark-elevated hover:text-white'
+        }`;
+        
+        btn.innerHTML = `
+          <span class="text-xs opacity-75 font-mono">${cleanText(mod.number)}</span>
+          <span class="truncate font-medium">${cleanText(mod.title[currentLang])}</span>
+        `;
+        
+        btn.onclick = () => { 
+          currentIndex = index;
+          renderAll();
+          if (window.innerWidth < 768) {
+            sidebar.classList.add('hidden');
+          }
+        };
+        moduleList.appendChild(btn);
+      });
+    }
+
+    function renderContent() {
+      const data = courseData[currentIndex];
+      
+      lectureNumber.textContent = `${cleanText(data.number)}`;
+      contentArea.innerHTML = cleanText(data.content[currentLang]);
+      
+      // Render Multiple Quizzes if available
+      if (data.quizzes && data.quizzes.length > 0) {
+        quizSection.style.display = 'block';
+        quizContainer.innerHTML = '';
+        
+        data.quizzes.forEach((qItem, qIdx) => {
+          const qBox = document.createElement('div');
+          qBox.className = "bg-dark-elevated rounded-xl p-5 border border-dark-border space-y-3";
+          
+          const qTitle = document.createElement('p');
+          qTitle.className = "font-bold text-white text-sm sm:text-base";
+          qTitle.textContent = `${qIdx + 1}. ${cleanText(qItem.q[currentLang])}`;
+          qBox.appendChild(qTitle);
+          
+          const optsWrapper = document.createElement('div');
+          optsWrapper.className = "space-y-2";
+          
+          qItem.options[currentLang].forEach((opt, optIdx) => {
+            const btn = document.createElement('button');
+            btn.className = "w-full text-start p-3 bg-dark-surface border border-dark-border rounded-lg hover:border-brand-500 hover:bg-dark-base transition flex items-center justify-between text-sm text-gray-300";
+            btn.innerHTML = `<span>${cleanText(opt)}</span><span class="w-4 h-4 rounded-full border border-dark-border inline-block"></span>`;
+            
+            btn.onclick = () => {
+              // Lock buttons for this question
+              Array.from(optsWrapper.children).forEach(c => {
+                c.disabled = true;
+                c.classList.add('cursor-not-allowed', 'opacity-70');
+              });
+              
+              if (optIdx === qItem.answer) {
+                btn.classList.remove('opacity-70');
+                btn.classList.add('border-green-500', 'bg-green-500/10', 'text-green-400');
+                btn.querySelector('span:last-child').outerHTML = `<span class="text-green-400 font-bold">✔</span>`;
+              } else {
+                btn.classList.remove('opacity-70');
+                btn.classList.add('border-red-500', 'bg-red-500/10', 'text-red-400');
+                btn.querySelector('span:last-child').outerHTML = `<span class="text-red-400 font-bold">✖</span>`;
+                
+                // Highlight correct option
+                const correctBtn = optsWrapper.children[qItem.answer];
+                correctBtn.classList.remove('opacity-70');
+                correctBtn.classList.add('border-green-500', 'bg-green-500/10', 'text-green-400');
+                correctBtn.querySelector('span:last-child').outerHTML = `<span class="text-green-400 font-bold">✔</span>`;
+              }
+            };
+            optsWrapper.appendChild(btn);
+          });
+          
+          qBox.appendChild(optsWrapper);
+          quizContainer.appendChild(qBox);
+        });
+      } else {
+        quizSection.style.display = 'none';
+      }
+
+      // Handle Buttons State
+      prevBtn.style.opacity = currentIndex === 0 ? '0.4' : '1';
+      prevBtn.style.cursor = currentIndex === 0 ? 'not-allowed' : 'pointer';
+      
+      nextBtn.style.opacity = currentIndex === courseData.length - 1 ? '0.4' : '1';
+      nextBtn.style.cursor = currentIndex === courseData.length - 1 ? 'not-allowed' : 'pointer';
+    }
+
+    function renderAll() {
+      document.documentElement.lang = currentLang;
+      document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+      
+      langToggle.textContent = currentLang === 'ar' ? 'English' : 'العربية';
+      document.getElementById('navTitle').textContent = currentLang === 'ar' ? 'وحدات المنهج' : 'Course Modules';
+      document.getElementById('quizTitle').textContent = currentLang === 'ar' ? 'اختبر فهمك السريع' : 'Interactive Self-Assessment';
+      prevBtn.innerHTML = currentLang === 'ar' ? '&rarr; السابق' : '&larr; Previous';
+      nextBtn.innerHTML = currentLang === 'ar' ? 'التالي &larr;' : 'Next &rarr;';
+      
+      renderNav();
+      renderContent();
+    }
+
+    // ================= EVENT LISTENERS =================
+    langToggle.onclick = () => { 
+      currentLang = currentLang === 'ar' ? 'en' : 'ar';
+      renderAll(); 
+    };
+
+    prevBtn.onclick = () => { 
+      if (currentIndex > 0) {
+        currentIndex--;
+        renderAll();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } 
+    };
+
+    nextBtn.onclick = () => { 
+      if (currentIndex < courseData.length - 1) {
+        currentIndex++;
+        renderAll();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } 
+    };
+
+    sidebarToggle.onclick = () => {
+      sidebar.classList.toggle('hidden');
+    };
+
+    // Initialize Portal
+    renderAll();
+  </script>
+</body>
+</html>

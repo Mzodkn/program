@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" class="dark" translate="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Technical English II - Educational Portal</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#f0fdfa', 500: '#14b8a6', 600: '#0d9488', 700: '#0f766e' },
+            dark: { base: '#0b0f17', surface: '#111827', elevated: '#1f2937', border: '#374151', text: '#f3f4f6', muted: '#9ca3af' }
+          },
+          fontFamily: {
+            sans: ['Inter', 'Cairo', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+      body {
+    background-color: #0b0f17;
+    background-image: 
+      linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #0b0f17; }
+    ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #374151; }
+    .nav-active {
+      background-color: #1f2937;
+      border-inline-start: 4px solid #14b8a6;
+      color: #14b8a6 !important;
+      font-weight: 600;
+    }
+    
+    /* Smooth transitions */
+    body, main, aside, header { transition: all 0.3s ease; }
+  </style>
+</head>
+<body class="bg-dark-base text-dark-text font-sans antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-40 bg-dark-surface/90 backdrop-blur border-b border-dark-border">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button id="sidebarToggle" class="p-2 md:hidden text-dark-muted hover:text-white">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
+        </button>
+        <div class="w-9 h-9 rounded bg-gradient-to-tr from-brand-600 to-teal-400 flex items-center justify-center font-bold text-white shadow-lg">TE</div>
+        <div class="font-bold text-lg hidden sm:block tracking-wide" id="headerTitle">Technical English II</div>
+      </div>
+      
+      <!-- Lang Toggle -->
+      <button id="langToggle" class="px-5 py-1.5 rounded-lg bg-dark-elevated border border-dark-border text-sm font-semibold text-brand-500 hover:bg-dark-border transition shadow-md flex items-center gap-2">
+        <span id="langText">العربية</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="flex-1 max-w-7xl w-full mx-auto px-4 py-6 flex gap-6 relative">
+    
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-64 bg-dark-surface border border-dark-border rounded-xl p-4 h-[calc(100vh-6rem)] sticky top-20 overflow-y-auto hidden md:block shrink-0 shadow-xl z-30 absolute md:relative start-4 md:start-0">
+      <div class="flex justify-between items-center mb-3 px-3">
+        <div class="text-xs font-bold uppercase text-dark-muted tracking-wider" id="navTitle">Modules</div>
+        <button id="closeSidebar" class="md:hidden text-dark-muted hover:text-white">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      <nav id="moduleList" class="space-y-1"></nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 min-w-0 bg-dark-surface border border-dark-border rounded-xl p-6 md:p-8 shadow-xl relative flex flex-col">
+      <div class="flex-1">
+        <div class="text-sm font-mono text-brand-500 mb-2 font-bold tracking-widest uppercase" id="lectureNumber"></div>
+        <article id="contentArea" class="space-y-6"></article>
+
+        <!-- Quiz Section -->
+        <section id="quizSection" class="mt-12 pt-8 border-t border-dark-border hidden">
+          <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-3">
+            <span class="w-2.5 h-2.5 rounded-full bg-brand-500 shadow-[0_0_8px_rgba(20,184,166,0.8)]"></span>
+            <span id="quizTitle">Interactive Quiz</span>
+          </h3>
+          <div id="quizContainer" class="space-y-8"></div>
+        </section>
+      </div>
+
+      <!-- Navigation Footer -->
+      <div class="mt-12 pt-6 border-t border-dark-border flex items-center justify-between shrink-0">
+        <button id="prevBtn" class="px-5 py-2.5 rounded-lg bg-dark-elevated text-dark-muted hover:text-white hover:bg-dark-border transition border border-dark-border font-medium">&larr; Previous</button>
+        <button id="nextBtn" class="px-5 py-2.5 rounded-lg bg-brand-600 text-white hover:bg-brand-500 transition shadow-lg shadow-brand-500/20 font-medium">Next &rarr;</button>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Exact Data Payload from "Technical_English.html" with ZERO content loss[cite: 2]
+    const courseData = [
+      {
+        id: "lec1",
+        number: "Lecture 1",
+        title: { en: "Technical English & Tenses", ar: "الإنجليزية التقنية والأزمنة" },
+        content: [
+          { type: "heading", level: 2, text: { en: "Definition of Technical English[cite: 2]", ar: "تعريف الإنجليزية التقنية (Technical English)[cite: 2]" } },
+          { type: "list", items: {
+              en: [
+                  "Technical English is the use of English language in technical fields such as computer science, engineering, and technology.[cite: 2]",
+                  "It focuses on clarity, accuracy, and technical vocabulary.[cite: 2]",
+                  "It is a way to explain technical information without ambiguity.[cite: 2]"
+              ],
+              ar: [
+                  "الإنجليزية التقنية هي استخدام اللغة الإنجليزية في المجالات التقنية مثل علوم الحاسوب والهندسة والتكنولوجيا.[cite: 2]",
+                  "تركز على الوضوح والدقة والمفردات التقنية.[cite: 2]",
+                  "هي طريقة لشرح المعلومات التقنية دون غموض (Ambiguity).[cite: 2]"
+              ]
+          }},
+          { type: "heading", level: 3, text: { en: "General vs. Technical English[cite: 2]", ar: "مقارنة بين الإنجليزية العامة والتقنية[cite: 2]" } },
+          { type: "paragraph", text: { 
+              en: "General English is used in daily life communication. Technical English is used in scientific and technical fields.[cite: 2]", 
+              ar: "الإنجليزية العامة تُستخدم في التواصل اليومي المعتاد. بينما الإنجليزية التقنية تُستخدم في المجالات العلمية والتقنية.[cite: 2]" 
+          }},
+          { type: "heading", level: 3, text: { en: "Importance of English in the Technical Field[cite: 2]", ar: "أهمية اللغة الإنجليزية في المجال التقني[cite: 2]" } },
+          { type: "list", items: {
+              en: [
+                  "1. Understanding technical books and references: Most books, research papers, and technical documents are written in English.[cite: 2]",
+                  "2. Using software and applications: Most interfaces use English menus, commands, and instructions.[cite: 2]",
+                  "3. Understanding technical terms: Fields use terms like database, network, and algorithm.[cite: 2]"
+              ],
+              ar: [
+                  "1. فهم الكتب والمراجع التقنية: معظم الكتب والأوراق البحثية مكتوبة باللغة الإنجليزية.[cite: 2]",
+                  "2. استخدام البرمجيات والتطبيقات: تستخدم معظم الواجهات القوائم والأوامر باللغة الإنجليزية.[cite: 2]",
+                  "3. فهم المصطلحات التقنية: تستخدم المجالات مصطلحات مثل قاعدة البيانات (Database)، الشبكة (Network)، والخوارزمية (Algorithm).[cite: 2]"
+              ]
+          }},
+          { type: "heading", level: 2, text: { en: "Technical Vocabulary[cite: 2]", ar: "المفردات التقنية (Technical Vocabulary)[cite: 2]" } },
+          { type: "paragraph", text: {
+              en: "Specialized vocabulary evolves due to the need for experts to communicate with clarity, precision, relevance, and brevity. Building general English vocabulary is essential prior to technical vocabulary.[cite: 2]",
+              ar: "تتطور المفردات المتخصصة بسبب حاجة الخبراء للتواصل بوضوح ودقة وإيجاز. بناء المفردات العامة أمر أساسي قبل المفردات التقنية.[cite: 2]"
+          }},
+          { type: "list", items: {
+              en: [
+                  "Learning words should be a continuous process; use a dictionary, learn origins, or infer meaning from context.[cite: 2]",
+                  "Word formation methods: blending, compounding, coinage, borrowing, clipping.[cite: 2]",
+                  "Derivation involves affixes added to root words. Categories: Prefixes (un, mis, pre) and Suffixes (ful, less).[cite: 2]"
+              ],
+              ar: [
+                  "تعلم الكلمات يجب أن يكون عملية مستمرة؛ استخدم القاموس، أو تعلم أصل الكلمة، أو استنتج المعنى من السياق.[cite: 2]",
+                  "طرق تكوين الكلمات: المزج، التركيب، الصياغة، الاستعارة، والقص (blending, compounding, coinage, borrowing, clipping).[cite: 2]",
+                  "الاشتقاق (Derivation) يتضمن إضافات (Affixes). تنقسم إلى: السوابق (Prefixes) واللواحق (Suffixes).[cite: 2]"
+              ]
+          }},
+          { type: "heading", level: 2, text: { en: "Voice and Tense: Active and Passive Voice[cite: 2]", ar: "الصيغة والزمن: المبني للمعلوم والمبني للمجهول[cite: 2]" } },
+          { type: "alert", text: {
+              en: "Example 1 (Active): The operators conducted a test on the turbo generator.<br>Example 2 (Passive): A test was conducted on the turbo generator by the operators.[cite: 2]",
+              ar: "مثال 1 (مبني للمعلوم): أجرى المشغلون اختباراً على المولد التوربيني.<br>مثال 2 (مبني للمجهول): أُجري اختبار على المولد التوربيني بواسطة المشغلين.[cite: 2]"
+          }},
+          { type: "paragraph", text: {
+              en: "Active Voice gives importance to the agent/doer of the action. Passive Voice means the action is being performed on the subject and emphasizes the action itself.[cite: 2]",
+              ar: "المبني للمعلوم (Active Voice) يعطي أهمية للفاعل (Agent). المبني للمجهول (Passive Voice) يعني أن الفعل يقع على المفعول ويركز على الحدث نفسه.[cite: 2]"
+          }},
+          { type: "heading", level: 3, text: { en: "Tense/Verb Transformations[cite: 2]", ar: "تحويلات الأزمنة والأفعال[cite: 2]" } },
+          { type: "table",
+              headers: { en: ["Tense", "Active Voice", "Passive Voice"], ar: ["الزمن (Tense)", "المبني للمعلوم (Active)", "المبني للمجهول (Passive)"] },
+              rows: [
+                  { en: ["Simple present[cite: 2]", "Analyses[cite: 2]", "is analysed[cite: 2]"], ar: ["المضارع البسيط[cite: 2]", "Analyses[cite: 2]", "is analysed[cite: 2]"] },
+                  { en: ["Present continuous[cite: 2]", "is analyzing[cite: 2]", "is being analysed[cite: 2]"], ar: ["المضارع المستمر[cite: 2]", "is analyzing[cite: 2]", "is being analysed[cite: 2]"] },
+                  { en: ["Simple past[cite: 2]", "Analysed[cite: 2]", "was analysed[cite: 2]"], ar: ["الماضي البسيط[cite: 2]", "Analysed[cite: 2]", "was analysed[cite: 2]"] },
+                  { en: ["Past continuous[cite: 2]", "was analysing[cite: 2]", "was being analysed[cite: 2]"], ar: ["الماضي المستمر[cite: 2]", "was analysing[cite: 2]", "was being analysed[cite: 2]"] },
+                  { en: ["Present Perfect[cite: 2]", "has analysed[cite: 2]", "has been analysed[cite: 2]"], ar: ["المضارع التام[cite: 2]", "has analysed[cite: 2]", "has been analysed[cite: 2]"] },
+                  { en: ["Future[cite: 2]", "will analyse[cite: 2]", "will be analysed[cite: 2]"], ar: ["المستقبل[cite: 2]", "will analyse[cite: 2]", "will be analysed[cite: 2]"] },
+                  { en: ["Conditional[cite: 2]", "would analyse[cite: 2]", "would be analysed[cite: 2]"], ar: ["الشرطي[cite: 2]", "would analyse[cite: 2]", "would be analysed[cite: 2]"] },
+                  { en: ["Perfect conditional[cite: 2]", "would have analysed[cite: 2]", "would have been analysed[cite: 2]"], ar: ["الشرطي التام[cite: 2]", "would have analysed[cite: 2]", "would have been analysed[cite: 2]"] }
+              ]
+          },
+          { type: "heading", level: 3, text: { en: "Steps to Change Voice[cite: 2]", ar: "خطوات تغيير الصيغة (Voice)[cite: 2]" } },
+          { type: "list", items: {
+              en: [
+                  "Active to Passive: Identify subject & object -> Note verb tense -> Begin with object -> Use past participle + auxiliary -> Add 'by the' agent.[cite: 2]",
+                  "Passive to Active: Identify doer after 'by the' -> Note the action and tense -> Begin with agent -> Choose appropriate verb form based on tense/plurality.[cite: 2]"
+              ],
+              ar: [
+                  "من المعلوم للمجهول: حدد الفاعل والمفعول -> لاحظ زمن الفعل -> ابدأ بالمفعول -> استخدم التصريف الثالث + الفعل المساعد -> أضف الفاعل بعد كلمة 'by the'.[cite: 2]",
+                  "من المجهول للمعلوم: حدد الفاعل بعد 'by the' -> لاحظ الحدث والزمن -> ابدأ بالفاعل -> اختر صيغة الفعل المناسبة للزمن والجمع/المفرد.[cite: 2]"
+              ]
+          }},
+          { type: "paragraph", text: {
+              en: "When to use Active: For clear, direct, and strong writing. When to use Passive: In formal writings (reports, proposals) where the action is more important than the doer. Only transitive verbs can be transformed into passive voice.[cite: 2]",
+              ar: "متى نستخدم المبني للمعلوم: للكتابة الواضحة والمباشرة. متى نستخدم المجهول: في الكتابات الرسمية (التقارير) حيث يكون الحدث أهم من الفاعل. الأفعال المتعدية (Transitive verbs) فقط يمكن تحويلها للمجهول.[cite: 2]"
+          }}
+        ],
+        quiz: [
+          {
+            q: { en: "Technical English focuses on which of the following?[cite: 2]", ar: "على ماذا تركز الإنجليزية التقنية؟[cite: 2]" },
+            options: [
+              { text: { en: "Clarity, accuracy, and technical vocabulary[cite: 2]", ar: "الوضوح والدقة والمفردات التقنية[cite: 2]" }, correct: true },
+              { text: { en: "Poetry and emotional expression[cite: 2]", ar: "الشعر والتعبير العاطفي[cite: 2]" }, correct: false },
+              { text: { en: "Ambiguity and complexity[cite: 2]", ar: "الغموض والتعقيد[cite: 2]" }, correct: false }
+            ]
+          },
+          {
+            q: { en: "Which voice gives importance to the doer of the action?[cite: 2]", ar: "أي صيغة تعطي أهمية للفاعل (من قام بالحدث)؟[cite: 2]" },
+            options: [
+              { text: { en: "Passive Voice[cite: 2]", ar: "المبني للمجهول (Passive)[cite: 2]" }, correct: false },
+              { text: { en: "Active Voice[cite: 2]", ar: "المبني للمعلوم (Active)[cite: 2]" }, correct: true },
+              { text: { en: "Conditional Voice[cite: 2]", ar: "الصيغة الشرطية[cite: 2]" }, correct: false }
+            ]
+          },
+          {
+            q: { en: "What is the passive form of 'The Civil Engineers tried out different layouts'?[cite: 2]", ar: "ما هي صيغة المجهول لجملة 'The Civil Engineers tried out different layouts'؟[cite: 2]" },
+            options: [
+              { text: { en: "Different layouts were tried out by the Civil Engineers.[cite: 2]", ar: "Different layouts were tried out by the Civil Engineers.[cite: 2]" }, correct: true },
+              { text: { en: "Different layouts are tried out by the Civil Engineers.[cite: 2]", ar: "Different layouts are tried out by the Civil Engineers.[cite: 2]" }, correct: false }
+            ]
+          }
+        ]
+      },
+      {
+        id: "lec2",
+        number: "Lecture 2",
+        title: { en: "Note Making", ar: "تدوين الملاحظات" },
+        content: [
+          { type: "heading", level: 2, text: { en: "Note Making Definition[cite: 2]", ar: "تعريف تدوين الملاحظات (Note Making)[cite: 2]" } },
+          { type: "paragraph", text: {
+              en: "Note making is a systematic method of writing down quickly, briefly, and clearly the important points of a reading text. It integrates reading and writing skills.[cite: 2]",
+              ar: "تدوين الملاحظات هو طريقة منهجية لكتابة النقاط المهمة في النص المقروء بسرعة وبإيجاز ووضوح. وهي تدمج بين مهارتي القراءة والكتابة.[cite: 2]"
+          }},
+          { type: "list", items: {
+              en: [
+                  "Used to: Keep a record of main points, revise for an exam, and update information.[cite: 2]",
+                  "Reading Strategy: Identify central ideas and details, recognize key lexical items, read signal words, ignore irrelevant matter, infer relationships, and interpret graphic aids.[cite: 2]"
+              ],
+              ar: [
+                  "تُستخدم في: الاحتفاظ بسجل للنقاط الرئيسية، المراجعة للامتحان، وتحديث المعلومات.[cite: 2]",
+                  "استراتيجية القراءة: تحديد الأفكار المركزية والتفاصيل، التعرف على الكلمات المفتاحية، تجاهل المواد غير ذات الصلة، استنتاج العلاقات، وتفسير المساعدات الرسومية.[cite: 2]"
+              ]
+          }},
+          { type: "heading", level: 3, text: { en: "How to make notes?[cite: 2]", ar: "كيف تدون الملاحظات؟[cite: 2]" } },
+          { type: "list", items: {
+              en: [
+                  "Heading: Frame a heading based on the central idea in the middle of the page.[cite: 2]",
+                  "Subheadings: Frame based on subordinate ideas developing the main idea.[cite: 2]",
+                  "Points: Keep further details under subtitles.[cite: 2]",
+                  "Indenting: Subheadings should be written at a uniform distance from the margin.[cite: 2]"
+              ],
+              ar: [
+                  "العنوان (Heading): صغ عنواناً بناءً على الفكرة المركزية في منتصف الصفحة.[cite: 2]",
+                  "العناوين الفرعية (Subheadings): تُصاغ بناءً على الأفكار الفرعية.[cite: 2]",
+                  "النقاط (Points): احتفظ بالتفاصيل الإضافية أسفل العناوين الفرعية.[cite: 2]",
+                  "المسافة البادئة (Indenting): يجب كتابة العناوين الفرعية بمسافة موحدة من الهامش.[cite: 2]"
+              ]
+          }},
+          { type: "heading", level: 3, text: { en: "Abbreviations[cite: 2]", ar: "الاختصارات (Abbreviations)[cite: 2]" } },
+          { type: "paragraph", text: { en: "Do not write full sentences. Use abbreviations wherever necessary.[cite: 2]", ar: "لا تكتب جملاً كاملة. استخدم الاختصارات كلما لزم الأمر.[cite: 2]" } },
+          { type: "table",
+              headers: { en: ["Method", "Examples"], ar: ["الطريقة", "أمثلة"] },
+              rows: [
+                  { en: ["Capitalized first letters[cite: 2]", "U.P., USA, USSR, UK[cite: 2]"], ar: ["الحروف الأولى الكبيرة[cite: 2]", "U.P., USA, USSR, UK[cite: 2]"] },
+                  { en: ["Common abbreviations[cite: 2]", "Sc (Science), Geog (Geography), Govt[cite: 2]"], ar: ["اختصارات شائعة[cite: 2]", "Sc (Science), Geog (Geography), Govt[cite: 2]"] },
+                  { en: ["First/last letters with apostrophe[cite: 2]", "can't (cannot), w'out (without), wrt'g[cite: 2]"], ar: ["حروف مع فاصلة عليا[cite: 2]", "can't, w'out, wrt'g[cite: 2]"] },
+                  { en: ["First letters of phrases[cite: 2]", "Kg (Kilogram), PA (Per annum), CV[cite: 2]"], ar: ["أول حروف من العبارة[cite: 2]", "Kg (Kilogram), PA (Per annum), CV[cite: 2]"] },
+                  { en: ["Generally used[cite: 2]", "e.g. (Example), viz (Namely), et al (and others), N.B. (Take note)[cite: 2]"], ar: ["مستخدمة عموماً[cite: 2]", "e.g., viz, et al, N.B.[cite: 2]"] }
+              ]
+          },
+          { type: "heading", level: 3, text: { en: "Three Methods of Note Making[cite: 2]", ar: "ثلاث طرق لتدوين الملاحظات[cite: 2]" } },
+          { type: "list", items: {
+              en: [
+                  "Topicalising: Main points and central idea rephrased in points. Redundant words removed.[cite: 2]",
+                  "Schematizing: Organizing notes in the form of tables and diagrams (useful for scientific texts).[cite: 2]",
+                  "Sequencing: Making a clear layout for fast and accurate interpretation.[cite: 2]"
+              ],
+              ar: [
+                  "المواضيع (Topicalising): إعادة صياغة النقاط الرئيسية في نقاط وحذف الكلمات الزائدة.[cite: 2]",
+                  "المخططات (Schematizing): تنظيم الملاحظات في جداول ومخططات (مفيد للنصوص العلمية).[cite: 2]",
+                  "التسلسل (Sequencing): عمل تخطيط واضح لتفسير الملاحظات بدقة وسرعة.[cite: 2]"
+              ]
+          }},
+          { type: "heading", level: 2, text: { en: "Summarizing[cite: 2]", ar: "التلخيص (Summarizing)[cite: 2]" } },
+          { type: "paragraph", text: {
+              en: "Provides maximum information in minimum words. Improves ability to write concisely. The five C's are essential: completeness, compactness, conciseness, clarity, and coherence. Brevity is the soul of wit.[cite: 2]",
+              ar: "يوفر أقصى قدر من المعلومات بأقل عدد من الكلمات. يحسن القدرة على الكتابة بإيجاز. العناصر الخمسة (5 C's) ضرورية: الاكتمال، التماسك، الإيجاز، الوضوح، والترابط. الإيجاز هو روح الذكاء.[cite: 2]"
+          }}
+        ],
+        quiz: [
+          {
+            q: { en: "Which method organizes notes using tables and diagrams?[cite: 2]", ar: "أي طريقة تنظم الملاحظات باستخدام الجداول والمخططات؟[cite: 2]" },
+            options: [
+              { text: { en: "Topicalising[cite: 2]", ar: "المواضيع (Topicalising)[cite: 2]" }, correct: false },
+              { text: { en: "Schematizing[cite: 2]", ar: "المخططات (Schematizing)[cite: 2]" }, correct: true },
+              { text: { en: "Sequencing[cite: 2]", ar: "التسلسل (Sequencing)[cite: 2]" }, correct: false }
+            ]
+          },
+          {
+            q: { en: "What does the abbreviation 'e.g.' stand for?[cite: 2]", ar: "ماذا يعني الاختصار 'e.g.'؟[cite: 2]" },
+            options: [
+              { text: { en: "Example[cite: 2]", ar: "مثال (Example)[cite: 2]" }, correct: true },
+              { text: { en: "And others[cite: 2]", ar: "وآخرون (And others)[cite: 2]" }, correct: false },
+              { text: { en: "Take note[cite: 2]", ar: "ملاحظة (Take note)[cite: 2]" }, correct: false }
+            ]
+          },
+          {
+            q: { en: "Which of the following is NOT one of the five C's of summarizing?[cite: 2]", ar: "أي مما يلي ليس من عناصر التلخيص الخمسة (5 C's)؟[cite: 2]" },
+            options: [
+              { text: { en: "Clarity[cite: 2]", ar: "الوضوح (Clarity)[cite: 2]" }, correct: false },
+              { text: { en: "Coherence[cite: 2]", ar: "الترابط (Coherence)[cite: 2]" }, correct: false },
+              { text: { en: "Complexity[cite: 2]", ar: "التعقيد (Complexity)[cite: 2]" }, correct: true }
+            ]
+          }
+        ]
+      },
+      {
+        id: "lec3",
+        number: "Lecture 3",
+        title: { en: "Compound Nouns & Prefixes", ar: "الأسماء المركبة والسوابق" },
+        content: [
+          { type: "heading", level: 2, text: { en: "Classification of Nouns[cite: 2]", ar: "تصنيف الأسماء (Nouns)[cite: 2]" } },
+          { type: "paragraph", text: { en: "A noun names a person, animal, place, thing, or quality.[cite: 2]", ar: "الاسم يسمي شخصاً، حيواناً، مكاناً، شيئاً، أو صفة.[cite: 2]" } },
+          { type: "table",
+              headers: { en: ["Noun Type", "Examples"], ar: ["نوع الاسم", "أمثلة"] },
+              rows: [
+                  { en: ["Common noun[cite: 2]", "girl, boy, woman, book, town[cite: 2]"], ar: ["الاسم العام (Common)[cite: 2]", "girl, boy, book[cite: 2]"] },
+                  { en: ["Abstract noun[cite: 2]", "honesty, charity, wisdom[cite: 2]"], ar: ["الاسم المجرد (Abstract)[cite: 2]", "honesty, wisdom[cite: 2]"] },
+                  { en: ["Collective noun[cite: 2]", "crowd, fleet, team, group[cite: 2]"], ar: ["اسم الجمع (Collective)[cite: 2]", "crowd, team[cite: 2]"] },
+                  { en: ["Concrete noun[cite: 2]", "iron, gold, silver[cite: 2]"], ar: ["الاسم الملموس (Concrete)[cite: 2]", "iron, gold[cite: 2]"] },
+                  { en: ["Countable / Uncountable[cite: 2]", "pens (countable) / sugar (uncountable)[cite: 2]"], ar: ["معدود / غير معدود[cite: 2]", "pens (معدود) / sugar (غير معدود)[cite: 2]"] },
+                  { en: ["Proper noun[cite: 2]", "Sita, Rama, Madras, Delhi[cite: 2]"], ar: ["اسم العلم (Proper)[cite: 2]", "Madras, Delhi[cite: 2]"] },
+                  { en: ["Gerund noun (verb + ing)[cite: 2]", "singing[cite: 2]"], ar: ["المصدر (Gerund)[cite: 2]", "singing[cite: 2]"] }
+              ]
+          },
+          { type: "heading", level: 2, text: { en: "Compound Nouns[cite: 2]", ar: "الأسماء المركبة (Compound Nouns)[cite: 2]" } },
+          { type: "paragraph", text: {
+              en: "An expression made up of more than one word functioning as a noun. Formed by nouns modified by adjectives or nouns.[cite: 2]",
+              ar: "تعبير يتكون من أكثر من كلمة ويعمل كاسم. يتشكل من أسماء معدلة بصفات أو أسماء أخرى.[cite: 2]"
+          }},
+          { type: "list", items: {
+              en: [
+                  "Format: Black bird (adj+noun), Under-water (prep+noun), Hair cut (noun+verb).[cite: 2]",
+                  "Can be one word (Earring), separate (Tin opener), or hyphenated (Pen-name).[cite: 2]",
+                  "Countable: Tea-bag, credit card, windscreen.[cite: 2]",
+                  "Uncountable: Income-tax, data-processing, pocket money.[cite: 2]",
+                  "Only Singular: Generation-gap, brain drain, blood-pressure.[cite: 2]",
+                  "Only Plural: Roadworks, traffic-lights, sunglasses.[cite: 2]"
+              ],
+              ar: [
+                  "التنسيق: Black bird (صفة+اسم)، Under-water (حرف جر+اسم)، Hair cut (اسم+فعل).[cite: 2]",
+                  "قد تكون كلمة واحدة (Earring)، منفصلة (Tin opener)، أو بواصلة (Pen-name).[cite: 2]",
+                  "معدود: Tea-bag, credit card.[cite: 2]",
+                  "غير معدود: Income-tax, data-processing.[cite: 2]",
+                  "مفرد فقط: Generation-gap, blood-pressure.[cite: 2]",
+                  "جمع فقط: Roadworks, traffic-lights.[cite: 2]"
+              ]
+          }},
+          { type: "heading", level: 2, text: { en: "Prefixes (Negative & Others)[cite: 2]", ar: "السوابق (Prefixes)[cite: 2]" } },
+          { type: "paragraph", text: {
+              en: "Prefixes give adjectives negative meaning (kind -> unkind). A prefix is a syllable at the beginning of a word to get another word.[cite: 2]",
+              ar: "السوابق تعطي الصفات معنى سلبياً (kind -> unkind). السابقة هي مقطع يُضاف لبداية الكلمة لتكوين كلمة جديدة.[cite: 2]"
+          }},
+          { type: "list", items: {
+              en: [
+                  "Rules: 'in-' becomes 'im-' before 'm' or 'p' (immature). 'in-' becomes 'ir-' before 'r' (illegal, illiterate).[cite: 2]",
+                  "Exceptions: 'in-' can mean inside (insert, income).[cite: 2]",
+                  "Verbs: 'dis-' and 'un-' reverse action (disappear, undo, unlock).[cite: 2]",
+                  "Reversative: reversal of action, no negative implication (un-, de-, dis- : unpack, decode).[cite: 2]",
+                  "Perforative: ill, bad, wrong (mis-, mal-, pseudo- : misuse, malfunction).[cite: 2]",
+                  "Time and Order: fore-, pre-, post-, ex-, re- (pre-war, ex-president).[cite: 2]",
+                  "Word-class change: Be-, en-, a- (bewitch, empower).[cite: 2]",
+                  "Negative List: a, de, il, im, in, ir, dis, mis, non, un.[cite: 2]"
+              ],
+              ar: [
+                  "قواعد: 'in' تصبح 'im' قبل 'm' أو 'p' (immature). وتصبح 'ir' قبل 'r' أو 'il' قبل 'l' (illegal).[cite: 2]",
+                  "استثناءات: 'in' قد تعني الداخل (insert, income).[cite: 2]",
+                  "الأفعال: 'dis' و 'un' تعكس الحدث (undo, unlock).[cite: 2]",
+                  "العكسية (Reversative): عكس الفعل (unpack, decode).[cite: 2]",
+                  "الاختراق/السيء (Perforative): خطأ، سيء (misuse, malfunction).[cite: 2]",
+                  "الزمن والترتيب: fore, pre, post, ex, re (pre-war, ex-president).[cite: 2]",
+                  "تغيير فئة الكلمة: Be, en, a (bewitch, empower).[cite: 2]",
+                  "قائمة السلبيات: a, de, il, im, in, ir, dis, mis, non, un.[cite: 2]"
+              ]
+          }}
+        ],
+        quiz: [
+          {
+            q: { en: "Which prefix is used before root words beginning with 'm' or 'p'?[cite: 2]", ar: "أي سابقة (Prefix) تُستخدم قبل الكلمات التي تبدأ بحرف 'm' أو 'p'؟[cite: 2]" },
+            options: [
+              { text: { en: "ir-[cite: 2]", ar: "ir-[cite: 2]" }, correct: false },
+              { text: { en: "il-[cite: 2]", ar: "il-[cite: 2]" }, correct: false },
+              { text: { en: "im-[cite: 2]", ar: "im-[cite: 2]" }, correct: true }
+            ]
+          },
+          {
+            q: { en: "What type of noun is 'wisdom'?[cite: 2]", ar: "ما نوع الاسم في كلمة 'wisdom'؟[cite: 2]" },
+            options: [
+              { text: { en: "Abstract noun[cite: 2]", ar: "اسم مجرد (Abstract)[cite: 2]" }, correct: true },
+              { text: { en: "Concrete noun[cite: 2]", ar: "اسم ملموس (Concrete)[cite: 2]" }, correct: false },
+              { text: { en: "Proper noun[cite: 2]", ar: "اسم علم (Proper)[cite: 2]" }, correct: false }
+            ]
+          },
+          {
+            q: { en: "Which of the following is a perforative prefix meaning 'bad' or 'wrong'?[cite: 2]", ar: "أي مما يلي سابقة تعني 'سيء' أو 'خاطئ'؟[cite: 2]" },
+            options: [
+              { text: { en: "mal-[cite: 2]", ar: "mal-[cite: 2]" }, correct: true },
+              { text: { en: "pre-[cite: 2]", ar: "pre-[cite: 2]" }, correct: false },
+              { text: { en: "en-[cite: 2]", ar: "en-[cite: 2]" }, correct: false }
+            ]
+          }
+        ]
+      },
+      {
+        id: "lec4",
+        number: "Lecture 4",
+        title: { en: "Requirements & Specs", ar: "المتطلبات والمواصفات" },
+        content: [
+          { type: "heading", level: 2, text: { en: "Requirements Engineering (RE)[cite: 2]", ar: "هندسة المتطلبات (Requirements Engineering)[cite: 2]" } },
+          { type: "paragraph", text: {
+              en: "In SDLC, RE bridges the gap between high-level business goals and implementation code. More software fails due to poor requirements than technical errors.[cite: 2]",
+              ar: "في دورة حياة تطوير البرمجيات (SDLC)، تسد هندسة المتطلبات الفجوة بين أهداف العمل والأكواد البرمجية. تفشل معظم البرمجيات بسبب سوء المتطلبات وليس الأخطاء التقنية.[cite: 2]"
+          }},
+          { type: "list", items: {
+              en: [
+                  "A requirement is a statement identifying an operational constraint or characteristic that is contractually binding.[cite: 2]",
+                  "SyRS (System Requirements Specification): High-level operational needs (hardware + software).[cite: 2]",
+                  "SRS (Software Requirements Specification): Detailed breakdown focusing exclusively on software features and behaviors.[cite: 2]"
+              ],
+              ar: [
+                  "المتطلب (Requirement) هو عبارة تحدد قيداً تشغيلياً أو خاصية ملزمة تعاقدياً.[cite: 2]",
+                  "مواصفات متطلبات النظام (SyRS): الاحتياجات التشغيلية (أجهزة + برمجيات).[cite: 2]",
+                  "مواصفات متطلبات البرمجيات (SRS): تفصيل دقيق يركز حصرياً على ميزات وسلوكيات البرمجيات.[cite: 2]"
+              ]
+          }},
+          { type: "heading", level: 2, text: { en: "Taxonomy of Requirements[cite: 2]", ar: "تصنيف المتطلبات (Taxonomy of Requirements)[cite: 2]" } },
+          { type: "paragraph", text: {
+              en: "Functional Requirements (FRs) define 'what' the system should perform. Non-Functional Requirements (NFRs) define 'how' the system should perform.[cite: 2]",
+              ar: "المتطلبات الوظيفية (FRs) تحدد 'ماذا' يجب أن يفعل النظام. المتطلبات غير الوظيفية (NFRs) تحدد 'كيف' يجب أن يعمل النظام.[cite: 2]"
+          }},
+          { type: "alert", text: {
+              en: "<strong>FR Structure:</strong> $[Subject] + [Modal Verb] + [System Action] + [Object] + [Condition/Context]$<br>Example: The Authentication Module shall lock a user account for 15 minutes when three invalid logins occur.[cite: 2]",
+              ar: "<strong>هيكل المتطلب الوظيفي:</strong> $[الفاعل] + [فعل الشرط] + [إجراء النظام] + [المفعول] + [الشرط]$<br>مثال: يجب أن تقفل وحدة المصادقة حساب المستخدم لمدة 15 دقيقة عند حدوث 3 محاولات خاطئة.[cite: 2]"
+          }},
+          { type: "list", items: {
+              en: [
+                  "FR Categories: User Authentication, Data Processing (CRUD), External Interfaces (APIs), Business Logic Execution.[cite: 2]"
+              ],
+              ar: [
+                  "فئات المتطلبات الوظيفية: مصادقة المستخدم، معالجة البيانات (CRUD)، الواجهات الخارجية (APIs)، منطق العمل.[cite: 2]"
+              ]
+          }},
+          { type: "heading", level: 3, text: { en: "Non-Functional Requirements (NFRs)[cite: 2]", ar: "المتطلبات غير الوظيفية (NFRs)[cite: 2]" } },
+          { type: "table",
+              headers: { en: ["Category", "Focus", "Bad Example", "Good Example"], ar: ["الفئة", "التركيز", "مثال سيء", "مثال جيد"] },
+              rows: [
+                  { en: ["Performance[cite: 2]", "Latency, Throughput[cite: 2]", "Load pages quickly.[cite: 2]", "Render within 1.5 seconds under 500 users load.[cite: 2]"], ar: ["الأداء[cite: 2]", "الزمن، الإنتاجية[cite: 2]", "تحميل سريع.[cite: 2]", "يستجيب خلال 1.5 ثانية لـ 500 مستخدم.[cite: 2]"] },
+                  { en: ["Security[cite: 2]", "Encryption, Auth[cite: 2]", "Secure from hackers.[cite: 2]", "Encrypt data using AES-256 and TLS 1.3.[cite: 2]"], ar: ["الأمان[cite: 2]", "التشفير[cite: 2]", "آمن من الاختراق.[cite: 2]", "تشفير البيانات باستخدام AES-256.[cite: 2]"] },
+                  { en: ["Availability[cite: 2]", "Uptime, MTBF[cite: 2]", "Almost never go down.[cite: 2]", "Maintain uptime of 99.95%.[cite: 2]"], ar: ["التوافر[cite: 2]", "وقت التشغيل[cite: 2]", "لا يتعطل تقريباً.[cite: 2]", "وقت تشغيل بنسبة 99.95%.[cite: 2]"] }
+              ]
+          },
+          { type: "heading", level: 2, text: { en: "Software & Process Documentation[cite: 2]", ar: "توثيق البرمجيات والعمليات[cite: 2]" } },
+          { type: "list", items: {
+              en: [
+                  "Pillars of Technical Writing: Conciseness, Clarity, Consistency, Accuracy, Accessibility.[cite: 2]",
+                  "User Manual Structure: Title Page, Prerequisites, Installation, Navigation, Step-by-Step, Troubleshooting, Glossary.[cite: 2]",
+                  "Process Mapping: UML Activity Diagrams (flowcharts), UML Sequence Diagrams (API interactions).[cite: 2]",
+                  "Process Template: Title, Objective, Triggers, Inputs, Execution Steps, Outputs.[cite: 2]"
+              ],
+              ar: [
+                  "أعمدة الكتابة التقنية: الإيجاز، الوضوح، الاتساق، الدقة، إمكانية الوصول.[cite: 2]",
+                  "هيكل دليل المستخدم: صفحة العنوان، المتطلبات الأساسية، التثبيت، التنقل، الخطوات، استكشاف الأخطاء، القاموس.[cite: 2]",
+                  "تخطيط العمليات: مخططات الأنشطة (UML)، مخططات التسلسل (Sequence).[cite: 2]",
+                  "قالب العملية: العنوان، الهدف، المحفزات (Triggers)، المدخلات، خطوات التنفيذ، المخرجات.[cite: 2]"
+              ]
+          }}
+        ],
+        quiz: [
+          {
+            q: { en: "Which requirement defines 'what' the system should perform?[cite: 2]", ar: "أي نوع من المتطلبات يحدد 'ماذا' يجب أن يفعل النظام؟[cite: 2]" },
+            options: [
+              { text: { en: "Functional Requirement[cite: 2]", ar: "المتطلبات الوظيفية (Functional)[cite: 2]" }, correct: true },
+              { text: { en: "Non-Functional Requirement[cite: 2]", ar: "المتطلبات غير الوظيفية (Non-Functional)[cite: 2]" }, correct: false }
+            ]
+          },
+          {
+            q: { en: "Which of the following is a GOOD example of a performance NFR?[cite: 2]", ar: "أي مما يلي مثال 'جيد' لمتطلب غير وظيفي يخص الأداء؟[cite: 2]" },
+            options: [
+              { text: { en: "The system must load pages quickly.[cite: 2]", ar: "يجب أن يُحمل النظام الصفحات بسرعة.[cite: 2]" }, correct: false },
+              { text: { en: "The app shall render within 1.5 seconds under a 500-user load.[cite: 2]", ar: "يجب أن يستجيب التطبيق خلال 1.5 ثانية تحت ضغط 500 مستخدم.[cite: 2]" }, correct: true }
+            ]
+          },
+          {
+            q: { en: "What does SRS stand for?[cite: 2]", ar: "ماذا يعني اختصار SRS؟[cite: 2]" },
+            options: [
+              { text: { en: "System Requirements Specification[cite: 2]", ar: "مواصفات متطلبات النظام[cite: 2]" }, correct: false },
+              { text: { en: "Software Requirements Specification[cite: 2]", ar: "مواصفات متطلبات البرمجيات[cite: 2]" }, correct: true }
+            ]
+          }
+        ]
+      },
+      {
+        id: "glossary",
+        number: "Reference",
+        title: { en: "Glossary / Vocabulary", ar: "قاموس المصطلحات والمفردات" },
+        content: null,
+        quiz: null
+      }
+    ];
+
+    const glossaryData = [
+        { en: "Technical English[cite: 2]", ar: "الإنجليزية التقنية[cite: 2]" },
+        { en: "Vocabulary[cite: 2]", ar: "مفردات / قاموس الكلمات[cite: 2]" },
+        { en: "Prefix[cite: 2]", ar: "سابقة (تضاف لأول الكلمة)[cite: 2]" },
+        { en: "Suffix[cite: 2]", ar: "لاحقة (تضاف لآخر الكلمة)[cite: 2]" },
+        { en: "Active Voice[cite: 2]", ar: "المبني للمعلوم[cite: 2]" },
+        { en: "Passive Voice[cite: 2]", ar: "المبني للمجهول[cite: 2]" },
+        { en: "Note Making[cite: 2]", ar: "تدوين الملاحظات[cite: 2]" },
+        { en: "Abbreviation[cite: 2]", ar: "اختصار[cite: 2]" },
+        { en: "Topicalising[cite: 2]", ar: "تنظيم المواضيع / عنونة[cite: 2]" },
+        { en: "Schematizing[cite: 2]", ar: "التخطيط / الجدولة[cite: 2]" },
+        { en: "Sequencing[cite: 2]", ar: "التسلسل[cite: 2]" },
+        { en: "Summarizing[cite: 2]", ar: "التلخيص[cite: 2]" },
+        { en: "Noun[cite: 2]", ar: "الاسم[cite: 2]" },
+        { en: "Compound Noun[cite: 2]", ar: "الاسم المركب[cite: 2]" },
+        { en: "Requirements Engineering[cite: 2]", ar: "هندسة المتطلبات[cite: 2]" },
+        { en: "Functional Requirement (FR)[cite: 2]", ar: "متطلب وظيفي[cite: 2]" },
+        { en: "Non-Functional Requirement (NFR)[cite: 2]", ar: "متطلب غير وظيفي[cite: 2]" },
+        { en: "User Manual[cite: 2]", ar: "دليل المستخدم[cite: 2]" },
+        { en: "API Documentation[cite: 2]", ar: "توثيق واجهة برمجة التطبيقات (API)[cite: 2]" },
+        { en: "Flowchart / UML Diagram[cite: 2]", ar: "مخطط انسيابي / مخطط UML[cite: 2]" },
+        { en: "Ambiguity[cite: 2]", ar: "غموض[cite: 2]" },
+        { en: "Agent / Doer[cite: 2]", ar: "الفاعل / منفذ الحدث[cite: 2]" }
+    ];
+
+    // ================= APP ENGINE =================
+    let currentLang = 'en'; 
+    let currentIndex = 0;
+
+    const moduleList = document.getElementById('moduleList');
+    const contentArea = document.getElementById('contentArea');
+    const lectureNumber = document.getElementById('lectureNumber');
+    const quizSection = document.getElementById('quizSection');
+    const quizContainer = document.getElementById('quizContainer');
+    const langToggle = document.getElementById('langToggle');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const sidebar = document.getElementById('sidebar');
+
+    // Safe regex construction to bypass platform stripping issues
+    const marker = "\\[" + "cite: \\d+\\]";
+    const citeRegex = new RegExp(marker, "g");
+    const sanitize = (text) => text ? text.replace(citeRegex, '').trim() : '';
+
+    function closeSidebarMobile() {
+      if (window.innerWidth < 768 && !sidebar.classList.contains('hidden')) {
+        sidebar.classList.add('hidden');
+      }
+    }
+
+    document.getElementById('closeSidebar').onclick = closeSidebarMobile;
+
+    function renderNav() {
+      moduleList.innerHTML = '';
+      courseData.forEach((mod, index) => {
+        const btn = document.createElement('button');
+        btn.className = `w-full text-start px-4 py-3 rounded-lg text-sm transition-all flex flex-col gap-1 shadow-sm ${
+          index === currentIndex ? 'nav-active shadow-md' : 'text-dark-muted hover:bg-dark-elevated hover:text-white border border-transparent hover:border-dark-border'
+        }`;
+        btn.innerHTML = `
+          <span class="text-xs opacity-75 font-mono">${mod.number}</span>
+          <span class="truncate font-medium text-base">${sanitize(mod.title[currentLang])}</span>
+        `;
+        btn.onclick = () => { 
+          currentIndex = index; 
+          renderAll(); 
+          closeSidebarMobile();
+        };
+        moduleList.appendChild(btn);
+      });
+    }
+
+    function renderBlock(block) {
+        const text = sanitize(block.text ? block.text[currentLang] : '');
+        switch(block.type) {
+            case 'heading':
+                if (block.level === 2) {
+                    return `<h2 class="text-2xl sm:text-3xl font-bold text-white mt-10 mb-5 border-b border-dark-border pb-3 flex items-center gap-3"><div class="w-1.5 h-8 bg-brand-500 rounded-full"></div>${text}</h2>`;
+                } else {
+                    return `<h3 class="text-xl font-bold text-teal-400 mt-8 mb-4">${text}</h3>`;
+                }
+            case 'paragraph':
+                return `<p class="text-base text-gray-300 mb-5 leading-relaxed">${text}</p>`;
+            case 'list':
+                const items = block.items[currentLang].map(i => `<li class="relative ps-5 before:content-[''] before:absolute before:w-1.5 before:h-1.5 before:bg-brand-500 before:rounded-full before:start-0 before:top-2.5">${sanitize(i)}</li>`).join('');
+                return `<ul class="mb-8 space-y-3 text-base text-gray-300 bg-dark-elevated p-6 rounded-xl border border-dark-border shadow-sm">${items}</ul>`;
+            case 'alert':
+                return `<div class="p-5 rounded-xl border-s-4 border-brand-500 bg-brand-500/10 text-base mb-8 text-brand-50 font-medium leading-relaxed shadow-sm">${text}</div>`;
+            case 'table':
+                const headers = block.headers[currentLang].map(h => `<th class="p-4 bg-dark-elevated text-brand-500 border-b border-dark-border font-bold uppercase tracking-wider text-xs">${sanitize(h)}</th>`).join('');
+                const rows = block.rows.map(r => `<tr class="hover:bg-dark-elevated/40 transition-colors">${r[currentLang].map(c => `<td class="p-4 border-b border-dark-border/50 text-gray-200">${sanitize(c)}</td>`).join('')}</tr>`).join('');
+                return `<div class="overflow-x-auto border border-dark-border rounded-xl mb-8 shadow-md"><table class="w-full text-start text-sm"><thead class="text-left">${headers}</thead><tbody class="divide-y divide-dark-border bg-dark-surface">${rows}</tbody></table></div>`;
+            default:
+                return '';
+        }
+    }
+
+    function renderContent() {
+      const data = courseData[currentIndex];
+      lectureNumber.textContent = `${data.number}`;
+      contentArea.innerHTML = '';
+
+      if (data.id === 'glossary') {
+        let html = `<h2 class="text-2xl sm:text-3xl font-bold text-white mt-4 mb-8 border-b border-dark-border pb-3 flex items-center gap-3"><div class="w-1.5 h-8 bg-brand-500 rounded-full"></div>${sanitize(data.title[currentLang])}</h2>`;
+        html += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">`;
+        glossaryData.forEach(item => {
+            html += `<div class="bg-dark-elevated p-5 rounded-xl border border-dark-border flex flex-col shadow-sm hover:border-brand-500/50 transition-colors">
+                <strong class="text-brand-500 font-mono text-lg mb-2">${sanitize(item.en)}</strong>
+                <span class="text-white font-medium text-lg ${currentLang === 'en' ? 'font-cairo text-right' : 'font-cairo'}">${sanitize(item.ar)}</span>
+            </div>`;
+        });
+        html += `</div>`;
+        contentArea.innerHTML = html;
+      } else {
+        data.content.forEach(block => {
+            contentArea.innerHTML += renderBlock(block);
+        });
+      }
+      
+      // Handle Quiz Render
+      if (data.quiz && data.quiz.length > 0) {
+        quizSection.classList.remove('hidden');
+        quizContainer.innerHTML = '';
+        
+        data.quiz.forEach((qData, qIdx) => {
+            let qHtml = `<div class="mb-8 p-6 bg-dark-elevated rounded-xl border border-dark-border shadow-sm"><p class="font-bold text-lg text-white mb-5">${qIdx + 1}. ${sanitize(qData.q[currentLang])}</p><div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="qopts_${qIdx}"></div></div>`;
+            quizContainer.insertAdjacentHTML('beforeend', qHtml);
+            
+            const optsContainer = document.getElementById(`qopts_${qIdx}`);
+            qData.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-start p-4 bg-dark-surface border border-dark-border rounded-xl hover:border-brand-500 hover:bg-dark-elevated transition flex items-center justify-between text-sm font-medium text-gray-200 shadow-sm";
+                btn.innerHTML = `<span>${sanitize(opt.text[currentLang])}</span><span class="w-5 h-5 rounded-full border-2 border-dark-border shrink-0 flex items-center justify-center"></span>`;
+                
+                btn.onclick = () => {
+                    Array.from(optsContainer.children).forEach(c => {
+                        c.disabled = true;
+                        c.classList.add('opacity-50', 'cursor-not-allowed');
+                        c.classList.remove('hover:border-brand-500', 'hover:bg-dark-elevated');
+                    });
+                    
+                    btn.classList.remove('opacity-50');
+                    if (opt.correct) {
+                        btn.classList.add('!border-green-500', '!bg-green-500/10', '!text-green-400');
+                        btn.querySelector('span:last-child').outerHTML = `<span class="text-green-400 text-xl font-bold">✓</span>`;
+                    } else {
+                        btn.classList.add('!border-red-500', '!bg-red-500/10', '!text-red-400');
+                        btn.querySelector('span:last-child').outerHTML = `<span class="text-red-400 text-xl font-bold">✗</span>`;
+                        
+                        // Find and highlight correct answer
+                        const correctIdx = qData.options.findIndex(o => o.correct);
+                        const correctBtn = optsContainer.children[correctIdx];
+                        correctBtn.classList.remove('opacity-50');
+                        correctBtn.classList.add('!border-green-500', '!bg-green-500/10', '!text-green-400', 'ring-2', 'ring-green-500/50');
+                        correctBtn.querySelector('span:last-child').outerHTML = `<span class="text-green-400 text-xl font-bold">✓</span>`;
+                    }
+                };
+                optsContainer.appendChild(btn);
+            });
+        });
+      } else {
+        quizSection.classList.add('hidden');
+      }
+
+      // Handle Buttons State
+      prevBtn.style.opacity = currentIndex === 0 ? '0.4' : '1';
+      prevBtn.style.cursor = currentIndex === 0 ? 'not-allowed' : 'pointer';
+      
+      nextBtn.style.opacity = currentIndex === courseData.length - 1 ? '0.4' : '1';
+      nextBtn.style.cursor = currentIndex === courseData.length - 1 ? 'not-allowed' : 'pointer';
+    }
+
+    function renderAll() {
+      document.documentElement.lang = currentLang;
+      document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+      
+      document.getElementById('langText').textContent = currentLang === 'ar' ? 'English' : 'العربية';
+      document.getElementById('headerTitle').textContent = currentLang === 'ar' ? 'مقدمة في الإنجليزية التقنية 2' : 'Technical English II';
+      document.getElementById('navTitle').textContent = currentLang === 'ar' ? 'وحدات المنهج' : 'Modules';
+      document.getElementById('quizTitle').textContent = currentLang === 'ar' ? 'اختبر فهمك' : 'Interactive Quiz';
+      prevBtn.innerHTML = currentLang === 'ar' ? '&rarr; السابق' : '&larr; Previous';
+      nextBtn.innerHTML = currentLang === 'ar' ? 'التالي &larr;' : 'Next &rarr;';
+      
+      renderNav();
+      renderContent();
+    }
+
+    // ================= EVENTS =================
+    langToggle.onclick = () => { 
+      currentLang = currentLang === 'ar' ? 'en' : 'ar'; 
+      renderAll(); 
+    };
+
+    prevBtn.onclick = () => { 
+      if (currentIndex > 0) { 
+        currentIndex--; 
+        renderAll(); 
+        window.scrollTo({top: 0, behavior: 'smooth'}); 
+      } 
+    };
+
+    nextBtn.onclick = () => { 
+      if (currentIndex < courseData.length - 1) { 
+        currentIndex++; 
+        renderAll(); 
+        window.scrollTo({top: 0, behavior: 'smooth'}); 
+      } 
+    };
+
+    document.getElementById('sidebarToggle').onclick = () => {
+      sidebar.classList.toggle('hidden');
+    };
+
+    // Initialize the app safely
+    try {
+        renderAll();
+    } catch (error) {
+        console.error("Rendering error:", error);
+        document.getElementById('contentArea').innerHTML = `<div class="text-red-500 bg-red-500/10 p-4 rounded-xl border border-red-500 mt-4 font-mono text-sm"><h3>Error Loading Content:</h3><p>${error.message}</p></div>`;
+    }
+  </script>
+</body>
+</html>
