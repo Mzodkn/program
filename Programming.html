@@ -2406,49 +2406,61 @@ function renderLab(){
 async function postJSON(url, body, ms){
   const ctl=new AbortController(); const t=setTimeout(()=>ctl.abort(),ms);
   try{
-    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(body),signal:ctl.signal});
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json','x-rapidapi-host':'onecompiler-apis.p.rapidapi.com','x-rapidapi-key':'54d151aef0msh242f35536f160aap10053djsn7cb07123571d'},body:JSON.stringify(body),signal:ctl.signal});
     if(!r.ok) throw new Error('HTTP '+r.status);
     return await r.json();
   } finally { clearTimeout(t); }
 }
-async function runWandbox(code,stdin){
-  const r=await postJSON('https://wandbox.org/api/compile.json',{code:code,compiler:'gcc-head',stdin:stdin,options:'','compiler-option-raw':'-std=c++17',save:false},20000);
-  let out='';
-  if(r.compiler_error) out+=r.compiler_error;
-  if(r.program_output) out+=(out?'\n':'')+r.program_output;
-  if(r.program_error) out+=(out?'\n':'')+r.program_error;
-  if(!out) out=(String(r.status)==='0')?'(no output)':'Exit status '+r.status;
-  return out;
-}
-async function runPiston(code,stdin){
-  const r=await postJSON('https://emkc.org/api/v2/piston/execute',{language:'c++',version:'*',files:[{name:'main.cpp',content:code}],stdin:stdin,compile_timeout:10000,run_timeout:5000},20000);
-  if(r.message) throw new Error(r.message);
-  const c=r.compile||{}, ru=r.run||{};
-  if(c.code!==undefined && c.code!==0) return 'Compiler errors:\n'+(c.stderr||c.output||'');
-  let out=ru.stdout||''; const e=ru.stderr||'';
-  if(e) out+=(out?'\n':'')+e;
-  return out||'(no output)';
-}
-async function runGodbolt(code,stdin){
-  const r=await postJSON('https://godbolt.org/api/compiler/g132/compile',{source:code,lang:'c++',options:{userArguments:'-std=c++17',executeParameters:{args:[],stdin:stdin},compilerOptions:{executorRequest:true},filters:{execute:true},tools:[],libraries:[]}},20000);
-  const txt=a=>(a||[]).map(x=>x.text).join('\n');
-  const b=r.buildResult||{};
-  if(b.code!==undefined && b.code!==0) return 'Compiler errors:\n'+txt(b.stderr);
-  let out=txt(r.stdout); const e=txt(r.stderr);
-  if(e) out+=(out?'\n':'')+e;
-  return out||'(no output)';
+
+
+async function runcomp(code, stdin = "") {
+  try {
+      const requestBody = {
+      language: "cpp",
+      stdin: stdin,
+      files: [
+        {
+          name: "main.cpp",
+          content: code
+        }
+      ]
+    };
+
+    const res = await postJSON('https://onecompiler-apis.p.rapidapi.com/api/v1/run', requestBody, 20000);
+
+    if (res.exception) {
+      return 'Execution Exception:\n' + res.exception;
+    }
+
+    let output = "";
+    if (res.stdout) {
+      output += res.stdout;
+    }
+    if (res.stderr) {
+      output += (output ? '\n' : '') + 'Errors/Stderr:\n' + res.stderr;
+    }
+    return output.trim() || '(no output)';
+  } catch (err) {
+    return 'Request Failed: ' + err.message;
+  }
 }
 async function runLab(){
-  const code=$('labCode').value, stdin=$('labIn').value, outEl=$('labOut'), btn=$('labRun');
-  state.labCode=code; state.labIn=stdin;
-  btn.disabled=true; btn.classList.add('opacity-60');
-  outEl.textContent=u('running');
+  const code = $('labCode').value, stdin = $('labIn').value, outEl = $('labOut'), btn = $('labRun');
+  state.labCode = code; state.labIn = stdin;
+  btn.disabled = true; btn.classList.add('opacity-60');
+  outEl.textContent = u('running');
   let out;
-  try{ out=await Promise.any([runPiston(code,stdin), runGodbolt(code,stdin), runWandbox(code,stdin)]); }
-  catch(e){ out=u('noNet'); }
-  state.labOut=out; outEl.textContent=out;
-  btn.disabled=false; btn.classList.remove('opacity-60');
+  try { 
+    // التصحيح: استدعاء runcomp مباشرة مع await بدون كلاس Promise
+    out = await runcomp(code, stdin); 
+  }
+  catch(e) { 
+    out = u('noNet'); 
+  }
+  state.labOut = out; outEl.textContent = out;
+  btn.disabled = false; btn.classList.remove('opacity-60');
 }
+
 
 /* ---------- FINAL EXAM ---------- */
 function pool(){ const p=[]; LECT().forEach(l=>l.quiz.forEach(q=>p.push(q))); return p; }
