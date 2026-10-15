@@ -9,11 +9,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
-/* brand colors default = teal (#14b8a6 / #0d9488). Each subject can switch them through CSS variables. */
 tailwind.config = {
   theme: { extend: {
     colors: {
-      brand: { 500: 'rgb(var(--b5) / <alpha-value>)', 600: 'rgb(var(--b6) / <alpha-value>)' },
+      brand: { 
+        500: 'rgb(236 72 153)', /* اللون الوردي الرئيسي مباشرة */
+        600: 'rgb(219 39 119)'  /* اللون الوردي الداكن مباشرة */
+      },
       dark: { base: '#0b0f17', surface: '#111827', elevated: '#1f2937', border: '#374151', text: '#f3f4f6', muted: '#9ca3af' }
     },
     fontFamily: { sans: ['Inter', 'sans-serif'], arabic: ['Cairo', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
@@ -21,7 +23,13 @@ tailwind.config = {
 }
 </script>
 <style>
-  :root { --b5: 20 184 166; --b6: 13 148 136; }
+  body {
+    background-color: #0b0f17;
+    background-image: 
+      linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
   html[lang="en"] body { font-family: 'Inter', sans-serif; }
   html[lang="ar"] body { font-family: 'Cairo', sans-serif; }
   .mono { font-family: 'JetBrains Mono', monospace; }

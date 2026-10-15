@@ -1,0 +1,56 @@
+<svg id="svg-38" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+    <!-- 1. الإطار والدرع الخلفي -->
+    <path d="M55,58 L200,24 L345,58 L335,225 Q325,310 200,358 Q75,310 65,225 Z" fill="#140602" stroke="#ff4500" stroke-width="5"/>
+              <path d="M72,70 L200,40 L328,70 L318,220 Q310,295 200,340 Q90,295 82,220 Z" fill="none" stroke="#fde047" stroke-width="1.5" stroke-dasharray="14,6"/>
+    <!-- 2. السلاح أو الخلفية المتقاطعة -->
+    <g stroke-linecap="round">
+                <line x1="65" y1="58" x2="335" y2="295" stroke="#fde047" stroke-width="5"/>
+                <line x1="335" y1="58" x2="65" y2="295" stroke="#ff4500" stroke-width="5"/>
+                <rect x="60" y="53" width="25" height="8" transform="rotate(42 65 58)" fill="#ff4500"/>
+                <rect x="315" y="53" width="25" height="8" transform="rotate(-42 335 58)" fill="#fde047"/>
+              </g>
+    <!-- 3. الشخصية أو الأيقونة المركزية -->
+    <g>
+                <!-- العظمتان/الكابلات المتقاطعتان خلف الجمجمة -->
+                <g stroke="#e2e8f0" stroke-width="8" stroke-linecap="round">
+                  <line x1="105" y1="115" x2="295" y2="255"/>
+                  <line x1="295" y1="115" x2="105" y2="255"/>
+                  <circle cx="98" cy="110" r="10" fill="#e2e8f0"/><circle cx="110" cy="102" r="10" fill="#e2e8f0"/>
+                  <circle cx="302" cy="110" r="10" fill="#e2e8f0"/><circle cx="290" cy="102" r="10" fill="#e2e8f0"/>
+                  <circle cx="98" cy="260" r="10" fill="#e2e8f0"/><circle cx="110" cy="268" r="10" fill="#e2e8f0"/>
+                  <circle cx="302" cy="260" r="10" fill="#e2e8f0"/><circle cx="290" cy="268" r="10" fill="#e2e8f0"/>
+                </g>
+                <!-- جمجمة القرصان السيبرانية (مضبوطة في المركز) -->
+                <path d="M144,142 C140,185 152,208 172,216 L172,248 L228,248 L228,216 C248,208 260,185 256,142 Z" fill="#f8fafc" stroke="#0f172a" stroke-width="4"/>
+                <!-- الفك وأسنان الشبكة -->
+                <line x1="172" y1="230" x2="228" y2="230" stroke="#0f172a" stroke-width="3.5"/>
+                <line x1="186" y1="216" x2="186" y2="248" stroke="#0f172a" stroke-width="3.5"/>
+                <line x1="200" y1="216" x2="200" y2="248" stroke="#0f172a" stroke-width="3.5"/>
+                <line x1="214" y1="216" x2="214" y2="248" stroke="#0f172a" stroke-width="3.5"/>
+                <!-- محجرا العينين المتوهجان + الندبة الشهيرة تحت العين اليسرى -->
+                <circle cx="175" cy="176" r="16" fill="#090d16" stroke="#ff4500" stroke-width="2.5"/>
+                <circle cx="225" cy="176" r="16" fill="#090d16" stroke="#ff4500" stroke-width="2.5"/>
+                <circle cx="175" cy="176" r="6" fill="#ff4500"/><circle cx="225" cy="176" r="6" fill="#fde047"/>
+                <!-- ندبة لوفي تحت العين -->
+                <path d="M214,198 L236,202 M220,194 L218,204 M230,195 L228,205" stroke="#dc2626" stroke-width="2.5" stroke-linecap="round"/>
+                <!-- الأنف المثلث -->
+                <polygon points="200,186 192,204 208,204" fill="#090d16"/>
+
+                <!-- ★ قبعة القش موضوعة بإحكام أعلى الرأس تماماً -->
+                <!-- قبة القبعة العلوية -->
+                <path d="M138,136 C138,66 262,66 262,136 Z" fill="#facc15" stroke="#ca8a04" stroke-width="3.5"/>
+                <!-- خطوط نسيج القش -->
+                <path d="M165,82 Q200,90 235,82 M150,100 Q200,110 250,100" fill="none" stroke="#ca8a04" stroke-width="2" opacity="0.6"/>
+                <!-- الشريط الأحمر القرمزي حول قاعدة القبعة -->
+                <path d="M137,116 Q200,126 263,116 L265,136 Q200,146 135,136 Z" fill="#dc2626" stroke="#991b1b" stroke-width="2.5"/>
+                <!-- حافة القبعة العريضة المنحنية فوق الجبين (Brim) -->
+                <path d="M78,138 Q200,116 322,138 Q200,158 78,138 Z" fill="#eab308" stroke="#a16207" stroke-width="3.5"/>
+              </g>
+    <!-- 4. الكود التكتيكي العلوي (مرفوع للأعلى حتى لا يغطي القبعات) -->
+    <rect x="148" y="16" width="104" height="20" rx="5" fill="#451a03" stroke="#fde047" stroke-width="1.5"/>
+    <text x="200" y="30" text-anchor="middle" fill="#fde047" font-family="JetBrains Mono, monospace" font-weight="800" font-size="10" letter-spacing="1.5">GRAND-LINE</text>
+    <!-- 5. لافتة اسم الدفعة واللقب -->
+    <polygon points="58,274 342,274 328,320 72,320" fill="#451a03" stroke="#ff4500" stroke-width="3"/>
+    <text class="logo-main-text" x="200" y="304" text-anchor="middle" fill="#ffffff" font-family="Orbitron, JetBrains Mono, monospace" font-weight="900" font-size="21" letter-spacing="2">IT BATCH 26</text>
+    <text class="logo-sub-text" x="200" y="342" text-anchor="middle" fill="#fde047" font-family="JetBrains Mono, monospace" font-weight="700" font-size="9.5" letter-spacing="1.5">ROOT ACCESS • SYSTEM ELITE</text>
+  </svg>

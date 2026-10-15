@@ -21,7 +21,19 @@ tailwind.config = {
 }
 </script>
 <style>
-  :root { --b5: 20 184 166; --b6: 13 148 136; }
+body {
+    background-color: #060911;
+    background-image: 
+      linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+
+  /* تم تصحيح القيم لتتوافق مع ثيم اللون الأزرق (blue) */
+  :root { 
+    --b5: 59 130 246; 
+    --b6: 37 99 235; 
+  }
   html[lang="en"] body { font-family: 'Inter', sans-serif; }
   html[lang="ar"] body { font-family: 'Cairo', sans-serif; }
   .mono { font-family: 'JetBrains Mono', monospace; }
