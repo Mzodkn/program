@@ -1,0 +1,25 @@
+{
+  "name": "uni-lec-it-study-hub",
+  "version": "1.0.0",
+  "description": "IT Study Hub - University lectures and materials in a modern, organized format",
+  "scripts": {
+    "dev": "npx serve .",
+    "start": "npx serve .",
+    "build": "echo 'Static HTML site - no build needed'"
+  },
+  "keywords": [
+    "education",
+    "university",
+    "it",
+    "lectures",
+    "study-materials"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@vercel/analytics": "^1.1.1"
+  },
+  "devDependencies": {
+    "serve": "^14.2.1"
+  }
+}
