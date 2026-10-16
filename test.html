@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  
+
+<div class="fade">
+    <h1 class="text-3xl font-extrabold mb-1">Glossary / قاموس المصطلحات</h1>
+    <p class="text-dark-muted mb-5 mono text-sm">${G.length} terms</p>
+    <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-6">
+      <h2 class="font-bold text-lg mb-3">🃏 moaz</h2>
+      ${deckBox('gl','g',shuf(G))}
+    </div>
+    <h2 class="font-bold text-lg mb-2">📖 yasir</h2>
+    <input id="gSearch" placeholder="${u('search')}" class="w-full p-3 rounded-xl bg-dark-elevated border border-dark-border focus:border-brand-500 outline-none mb-4">
+    <div id="gList" class="grid gap-2">elsamani</div>
+  
+  
+  </div>
+
+
+</body>
+</html>
