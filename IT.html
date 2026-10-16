@@ -1266,6 +1266,250 @@ LECTURES.push({ id:'l8', n:8,
    {q:["FTP is a way of:","FTP هو وسيلة لـ:"], o:[["Transferring data from one place to another over the Internet","نقل البيانات من مكان إلى آخر عبر الإنترنت"],["Cooling a CPU","تبريد المعالج"],["Printing pages","طباعة الصفحات"],["Designing chips","تصميم الرقائق"]], a:0}
   ]
 });
+LECTURES.push({ id:'l9', n:9,
+  title:["Business Information Systems","أنظمة المعلومات التجارية (Business Information Systems)"],
+  obj:[
+    ["Describe the most common business information systems.","وصف أكثر أنواع أنظمة المعلومات التجارية شيوعًا."],
+    ["Explain electronic commerce (e-commerce), mobile commerce (m-commerce), and e-business.","شرح التجارة الإلكترونية (e-commerce) والتجارة المتنقلة (m-commerce) والأعمال الإلكترونية (e-business)."],
+    ["Explain transaction processing systems (TPS) and enterprise resource planning (ERP) systems.","شرح أنظمة معالجة المعاملات (TPS) وأنظمة تخطيط موارد المؤسسة (ERP)."],
+    ["Explain management information systems (MIS) and decision support systems (DSS).","شرح نظم المعلومات الإدارية (MIS) ونظم دعم القرار (DSS)."],
+    ["Describe specialized business systems: knowledge management and artificial intelligence.","وصف الأنظمة التجارية المتخصصة: إدارة المعرفة والذكاء الاصطناعي."]
+  ],
+  sec:[
+   {t:["1. Business information systems","1. أنظمة المعلومات التجارية (Business Information Systems)"], b:[
+     {k:'p', x:["The most common types of information systems in business organizations are those designed for electronic and mobile commerce, transaction processing, management information, and decision support.","أكثر أنواع أنظمة المعلومات شيوعًا في المنظمات التجارية هي تلك المصممة للتجارة الإلكترونية والمتنقلة، ومعالجة المعاملات، والمعلومات الإدارية، ودعم القرار."]},
+     {k:'p', x:["Business information systems are often integrated into one product and can be delivered by the same software package.","غالبًا ما تُدمج أنظمة المعلومات التجارية في منتج واحد، ويمكن تقديمها ضمن حزمة برمجية واحدة."]},
+     {k:'tbl', h:[["Layer (bottom to top)","الطبقة (من الأسفل إلى الأعلى)"],["What it covers","ما تغطيه"]],
+      r:[
+       [["Enterprise systems","أنظمة المؤسسة"],["E-commerce and m-commerce","التجارة الإلكترونية والمتنقلة"]],
+       [["Management information and decision support","المعلومات الإدارية ودعم القرار"],["MIS and DSS","نظم MIS وDSS"]],
+       [["Knowledge management and special-purpose systems","إدارة المعرفة والأنظمة المتخصصة"],["Top of the pyramid","قمة الهرم"]]
+      ]},
+     {k:'tip', x:["Think of it as a pyramid: enterprise systems form the base, and knowledge management sits at the top.","فكّر فيها كهرم: أنظمة المؤسسة تشكّل القاعدة، وإدارة المعرفة في القمة."]}
+   ]},
+   {t:["1.1 Timeline of business information systems","1.1 الخط الزمني لأنظمة المعلومات التجارية"], b:[
+     {k:'tbl', h:[["Period","الفترة"],["System","النظام"]],
+      r:[
+       [["1950s","خمسينيات القرن العشرين"],["TPS (transaction processing)","TPS (معالجة المعاملات)"]],
+       [["1960s","ستينيات القرن العشرين"],["MIS (management information)","MIS (المعلومات الإدارية)"]],
+       [["1970s and 1980s","سبعينيات وثمانينيات القرن العشرين"],["DSS (decision support)","DSS (دعم القرار)"]],
+       [["1990s","تسعينيات القرن العشرين"],["Specialized business systems and e- and m-commerce","أنظمة تجارية متخصصة والتجارة الإلكترونية والمتنقلة"]],
+       [["2000 and beyond","من عام 2000 وما بعده"],["Continued growth of these systems","استمرار نمو هذه الأنظمة"]]
+      ]}
+   ]},
+   {t:["2. Electronic and mobile commerce","2. التجارة الإلكترونية والمتنقلة (Electronic and Mobile Commerce)"], b:[
+     {k:'def', x:["Electronic commerce (e-commerce) involves any business transaction executed electronically between companies, companies and consumers, consumers and other consumers, business and the public sector, and consumers and the public sector.","التجارة الإلكترونية (e-commerce) تشمل أي معاملة تجارية تُنفَّذ إلكترونيًا بين الشركات، وبين الشركات والمستهلكين، وبين المستهلكين أنفسهم، وبين القطاع التجاري والقطاع العام، وبين المستهلكين والقطاع العام."]},
+     {k:'ul', h:["Types of e-commerce","أنواع التجارة الإلكترونية"], x:[
+       ["Business-to-business (B2B): between companies","من الشركات إلى الشركات (B2B): بين الشركات"],
+       ["Business-to-consumer (B2C): between companies and consumers","من الشركات إلى المستهلكين (B2C): بين الشركات والمستهلكين"],
+       ["Consumer-to-consumer (C2C): between consumers","من المستهلكين إلى المستهلكين (C2C): بين المستهلكين"],
+       ["Business and the public sector, and consumers and the public sector","بين القطاع التجاري والقطاع العام، وبين المستهلكين والقطاع العام"]
+     ]},
+     {k:'def', x:["Mobile commerce (m-commerce) is the use of mobile, wireless devices to place orders and conduct business.","التجارة المتنقلة (m-commerce) هي استخدام الأجهزة المتنقلة اللاسلكية لتقديم الطلبات وإجراء الأعمال."]},
+     {k:'def', x:["Electronic business (e-business) goes beyond e-commerce and e-procurement (the process of getting supplies) by using information systems and the Internet to perform all business-related tasks and functions, such as accounting, finance, marketing, and human resource activities.","الأعمال الإلكترونية (e-business) تتجاوز التجارة الإلكترونية والشراء الإلكتروني (عملية الحصول على الإمدادات) باستخدام نظم المعلومات والإنترنت لتنفيذ جميع المهام والوظائف المتعلقة بالأعمال، مثل المحاسبة والتمويل والتسويق وإدارة الموارد البشرية."]},
+     {k:'ul', h:["How e-business connects the organization","كيف تربط الأعمال الإلكترونية المنظمة"], x:[
+       ["Suppliers: e-procurement","الموردون: الشراء الإلكتروني"],
+       ["The organization and its partners: the center of the flow","المنظمة وشركاؤها: مركز التدفق"],
+       ["Customers: e-commerce","العملاء: التجارة الإلكترونية"],
+       ["Management oversees the whole system","الإدارة تشرف على النظام كله"]
+     ]}
+   ]},
+   {t:["3. Enterprise systems","3. أنظمة المؤسسة (Enterprise Systems)"], b:[
+     {k:'p', x:["Enterprise systems that process daily transactions have evolved over the years and offer important solutions for businesses of all sizes.","تطورت أنظمة المؤسسة التي تعالج المعاملات اليومية على مر السنين، وتقدم حلولًا مهمة للشركات بكل أحجامها."]},
+     {k:'def', x:["A transaction is any business-related exchange, such as payments to employees, sales to customers, or payments to suppliers.","المعاملة (Transaction) هي أي تبادل متعلق بالأعمال، مثل صرف رواتب الموظفين، أو البيع للعملاء، أو الدفع للموردين."]},
+     {k:'def', x:["A transaction processing system (TPS) is an organized collection of people, procedures, software, databases, and devices used to perform and record business transactions.","نظام معالجة المعاملات (TPS) هو مجموعة منظمة من الأشخاص والإجراءات والبرمجيات وقواعد البيانات والأجهزة تُستخدم لتنفيذ المعاملات التجارية وتسجيلها."]},
+     {k:'p', x:["Processing business transactions was the first computer application developed for most organizations.","كانت معالجة المعاملات التجارية أول تطبيق حاسوبي طوّرته معظم المنظمات."]},
+     {k:'def', x:["An enterprise resource planning (ERP) system is a set of integrated programs that manages the vital business operations for an entire multisite, global organization. It can support functions such as customer service, human resources, sales, and distribution.","نظام تخطيط موارد المؤسسة (ERP) هو مجموعة من البرامج المتكاملة التي تدير العمليات التجارية الحيوية لمنظمة عالمية متعددة المواقع بأكملها. ويمكن أن يدعم وظائف مثل خدمة العملاء، والموارد البشرية، والمبيعات، والتوزيع."]},
+     {k:'ul', h:["Benefits of ERP","فوائد ERP"], x:[
+       ["Easing the adoption of improved work processes","تسهيل تبنّي أساليب عمل محسّنة"],
+       ["Increasing access to timely data for decision making","زيادة الوصول إلى بيانات محدّثة لاتخاذ القرار"]
+     ]},
+     {k:'tip', x:["A TPS records what happened; ERP connects all the departments in one system.","نظام TPS يسجّل ما حدث، بينما ERP يربط جميع الأقسام في نظام واحد."]}
+   ]},
+   {t:["4. Management information systems (MIS)","4. نظم المعلومات الإدارية (Management Information Systems - MIS)"], b:[
+     {k:'p', x:["The benefits of an effective TPS or ERP, including reduced processing costs and fewer personnel needs, are substantial. Companies soon realize that they can use the data stored in these systems to help managers make better decisions.","فوائد نظام TPS أو ERP الفعّال، ومنها خفض تكاليف المعالجة وتقليل الاحتياج للموظفين، كبيرة جدًا. وسرعان ما تدرك الشركات أنها تستطيع استخدام البيانات المخزنة في هذه الأنظمة لمساعدة المديرين على اتخاذ قرارات أفضل."]},
+     {k:'def', x:["A management information system (MIS) is an organized collection of people, procedures, software, databases, and devices that provides routine information to managers and decision makers.","نظام المعلومات الإدارية (MIS) هو مجموعة منظمة من الأشخاص والإجراءات والبرمجيات وقواعد البيانات والأجهزة تُقدّم معلومات روتينية للمديرين وصنّاع القرار."]},
+     {k:'p', x:["MISs typically provide standard reports generated with data from the TPS or ERP.","عادةً ما تقدم أنظمة MIS تقارير معيارية تُنشأ من بيانات TPS أو ERP."]},
+     {k:'p', x:["Functional management information systems draw data from the organization’s transaction processing system, and they share a common database.","تستمد أنظمة المعلومات الإدارية الوظيفية بياناتها من نظام معالجة المعاملات في المنظمة، وتشترك في قاعدة بيانات مشتركة."]},
+     {k:'ul', h:["Examples of functional MIS","أمثلة على نظم MIS الوظيفية"], x:[
+       ["Marketing management information system","نظام معلومات إدارة التسويق"],
+       ["Manufacturing management information system","نظام معلومات إدارة التصنيع"],
+       ["Financial management information system","نظام معلومات الإدارة المالية"],
+       ["Other management information systems","أنظمة معلومات إدارية أخرى"]
+     ]}
+   ]},
+   {t:["5. Decision support systems (DSS)","5. نظم دعم القرار (Decision Support Systems - DSS)"], b:[
+     {k:'def', x:["A decision support system (DSS) is an organized collection of people, procedures, software, databases, and devices that support problem-specific decision making.","نظام دعم القرار (DSS) هو مجموعة منظمة من الأشخاص والإجراءات والبرمجيات وقواعد البيانات والأجهزة تدعم اتخاذ القرار الخاص بمشكلة محددة."]},
+     {k:'tip', x:["MIS helps an organization “do things right”; DSS helps a manager “do the right thing.”","نظام MIS يساعد المنظمة على “فعل الأشياء بشكل صحيح”، بينما نظام DSS يساعد المدير على “فعل الشيء الصحيح”."]},
+     {k:'p', x:["A DSS can include a collection of models used to support a decision maker, a collection of facts and information to assist in decision making, and systems and procedures that help users interact with the DSS.","يمكن أن يشمل نظام DSS مجموعة من النماذج لدعم صانع القرار، ومجموعة من الحقائق والمعلومات للمساعدة في اتخاذ القرار، وأنظمة وإجراءات تساعد المستخدمين على التفاعل مع النظام."]},
+     {k:'ul', h:["A DSS typically includes","يتكون نظام DSS عادةً من"], x:[
+       ["Model base: the collection of models that support the decision maker","قاعدة النماذج: مجموعة النماذج التي تدعم صانع القرار"],
+       ["Database: the facts and information used for decisions","قاعدة البيانات: الحقائق والمعلومات المستخدمة في القرار"],
+       ["User interface (dialogue manager): how decision makers interact with the DSS","واجهة المستخدم (مدير الحوار): طريقة تفاعل صُنّاع القرار مع النظام"]
+     ]},
+     {k:'p', x:["Software called the database management system (DBMS) is often used to manage the database, and software called the model management system (MMS) manages the model base.","تُستخدم غالبًا برمجيات تسمى نظام إدارة قواعد البيانات (DBMS) لإدارة قاعدة البيانات، بينما تُستخدم برمجيات تسمى نظام إدارة النماذج (MMS) لإدارة قاعدة النماذج."]}
+   ]},
+   {t:["6. Specialized business information systems","6. أنظمة المعلومات التجارية المتخصصة (Specialized Business Information Systems)"], b:[
+     {k:'p', x:["In addition to ERPs, MISs, and DSSs, organizations often rely on specialized systems.","بالإضافة إلى ERP وMIS وDSS، تعتمد المنظمات كثيرًا على أنظمة متخصصة."]},
+     {k:'def', x:["A knowledge management system is an organized collection of people, procedures, software, databases, and devices that stores and retrieves knowledge, improves collaboration, locates knowledge sources, and captures and uses knowledge.","نظام إدارة المعرفة هو مجموعة منظمة من الأشخاص والإجراءات والبرمجيات وقواعد البيانات والأجهزة تُخزّن المعرفة وتسترجعها، وتحسّن التعاون، وتحدد مصادر المعرفة، وتلتقط المعرفة وتستخدمها."]},
+     {k:'p', x:["Knowledge is created, captured, refined, stored, managed, and disseminated, and all of these steps feed a central knowledge base. Managing knowledge means an organization can capture and retain specialized knowledge for future use.","تُنشأ المعرفة وتُلتقط وتُصقل وتُخزَّن وتُدار وتُنشر، وكل هذه الخطوات تغذي قاعدة المعرفة المركزية. وإدارة المعرفة تعني أن المنظمة تستطيع التقاط المعرفة المتخصصة والاحتفاظ بها للاستخدام في المستقبل."]},
+     {k:'def', x:["Artificial intelligence (AI) is a field in which the computer system takes on the characteristics of human intelligence.","الذكاء الاصطناعي (AI) مجال تكتسب فيه أنظمة الحاسوب خصائص الذكاء البشري."]},
+     {k:'ul', h:["Subfields of AI","فروع الذكاء الاصطناعي"], x:[
+       ["Robotics","الروبوتات (Robotics)"],
+       ["Vision systems","أنظمة الرؤية (Vision systems)"],
+       ["Learning systems","أنظمة التعلم (Learning systems)"],
+       ["Natural language processing","معالجة اللغة الطبيعية (Natural language processing)"],
+       ["Neural networks","الشبكات العصبية (Neural networks)"],
+       ["Expert systems","الأنظمة الخبيرة (Expert systems)"]
+     ]}
+   ]}
+  ],
+  take:[
+   ["Business information systems include e-commerce, TPS, MIS, and DSS, often integrated into one software package.","تشمل أنظمة المعلومات التجارية التجارة الإلكترونية وTPS وMIS وDSS، وغالبًا ما تُدمج في حزمة برمجية واحدة."],
+   ["E-commerce covers B2B, B2C, C2C, and dealings with the public sector; m-commerce uses mobile devices.","تشمل التجارة الإلكترونية B2B وB2C وC2C والتعامل مع القطاع العام، بينما تستخدم التجارة المتنقلة الأجهزة المحمولة."],
+   ["TPS records daily business transactions; ERP integrates the vital operations of a whole organization.","نظام TPS يسجّل المعاملات التجارية اليومية، أما ERP فيدمج العمليات الحيوية للمنظمة بأكملها."],
+   ["MIS gives managers routine reports; DSS supports specific decisions (“do the right thing”).","نظام MIS يقدم للمديرين تقارير روتينية، بينما يدعم DSS قرارات محددة (“فعل الشيء الصحيح”)."],
+   ["A DSS includes a model base, a database, and a user interface.","يتكون نظام DSS من قاعدة نماذج وقاعدة بيانات وواجهة مستخدم."],
+   ["Knowledge management systems and AI are specialized systems that preserve and use expertise.","أنظمة إدارة المعرفة والذكاء الاصطناعي أنظمة متخصصة تحفظ الخبرة وتستخدمها."]
+  ],
+  fc:[
+   [["What is electronic commerce (e-commerce)?","ما هي التجارة الإلكترونية (e-commerce)؟"],["Any business transaction executed electronically between companies, consumers, and the public sector.","أي معاملة تجارية تُنفَّذ إلكترونيًا بين الشركات والمستهلكين والقطاع العام."]],
+   [["What is B2B compared to B2C?","ما الفرق بين B2B وB2C؟"],["B2B is between companies. B2C is between companies and consumers.","B2B بين الشركات، وB2C بين الشركات والمستهلكين."]],
+   [["What is mobile commerce (m-commerce)?","ما هي التجارة المتنقلة (m-commerce)؟"],["Using mobile, wireless devices to place orders and conduct business.","استخدام الأجهزة المتنقلة اللاسلكية لتقديم الطلبات وإجراء الأعمال."]],
+   [["What is electronic business (e-business)?","ما هي الأعمال الإلكترونية (e-business)؟"],["Using information systems and the Internet for all business tasks, such as accounting, finance, marketing, and HR.","استخدام نظم المعلومات والإنترنت لكل المهام التجارية، مثل المحاسبة والتمويل والتسويق والموارد البشرية."]],
+   [["What is a transaction processing system (TPS)?","ما هو نظام معالجة المعاملات (TPS)؟"],["An organized collection of people, procedures, software, databases, and devices that performs and records business transactions.","مجموعة منظمة من الأشخاص والإجراءات والبرمجيات وقواعد البيانات والأجهزة تنفّذ المعاملات التجارية وتسجّلها."]],
+   [["What is ERP?","ما هو ERP؟"],["Enterprise resource planning: a set of integrated programs that manages the vital operations of a whole organization.","تخطيط موارد المؤسسة: مجموعة برامج متكاملة تدير العمليات الحيوية للمنظمة بأكملها."]],
+   [["What does an MIS provide?","ماذا يقدم نظام MIS؟"],["Routine information for managers, usually as standard reports from TPS or ERP data.","معلومات روتينية للمديرين، غالبًا على شكل تقارير معيارية من بيانات TPS أو ERP."]],
+   [["What is a DSS?","ما هو نظام DSS؟"],["An organized collection of people, procedures, software, databases, and devices that supports problem-specific decisions.","مجموعة منظمة من الأشخاص والإجراءات والبرمجيات وقواعد البيانات والأجهزة تدعم القرارات الخاصة بمشكلة محددة."]],
+   [["What is the difference between MIS and DSS?","ما الفرق بين MIS وDSS؟"],["MIS helps “do things right”; DSS helps a manager “do the right thing.”","نظام MIS يساعد على “فعل الأشياء بشكل صحيح”، وDSS يساعد المدير على “فعل الشيء الصحيح”."]],
+   [["What are the three typical parts of a DSS?","ما المكونات الثلاثة المعتادة لنظام DSS؟"],["A model base, a database, and a user interface (dialogue manager).","قاعدة نماذج، وقاعدة بيانات، وواجهة مستخدم (مدير حوار)."]]
+  ],
+  quiz:[
+   {q:["Which of these is NOT among the most common business information systems in the lecture?","أي مما يلي ليس من أكثر أنظمة المعلومات التجارية شيوعًا في المحاضرة؟"], o:[["Electronic and mobile commerce","التجارة الإلكترونية والمتنقلة"],["Transaction processing","معالجة المعاملات"],["Management information","المعلومات الإدارية"],["Video editing","تحرير الفيديو"]], a:3},
+   {q:["Business information systems are often:","غالبًا ما تكون أنظمة المعلومات التجارية:"], o:[["Built separately with no integration","مبنية بشكل منفصل دون تكامل"],["Integrated into one product and delivered by the same software package","مدمجة في منتج واحد وتُقدَّم ضمن حزمة برمجية واحدة"],["Used only by governments","تُستخدم من الحكومات فقط"],["Hardware only","عتاد فقط"]], a:1},
+   {q:["E-commerce between companies is called:","التجارة الإلكترونية بين الشركات تسمى:"], o:[["B2B","B2B"],["B2C","B2C"],["C2C","C2C"],["P2P","P2P"]], a:0},
+   {q:["E-commerce between consumers and other consumers is called:","التجارة الإلكترونية بين المستهلكين أنفسهم تسمى:"], o:[["B2B","B2B"],["B2C","B2C"],["C2C","C2C"],["M2M","M2M"]], a:2},
+   {q:["Mobile commerce (m-commerce) means:","التجارة المتنقلة (m-commerce) تعني:"], o:[["Using mobile wireless devices to place orders and conduct business","استخدام الأجهزة المتنقلة اللاسلكية لتقديم الطلبات وإجراء الأعمال"],["Printing manuals","طباعة الأدلة"],["Managing computer memory","إدارة ذاكرة الحاسوب"],["Mining data","تنقيب البيانات"]], a:0},
+   {q:["E-business goes beyond e-commerce by covering:","تتجاوز الأعمال الإلكترونية التجارة الإلكترونية بتغطيتها:"], o:[["Only online sales","البيع عبر الإنترنت فقط"],["All business tasks, such as accounting, finance, marketing, and HR","كل المهام التجارية، مثل المحاسبة والتمويل والتسويق والموارد البشرية"],["Only hardware repair","صيانة العتاد فقط"],["Only social media posts","منشورات وسائل التواصل فقط"]], a:1},
+   {q:["E-procurement means:","الشراء الإلكتروني يعني:"], o:[["The process of getting supplies","عملية الحصول على الإمدادات"],["Selling products to customers","بيع المنتجات للعملاء"],["Designing software","تصميم البرمجيات"],["Recording payroll only","تسجيل الرواتب فقط"]], a:0},
+   {q:["A transaction processing system (TPS) is used to:","يُستخدم نظام معالجة المعاملات (TPS) من أجل:"], o:[["Perform and record business transactions","تنفيذ المعاملات التجارية وتسجيلها"],["Play games","تشغيل الألعاب"],["Print posters","طباعة الملصقات"],["Connect cables","توصيل الكابلات"]], a:0},
+   {q:["Which of these is a business transaction?","أي مما يلي يُعد معاملة تجارية؟"], o:[["Paying employees' salaries","دفع رواتب الموظفين"],["Installing an antivirus","تثبيت برنامج مضاد للفيروسات"],["Changing a wallpaper","تغيير خلفية الشاشة"],["Resetting a router","إعادة ضبط الموجّه"]], a:0},
+   {q:["ERP stands for:","ERP تعني:"], o:[["Enterprise resource planning","تخطيط موارد المؤسسة"],["Electronic routing process","عملية التوجيه الإلكتروني"],["Extended repair program","برنامج الصيانة الموسّع"],["External reporting platform","منصة التقارير الخارجية"]], a:0},
+   {q:["ERP systems can support functions such as:","يمكن لأنظمة ERP أن تدعم وظائف مثل:"], o:[["Customer service, human resources, sales, and distribution","خدمة العملاء والموارد البشرية والمبيعات والتوزيع"],["Printing only","الطباعة فقط"],["Video calls only","المكالمات المرئية فقط"],["Gaming only","الألعاب فقط"]], a:0},
+   {q:["A management information system (MIS) provides:","يقدم نظام المعلومات الإدارية (MIS):"], o:[["Routine information to managers and decision makers","معلومات روتينية للمديرين وصنّاع القرار"],["Only hardware diagnostics","تشخيص العتاد فقط"],["Only email service","خدمة البريد الإلكتروني فقط"],["Only network cables","كابلات الشبكة فقط"]], a:0},
+   {q:["A decision support system (DSS) focuses on:","يركّز نظام دعم القرار (DSS) على:"], o:[["Making effective decisions for specific problems","اتخاذ قرارات فعّالة لمشكلات محددة"],["Storing files only","تخزين الملفات فقط"],["Printing documents","طباعة المستندات"],["Connecting cables","توصيل الكابلات"]], a:0},
+   {q:["Compared with MIS, a DSS helps a manager to:","مقارنةً بـ MIS، يساعد DSS المدير على:"], o:[["Do the right thing","فعل الشيء الصحيح"],["Print faster","الطباعة بشكل أسرع"],["Buy hardware","شراء العتاد"],["Hire staff","توظيف الموظفين"]], a:0},
+   {q:["Which of these is NOT a typical part of a DSS?","أي مما يلي ليس جزءًا معتادًا من نظام DSS؟"], o:[["Model base","قاعدة النماذج"],["Database","قاعدة البيانات"],["User interface (dialogue manager)","واجهة المستخدم (مدير الحوار)"],["Hard disk platter","قرص صلب مغناطيسي"]], a:3},
+   {q:["The model management system (MMS) manages:","يدير نظام إدارة النماذج (MMS):"], o:[["The model base","قاعدة النماذج"],["The network cables","كابلات الشبكة"],["The printers","الطابعات"],["The keyboard","لوحة المفاتيح"]], a:0},
+   {q:["The database management system (DBMS) manages:","يدير نظام إدارة قواعد البيانات (DBMS):"], o:[["The database","قاعدة البيانات"],["The model base","قاعدة النماذج"],["The keyboard","لوحة المفاتيح"],["The router","الموجّه"]], a:0},
+   {q:["A knowledge management system stores and retrieves knowledge and also:","يُخزّن نظام إدارة المعرفة المعرفة ويسترجعها، كما أنه:"], o:[["Improves collaboration and captures and uses knowledge","يحسّن التعاون ويلتقط المعرفة ويستخدمها"],["Only prints documents","يطبع المستندات فقط"],["Only manages payroll","يدير الرواتب فقط"],["Only maintains hardware","يصون العتاد فقط"]], a:0},
+   {q:["Which of these is NOT a subfield of artificial intelligence?","أي مما يلي ليس من فروع الذكاء الاصطناعي؟"], o:[["Robotics","الروبوتات"],["Vision systems","أنظمة الرؤية"],["Learning systems","أنظمة التعلم"],["Spreadsheets","جداول البيانات"]], a:3},
+   {q:["Expert systems and neural networks are:","الأنظمة الخبيرة والشبكات العصبية هي:"], o:[["Subfields of artificial intelligence","فروع من الذكاء الاصطناعي"],["Types of cables","أنواع من الكابلات"],["Operating systems","أنظمة تشغيل"],["Printer drivers","تعريفات طابعات"]], a:0}
+  ]
+});
+
+LECTURES.push({ id:'l10', n:10,
+  title:["Business Intelligence and Analytics","ذكاء الأعمال وتحليلات البيانات (Business Intelligence and Analytics)"],
+  obj:[
+    ["Explain business analytics and business intelligence (BI).","شرح تحليلات الأعمال (Business Analytics) وذكاء الأعمال (BI)."],
+    ["Describe the benefits organizations gain from BI and analytics.","وصف الفوائد التي تحققها المنظمات من BI وتحليلات البيانات."],
+    ["Describe the role of a data scientist and the skills it requires.","وصف دور عالم البيانات (Data Scientist) والمهارات التي يتطلبها."],
+    ["Identify the components required for effective BI and analytics.","تحديد المكونات اللازمة لنجاح BI وتحليلات البيانات."],
+    ["List the common BI and analytics tools.","سرد أدوات BI وتحليلات البيانات الشائعة."]
+  ],
+  sec:[
+   {t:["1. Business analytics","1. تحليلات الأعمال (Business Analytics)"], b:[
+     {k:'def', x:["Business analytics is the extensive use of data and quantitative analysis to support fact-based decision making within organizations.","تحليلات الأعمال هي الاستخدام الواسع للبيانات والتحليل الكمي لدعم اتخاذ القرارات المبنية على الحقائق داخل المنظمات."]},
+     {k:'p', x:["It can be used to understand current business performance, reveal new business patterns and relationships, explain why certain results occurred, optimize current operations, and forecast future business results.","يمكن استخدامها لفهم أداء الأعمال الحالي، وكشف أنماط وعلاقات جديدة، وتفسير أسباب نتائج معينة، وتحسين العمليات الحالية، والتنبؤ بنتائج الأعمال المستقبلية."]}
+   ]},
+   {t:["2. Business intelligence (BI)","2. ذكاء الأعمال (Business Intelligence - BI)"], b:[
+     {k:'def', x:["Business intelligence is a wide range of applications, practices, and technologies for the extraction, transformation, integration, visualization, analysis, interpretation, and presentation of data to support improved decision making.","ذكاء الأعمال هو مجموعة واسعة من التطبيقات والممارسات والتقنيات لاستخراج البيانات وتحويلها ودمجها وتصورها وتحليلها وتفسيرها وعرضها، بهدف دعم تحسين اتخاذ القرار."]},
+     {k:'p', x:["The data used in BI is often pulled from multiple sources, which may be internal or external to the organization.","غالبًا ما تُجمع البيانات المستخدمة في BI من مصادر متعددة، وقد تكون داخلية أو خارجية بالنسبة للمنظمة."]},
+     {k:'p', x:["Many organizations store this data in large collections such as data warehouses, data marts, and data lakes, for use in BI applications.","تخزن كثير من المنظمات هذه البيانات في مجموعات كبيرة مثل مستودعات البيانات (Data warehouses)، وأسواق البيانات (Data marts)، وبحيرات البيانات (Data lakes)، لاستخدامها في تطبيقات BI."]},
+     {k:'tip', x:["The goal of BI is to get the most value out of information and present results in a way that anyone can understand.","هدف BI هو الحصول على أكبر قيمة من المعلومات وعرض النتائج بطريقة يفهمها أي شخص."]}
+   ]},
+   {t:["2.1 Benefits achieved from BI and analytics","2.1 الفوائد التي تحققها BI وتحليلات البيانات"], b:[
+     {k:'tbl', h:[["Benefit","الفائدة"],["Company","الشركة"],["Result","النتيجة"]],
+      r:[
+       [["Detect fraud","كشف الاحتيال"],["MetLife","MetLife"],["Analytical software helps its special investigations unit identify medical provider, attorney, and repair shop fraud.","تساعد برمجيات التحليل وحدة التحقيقات الخاصة على كشف الاحتيال من مقدمي الخدمات الطبية والمحامين وورش الإصلاح."]],
+       [["Improve forecasting","تحسين التنبؤ"],["Kroger","Kroger"],["An inventory system shows inventory levels, adapts to user feedback, and supports “what-if” analysis. Out-of-stock prescriptions dropped by 1.5 million per year, and sales rose by $80 million per year.","نظام مخزون يعرض مستويات المخزون ويتكيف مع ملاحظات المستخدمين ويدعم تحليل “ماذا لو”. انخفضت الوصفات غير المتوفرة بمقدار 1.5 مليون سنويًا، وارتفعت المبيعات بمقدار 80 مليون دولار سنويًا."]],
+       [["Increase sales","زيادة المبيعات"],["DaimlerChrysler","DaimlerChrysler"],["A price-elasticity model helps optimize pricing across vehicle models. The firm estimates additional annual sales of $500 million.","نموذج مرونة الأسعار يساعد على تحسين التسعير عبر طرازات السيارات. وتقدر الشركة مبيعات إضافية بمقدار 500 مليون دولار سنويًا."]],
+       [["Reduce costs","خفض التكاليف"],["Coca-Cola Enterprises","Coca-Cola Enterprises"],["A vehicle-routing optimization system saves $45 million a year through less gas consumption and fewer drivers needed.","نظام تحسين مسارات المركبات يوفر 45 مليون دولار سنويًا من خلال تقليل استهلاك الوقود وعدد السائقين المطلوبين."]]
+      ]}
+   ]},
+   {t:["3. The role of a data scientist","3. دور عالم البيانات (The Role of a Data Scientist)"], b:[
+     {k:'def', x:["Data scientists are individuals who combine strong business acumen, a deep understanding of analytics, and a healthy appreciation of the limitations of their data, tools, and techniques to deliver real improvements in decision making.","عالم البيانات هو شخص يجمع بين فهم قوي للأعمال، وعمق في التحليلات، وإدراك سليم لحدود بياناته وأدواته وأساليبه، لتحقيق تحسينات حقيقية في اتخاذ القرار."]},
+     {k:'p', x:["They view a situation from many angles, determine what data and tools can help further their understanding, and then apply the appropriate data and tools.","ينظرون إلى الموقف من زوايا متعددة، ويحددون البيانات والأدوات التي تساعد على فهمه بشكل أعمق، ثم يطبقون البيانات والأدوات المناسبة."]},
+     {k:'ul', h:["Typical traits and skills","السمات والمهارات المعتادة"], x:[
+       ["Highly inquisitive: they keep asking questions and challenge assumptions and existing processes","فضوليون جدًا: يطرحون الأسئلة باستمرار ويتحدّون الافتراضات والعمليات القائمة"],
+       ["They perform “what-if” analyses","يُجرون تحليلات “ماذا لو”"],
+       ["Rigorous education: mastery of statistics, math, and computer programming","تعليم صارم: إتقان الإحصاء والرياضيات وبرمجة الحاسوب"],
+       ["Common tools and languages: Hadoop, Hive, SQL, Python, R, and Java","أدوات ولغات شائعة: Hadoop وHive وSQL وPython وR وJava"]
+     ]}
+   ]},
+   {t:["4. Components required for effective BI and analytics","4. المكونات اللازمة لنجاح BI وتحليلات البيانات"], b:[
+     {k:'ul', x:[
+       ["A solid data management program, including data governance. This comes first and foremost.","برنامج قوي لإدارة البيانات يشمل حوكمة البيانات (Data governance). وهذا هو الأساس قبل كل شيء."],
+       ["Creative data scientists: people who understand the business and the analytics technology, and who recognize the limits of their data, tools, and techniques.","علماء بيانات مبدعون: أشخاص يفهمون الأعمال وتقنية التحليلات، ويدركون حدود بياناتهم وأدواتهم وأساليبهم."],
+       ["A strong management commitment to data-driven decision making.","التزام قوي من الإدارة باتخاذ القرار المبني على البيانات."]
+     ]},
+     {k:'p', x:["Organizations that put these components in place can act quickly to make superior decisions in uncertain and changing environments, gaining a strong competitive advantage.","المنظمات التي توفر هذه المكونات تستطيع التصرف بسرعة واتخاذ قرارات أفضل في بيئات غير مؤكدة ومتغيرة، مما يمنحها ميزة تنافسية قوية."]},
+     {k:'tip', x:["Technology alone is not enough. People and management commitment matter just as much as the tools.","التقنية وحدها لا تكفي. الأشخاص والتزام الإدارة لهما الأهمية نفسها التي للأدوات."]}
+   ]},
+   {t:["5. BI and analytics tools","5. أدوات BI وتحليلات البيانات"], b:[
+     {k:'ul', x:[
+       ["Spreadsheets","جداول البيانات (Spreadsheets)"],
+       ["Reporting and querying tools","أدوات التقارير والاستعلام (Reporting and querying tools)"],
+       ["Data visualization tools","أدوات تصور البيانات (Data visualization tools)"],
+       ["Online analytical processing (OLAP)","المعالجة التحليلية الفورية (OLAP)"],
+       ["Data mining","تنقيب البيانات (Data mining)"],
+       ["Dashboards","لوحات المؤشرات (Dashboards)"]
+     ]}
+   ]}
+  ],
+  take:[
+   ["Business analytics uses data and quantitative analysis to support fact-based decisions.","تحليلات الأعمال تستخدم البيانات والتحليل الكمي لدعم القرارات المبنية على الحقائق."],
+   ["BI turns data from many sources into information that is easy to understand.","يحوّل BI البيانات من مصادر متعددة إلى معلومات سهلة الفهم."],
+   ["Organizations gain from BI in fraud detection, forecasting, higher sales, and lower costs.","تستفيد المنظمات من BI في كشف الاحتيال والتنبؤ وزيادة المبيعات وخفض التكاليف."],
+   ["A data scientist combines business sense, analytics skills, and awareness of data limits.","يجمع عالم البيانات بين الحس التجاري ومهارات التحليل والوعي بحدود البيانات."],
+   ["Strong data management and governance come first, followed by people and management commitment.","تأتي إدارة البيانات القوية وحوكمتها أولًا، يليها الأشخاص والتزام الإدارة."],
+   ["Common tools include spreadsheets, reporting tools, visualization tools, OLAP, data mining, and dashboards.","من الأدوات الشائعة: جداول البيانات، وأدوات التقارير، وأدوات التصور، وOLAP، وتنقيب البيانات، ولوحات المؤشرات."]
+  ],
+  fc:[
+   [["What is business analytics?","ما هي تحليلات الأعمال؟"],["The extensive use of data and quantitative analysis to support fact-based decision making.","الاستخدام الواسع للبيانات والتحليل الكمي لدعم اتخاذ القرار المبني على الحقائق."]],
+   [["What is business intelligence (BI)?","ما هو ذكاء الأعمال (BI)؟"],["A wide range of applications, practices, and technologies for extracting, analyzing, and presenting data to improve decisions.","مجموعة واسعة من التطبيقات والممارسات والتقنيات لاستخراج البيانات وتحليلها وعرضها بهدف تحسين القرارات."]],
+   [["Where does BI data come from?","من أين تأتي بيانات BI؟"],["Multiple sources, internal or external to the organization.","مصادر متعددة، داخلية أو خارجية بالنسبة للمنظمة."]],
+   [["What are data warehouses, data marts, and data lakes?","ما هي مستودعات البيانات وأسواق البيانات وبحيرات البيانات؟"],["Large collections of data that organizations use in BI applications.","مجموعات كبيرة من البيانات تستخدمها المنظمات في تطبيقات BI."]],
+   [["What is the goal of BI?","ما هدف BI؟"],["To get the most value out of information and present results in an easy to understand way.","الحصول على أكبر قيمة من المعلومات وعرض النتائج بطريقة سهلة الفهم."]],
+   [["How did MetLife use analytics?","كيف استخدمت MetLife التحليلات؟"],["To help its special investigations unit detect medical provider, attorney, and repair shop fraud.","لمساعدة وحدة التحقيقات الخاصة على كشف الاحتيال من مقدمي الخدمات الطبية والمحامين وورش الإصلاح."]],
+   [["What did Kroger's inventory system support?","ماذا دعم نظام المخزون في Kroger؟"],["Visualization of inventory levels, user feedback, and “what-if” analysis, reducing out-of-stock prescriptions.","تصور مستويات المخزون، وملاحظات المستخدمين، وتحليل “ماذا لو”، مما قلّل الوصفات غير المتوفرة."]],
+   [["What is a data scientist?","ما هو عالم البيانات؟"],["Someone who combines business acumen, analytics expertise, and awareness of the limits of data and tools.","شخص يجمع بين الحس التجاري والخبرة في التحليلات والوعي بحدود البيانات والأدوات."]],
+   [["What programming tools do data scientists commonly use?","ما أدوات البرمجة التي يستخدمها علماء البيانات عادةً؟"],["Hadoop, Hive, SQL, Python, R, and Java.","Hadoop وHive وSQL وPython وR وJava."]],
+   [["What is the first and foremost component for effective BI?","ما المكوّن الأول والأهم لنجاح BI؟"],["A solid data management program, including data governance.","برنامج قوي لإدارة البيانات يشمل حوكمة البيانات."]]
+  ],
+  quiz:[
+   {q:["Business analytics is:","تحليلات الأعمال هي:"], o:[["Extensive use of data and quantitative analysis for fact-based decisions","الاستخدام الواسع للبيانات والتحليل الكمي لاتخاذ قرارات مبنية على الحقائق"],["Only printing reports","طباعة التقارير فقط"],["Only hardware maintenance","صيانة العتاد فقط"],["Only sending email","إرسال البريد الإلكتروني فقط"]], a:0},
+   {q:["Business intelligence is:","ذكاء الأعمال هو:"], o:[["A wide range of applications, practices, and technologies for turning data into support for decisions","مجموعة من التطبيقات والممارسات والتقنيات لتحويل البيانات إلى دعم للقرار"],["A type of computer virus","نوع من الفيروسات الحاسوبية"],["Only a database backup","نسخة احتياطية لقاعدة بيانات فقط"],["Only a network protocol","بروتوكول شبكة فقط"]], a:0},
+   {q:["Data used in BI may come from:","قد تأتي البيانات المستخدمة في BI من:"], o:[["Multiple sources, internal or external to the organization","مصادر متعددة، داخلية أو خارجية للمنظمة"],["Only one spreadsheet","جدول بيانات واحد فقط"],["Only the Internet","الإنترنت فقط"],["Only printers","الطابعات فقط"]], a:0},
+   {q:["Which of these is a large collection of data used in BI?","أي مما يلي مجموعة كبيرة من البيانات تُستخدم في BI؟"], o:[["Data warehouse","مستودع البيانات"],["Keyboard","لوحة المفاتيح"],["Router","الموجّه"],["Ethernet cable","كابل إيثرنت"]], a:0},
+   {q:["The goal of business intelligence is to:","هدف ذكاء الأعمال هو:"], o:[["Get the most value from information and present results clearly","الحصول على أكبر قيمة من المعلومات وعرض النتائج بوضوح"],["Hide results from managers","إخفاء النتائج عن المديرين"],["Increase the number of printers","زيادة عدد الطابعات"],["Delete old files","حذف الملفات القديمة"]], a:0},
+   {q:["MetLife used analytical software to:","استخدمت MetLife برمجيات التحليل من أجل:"], o:[["Detect fraud","كشف الاحتيال"],["Design computer chips","تصميم رقائق الحاسوب"],["Lay network cables","مد كابلات الشبكة"],["Write poetry","كتابة الشعر"]], a:0},
+   {q:["Kroger's inventory system supports which kind of analysis?","يدعم نظام المخزون في Kroger أي نوع من التحليل؟"], o:[["“What-if” analysis","تحليل “ماذا لو”"],["Hardware repair","صيانة العتاد"],["Printing receipts","طباعة الإيصالات"],["Email hosting","استضافة البريد الإلكتروني"]], a:0},
+   {q:["DaimlerChrysler used a price-elasticity model to:","استخدمت DaimlerChrysler نموذج مرونة الأسعار من أجل:"], o:[["Optimize pricing decisions","تحسين قرارات التسعير"],["Choose paint colors","اختيار ألوان الطلاء"],["Build engines","تصنيع المحركات"],["Hire drivers","توظيف السائقين"]], a:0},
+   {q:["Coca-Cola Enterprises used vehicle-routing optimization to:","استخدمت Coca-Cola Enterprises تحسين مسارات المركبات من أجل:"], o:[["Save money from less gas and fewer drivers","توفير المال من خلال تقليل الوقود وعدد السائقين"],["Increase the number of trucks","زيادة عدد الشاحنات"],["Print route maps","طباعة خرائط المسارات"],["Make bottles","تصنيع الزجاجات"]], a:0},
+   {q:["A data scientist combines:","يجمع عالم البيانات بين:"], o:[["Business acumen, deep analytics understanding, and awareness of data limits","الحس التجاري وعمق فهم التحليلات والوعي بحدود البيانات"],["Only hardware skills","مهارات العتاد فقط"],["Only graphic design","التصميم الجرافيكي فقط"],["Only typing speed","سرعة الكتابة فقط"]], a:0},
+   {q:["Data scientists are typically:","يكون عالم البيانات عادةً:"], o:[["Highly inquisitive, performing what-if analyses and challenging assumptions","فضوليًا جدًا، يجري تحليلات “ماذا لو” ويتحدى الافتراضات"],["Passive and never questioning data","سلبيًا ولا يشكك في البيانات أبدًا"],["Only managers","مديرين فقط"],["Only salespeople","مندوبي مبيعات فقط"]], a:0},
+   {q:["Which of these is NOT mentioned as a tool or language for data scientists?","أي مما يلي لم يُذكر كأداة أو لغة لعلماء البيانات؟"], o:[["Python","Python"],["SQL","SQL"],["Carpentry","النجارة"],["R","R"]], a:2},
+   {q:["The first and foremost component for effective BI is:","المكوّن الأول والأهم لنجاح BI هو:"], o:[["A solid data management program, including data governance","برنامج قوي لإدارة البيانات يشمل حوكمة البيانات"],["A new printer","طابعة جديدة"],["More monitors","مزيد من الشاشات"],["A faster keyboard","لوحة مفاتيح أسرع"]], a:0},
+   {q:["Creative data scientists should understand:","يجب أن يفهم علماء البيانات المبدعون:"], o:[["The business and analytics technology, and the limits of their data","الأعمال وتقنية التحليلات، وحدود بياناتهم"],["Only hardware","العتاد فقط"],["Nothing about the business","لا شيء عن الأعمال"],["That data quality does not matter","أن جودة البيانات غير مهمة"]], a:0},
+   {q:["For a BI program to succeed, management must have:","لكي ينجح برنامج BI يجب أن تملك الإدارة:"], o:[["A strong commitment to data-driven decision making","التزامًا قويًا باتخاذ القرار المبني على البيانات"],["No involvement","لا مشاركة"],["Interest only in hardware","اهتمامًا بالعتاد فقط"],["Focus only on social media","تركيزًا على وسائل التواصل فقط"]], a:0},
+   {q:["Which of these is a BI and analytics tool?","أي مما يلي أداة من أدوات BI وتحليلات البيانات؟"], o:[["OLAP","OLAP"],["Ethernet cable","كابل إيثرنت"],["Keyboard","لوحة المفاتيح"],["Mouse","الفأرة"]], a:0},
+   {q:["Data mining and dashboards are:","تنقيب البيانات ولوحات المؤشرات هي:"], o:[["BI and analytics tools","أدوات BI وتحليلات البيانات"],["Types of operating systems","أنواع من أنظمة التشغيل"],["Hardware parts","أجزاء من العتاد"],["Network protocols","بروتوكولات شبكات"]], a:0},
+   {q:["Which of these is NOT listed among BI and analytics tools?","أي مما يلي لم يُذكر ضمن أدوات BI وتحليلات البيانات؟"], o:[["Spreadsheets","جداول البيانات"],["Data visualization tools","أدوات تصور البيانات"],["Reporting and querying tools","أدوات التقارير والاستعلام"],["Hard disk platters","صفائح القرص الصلب"]], a:3},
+   {q:["Organizations with the right components can:","المنظمات التي تملك المكونات الصحيحة تستطيع:"], o:[["Make superior decisions quickly and gain a competitive advantage","اتخاذ قرارات متفوقة بسرعة والحصول على ميزة تنافسية"],["Stop using data altogether","التوقف عن استخدام البيانات تمامًا"],["Avoid all decisions","تجنب كل القرارات"],["Eliminate their staff","إلغاء موظفيها"]], a:0}
+  ]
+});
+
 
 const GLOSSARY = [
 // Lecture 1
@@ -1313,7 +1557,11 @@ const GLOSSARY = [
 // Lecture 8
 ["Arpanet","ARPANET"],["U.S. Department of Defense (DoD)","وزارة الدفاع الأمريكية"],["Defense Advanced Research Projects Agency (DARPA)","وكالة مشاريع البحوث المتقدمة الدفاعية"],["Network service provider (NSP)","مزود خدمة الشبكة"],
 ["Internet protocol (IP)","بروتوكول الإنترنت"],["Internet backbone","العمود الفقري للإنترنت"],["Host","مضيف"],["Transmission Control Protocol (TCP)","بروتوكول التحكم في الإرسال"],["IP address","عنوان IP"],["Domain Name System (DNS)","نظام أسماء النطاقات"],["Domain name","اسم نطاق"],
-["Hypertext","نص تشعبي"],["Hyperlink","رابط تشعبي"],["Hypertext Transfer Protocol (HTTP)","بروتوكول نقل النص التشعبي"],["Uniform Resource Locator (URL)","محدد موقع الموارد الموحد"],["Website","موقع إلكتروني"],["Web browser","متصفح ويب"],["Cookies","ملفات الكوكيز"],["Internet cache","الذاكرة المخبئية للإنترنت"],["File Transfer Protocol (FTP)","بروتوكول نقل الملفات"],["CERN","CERN (المنظمة الأوروبية للأبحاث النووية)"]
+["Hypertext","نص تشعبي"],["Hyperlink","رابط تشعبي"],["Hypertext Transfer Protocol (HTTP)","بروتوكول نقل النص التشعبي"],["Uniform Resource Locator (URL)","محدد موقع الموارد الموحد"],["Website","موقع إلكتروني"],["Web browser","متصفح ويب"],["Cookies","ملفات الكوكيز"],["Internet cache","الذاكرة المخبئية للإنترنت"],["File Transfer Protocol (FTP)","بروتوكول نقل الملفات"],["CERN","CERN (المنظمة الأوروبية للأبحاث النووية)"],
+// Lecture 9
+["Business information system","نظام المعلومات التجاري"],["Electronic commerce (e-commerce)","التجارة الإلكترونية"],["Business-to-business (B2B)","من الشركات إلى الشركات (B2B)"],["Business-to-consumer (B2C)","من الشركات إلى المستهلكين (B2C)"],["Consumer-to-consumer (C2C)","من المستهلكين إلى المستهلكين (C2C)"],["Mobile commerce (m-commerce)","التجارة المتنقلة (m-commerce)"],["Electronic business (e-business)","الأعمال الإلكترونية (e-business)"],["E-procurement","الشراء الإلكتروني"],["Transaction","معاملة"],["Transaction processing system (TPS)","نظام معالجة المعاملات (TPS)"],["Enterprise resource planning (ERP)","تخطيط موارد المؤسسة (ERP)"],["Management information system (MIS)","نظام المعلومات الإدارية (MIS)"],["Decision support system (DSS)","نظام دعم القرار (DSS)"],["Model base","قاعدة النماذج"],["Model management system (MMS)","نظام إدارة النماذج (MMS)"],["Dialogue manager","مدير الحوار"],["Knowledge management system","نظام إدارة المعرفة"],["Artificial intelligence (AI)","الذكاء الاصطناعي (AI)"],["Robotics","الروبوتات"],["Vision systems","أنظمة الرؤية"],["Learning systems","أنظمة التعلم"],["Natural language processing","معالجة اللغة الطبيعية"],["Neural networks","الشبكات العصبية"],["Expert systems","الأنظمة الخبيرة"],
+// Lecture 10
+["Business analytics","تحليلات الأعمال"],["Business intelligence (BI)","ذكاء الأعمال (BI)"],["Data mart","سوق البيانات (Data mart)"],["Data lake","بحيرة البيانات (Data lake)"],["Data scientist","عالم البيانات"],["Data governance","حوكمة البيانات"],["Fraud detection","كشف الاحتيال"],["Price-elasticity model","نموذج مرونة الأسعار"],["What-if analysis","تحليل “ماذا لو” (What-if)"],["Data mining","تنقيب البيانات"],["Dashboard","لوحة المؤشرات (Dashboard)"],["Spreadsheet","جدول البيانات"],["Reporting and querying tools","أدوات التقارير والاستعلام"],["Data visualization tools","أدوات تصور البيانات"],["Hadoop","Hadoop"],["Hive","Hive"]
 ].sort((a,b)=>a[0].localeCompare(b[0]));
 
 /* ============================================================
