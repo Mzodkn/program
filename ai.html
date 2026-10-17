@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إنفوجراف: أسرار ذكاء الاختبارات (Test-Wiseness Infographic)</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  body {
+    font-family: 'Cairo', sans-serif;
+    background-color: #060911;
+    background-image: 
+      radial-gradient(at 10% 10%, rgba(59, 130, 246, 0.12) 0px, transparent 50%),
+      radial-gradient(at 90% 90%, rgba(20, 184, 166, 0.12) 0px, transparent 50%),
+      linear-gradient(to right, rgba(56, 189, 248, 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(56, 189, 248, 0.05) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
+    color: #f3f4f6;
+  }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  .card-glow {
+    background: rgba(17, 24, 39, 0.9);
+    backdrop-filter: blur(10px);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .card-glow:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px -10px rgba(59, 130, 246, 0.3);
+  }
+  @media print {
+    body { background: #0b0f17 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .no-print { display: none !important; }
+  }
+</style>
+</head>
+<body class="p-4 sm:p-8 min-h-screen">
+
+  <div class="max-w-6xl mx-auto">
+    
+    <!-- Header Banner -->
+    <header class="relative rounded-3xl bg-gradient-to-l from-blue-600/20 via-teal-500/15 to-purple-600/20 border border-blue-500/40 p-6 sm:p-10 mb-8 text-center overflow-hidden">
+      <div class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-blue-500/20 border border-blue-400/40 text-blue-300 text-xs font-bold mb-3 mono">
+        PSYCHOMETRICS & TEST-WISENESS LAB • C++ EDITION
+      </div>
+      <h1 class="text-3xl sm:text-5xl font-black text-white mb-3 leading-tight">
+        الدليل البصري لـ <span class="text-transparent bg-clip-text bg-gradient-to-l from-blue-400 to-teal-300">ذكاء حل الاختبارات</span>
+      </h1>
+      <p class="text-gray-300 max-w-3xl mx-auto text-sm sm:text-base leading-relaxed">
+        تحليل علمي وتطبيقي لأقوى العلامات الإحصائية واللغوية التي تكشف الإجابة الصحيحة في اختبارات الاختيار من متعدد، مع أمثلة حية من امتحانات البرمجة بلغة <span class="mono text-teal-400 font-bold">C++</span> وتقنية المعلومات.
+      </p>
+      <button onclick="window.print()" class="no-print mt-5 px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold shadow-lg transition inline-flex items-center gap-2">
+        <span>🖨️</span> <span>حفظ الإنفوجراف كـ PDF / طباعة</span>
+      </button>
+    </header>
+
+    <!-- Infographic Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+      <!-- 1. Overlap / Convergence -->
+      <div class="card-glow rounded-2xl border border-teal-500/40 p-6 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="px-3 py-1 rounded-lg bg-teal-500/20 text-teal-300 font-black text-sm">العلامة 01</span>
+            <span class="mono text-xs text-teal-400 font-bold">OVERLAP & CONVERGENCE</span>
+          </div>
+          <h2 class="text-2xl font-extrabold text-white mb-2">🧩 التكرار والتقاطع البرمجي</h2>
+          <p class="text-sm text-gray-300 leading-relaxed mb-4 border-s-4 border-teal-500 ps-3 bg-teal-500/5 py-2 rounded-e-lg">
+            <b>القاعدة:</b> تُبنى الخيارات الخاطئة من أجزاء الإجابة الصحيحة. الخيار الذي يجمع <b>"الشق الأول الأكثر تكراراً"</b> مع <b>"الشق الثاني الأكثر تكراراً"</b> هو الإجابة الصحيحة.
+          </p>
+
+          <!-- Example 1 -->
+          <div class="bg-gray-950/90 border border-gray-800 rounded-xl p-4 mb-3">
+            <div class="text-xs text-teal-400 font-bold mb-1">مثال 1 (برمجة C++ - المصفوفات):</div>
+            <div class="mono text-xs sm:text-sm text-white font-semibold mb-2" dir="ltr">
+              Q: Which declaration correctly creates an array of 5 integers in C++?
+            </div>
+            <div class="grid grid-cols-2 gap-1.5 mono text-xs mb-2" dir="ltr">
+              <div class="p-2 rounded bg-gray-900 text-gray-400">A. <span class="text-amber-300">int arr</span>(5);</div>
+              <div class="p-2 rounded bg-teal-950/80 border border-teal-500 text-teal-300 font-bold">B. int arr[5]; ✔</div>
+              <div class="p-2 rounded bg-gray-900 text-gray-400">C. array <span class="text-amber-300">int arr</span><span class="text-purple-300">[5];</span></div>
+              <div class="p-2 rounded bg-gray-900 text-gray-400">D. int[5] arr;</div>
+            </div>
+            <p class="text-xs text-gray-300">
+              💡 <b>التحليل:</b> البداية <span class="mono text-amber-300">int arr</span> تكررت 3 مرات، والنهاية <span class="mono text-purple-300">[5];</span> تكررت مرتين؛ تقاطعهما يعطي <b>(B)</b> فوراً!
+            </p>
+          </div>
+
+          <!-- Example 2 -->
+          <div class="bg-gray-950/90 border border-gray-800 rounded-xl p-4">
+            <div class="text-xs text-teal-400 font-bold mb-1">مثال 2 (برمجة C++ - عناصر المصفوفة):</div>
+            <div class="mono text-xs sm:text-sm text-white font-semibold mb-2" dir="ltr">
+              Q: Which statement assigns the value 25 to the third element of array A?
+            </div>
+            <div class="grid grid-cols-2 gap-1.5 mono text-xs mb-2" dir="ltr">
+              <div class="p-2 rounded bg-gray-900 text-gray-400">A. <span class="text-amber-300">A[</span>3<span class="text-amber-300">] = 25;</span></div>
+              <div class="p-2 rounded bg-teal-950/80 border border-teal-500 text-teal-300 font-bold">B. A[2] = 25; ✔</div>
+              <div class="p-2 rounded bg-gray-900 text-gray-400">C. A(<span class="text-purple-300">2</span>) = 25;</div>
+              <div class="p-2 rounded bg-gray-900 text-gray-400">D. <span class="text-amber-300">A[</span>1<span class="text-amber-300">] = 25;</span></div>
+            </div>
+            <p class="text-xs text-gray-300">
+              💡 <b>التحليل:</b> الأقواس المربعة <span class="mono text-amber-300">A[...]</span> تكررت 3 مرات، والرقم <span class="mono text-purple-300">2</span> تكرر مرتين؛ نقطة التقاطع هي <b>(B)</b>!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Cross-Question Leakage -->
+      <div class="card-glow rounded-2xl border border-blue-500/40 p-6 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="px-3 py-1 rounded-lg bg-blue-500/20 text-blue-300 font-black text-sm">العلامة 02</span>
+            <span class="mono text-xs text-blue-400 font-bold">CROSS-QUESTION LEAKAGE</span>
+          </div>
+          <h2 class="text-2xl font-extrabold text-white mb-2">🕵️‍♂️ التسريب بين الأسئلة</h2>
+          <p class="text-sm text-gray-300 leading-relaxed mb-4 border-s-4 border-blue-500 ps-3 bg-blue-500/5 py-2 rounded-e-lg">
+            <b>القاعدة:</b> من أقوى العلامات في امتحانات البرمجة؛ حيث يكتب الأستاذ كوداً كاملاً في "سؤال تتبع المخرجات" يكشف لك إجابات أسئلة القواعد (Syntax) السابقة!
+          </p>
+
+          <!-- Example 1 -->
+          <div class="bg-gray-950/90 border border-gray-800 rounded-xl p-4 mb-3">
+            <div class="text-xs text-blue-400 font-bold mb-1">مثال 1 (تسريب المؤشرات Pointers في نفس الصفحة):</div>
+            <div class="mono text-xs text-gray-300 space-y-1.5 mb-2" dir="ltr">
+              <div class="p-2 rounded bg-gray-900"><b>Q8:</b> Which operator is used to get the address of a variable? <span class="text-blue-400">(A. * | B. & | C. # | D. %)</span></div>
+              <div class="p-2 rounded bg-gray-900"><b>Q10:</b> What is the correct declaration of a pointer to an integer? <span class="text-blue-400">(A. int p; | C. int *p;)</span></div>
+              <div class="p-2 rounded bg-blue-950/70 border border-blue-500 text-blue-200"><b>Q11 (الكود المسرِّب للإجابة!):</b><br>int x = 10; <span class="bg-blue-500/30 px-1 rounded font-bold text-white">int *p = &x;</span> cout &lt;&lt; *p;</div>
+            </div>
+            <p class="text-xs text-gray-300">
+              💡 <b>التحليل:</b> السطر <span class="mono text-blue-300">int *p = &x;</span> في السؤال 11 أعطاك إجابة السؤال 10 (<span class="mono">int *p;</span>) وإجابة السؤال 8 (<span class="mono">&</span>) مجاناً!
+            </p>
+          </div>
+
+          <!-- Example 2 -->
+          <div class="bg-gray-950/90 border border-gray-800 rounded-xl p-4">
+            <div class="text-xs text-blue-400 font-bold mb-1">مثال 2 (تسريب تعريف واستدعاء الدوال Functions):</div>
+            <div class="mono text-xs text-gray-300 space-y-1.5 mb-2" dir="ltr">
+              <div class="p-2 rounded bg-gray-900"><b>Q18:</b> Which statement correctly calls a function named display that takes no arguments? <span class="text-blue-400">(A. call display; | B. display();)</span></div>
+              <div class="p-2 rounded bg-blue-950/70 border border-blue-500 text-blue-200"><b>Q17 (الكود المسرِّب للإجابة!):</b><br>int square(int x) { return x * x; }<br>cout &lt;&lt; <span class="bg-blue-500/30 px-1 rounded font-bold text-white">square(4);</span></div>
+            </div>
+            <p class="text-xs text-gray-300">
+              💡 <b>التحليل:</b> السؤال 17 استدعى الدالة بكتابة اسمها مع قوسين <span class="mono text-blue-300">square(4)</span> بدون كلمة <span class="mono">call</span> أو <span class="mono">function</span>، مما يحل السؤال 18 (<span class="mono">display();</span>)!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Longest Option -->
+      <div class="card-glow rounded-2xl border border-purple-500/40 p-6 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="px-3 py-1 rounded-lg bg-purple-500/20 text-purple-300 font-black text-sm">العلامة 03</span>
+            <span class="mono text-xs text-purple-400 font-bold">LONGEST & DETAILED OPTION</span>
+          </div>
+          <h2 class="text-2xl font-extrabold text-white mb-2">📏 الإجابة الأطول والأكثر تفصيلاً</h2>
+          <p class="text-sm text-gray-300 leading-relaxed mb-4 border-s-4 border-purple-500 ps-3 bg-purple-500/5 py-2 rounded-e-lg">
+            <b>القاعدة:</b> يضطر الكاتب أو الذكاء الاصطناعي لإضافة تفاصيل وشروط توضيحية في الخيار الصحيح ليكون كاملاً وصحيحاً علمياً، بينما تخرج المشتتات الخاطئة قصيرة.
+          </p>
+
+          <!-- Example 1 -->
+          <div class="bg-gray-950/90 border border-gray-800 rounded-xl p-4 mb-3">
+            <div class="text-xs text-purple-400 font-bold mb-1">مثال 1 (برمجة C++ - سؤال 14):</div>
+            <div class="mono text-xs sm:text-sm text-white font-semibold mb-2" dir="ltr">
+              Q: Which keyword is used to define a function in C++?
+            </div>
+            <div class="space-y-1.5 mono text-xs mb-2" dir="ltr">
+              <div class="p-1.5 rounded bg-gray-900 text-gray-400">A. function <span class="text-[10px] text-gray-500">(1 word)</span></div>
+              <div class="p-1.5 rounded bg-gray-900 text-gray-400">B. define <span class="text-[10px] text-gray-500">(1 word)</span></div>
+              <div class="p-1.5 rounded bg-gray-900 text-gray-400">C. void <span class="text-[10px] text-gray-500">(1 word)</span></div>
+              <div class="p-2 rounded bg-purple-950/80 border border-purple-500 text-purple-200 font-bold">D. C++ does not use a keyword; the return type is written before the function name ✔ <span class="text-[10px] text-purple-300">(14 words!)</span></div>
+            </div>
+            <p class="text-xs text-gray-300">
+              💡 <b>التحليل:</b> فرق الطول الصارخ (14 كلمة مقابل كلمة واحدة فقط في A, B, C) يكشف الإجابة الصحيحة من النظرة الأولى!
+            </p>
+          </div>
+
+          <!-- Example 2 -->
+          <div class="bg-gray-950/90 border border-gray-800 rounded-xl p-4">
+            <div class="text-xs text-purple-400 font-bold mb-1">مثال 2 (مقدمة IT - سؤال 2):</div>
+            <div class="mono text-xs sm:text-sm text-white font-semibold mb-2" dir="ltr">
+              Q: What is the primary purpose of a feedback mechanism in an IS?
+            </div>
+            <div class="space-y-1.5 mono text-xs mb-2" dir="ltr">
+              <div class="p-1.5 rounded bg-gray-900 text-gray-400">A. To store data for future use.</div>
+              <div class="p-1.5 rounded bg-gray-900 text-gray-400">B. To convert data into useful outputs.</div>
+              <div class="p-2 rounded bg-purple-950/80 border border-purple-500 text-purple-200 font-bold">D. To use information from the system to make changes to input or processing activities. ✔</div>
+            </div>
+            <p class="text-xs text-gray-300">
+              💡 <b>التحليل:</b> الخيار (D) يبلغ ضعف طول بقية الخيارات لاحتوائه على التعريف الكامل من المحاضرة.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Absolute Terms -->
+      <div class="card-glow rounded-2xl border border-amber-500/40 p-6 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between gap-2 mb-3">
+            <span class="px-3 py-1 rounded-lg bg-amber-500/20 text-amber-300 font-black text-sm">العلامة 04</span>
+            <span class="mono text-xs text-amber-400 font-bold">ABSOLUTE TERMS TRAP</span>
+          </div>
+          <h2 class="text-2xl font-extrabold text-white mb-2">🚫 فخ الكلمات المطلقة (Only / Always / All)</h2>
+          <p class="text-sm text-gray-300 leading-relaxed mb-4 border-s-4 border-amber-500 ps-3 bg-amber-500/5 py-2 rounded-e-lg">
+            <b>القاعدة:</b> يلجأ الذكاء الاصطناعي لصناعة خيارات خاطئة عن طريق وضع كلمات تعميم قاطعة مثل (<span class="mono">only, always, all, never</span>). استبعدها فوراً!
+          </p>
+
+          <!-- Example 1 -->
+          <div class="bg-gray-950/90 border border-gray-800 rounded-xl p-4 mb-3">
+            <div class="text-xs text-amber-400 font-bold mb-1">مثال 1 (برمجة C++ - سؤال 7):</div>
+            <div class="mono text-xs sm:text-sm text-white font-semibold mb-2" dir="ltr">
+              Q: What does a pointer store?
+            </div>
+            <div class="grid grid-cols-1 gap-1.5 mono text-xs mb-2" dir="ltr">
+              <div class="p-1.5 rounded bg-red-950/40 border border-red-500/40 text-gray-400">A. A character <span class="text-red-400 font-bold underline">only</span> ✘</div>
+              <div class="p-2 rounded bg-amber-950/70 border border-amber-400 text-amber-200 font-bold">B. The address of another variable ✔</div>
+              <div class="p-1.5 rounded bg-red-950/40 border border-red-500/40 text-gray-400">C. A function name <span class="text-red-400 font-bold underline">only</span> ✘</div>
+            </div>
+            <p class="text-xs text-gray-300">
+              💡 <b>التحليل:</b> الكلمة القاطعة <span class="mono text-red-400">only</span> فضحت الخيارين الخاطئين (A و C)، وتركت (B) كإجابة صحيحة.
+            </p>
+          </div>
+
+          <!-- Example 2 -->
+          <div class="bg-gray-950/90 border border-gray-800 rounded-xl p-4">
+            <div class="text-xs text-amber-400 font-bold mb-1">مثال 2 (برمجة C++ - سؤال 19):</div>
+            <div class="mono text-xs sm:text-sm text-white font-semibold mb-2" dir="ltr">
+              Q: What is the main advantage of using functions?
+            </div>
+            <div class="grid grid-cols-1 gap-1.5 mono text-xs mb-2" dir="ltr">
+              <div class="p-2 rounded bg-amber-950/70 border border-amber-400 text-amber-200 font-bold">A. They make code reusable and organized ✔</div>
+              <div class="p-1.5 rounded bg-red-950/40 border border-red-500/40 text-gray-400">B. They <span class="text-red-400 font-bold underline">always</span> make programs shorter ✘</div>
+              <div class="p-1.5 rounded bg-red-950/40 border border-red-500/40 text-gray-400">D. They prevent <span class="text-red-400 font-bold underline">all</span> errors ✘</div>
+            </div>
+            <p class="text-xs text-gray-300">
+              💡 <b>التحليل:</b> في البرمجة لا توجد أداة تمنع "كل" الأخطاء (<span class="mono text-red-400">all</span>) أو تقصّر الكود "دائماً" (<span class="mono text-red-400">always</span>).
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Opposite Pairs -->
+      <div class="card-glow rounded-2xl border border-pink-500/40 p-6">
+        <div class="flex items-center justify-between gap-2 mb-3">
+          <span class="px-3 py-1 rounded-lg bg-pink-500/20 text-pink-300 font-black text-sm">العلامة 05</span>
+          <span class="mono text-xs text-pink-400 font-bold">OPPOSITE PAIRS</span>
+        </div>
+        <h2 class="text-2xl font-extrabold text-white mb-2">⚖️ الزوج المتضاد (الثنائيات المتقابلة)</h2>
+        <p class="text-sm text-gray-300 leading-relaxed mb-4 border-s-4 border-pink-500 ps-3 bg-pink-500/5 py-2 rounded-e-lg">
+          <b>القاعدة:</b> عند وجود مصطلحين متعاكسين تماماً أو متقابلين في الخيارات، فالإجابة الصحيحة غالباً ما تكون أحدهما، وباقي الخيارات حشو لإكمال العدد.
+        </p>
+        <div class="bg-gray-950/90 border border-gray-800 rounded-xl p-4">
+          <div class="text-xs text-pink-400 font-bold mb-1">مثال (برمجة C++ - سؤال 20 + المنطق الرياضي سؤال 7):</div>
+          <div class="mono text-xs text-white font-semibold mb-2" dir="ltr">
+            Q20: Which function call type used if the function parameter is pointer?
+          </div>
+          <div class="grid grid-cols-2 gap-1.5 mono text-xs mb-2" dir="ltr">
+            <div class="p-2 rounded bg-pink-950/40 border border-pink-500/50 text-pink-200">A. Call by value. (قطب 1)</div>
+            <div class="p-2 rounded bg-pink-900/80 border-2 border-pink-400 text-white font-bold">B. Call by reference. ✔ (قطب 2)</div>
+            <div class="p-1.5 rounded bg-gray-900 text-gray-500 line-through">C. Both are true.</div>
+            <div class="p-1.5 rounded bg-gray-900 text-gray-500 line-through">D. Both are false.</div>
+          </div>
+          <p class="text-xs text-gray-300">
+            💡 <b>التحليل:</b> التضاد المباشر بين <span class="mono">Call by value</span> و <span class="mono">Call by reference</span> يلغي الخيارين (C و D) فوراً ويحصر تركيزك في الخيارين الأولين.
+          </p>
+        </div>
+      </div>
+
+      <!-- 6. Stem Echo & Grammatical Cues -->
+      <div class="card-glow rounded-2xl border border-emerald-500/40 p-6">
+        <div class="flex items-center justify-between gap-2 mb-3">
+          <span class="px-3 py-1 rounded-lg bg-emerald-500/20 text-emerald-300 font-black text-sm">العلامة 06</span>
+          <span class="mono text-xs text-emerald-400 font-bold">GRAMMAR & STEM ECHO</span>
+        </div>
+        <h2 class="text-2xl font-extrabold text-white mb-2">🔤 الدليل النحوي وتكرار رمز السؤال</h2>
+        <p class="text-sm text-gray-300 leading-relaxed mb-4 border-s-4 border-emerald-500 ps-3 bg-emerald-500/5 py-2 rounded-e-lg">
+          <b>القاعدة:</b> الربط بين المتغير المذكور في الكود داخل رأس السؤال وبين الخيارات، أو مطابقة الفعل المساعد (<span class="mono">Is</span> للمفرد و <span class="mono">Are</span> للجمع).
+        </p>
+        <div class="bg-gray-950/90 border border-gray-800 rounded-xl p-4">
+          <div class="text-xs text-emerald-400 font-bold mb-1">مثال (برمجة C++ - سؤال 12 + محاسبة سؤال 6 و 8):</div>
+          <div class="mono text-xs text-white font-semibold mb-2" dir="ltr">
+            Q12: If int x = 5; int *p = <span class="text-emerald-400 underline">&amp;x</span>; what does p contain?
+          </div>
+          <div class="grid grid-cols-2 gap-1.5 mono text-xs mb-2" dir="ltr">
+            <div class="p-1.5 rounded bg-gray-900 text-gray-400">A. The value 5</div>
+            <div class="p-2 rounded bg-emerald-950/80 border border-emerald-400 text-emerald-200 font-bold">B. The a
