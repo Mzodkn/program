@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Socratic Business Hub | المنصة السقراطية لأساسيات الأعمال</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      brand: { 500: 'rgb(20 184 166)', 600: 'rgb(13 148 136)' },
+      dark: { base: '#0b0f17', surface: '#111827', elevated: '#1f2937', border: '#374151', text: '#f3f4f6', muted: '#9ca3af' }
+    },
+    fontFamily: { sans: ['Inter', 'sans-serif'], arabic: ['Cairo', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
+  } }
+}
+</script>
+<style>
+  body {
+    background-color: #0b0f17;
+    background-image: 
+      linear-gradient(to right, rgba(20, 184, 166, 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(20, 184, 166, 0.06) 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+  html[lang="en"] body { font-family: 'Inter', sans-serif; }
+  html[lang="ar"] body { font-family: 'Cairo', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #0b0f17; }
+  ::-webkit-scrollbar-thumb { background: #374151; border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgb(20 184 166); }
+  .fade { animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .flip { perspective: 1000px; }
+  .flip-inner { transition: transform .5s; transform-style: preserve-3d; position: relative; min-height: 250px; }
+  .flip.on .flip-inner { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1.5rem; border-radius: 1rem; overflow: auto; }
+  .back { transform: rotateY(180deg); }
+  .blur-gate { filter: blur(6px); user-select: none; pointer-events: none; transition: filter 0.35s ease; }
+  .blur-gate.unlocked { filter: none; user-select: auto; pointer-events: auto; }
+</style>
+</head>
+<body class="bg-dark-base text-dark-text min-h-screen">
+
+<!-- TOP NAVBAR -->
+<header class="fixed top-0 inset-x-0 z-40 h-14 bg-dark-surface/95 backdrop-blur border-b border-dark-border flex items-center justify-between px-3">
+  <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+    <button id="menuBtn" class="p-2 rounded-lg hover:bg-dark-elevated" aria-label="Menu">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <span class="px-2 py-0.5 rounded bg-brand-500/20 border border-brand-500 text-brand-500 mono text-xs font-bold hidden sm:inline">SOCRATIC v2.0</span>
+    <span id="topTitle" class="font-bold text-brand-500 truncate text-sm sm:text-base"></span>
+  </div>
+  <div class="flex items-center gap-2 sm:gap-3">
+    <button id="gateToggleBtn" class="px-2.5 py-1.5 rounded-lg border border-dark-border hover:border-brand-500 text-xs font-semibold flex items-center gap-1" title="Toggle Socratic Gate">
+      <span id="gateIcon">🔒</span> <span id="gateLabel" class="hidden md:inline"></span>
+    </button>
+    <button id="aiConfigBtn" class="px-2.5 py-1.5 rounded-lg bg-violet-600/20 border border-violet-500 hover:bg-violet-600/40 text-violet-300 text-xs font-semibold flex items-center gap-1" title="AI Tutor Settings">
+      🧠 <span class="hidden md:inline" id="aiBtnTxt">AI</span>
+    </button>
+    <div id="topProgWrap" class="hidden sm:flex items-center gap-2" title="Socratic Mastery">
+      <div class="w-24 h-2 bg-dark-base rounded-full overflow-hidden"><div id="topBar" class="h-full bg-brand-500 transition-all" style="width:0%"></div></div>
+      <span id="topPct" class="mono text-xs text-dark-muted w-9"></span>
+    </div>
+    <button id="langBtn" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-xs sm:text-sm font-semibold"></button>
+  </div>
+</header>
+
+<div id="backdrop" class="fixed inset-0 bg-black/60 z-30 hidden lg:hidden"></div>
+
+<!-- SIDEBAR -->
+<aside id="sidebar" class="fixed top-14 bottom-0 start-0 w-72 z-30 bg-dark-surface border-e border-dark-border overflow-y-auto transition-transform duration-300">
+  <nav id="nav" class="p-3 space-y-1"></nav>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main id="main" class="pt-14 transition-all duration-300">
+  <div id="app" class="max-w-4xl mx-auto p-4 sm:p-6 pb-24"></div>
+</main>
+
+<!-- AI SETTINGS MODAL -->
+<div id="aiModal" class="fixed inset-0 bg-black/75 z-50 hidden items-center justify-center p-4">
+  <div class="bg-dark-elevated border border-dark-border rounded-2xl max-w-lg w-full p-6 shadow-2xl">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-bold text-violet-400 flex items-center gap-2">🧠 <span id="aiModalTitle">إعداد المحاور السقراطي الحي (اختياري)</span></h3>
+      <button id="closeAiModal" class="text-dark-muted hover:text-white text-xl">&times;</button>
+    </div>
+    <p id="aiModalDesc" class="text-xs text-dark-muted mb-4 leading-relaxed">
+      يعمل الموقع بنسبة 100% بدون إنترنت عبر المحرك السقراطي المدمج. إذا أردت ربطه بنموذج ذكاء اصطناعي حي (مثل Ollama محلياً على جهازك أو Gemini API) لمناقشة إجاباتك بحرية، أدخل الإعدادات أدناه:
+    </p>
+    <div class="space-y-3 text-sm">
+      <div>
+        <label class="block text-xs text-dark-muted mb-1">Provider / المزود</label>
+        <select id="aiProvider" class="w-full p-2.5 rounded-lg bg-dark-surface border border-dark-border text-white">
+          <option value="offline">Offline Built-in Socratic Engine (محرك مدمج بدون إنترنت)</option>
+          <option value="ollama">Local Ollama (http://localhost:11434)</option>
+          <option value="gemini">Google Gemini API</option>
+        </select>
+      </div>
+      <div id="ollamaWrap" class="hidden space-y-2">
+        <label class="block text-xs text-dark-muted">Ollama Model Name (e.g., llama3, qwen2.5, mistral)</label>
+        <input id="ollamaModel" type="text" value="llama3.2" class="w-full p-2.5 rounded-lg bg-dark-surface border border-dark-border mono text-xs">
+      </div>
+      <div id="geminiWrap" class="hidden space-y-2">
+        <label class="block text-xs text-dark-muted">Gemini API Key (يُحفظ في متصفحك فقط)</label>
+        <input id="geminiKey" type="password" placeholder="AIzaSy..." class="w-full p-2.5 rounded-lg bg-dark-surface border border-dark-border mono text-xs">
+      </div>
+    </div>
+    <div class="flex justify-end gap-2 mt-6">
+      <button id="saveAiBtn" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold">حفظ / Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   UI LABELS [English, Arabic]
+   ============================================================ */
+const UI = {
+  home:["Socratic Dashboard","لوحة التحكم السقراطية"],
+  lecture:["Lecture","المحاضرة"],
+  objectives:["Learning Objectives","أهداف التعلم"],
+  def:["Definition","تعريف"],
+  ex:["Example","مثال"],
+  tip:["Socratic Insight","بصيرة سقراطية"],
+  take:["Key Takeaways","أهم النقاط"],
+  quiz:["Socratic 2-Stage Quiz","الاختبار السقراطي ذو المرحلتين"],
+  flash:["Active Recall Flashcards","بطاقات الاسترجاع النشط"],
+  feynman:["Reverse Feynman Lab","مختبر فاينمان المعكوس"],
+  simulator:["CTO / Executive Scenario","محاكي القرارات التنفيذية"],
+  weakDeck:["Weakness Focus Box","صندوق نقاط الضعف"],
+  exam:["Socratic Final Exam","الامتحان السقراطي النهائي"],
+  next:["Next","التالي"],
+  prev:["Previous","السابق"],
+  correct1:["Mastered on 1st Try! ✔ (+100% Socratic Score)","إتقان من المحاولة الأولى! ✔ (+100% نقطة سقراطية)"],
+  correct2:["Solved via Socratic Hint! ✔ (+60% Guided Score)","تم الحل بمساعدة التلميح السقراطي! ✔ (+60% نقطة موجهة)"],
+  hintTrig:["Wait! Don't guess blindly. Read this Socratic Hint & try again:","مهلاً! لا تحرق الإجابة. اقرأ هذا التلميح السقراطي وحاول مجدداً:"],
+  wrongFinal:["Incorrect on 2nd try ✘ — Study the analytical breakdown below:","إجابة خاطئة في المحاولة الثانية ✘ — اقرأ التحليل المنطقي أدناه:"],
+  score:["Socratic Score","النتيجة السقراطية"],
+  retry:["Reset & Retry","إعادة التحدي"],
+  search:["Search a term...","ابحث عن مصطلح..."],
+  flip:["Think of the answer first, then tap to flip","استحضر الإجابة في ذهنك أولاً، ثم اضغط لقلب البطاقة"],
+  shuffle:["Shuffle","خلط"],
+  mastery:["True Active Mastery","مستوى الإتقان النشط الحقيقي"],
+  best:["Best","الأفضل"],
+  plan:["Socratic Study Protocol (Evidence-Based)","بروتوكول الدراسة السقراطي (المبني على الأدلة)"],
+  finish:["Finish","إنهاء"],
+  reset:["Reset all progress","تصفير جميع البيانات"],
+  read:["Explored","تم الاستكشاف"],
+  tools:["Socratic Study Arenas","ساحات التدريب السقراطية"],
+  lectures:["Course Lectures","محاضرات المقرر"],
+  mistakes:["Diagnostic Error Log","سجل التشخيص والأخطاء"],
+  yourAns:["Correct Principle","المبدأ الصحيح"],
+  glossFlash:["Term Recall Deck","بطاقات استرجاع المصطلحات"],
+  glossList:["All Terms","كل المصطلحات"],
+  questions:["questions","سؤالًا"],
+  question:["Concept Prompt","سؤال المفهوم"],
+  chooseSize:["Choose Socratic Exam Length","اختر حجم الامتحان السقراطي"],
+  all:["All","الكل"],
+  gateOn:["Socratic Gate: ON","البوابة السقراطية: مفعّلة"],
+  gateOff:["Socratic Gate: OFF","البوابة السقراطية: معطّلة"],
+  gatePrompt:["🤔 Socratic Pre-Test: Formulate a hypothesis in your mind (or write it below) before unlocking the lecture text:","🤔 تحدي ما قبل القراءة: صُغ فرضية في ذهنك (أو اكتبها أدناه) قبل فتح نص الشرح لتجنب وهم الإتقان:"],
+  unlockBtn:["🔓 Unlock Section & Compare","🔓 اكشف الشرح وقارن إجابتك"],
+  feynmanTitle:["Reverse Feynman Socratic Auditor","المدقق السقراطي لتقنية فاينمان المعكوسة"],
+  feynmanDesc:["Explain the selected concept in your own words as if teaching a peer. The Socratic Auditor will scan your explanation for missing conceptual pillars (Blind Spots) and challenge you with a follow-up question.","اشرح المفهوم المختار بأسلوبك الخاص وكأنك تدرّسه لزميلك. سيقوم المدقق السقراطي بفحص شرحك لاكتشاف الركائز المفقودة (النقاط العمياء) ويطرح عليك سؤالاً سقراطياً كاشفاً."],
+  analyzeBtn:["🔍 Audit My Explanation","🔍 دقّق شرحي سقراطياً"],
+  rateHard:["❌ Forgot / Hard (Add to Weak Box)","❌ نسيت / صعب (أضف لصندوق الضعف)"],
+  rateGood:["⚠️ Recalled with Effort","⚠️ تذكرت بجهد"],
+  rateEasy:["✅ Instant Mastery (Remove from Weak Box)","✅ إتقان تام (أزل من صندوق الضعف)"]
+};
+
+/* ============================================================
+   SOCRATIC ENHANCEMENTS PER LECTURE (Pre-questions, Feynman Rubrics, Scenarios, Hints)
+   ============================================================ */
+const SOCRATIC_DATA = {
+  l1: {
+    gates: [
+      ["If an open-source developer builds free software that millions use, is it technically a 'Business' according to the strict economic definition? Why or why not?","إذا قام مبرمج بتطوير برنامج مجاني ومفتوح المصدر يستخدمه الملايين دون تحقيق ربح، فهل يُصنف كـ 'نشاط تجاري (Business)' حسب التعريف الأكاديمي؟ ولماذا؟"],
+      ["How would you classify a company like Apple or Microsoft that sells physical laptops (Goods) AND cloud subscriptions (Services)? What resources do they need?","كيف تصنف شركة تبيع أجهزة ملموسة (Goods) وفي نفس الوقت تبيع اشتراكات سحابية (Services)؟ وما هي أنواع الموارد الأربعة التي تحتاجها؟"],
+      ["Why isn't $50,000 in sales (Revenue) a guarantee that a business is successful? What equation decides survival?","لماذا لا تعني مبيعات بقيمة 50,000 دولار أن الشركة رابحة؟ ما هي المعادلة الحاسمة هنا؟"],
+      ["What is the core operational difference between a company that manufactures network routers, one that configures them for clients, and one that sells them on an e-commerce store?","ما الفرق الجوهري بين شركة تصنّع أجهزة الراوتر، وشركة تقوم ببرمجتها للعملاء، ومتجر إلكتروني يبيعها للمستهلك؟"],
+      ["If a new government data protection law is passed, is that an Internal or External environment factor? Can the CEO directly control it?","إذا صدر قانون حكومي جديد لحماية البيانات، هل يُعد عاملاً داخلياً أم خارجياً؟ وهل يملك المدير التنفيذي السيطرة المباشرة عليه؟"],
+      ["How do Cloud Computing and Cybersecurity interact when an traditional retail store transforms into an E-commerce platform?","كيف تتكامل الحوسبة السحابية مع الأمن السيبراني عندما يتحول متجر تقليدي إلى منصة تجارة إلكترونية؟"],
+      ["During an economic recession with high inflation, how does consumer behavior shift regarding IT products?","أثناء الركود الاقتصادي وارتفاع التضخم، كيف يتغير سلوك المستهلك تجاه شراء المنتجات التقنية؟"],
+      ["Can two stakeholders have conflicting interests? Think about Shareholders wanting higher profits vs. Employees wanting higher salaries or Customers wanting lower prices.","هل يمكن أن تتعارض مصالح أصحاب المصلحة (Stakeholders)؟ فكّر في المساهمين الذين يريدون أرباحاً أعلى مقابل الموظفين أو العملاء."]
+    ],
+    feynman: [
+      {
+        topic: ["Resources & Goods vs. Services (الموارد والسلع مقابل الخدمات)", "الموارد الأربعة والفرق بين السلع والخدمات"],
+        pillars: [
+          { kw: ["human","employee","بشر","موظف"], name: ["Human Resources (Employees)","الموارد البشرية (الموظفون)"] },
+          { kw: ["financial","capital","money","مالي","رأس المال","مال"], name: ["Financial Resources (Capital)","الموارد المالية (رأس المال)"] },
+          { kw: ["physical","equipment","hardware","مادي","معدات","أجهزة"], name: ["Physical Resources (Equipment)","الموارد المادية (المعدات)"] },
+          { kw: ["information","data","software","معلومات","بيانات","برمجيات"], name: ["Information Resources (Data/Software)","موارد المعلومات (البيانات والبرمجيات)"] },
+          { kw: ["tangible","touch","good","service","intangible","ملموس","سلع","خدم"], name: ["Tangible Goods vs. Intangible Services","السلع الملموسة مقابل الخدمات غير الملموسة"] }
+        ],
+        probe: ["If a cloud hosting company loses its servers in a fire, which specific resource category was destroyed, and is the final product they sell to customers a Good or a Service?","إذا احترقت خوادم شركة استضافة سحابية، فأي نوع من الموارد الأربعة قد تضرر؟ وهل ما تبيعه الشركة للعميل يُعد سلعة أم خدمة؟"]
+      },
+      {
+        topic: ["Internal vs. External Environment & Stakeholders (بيئة الأعمال وأصحاب المصلحة)", "البيئة الداخلية والخارجية وأصحاب المصلحة"],
+        pillars: [
+          { kw: ["internal","inside","culture","employee","management","داخلي","ثقافة","إدارة"], name: ["Internal Environment (Employees, Culture, Management, Tech Systems)","البيئة الداخلية (الموظفون، الثقافة، الإدارة، الأنظمة)"] },
+          { kw: ["external","outside","econom","competit","government","خارجي","اقتصاد","منافس","حكوم"], name: ["External Environment (Economy, Competitors, Regulations, Trends)","البيئة الخارجية (الاقتصاد، المنافسون، القوانين، الاتجاهات)"] },
+          { kw: ["stakeholder","owner","shareholder","customer","supplier","أصحاب المصلحة","مالك","مساهم","عميل","مورد"], name: ["5 Stakeholders (Owners, Employees, Customers, Suppliers, Government)","أصحاب المصلحة الخمسة (المالكون، الموظفون، العملاء، الموردون، الحكومة)"] }
+        ],
+        probe: ["Why are 'Suppliers' and 'Government' considered external stakeholders even though their actions directly halt or permit internal operations?","لماذا يُصنّف الموردون والحكومة ضمن أصحاب المصلحة المرتبطين بالبيئة الخارجية رغم أن قراراتهم قد توقف العمليات الداخلية للشركة فوراً؟"]
+      }
+    ],
+    scenario: {
+      role: ["CTO of 'CloudShield IT'","المدير التقني لشركة CloudShield IT"],
+      situation: ["Your software company earned $50,000 in revenue this quarter, and operating expenses were $30,000. Suddenly, an economic recession hits: inflation rises, customers reduce tech spending, and a hardware supplier delays server deliveries. Your CEO claims: 'The recession and supplier delay are failure of our Internal Environment!'","حققت شركتك البرمجية إيرادات بقيمة 50,000$ هذا الربع، وكانت تكاليف التشغيل 30,000$. فجأة حدث ركود اقتصادي، وارتفع التضخم، وقلل العملاء إنفاقهم التقني، وتأخر مورد الأجهزة في تسليم الخوادم. قال المدير التنفيذي غاضباً: 'الركود الاقتصادي وتأخر المورد هما فشل في بيئتنا الداخلية (Internal Environment)!'"],
+      question: ["How do you correct the CEO's diagnosis using Lecture 1 principles?","كيف تصحح تشخيص المدير التنفيذي استناداً لمفاهيم المحاضرة الأولى؟"],
+      options: [
+        {
+          txt: ["Agree with the CEO that inflation and suppliers are internal factors, and calculate profit as $50,000 + $30,000 = $80,000.","أتفق مع المدير أن التضخم والموردين عوامل داخلية، وأحسب الربح كـ 50,000 + 30,000 = 80,000$."],
+          ok: false,
+          socratic: ["Wait! Look at two things: Does your company control national inflation? And does adding expenses to revenue make mathematical sense for profit?","مهلاً! فكر في نقطتين: هل تملك شركتك السيطرة على التضخم العام في الدولة؟ وهل جمع المصروفات مع الإيرادات يعطيك الربح منطقياً؟"]
+        },
+        {
+          txt: ["Clarify that our current profit is $20,000 ($50k - $30k). Explain that recessions/inflation are External Economic Environment factors, and Suppliers are External Stakeholders—while our Internal Environment consists of our employees, management, culture, and internal tech systems.","أوضح أن ربحنا الحالي هو 20,000$ (50 ألف - 30 ألف)، وأشرح أن الركود والتضخم عوامل بيئة اقتصادية خارجية، والموردين هم أصحاب مصلحة خارجيون، بينما بيئتنا الداخلية تشمل موظفينا وإدارتنا وثقافتنا وأنظمتنا التقنية."],
+          ok: true,
+          socratic: ["Spot on! You accurately separated Profit (Revenue - Expenses = $20k), External Economic conditions, Stakeholders (Suppliers), and Internal Environment.","تحليل دقيق! لقد فصلت ببراعة بين معادلة الربح (20,000$)، والبيئة الاقتصادية الخارجية، وأصحاب المصلحة (الموردين)، والبيئة الداخلية."]
+        },
+        {
+          txt: ["Tell the CEO that software companies only have a Technological Environment and are unaffected by Economic or Social environments.","أخبر المدير أن شركات البرمجيات تمتلك بيئة تقنية فقط ولا تتأثر بالبيئة الاقتصادية أو الاجتماعية."],
+          ok: false,
+          socratic: ["Think again: Who buys the software? When customers lose jobs or face inflation in the Economic Environment, doesn't their spending on IT drop?","فكر مجدداً: من الذي يشتري البرمجيات؟ عندما يواجه العملاء التضخم أو البطالة في البيئة الاقتصادية، ألا ينخفض إنفاقهم على المنتجات التقنية كما ذكر مثال المحاضرة؟"]
+        }
+      ]
+    },
+    hints: [
+      ["Profit is what remains AFTER paying expenses from your revenue.","الربح هو ما يتبقى بعد خصم المصروفات والتكاليف من الإيرادات الكلية."],
+      ["Apply Profit = Revenue ($50,000) minus Operating Costs ($30,000).","طبق المعادلة: الربح = الإيرادات (50,000$) ناقص تكاليف التشغيل (30,000$)."],
+      ["Remember: A service is intangible (cannot be physically touched), unlike hardware.","تذكر: الخدمة غير ملموسة (Intangible) لا يمكن لمسها باليد عكس الأجهزة الصلبة."],
+      ["Ask yourself: Which of these 4 factors exists OUTSIDE the walls and control of the company?","اسأل نفسك: أي من هذه العوامل الأربعة يقع خارج جدران الشركة ولا تملك الإدارة تغييره بقرار داخلي؟"],
+      ["Who supplies the raw hardware and equipment to the business before operations can run?","من الجهة التي تزود الشركة بالمواد والمعدات والأجهزة اللازمة للتشغيل؟"],
+      ["Human resources refer to the people who work and think inside the company.","الموارد البشرية تشير إلى العنصر البشري (الأفراد) الذين يعملون داخل المنظمة."],
+      ["Businesses invest in R&D (AI, Cloud, Blockchain) specifically to advance new technologies.","تستثمر الشركات في البحث والتطوير (R&D) لتقديم تقنيات وأفكار جديدة، فماذا نسمي هذا الهدف؟"],
+      ["Which business category buys finished products and sells them directly to the end consumer?","أي نوع من الأعمال يبيع المنتجات النهائية مباشرة للمستهلك النهائي عبر المتاجر؟"],
+      ["Inflation, unemployment, and interest rates are all macroeconomic indicators.","التضخم والبطالة وأسعار الفائدة كلها مؤشرات تتعلق بحالة المال والاقتصاد العام."],
+      ["When society shifts its lifestyle and habits toward digital apps and sustainability, which environment is that?","عندما تتغير عادات المجتمع وأنماط حياة الناس وتفضيلاتهم نحو التسوق الرقمي، فأي بيئة تعكس ذلك؟"]
+    ]
+  },
+  l2: {
+    gates: [
+      ["Before reading the 4 forms of ownership: If you launch an app alone tomorrow and get sued for $100,000, is your personal bank account and car at risk?","قبل قراءة أشكال الملكية: إذا أطلقت تطبيقاً بمفردك غداً ورُفعت عليك قضية تعويض بمبلغ 100,000$، فهل حسابك البنكي الشخصي وسيارتك في خطر؟"],
+      ["Why do most freelance developers start as a Sole Proprietorship despite the dangerous legal liability?","لماذا يبدأ معظم المطورين المستقلين (Freelancers) كمنشأة فردية (Sole Proprietorship) رغم خطورة المسؤولية القانونية غير المحدودة؟"],
+      ["If you partner with a friend to build a startup and your friend signs a disastrous contract without telling you, are you legally bound to pay for their mistake?","إذا دخلت في شراكة (General Partnership) مع صديقك لبناء شركة، ووقّع صديقك عقداً كارثياً دون علمك، فهل أنت ملزم قانونياً بتحمل خطئه؟"],
+      ["What does it mean legally when we say a Corporation is a 'Separate Legal Entity'? How can a piece of paper sue someone or own a building?","ماذا يعني قانونياً أن الشركة المساهمة (Corporation) هي 'كيان قانوني منفصل'؟ كيف يمكن لشركة أن ترفع دعوى أو تملك عقاراً بمعزل عن ملاكها؟"],
+      ["Why was the LLC (Limited Liability Company) invented if Partnerships and Corporations already existed? What gap does it bridge?","لماذا تم ابتكار هيكل الشركة ذات المسؤولية المحدودة (LLC) طالما أن الشراكة والشركة المساهمة موجودتان؟ ما الفجوة التي يسدها؟"],
+      ["Look at the 4 structures in your mind: Which TWO expose your personal wealth to unlimited debt, and which TWO shield you?","قارن في ذهنك بين الهياكل الأربعة: أي هيكلين يعرّضان ثروتك الشخصية لديون غير محدودة، وأي هيكلين يحميانك بمسؤولية محدودة؟"],
+      ["If you are advising a founder, what 6 variables must you ask them before recommending a legal structure?","إذا كنت مستشاراً لرائد أعمال، ما هي العوامل الستة التي يجب أن تسأله عنها قبل أن تختار له الهيكل القانوني؟"],
+      ["When does a two-person tech partnership reach the breaking point where it MUST convert into a Corporation?","متى تصل شراكة تقنية بين مبرمجين إلى المرحلة التي يتحتم عليها فيها التحول إلى شركة مساهمة (Corporation)؟"]
+    ],
+    feynman: [
+      {
+        topic: ["Unlimited vs. Limited Liability across the 4 Forms (المسؤولية المحدودة وغير المحدودة)", "مقارنة المسؤولية القانونية في أشكال الملكية الأربعة"],
+        pillars: [
+          { kw: ["sole","one","unlimited","فردية","شخص واحد","غير محدودة"], name: ["Sole Proprietorship (1 owner, Unlimited Liability)","المنشأة الفردية (مالك واحد، مسؤولية غير محدودة)"] },
+          { kw: ["partnership","two","general","limited","شراكة","شخصين","عامة"], name: ["Partnership (2+ owners, General vs Limited)","الشراكة (شخصان أو أكثر، عامة ومحدودة)"] },
+          { kw: ["corporation","separate","share","stock","board","مساهمة","منفصل","أسهم","مجلس"], name: ["Corporation (Separate legal entity, Shares, Limited Liability)","الشركة المساهمة (كيان منفصل، أسهم، مسؤولية محدودة)"] },
+          { kw: ["llc","hybrid","member","محدودة","هجين","أعضاء"], name: ["LLC (Hybrid structure, Owners = Members, Limited Liability)","شركة LLC (هيكل هجين، المالكون = أعضاء، مسؤولية محدودة)"] }
+        ],
+        probe: ["Why would a small software agency choose an LLC over a Corporation if both offer Limited Liability protection?","لماذا تفضل شركة برمجيات صغيرة أو متوسطة اختيار هيكل LLC بدلاً من Corporation طالما أن كليهما يوفر حماية المسؤولية المحدودة؟"]
+      }
+    ],
+    scenario: {
+      role: ["Startup Legal & Strategy Advisor","مستشار هيكلة الشركات الناشئة"],
+      situation: ["Two software engineers built an AI cybersecurity tool as a General Partnership. Now, global venture capital investors want to invest $5 Million in exchange for equity shares, and the founders want to expand internationally while protecting their personal homes from potential data-breach lawsuits.","قام مهندسا برمجيات ببناء أداة أمن سيبراني بالذكاء الاصطناعي كشراكة عامة (General Partnership). الآن، يرغب مستثمرون عالميون في ضخ 5 ملايين دولار مقابل حصص أسهم، ويريد المؤسسون التوسع دولياً وحماية ممتلكاتهم الشخصية من أي دعاوى قضائية محتملة."],
+      question: ["Why is their current General Partnership dangerous now, and which structure should they transition to according to Lecture 2?","لماذا تُعد الشراكة العامة الحالية خطيرة عليهم الآن، وإلى أي هيكل يجب أن يتحولوا حسب المحاضرة الثانية؟"],
+      options: [
+        {
+          txt: ["Stay as a General Partnership because it has limited liability and can easily issue stock shares to global investors.","البقاء كشراكة عامة لأنها توفر مسؤولية محدودة وتسمح بإصدار أسهم للمستثمرين العالميين بسهولة."],
+          ok: false,
+          socratic: ["Careful! In a General Partnership, liability is UNLIMITED (their personal homes are at risk!) and ownership is not divided into tradable stock shares.","انتبه! في الشراكة العامة تكون المسؤولية غير محدودة (ممتلكاتهم الشخصية في خطر!) ولا تُقسم الملكية إلى أسهم قابلة للطرح للمستثمرين."]
+        },
+        {
+          txt: ["Convert to a Sole Proprietorship to reduce government regulations and avoid double taxation.","التحول إلى منشأة فردية (Sole Proprietorship) لتقليل اللوائح الحكومية وتجنب الازدواج الضريبي."],
+          ok: false,
+          socratic: ["Wait: How can TWO founders who want to bring in external investors operate as a Sole Proprietorship owned by ONE person with unlimited liability?","مهلاً: كيف يمكن لمؤسسَين اثنين يريدان إدخال مستثمرين خارجيين أن يعملا كمنشأة فردية يملكها شخص واحد فقط وبمسؤولية غير محدودة؟"]
+        },
+        {
+          txt: ["Transition to a Corporation: It creates a separate legal entity with Limited Liability (protecting personal assets), allows raising large capital by selling shares of stock to investors, and supports rapid international expansion.","التحول إلى شركة مساهمة (Corporation): لأنها تنشئ كياناً قانونياً منفصلاً بمسؤولية محدودة (تحمي أصولهم الشخصية)، وتتيح جمع رؤوس أموال ضخمة عبر بيع الأسهم للمستثمرين، وتدعم التوسع الدولي السريع."],
+          ok: true,
+          socratic: ["Brilliant! You connected the 3 exact triggers for a Corporation: Limited Liability, raising large capital via shares, and rapid global expansion.","ممتاز! لقد ربطت بدقة بين الأسباب الثلاثة لاختيار الشركة المساهمة: المسؤولية المحدودة، جمع استثمارات ضخمة عبر الأسهم، والتوسع العالمي السريع."]
+        }
+      ]
+    },
+    hints: [
+      ["Look for the structure where 'Sole' literally means one single individual owner.","ابحث عن الهيكل الذي يعني اسمه حرفياً أنه مملوك لشخص واحد فقط (فردية)."],
+      ["How do thousands of investors own slices of a giant corporation like Microsoft or Google?","كيف يمتلك آلاف المستثمرين حصصاً في شركة مساهمة عملاقة؟ بمَ تُمثل الملكية؟"],
+      ["Which 3-letter structure explicitly combines the best of a Partnership (flexibility) and a Corporation (limited liability)?","أي هيكل يجمع هجيناً بين مرونة الشراكة وحماية المسؤولية المحدودة في الشركات المساهمة؟"],
+      ["In a Limited Partnership, the 'general' partner manages, while the 'limited' partner only contributes what?","في الشراكة المحدودة، هناك شريك يدير، وشريك آخر يكتفي بضخ المال دون التدخل في الإدارة."],
+      ["To raise millions from investors by selling shares and expanding globally, which big structure is built for that?","لجمع استثمارات ضخمة عبر طرح الأسهم والتوسع عالمياً، أي هيكل قانوني صُمم خصيصاً لذلك؟"],
+      ["Corporations are taxed on corporate profits, and shareholders are taxed again on dividends. What is this called?","تُفرض ضريبة على أرباح الشركة المساهمة، ثم تُفرض ضريبة ثانية على أرباح المساهمين. ماذا يُسمى هذا العيب؟"],
+      ["Shareholders own a Corporation, Partners own a Partnership, and ______ own an LLC.","المساهمون يملكون الشركة المساهمة، والشركاء يملكون الشراكة، بينما يُسمى ملاك الـ LLC بـ..."],
+      ["Which form needs only 1 person, almost zero paperwork ('Very Easy'), and has only one person's savings ('Limited' capital)?","أي شكل يحتاج شخصاً واحداً فقط، وتأسيسه 'سهل جداً' دون تعقيد، ورأس ماله 'محدود'؟"],
+      ["Shareholders elect a governing body to oversee the CEO and strategy in a Corporation.","ينتخب المساهمون مجلساً يتولى إدارة الشركة المساهمة والإشراف عليها."],
+      ["Look for a positive benefit of combining two or more people's capital and skills, not a drawback.","ابحث عن ميزة إيجابية تنتج عن جمع أموال ومهارات شريكين أو أكثر، وليس عيباً."]
+    ]
+  },
+  l3: {
+    gates: [
+      ["Is 'following the law' the exact same thing as 'being ethical'? Can an IT company do something 100% legal in a country with weak laws, yet still be deeply unethical?","هل 'اتباع القانون' هو نفسه تماماً 'السلوك الأخلاقي'؟ هل يمكن لشركة تقنية أن تفعل شيئاً قانونياً في دولة قوانينها ضعيفة، لكنه يظل غير أخلاقي؟"],
+      ["If you discover a security flaw or an ethical dilemma at work, what are the 6 logical steps to make an ethical decision instead of reacting emotionally?","إذا واجهت معضلة أخلاقية في العمل، ما هي الخطوات الست المنطقية لاتخاذ قرار أخلاقي بدلاً من الارتجال؟"],
+      ["How do the 4 types of Corporate Social Responsibility (E-L-E-P) form a pyramid from basic survival (Economic) to giving back (Philanthropic)?","كيف تتدرج المسؤولية الاجتماعية للشركات (CSR) عبر أنواعها الأربعة (E-L-E-P) من الربحية الاقتصادية إلى العمل الخيري؟"],
+      ["Many people think software is 'clean' and doesn't pollute like factories. Why is that a myth? How do IT companies harm the physical environment?","يظن الكثيرون أن شركات البرمجيات 'نظيفة بيئياً' لأنها لا تملك مداخن مصانع. لماذا تُعد هذه خرافة؟ كيف تضر شركات الـ IT بالبيئة؟"],
+      ["What is the difference between 'Data Privacy' (collecting/sharing data without consent) and 'Protection of Customer Data' (encryption/preventing breaches)?","ما الفرق الدقيق بين قضية 'خصوصية البيانات (Data Privacy)' وقضية 'حماية بيانات العملاء (Protection of Customer Data)'؟"],
+      ["Why is unethical behavior in an IT company often more catastrophic and faster-spreading than in a small local bakery?","لماذا يكون السلوك غير الأخلاقي في شركة تقنية معلومات أكثر تدميراً وأوسع انتشاراً بملايين المرات من متجر تقليدي صغير؟"]
+    ],
+    feynman: [
+      {
+        topic: ["4 Types of CSR & 6 Steps of Ethical Decision Making (أنواع CSR وخطوات القرار الأخلاقي)", "أنواع المسؤولية الاجتماعية (E-L-E-P) وخطوات القرار الأخلاقي"],
+        pillars: [
+          { kw: ["economic","profit","اقتصادي","ربح"], name: ["Economic Responsibility (Profitable & Sustainable)","المسؤولية الاقتصادية (الربحية والاستدامة)"] },
+          { kw: ["legal","law","قانون"], name: ["Legal Responsibility (Follow Laws)","المسؤولية القانونية (اتباع القوانين)"] },
+          { kw: ["ethical","right","beyond","أخلاقي","صواب"], name: ["Ethical Responsibility (Do right beyond legal requirements)","المسؤولية الأخلاقية (فعل الصواب بما يتجاوز القانون)"] },
+          { kw: ["philanthropic","donat","charit","community","خيري","تبرع","مجتمع"], name: ["Philanthropic Responsibility (Donations & Community Support)","المسؤولية الخيرية (التبرعات ودعم المجتمع)"] },
+          { kw: ["identify","gather","evaluate","decide","action","review","تحديد","جمع","تقييم","قرار","تنفيذ","مراجعة"], name: ["6 Steps: Identify → Gather → Evaluate → Decide → Act → Review","الخطوات الست للقرار الأخلاقي بالترتيب"] }
+        ],
+        probe: ["If a company obeys all tax and labor laws (Legal CSR) and donates $1M to charity (Philanthropic CSR), but secretly sells user location data in a country that hasn't banned it yet, which CSR layer did it violate?","إذا التزمت شركة بكل قوانين الضرائب والعمل (قانونية) وتبرعت بمليون دولار للجمعيات (خيرية)، لكنها باعت بيانات مواقع المستخدمين سراً في دولة لا يجرم قانونها ذلك بعد، فأي نوع من أنواع الـ CSR الأربعة قد انتهكته؟"]
+      }
+    ],
+    scenario: {
+      role: ["Chief Ethics & Security Officer","مسؤول الأخلاقيات وأمن المعلومات"],
+      situation: ["Your e-commerce company wants to boost profits. The marketing director proposes two things: (1) Secretly collecting users' GPS location via the mobile app without asking for consent and selling it to third-party ad brokers, and (2) Storing customer credit card numbers in plain text without encryption to save server CPU costs.","تريد شركة التجارة الإلكترونية التي تعمل بها زيادة أرباحها. اقترح مدير التسويق أمرين: (1) جمع بيانات الموقع الجغرافي (GPS) للمستخدمين سراً عبر التطبيق دون طلب موافقتهم (Consent) وبيعها لأطراف ثالثة، و(2) تخزين أرقام البطاقات الائتمانية للعملاء كنص عادي بدون تشفير (Encryption) لتوفير استهلاك المعالج في مراكز البيانات."],
+      question: ["Identify the exact two technological ethical issues violated here and the first step you must take in the Ethical Decision-Making process.","حدد بدقة القضيتين الأخلاقيتين التقنيتين اللتين ينتهكهما هذا المقترح، وما هي الخطوة الأولى في عملية اتخاذ القرار الأخلاقي؟"],
+      options: [
+        {
+          txt: ["Proposal 1 violates Data Privacy (collecting/sharing without consent), and Proposal 2 violates Protection of Customer Data (failing to use encryption/prevent breaches). Step 1 is to Identify the Problem (recognize the ethical issue), then Gather Information on all affected stakeholders.","المقترح الأول ينتهك خصوصية البيانات (Data Privacy - الجمع والمشاركة دون موافقة)، والمقترح الثاني ينتهك حماية بيانات العملاء (Protection of Customer Data - عدم التشفير ومنع الاختراق). والخطوة الأولى هي تحديد المشكلة (Identify the Problem) ثم جمع المعلومات."],
+          ok: true,
+          socratic: ["Exact diagnosis! You distinguished Data Privacy (consent/third-party sharing) from Customer Data Protection (encryption/database security) and applied Step 1 of Ethical Decision Making.","تشخيص متقن! لقد فرّقت بدقة بين خصوصية البيانات (الموافقة والمشاركة مع طرف ثالث) وبين حماية بيانات العملاء (التشفير وأمن قواعد البيانات) وطبقت الخطوة الأولى للقرار الأخلاقي."]
+        },
+        {
+          txt: ["Both proposals violate Intellectual Property Rights, and Step 1 is to Review the Outcome immediately.","كلا المقترحين ينتهكان حقوق الملكية الفكرية (Intellectual Property)، والخطوة الأولى هي مراجعة النتيجة فوراً."],
+          ok: false,
+          socratic: ["Wait: Intellectual Property is about pirating software or copying digital content. And how can you 'Review the Outcome' (Step 6) before you even 'Identify the Problem' (Step 1)?","مهلاً: الملكية الفكرية تتعلق بنسخ البرمجيات والمحتوى الرقمي. وكيف يمكنك 'مراجعة النتيجة' (الخطوة 6) قبل أن تبدأ بـ 'تحديد المشكلة' (الخطوة 1)؟"]
+        },
+        {
+          txt: ["Approve both proposals because Economic Responsibility (making profit) overrides Data Privacy and Cybersecurity Ethics.","الموافقة على المقترحين لأن المسؤولية الاقتصادية (تحقيق الربح) تلغي خصوصية البيانات وأخلاقيات الأمن السيبراني."],
+          ok: false,
+          socratic: ["Think of the long-term consequences in Lecture 3: Unethical IT behavior leads to loss of trust, severe legal penalties, and total business failure!","فكر في عواقب السلوك غير الأخلاقي المذكورة في المحاضرة الثالثة: فقدان الثقة، العقوبات القانونية القاسية، وفشل الشركة بالكامل!"]
+        }
+      ]
+    },
+    hints: [
+      ["Before you can gather facts or evaluate options, what must you recognize first?","قبل أن تجمع المعلومات أو تقيّم البدائل، ما أول شيء يجب أن تدركه وتحدده؟"],
+      ["Which CSR category is directly tied to financial survival, revenue, and sustainability?","أي نوع من المسؤولية الاجتماعية يرتبط مباشرة بالربحية والاستدامة الاقتصادية؟"],
+      ["When an app tracks where you go without asking your permission (consent), which personal right is violated?","عندما يتتبع تطبيق موقعك الشخصي دون استئذانك، فأي حق متعلق بمعلوماتك الشخصية قد انتُهك؟"],
+      ["Three of these build trust; one of them betrays customer consent for money.","ثلاثة من هذه الخيارات سلوكيات أخلاقية تبني الثقة، وواحد فقط يخون أمانة بيانات المستخدمين."],
+      ["Think about massive server farms running 24/7 with cooling systems—what environmental resource do they consume?","فكر في مراكز البيانات الضخمة التي تعمل 24 ساعة مع أنظمة التبريد، ما الأثر البيئي الناتج عنها؟"],
+      ["Software code is a creation of the mind. What legal right protects ownership of software and innovations?","البرمجيات والابتكارات هي إبداعات فكرية. ما الحق الذي يحمي ملكية المبرمج أو الشركة لها من النسخ غير القانوني؟"],
+      ["Honesty, Integrity, Fairness, Responsibility, Accountability are the 5 principles. Which option is a crime?","الصدق والنزاهة والعدالة والمسؤولية والمساءلة هي المبادئ الخمسة. أي خيار يمثل جريمة أخلاقية؟"],
+      ["Look for the word that matches 'doing what is morally right even when the law doesn't force you'.","ابحث عن النوع الذي يعني فعل الصواب الأخلاقي حتى في المساحات التي لم يفصل فيها القانون."],
+      ["Encryption and database security are technical defenses to protect stored customer records from breaches.","التشفير وتأمين قواعد البيانات هي إجراءات تقنية لحماية بيانات العملاء المخزنة من الاختراق."],
+      ["When an AI algorithm favors one group over another in hiring, what flaw inside the algorithm caused it?","عندما يفضّل نظام ذكاء اصطناعي فئة على أخرى في التوظيف بشكل غير عادل، فماذا نسمي هذا الانحياز في الخوارزمية؟"]
+    ]
+  },
+  l4: {
+    gates: [
+      ["How did Cloud Computing and the Internet allow a 3-person startup in Khartoum or Cairo to compete in the exact same market as a company in Silicon Valley?","كيف سمحت الحوسبة السحابية والإنترنت لشركة برمجيات صغيرة من 3 أشخاص أن تبيع منتجاتها في نفس السوق العالمي مع شركات وادي السيليكون؟"],
+      ["If your IT company sells a SaaS subscription to a client in Germany, and buys Dell servers from the USA, which transaction is an Export and which is an Import?","إذا باعت شركتك البرمجية اشتراكاً لعميل في ألمانيا، واشترت خوادم وأجهزة من أمريكا، فأي عملية منهما تُعد صادرات (Exports) وأيهما واردات (Imports)؟"],
+      ["Why can digital IT products (apps, cloud services) scale across Global Markets infinitely faster than physical manufactured goods?","لماذا تستطيع المنتجات الرقمية (التطبيقات والخدمات السحابية) الانتشار في الأسواق العالمية بسرعة تفوق السلع المادية المصنعة؟"],
+      ["What differentiates a local company that simply sells apps online from a true Multinational Company (MNC)?","ما الفرق بين شركة محلية تبيع تطبيقها عبر الإنترنت لعملاء في الخارج، وبين الشركة متعددة الجنسيات (MNC)؟"],
+      ["Imagine managing a remote software team across Japan, Germany, and Sudan: How could ignoring 'Cultural Differences' (communication style, decision speed, deadlines) wreck your project?","تخيل أنك تدير فريق برمجة عن بُعد موزّعاً بين اليابان وألمانيا والسودان: كيف يمكن أن يؤدي تجاهل 'الاختلافات الثقافية' (أسلوب التواصل، سرعة القرار، المواعيد) إلى إفشال المشروع؟"],
+      ["Globalization reduces costs for companies via outsourcing, but what is the negative side effect on local workers in high-wage regions?","تقلل العولمة التكاليف على الشركات عبر الاستعانة بمصادر خارجية (Outsourcing)، لكن ما هو الأثر السلبي المقابل على الوظائف المحلية وعنف المنافسة؟"]
+    ],
+    feynman: [
+      {
+        topic: ["Globalization Drivers, International Trade & MNCs (العولمة والتجارة الدولية والشركات متعددة الجنسيات)", "محركات العولمة والتجارة الدولية والشركات متعددة الجنسيات"],
+        pillars: [
+          { kw: ["driver","technology","transport","agreement","communication","محرك","تكنولوجيا","نقل","اتفاقيات","اتصال"], name: ["4 Drivers (Technology, Transportation, Trade Agreements, Global Communication)","محركات العولمة الأربعة (التكنولوجيا، النقل، الاتفاقيات، الاتصالات)"] },
+          { kw: ["export","import","sell","buy","صادرات","واردات","بيع","شراء"], name: ["Exports (Sold abroad) vs. Imports (Purchased from abroad)","الصادرات (تُباع للخارج) مقابل الواردات (تُشترى من الخارج)"] },
+          { kw: ["mnc","multinational","more than one","economies of scale","متعددة الجنسيات","أكثر من بلد","وفورات الحجم"], name: ["MNCs (Operate in >1 country, Economies of Scale vs Cultural/Legal challenges)","الشركات متعددة الجنسيات (تعمل في أكثر من دولة، وفورات الحجم والتحديات)"] },
+          { kw: ["positive","negative","displacement","outsourc","إيجابي","سلبي","فقدان الوظائف","مصادر خارجية"], name: ["Positive Impacts (Expansion, Talent, Cost) vs Negative (Competition, Job Displacement)","الآثار الإيجابية والسلبية للعولمة"] }
+        ],
+        probe: ["How can 'Outsourcing' simultaneously be a Positive Impact of globalization (Cost Reduction & Access to Talent) AND a Negative Impact (Job Displacement)?","كيف يمكن لـ 'الاستعانة بمصادر خارجية (Outsourcing)' أن تكون أثراً إيجابياً للعولمة (خفض التكاليف والوصول للمواهب) وفي نفس الوقت أثراً سلبياً (فقدان الوظائف - Job Displacement)؟"]
+      }
+    ],
+    scenario: {
+      role: ["VP of Global Expansion","نائب الرئيس للتوسع العالمي"],
+      situation: ["Your software company operates offices in 3 countries (making it an MNC). You develop software in Country A, test it in Country B, and sell it worldwide. However, when entering Country C, your managers use informal communication in a culture that expects strict formality, and Country C imposes heavy tariffs and currency restrictions.","تمتلك شركتك البرمجية مكاتب وعمليات في 3 دول (MNC). تقوم بتطوير البرمجيات في الدولة (أ)، واختبارها في الدولة (ب)، وبيعها عالمياً. لكن عند دخول سوق الدولة (ج)، استخدم مديروك أسلوب تواصل غير رسمي مع عملاء يقدسون الرسمية الصارمة، كما فرضت الدولة (ج) رسوماً جمركية (Tariffs) وقيوداً على العملة."],
+      question: ["Classify the software sold abroad, the tariffs/currency issues, and the communication mistake using Lecture 4 frameworks.","صنّف عملية بيع البرمجيات للخارج، ومشكلة الرسوم والعملات، وخطأ التواصل استناداً لأطر المحاضرة الرابعة."],
+      options: [
+        {
+          txt: ["Selling software abroad is an Export; tariffs and currency differences are Challenges of International Trade; and the informal tone is a failure to understand Cultural Differences (communication style & business etiquette).","بيع البرمجيات للخارج يُعد صادرات (Exports)، والرسوم الجمركية واختلاف العملات هي من تحديات التجارة الدولية، والأسلوب غير الرسمي هو فشل في فهم الاختلافات الثقافية (أسلوب التواصل وآداب الأعمال)."],
+          ok: true,
+          socratic: ["Masterful analysis! You linked Exports, International Trade Challenges (tariffs/currency), and Cultural Factors (communication style/etiquette).","تحليل احترافي! لقد ربطت بدقة بين مفهوم الصادرات، وتحديات التجارة الدولية (الرسوم والعملات)، والعوامل الثقافية (أسلوب التواصل وآداب الأعمال)."]
+        },
+        {
+          txt: ["Selling software to other countries is an Import, and tariffs are a benefit of international trade.","بيع البرمجيات لدول أخرى يُعد واردات (Imports)، والرسوم الجمركية هي من فوائد التجارة الدولية."],
+          ok: false,
+          socratic: ["Hold on! 'Imports' are what you BUY from other countries. When you SELL to other countries, it's an Export. And tariffs are trade restrictions (challenges), not benefits!","تمهل! الواردات (Imports) هي ما تشتريه من الخارج، أما ما تبيعه للخارج فهو صادرات (Exports). والرسوم الجمركية قيود وتحديات وليست فوائد!"]
+        },
+        {
+          txt: ["Cultural differences only matter for physical manufacturing companies, not IT or software companies.","الاختلافات الثقافية تهم الشركات الصناعية المادية فقط، ولا تؤثر في شركات البرمجيات وتقنية المعلومات."],
+          ok: false,
+          socratic: ["Think about remote IT teams and global enterprise clients: If your team misunderstands deadlines, decision-making styles, or communication etiquette across countries, won't software projects fail?","فكر في فرق البرمجة عن بعد والعملاء الدوليين: إذا أساء فريقك فهم المواعيد النهائية أو أسلوب اتخاذ القرار أو آداب التواصل بين الدول، ألن تفشل الصفقات والمشاريع؟"]
+        }
+      ]
+    },
+    hints: [
+      ["EX-port = EX-it (goods and services going OUT to be sold to other countries).","الصادرات (Exports) هي السلع والخدمات التي تخرج من بلدك لتُباع إلى دول أخرى."],
+      ["Which of these 4 choices connects countries legally and economically to boost global trade?","أي من هذه الخيارات الأربعة يربط الدول قانونياً واقتصادياً لتسهيل التجارة العالمية؟"],
+      ["Look at the prefix 'Multi-National': operating across more than one nation.","انظر إلى الاسم (متعددة الجنسيات): أي أنها تمتلك مكاتب أو عمليات في أكثر من دولة واحدة."],
+      ["When companies outsource jobs abroad, what negative effect happens to workers in the original region?","عندما تنقل الشركات بعض الوظائف للخارج (Outsourcing)، ما الأثر السلبي الذي يصيب الوظائف في المنطقة الأصلية؟"],
+      ["Culture shapes how people talk, negotiate, and trust each other. Why must global businesses understand it?","تشكّل الثقافة طريقة تواصل الناس وتفاوضهم. لماذا يساعد فهمها الشركات العالمية؟"],
+      ["Three options are benefits of trade; one is a financial complication when trading between different countries' money.","ثلاثة خيارات تمثل فوائد للتجارة الدولية، وواحد فقط يمثل عائقاً مالياً ناتجاً عن تعدد العملات."],
+      ["IM-port = IN (goods and services brought IN / purchased from other countries).","الواردات (Imports) هي السلع والخدمات التي تدخل بلدك عن طريق شرائها من دول أخرى."],
+      ["Tariffs, currency differences, and political risks are challenges. Which one is a major benefit?","الرسوم الجمركية واختلاف العملات والمخاطر السياسية كلها تحديات. أي خيار يمثل فائدة كبرى؟"],
+      ["When firms from every country compete in the same global arena, is competition low or high?","عندما تتنافس شركات من كل أنحاء العالم في سوق واحد مفتوح، هل تكون المنافسة ضعيفة أم عالية؟"],
+      ["How do modern global companies coordinate operations across continents in real time?","كيف تدير الشركات العالمية الحديثة عملياتها عبر القارات في الوقت الفعلي باستخدام التقنية؟"]
+    ]
+  },
+  l5: {
+    gates: [
+      ["What separates an 'Entrepreneur' from a regular manager who works for a salary in an established company?","ما الفرق الجوهري بين 'رائد الأعمال (Entrepreneur)' وبين المدير الموظف الذي يدير شركة قائمة مقابل راتب؟"],
+      ["Look at the 7 traits of entrepreneurs: Why is 'Creativity' (generating a new idea) useless without 'Persistence' (continuing despite failure) and 'Risk-Taking'?","تأمل صفات رائد الأعمال السبع: لماذا يصبح 'الإبداع' (توليد فكرة جديدة) عديم الجدوى بدون 'المثابرة (Persistence)' و'تحمل المخاطر'؟"],
+      ["Is every newly opened small barber shop or grocery store considered a 'Startup'? What two words ('unique' and 'scalable') define a true Startup?","هل كل بقالة أو مطعم صغير يفتح جديداً يُسمى 'شركة ناشئة (Startup)'؟ ما الكلمتان الحاسمتان في تعريف الـ Startup؟"],
+      ["Why do investors refuse to fund a startup founder who has great code but no written 'Business Plan'? What 6 components must that plan contain?","لماذا يرفض المستثمرون تمويل مبرمج عبقري لا يملك 'خطة عمل (Business Plan)' مكتوبة؟ وما هي المكونات الستة لهذه الخطة؟"],
+      ["Where do successful startup ideas actually come from? Can analysing a competitor's bad product be a valid source of a business idea?","من أين تأتي أفكار المشاريع الناجحة فعلياً؟ هل يمكن أن يكون تحليل عيوب منافس حالي مصدراً لفكرة مشروع؟"],
+      ["If you have amobile app idea right now, should you write code first (Develop Product) or do Market Research first? Check the 6-step sequence!","إذا لمعت في ذهنك فكرة تطبيق هاتف الآن، فهل تبدأ بكتابة الكود فوراً (Develop Product) أم بإجراء أبحاث السوق (Market Research) أولاً؟"]
+    ],
+    feynman: [
+      {
+        topic: ["Startups, Business Plan (6 Parts) & App Launch Steps (الشركات الناشئة وخطة العمل وخطوات الإطلاق)", "خصائص الشركات الناشئة وأجزاء خطة العمل الستة"],
+        pillars: [
+          { kw: ["unique","scalable","innovation","growth","فريد","قابل للتوسع","ابتكار","نمو"], name: ["Startup Definition (Unique & Scalable product, High growth/risk)","تعريف الشركة الناشئة (منتج فريد وقابل للتوسع، نمو ومخاطر عالية)"] },
+          { kw: ["idea","market analysis","marketing","operation","financial","management team","فكرة","تحليل السوق","تسويق","عمليات","مالي","فريق"], name: ["6 Business Plan Components (Idea, Market Analysis, Marketing, Operations, Financial, Team)","الأجزاء الستة لخطة العمل"] },
+          { kw: ["research","develop","launch","أبحاث","تطوير","إطلاق"], name: ["6 App Startup Steps (Idea → Market Research → Develop → Plan → Launch → Growth)","الخطوات الست لتطوير شركة تطبيق هاتف بالترتيب"] }
+        ],
+        probe: ["Why does 'Market Research' (Step 2) come BEFORE 'Develop Product' (Step 3) in the mobile app startup sequence? What happens if a programmer reverses them?","لماذا تأتي خطوة 'أبحاث السوق (Market Research)' (الخطوة 2) قبل 'تطوير المنتج وبرمجته' (الخطوة 3)؟ ماذا يحدث لو عكس المبرمج هاتين الخطوتين؟"]
+      }
+    ],
+    scenario: {
+      role: ["Tech Incubator Judge & Venture Mentor","محكّم في حاضنة أعمال تقنية"],
+      situation: ["A brilliant C++ and Python developer comes to you: 'I spent 8 months coding a car-rental app (Step 3) right after I got the idea (Step 1). I skipped Market Research (Step 2) and have no written Business Plan (Step 4). Now I launched it, only to discover 5 giant competitors already dominate the market and I ran out of server money!'","جاءك مبرمج موهوب قائلاً: 'قضيت 8 أشهر في برمجة تطبيق لتأجير السيارات (الخطوة 3) فور خطور الفكرة ببالي (الخطوة 1). لقد قفزت عن أبحاث السوق (الخطوة 2) ولم أكتب خطة عمل (الخطوة 4). والآن أطلقته لأتفاجأ بوجود 5 منافسين عمالقة يسيطرون على السوق وقد نفدت أموالي!'"],
+      question: ["Diagnose which startup challenges and business plan components this developer ignored.","شخّص تحديات ريادة الأعمال ومكونات خطة العمل التي تجاهلها هذا المطور."],
+      options: [
+        {
+          txt: ["He violated the startup sequence by skipping Step 2 (Market Research: identifying customers & competitors) and Step 4 (Business Plan: Market Analysis, Financial Plan, Marketing Strategy), falling straight into Financial Constraints, Market Competition, and Risk of Failure due to poor planning.","لقد خالف التسلسل الصحيح بالقفز عن الخطوة 2 (أبحاث السوق لمعرفة العملاء والمنافسين) والخطوة 4 (خطة العمل بما فيها تحليل السوق والخطة المالية)، مما أوقعه في القيود المالية ومنافسة السوق وخطر الفشل بسبب سوء التخطيط."],
+          ok: true,
+          socratic: ["Spot-on diagnosis! Coding before Market Research and Business Planning is the #1 reason tech startups fail.","تشخيص دقيق للغاية! البرمجة قبل أبحاث السوق وخطة العمل هي السبب الأول لفشل الشركات التقنية الناشئة."]
+        },
+        {
+          txt: ["His only mistake was choosing a mobile app startup instead of a traditional retail store, because startups don't need financial plans.","خطؤه الوحيد هو اختيار شركة تطبيقات ناشئة بدلاً من متجر تقليدي، لأن الشركات الناشئة لا تحتاج إلى خطة مالية."],
+          ok: false,
+          socratic: ["Wait: Every business plan requires 6 components, including a Financial Plan (estimated costs, revenue, profit) especially because startups have limited initial resources!","مهلاً: كل خطة عمل تتكون من 6 أجزاء أساسية من ضمنها الخطة المالية (التكاليف والإيرادات والأرباح المقدرة)، خاصة أن الشركات الناشئة مواردها الأولية محدودة!"]
+        },
+        {
+          txt: ["Market Research should only be done in Step 6 (Growth) after the product is already famous.","أبحاث السوق يجب أن تُجرى في الخطوة 6 (النمو) فقط بعد أن يشتهر التطبيق."],
+          ok: false,
+          socratic: ["If you wait until Step 6 to ask 'Who are the customers? Are there competitors?', you risk spending months building something nobody wants!","إذا انتظرت حتى المرحلة السادسة لتسأل: 'من هم العملاء؟ وهل يوجد منافسون؟'، فستخاطر بقضاء أشهر في برمجة منتج لا يحتاجه السوق!"]
+        }
+      ]
+    },
+    hints: [
+      ["An entrepreneur doesn't just invest passively or work for a wage; they create and run the venture.","رائد الأعمال لا يكتفي بالاستثمار الصامت أو العمل براتب، بل ينشئ المشروع ويديره ويتحمل مخاطره."],
+      ["The 6 parts of a Business Plan are: Idea, Market Analysis, Marketing Strategy, Operations, Financial, and Management Team.","الأجزاء الستة لخطة العمل هي: الفكرة، تحليل السوق، التسويق، العمليات، المالية، وفريق الإدارة."],
+      ["What two adjectives in Lecture 5 distinguish a high-growth tech Startup from a typical small business?","ما الصفتان اللتان تميزان منتج الشركة الناشئة (Startup) وتجعلانه قابلاً للنمو السريع؟"],
+      ["Before you write a single line of code (Step 3: Develop Product), what must you investigate right after Step 1 (Identify Idea)?","قبل أن تكتب سطراً برمجياً واحداً في الخطوة 3 (تطوير المنتج)، ماذا يجب أن تفعل في الخطوة 2 مباشرة بعد تحديد الفكرة؟"],
+      ["Match the phrase 'Limited funding and resources' to its exact financial term.","اربط عبارة 'تمويل وموارد مالية محدودة' بالمصطلح المطابق لها في تحديات بدء المشروع."],
+      ["When you listen directly to users' complaints and suggestions, whose voice is that?","عندما تستمع لآراء المشترين ومقترحاتهم لتطوير فكرة جديدة، فما مصدر هذه الفكرة؟"],
+      ["Seeing where the company will be in 5 years and setting long-term goals is which leadership trait?","القدرة على رؤية المستقبل البعيد والتخطيط له ووضع الأهداف هي أي صفة من صفات رائد الأعمال؟"],
+      ["Do new startups begin with infinite money and zero risk, or limited initial resources and high risk?","هل تبدأ الشركات الناشئة بموارد غير محدودة وبدون مخاطر، أم بموارد أولية محدودة ومخاطر عالية؟"],
+      ["Which of these 4 options is a cloud-based software business model (Software as a Service)?","أي من هذه الخيارات الأربعة يمثل نموذج عمل لشركة برمجيات سحابية تقنية؟"],
+      ["Why do banks and venture capitalists ask to read your Business Plan before writing you a check?","لماذا يطلب المستثمرون والبنوك قراءة خطة العمل قبل تقديم أي أموال للمشروع؟"]
+    ]
+  },
+  l6: {
+    gates: [
+      ["If a software team has brilliant programmers but misses every deadline and builds the wrong features, which of the 4 Management Functions (P-O-L-C) broke down?","إذا كان فريق البرمجة يضم أمهر المبرمجين لكنه يفوت كل المواعيد النهائية ويبني ميزات غير مطلوبة، فأي وظيفة من وظائف الإدارة الأربع (P-O-L-C) قد تعطلت؟"],
+      ["How do Planning, Organizing, Leading, and Controlling form a continuous loop in an IT project rather than a one-time checklist?","كيف تشكل وظائف التخطيط (Planning)، والتنظيم (Organizing)، والقيادة (Leading)، والرقابة (Controlling) حلقة مستمرة في إدارة المشاريع التقنية؟"],
+      ["In an IT company, how does the daily focus of a CEO (Top-Level) differ from an IT Manager (Middle-Level) and a Team Leader (Operational-Level)?","في شركة تقنية، كيف يختلف تركيز الرئيس التنفيذي (CEO) عن مدير قسم الـ IT وعن قائد الفريق البرمجي (Team Leader)؟"],
+      ["Many people use 'Recruitment' and 'Selection' as synonyms. Why are they two completely different stages in HRM?","يخلط الكثيرون بين الاستقطاب (Recruitment) والاختيار (Selection). لماذا يُعدان مرحلتين مختلفتين تماماً في إدارة الموارد البشرية؟"],
+      ["What is the exact difference between 'Training' an employee (e.g., teaching Rust or React) and 'Developing' an employee?","ما الفرق الدقيق بين 'تدريب (Training)' الموظف على لغة برمجة جديدة، وبين 'تطويره (Development)'؟"],
+      ["If you pay a senior cybersecurity engineer a high salary (Financial Motivation), why might they STILL quit (Turnover) if you ignore Non-Financial Motivation and Burnout?","إذا دفعت لمهندس أمن سيبراني راتباً مرتفعاً (تحفيز مالي)، فلماذا قد يستقيل رغم ذلك إذا أهملت التحفيز غير المالي ومشكلة الإرهاق الوظيفي (Burnout)؟"]
+    ],
+    feynman: [
+      {
+        topic: ["P-O-L-C Functions & 3 Management Levels (وظائف الإدارة الأربع ومستوياتها الثلاثة)", "وظائف الإدارة (P-O-L-C) ومستويات الإدارة الثلاثة"],
+        pillars: [
+          { kw: ["plan","goal","objective","forecast","تخطيط","أهداف","استراتيجي","تنبؤ"], name: ["Planning (Setting goals, strategies, forecasting)","التخطيط (وضع الأهداف والاستراتيجيات والتنبؤ)"] },
+          { kw: ["organiz","assign","allocat","structure","تنظيم","توزيع","تخصيص","هيكل"], name: ["Organizing (Assigning tasks, allocating resources, structure)","التنظيم (ترتيب الموارد وتوزيع المهام والهيكل)"] },
+          { kw: ["lead","motivat","guid","communicat","قيادة","تحفيز","توجيه","تواصل"], name: ["Leading (Motivating, guiding, communicating)","القيادة (تحفيز وتوجيه الموظفين والتواصل)"] },
+          { kw: ["control","monitor","measur","compar","correct","رقابة","متابعة","قياس","مقارنة","تصحيح"], name: ["Controlling (Monitoring performance, comparing with goals, correcting)","الرقابة (قياس الأداء ومقارنته بالأهداف والتصحيح)"] },
+          { kw: ["top","middle","operational","ceo","leader","عليا","وسطى","تشغيلية"], name: ["3 Levels: Top (CEO), Middle (IT Manager), Operational (Team Leader)","المستويات الثلاثة: العليا، الوسطى، التشغيلية"] }
+        ],
+        probe: ["When a project manager checks the Jira board on Friday, sees the sprint is 3 days behind schedule, and adjusts the workflow, which specific P-O-L-C function are they executing?","عندما يفحص مدير المشروع لوحة المهام يوم الجمعة، ويكتشف أن المشروع متأخر 3 أيام عن الهدف المحدد، فيقوم بإجراء تعديلات لتصحيح المسار، فأي وظيفة من وظائف (P-O-L-C) يمارسها هنا تحديداً؟"]
+      },
+      {
+        topic: ["HRM: Recruitment vs Selection & Training vs Development (إدارة الموارد البشرية)", "الاستقطاب مقابل الاختيار، والتدريب مقابل التطوير والاحتفاظ"],
+        pillars: [
+          { kw: ["recruit","attract","ad","portal","استقطاب","جذب","إعلان"], name: ["Recruitment (Attracting candidates via ads/portals)","الاستقطاب (جذب المرشحين عبر الإعلانات والبوابات)"] },
+          { kw: ["select","choos","interview","test","اختيار","انتقاء","مقابلات","اختبار"], name: ["Selection (Choosing the best via interviews & skill tests)","الاختيار (انتقاء الأفضل عبر المقابلات واختبار المهارات)"] },
+          { kw: ["train","develop","skill","long-term","leadership","تدريب","تطوير","مهارات","طويل المدى","قيادية"], name: ["Training (Current job skills) vs. Development (Long-term leadership growth)","التدريب (مهارات الوظيفة الحالية) مقابل التطوير (النمو طويل المدى)"] },
+          { kw: ["motivat","retent","turnover","burnout","تحفيز","احتفاظ","دوران","إرهاق"], name: ["Motivation (Financial/Non-Financial) & Retention (Preventing Turnover/Burnout)","التحفيز والاحتفاظ بالموظفين ومواجهة الإرهاق الوظيفي"] }
+        ],
+        probe: ["Why is losing a senior developer in an IT company (Turnover) much more damaging to project continuity than losing a cashier in a retail store?","لماذا يُعد فقدان مطور برمجيات خبير (Turnover) في شركة تقنية أشد خطراً على استمرارية المشاريع من فقدان موظف عادي في متجر تقليدي؟"]
+      }
+    ],
+    scenario: {
+      role: ["IT Director (Middle-Level Management)","مدير قسم تقنية المعلومات (الإدارة الوسطى)"],
+      situation: ["Your CEO (Top-Level) set a strategic goal to launch a cloud platform in 6 months. You posted job ads on LinkedIn (Stage A), then interviewed candidates and gave them a C++ coding test (Stage B). Once hired, you taught them your cloud framework (Stage C), assigned them to teams (Function X), and now check weekly if they meet deadlines (Function Y).","وضع الرئيس التنفيذي (الإدارة العليا) هدفاً استراتيجياً لإطلاق منصة سحابية خلال 6 أشهر. قمتَ بنشر إعلانات توظيف على الإنترنت (المرحلة أ)، ثم أجريت مقابلات واختبارات برمجة للمتقدمين لاختيار الأفضل (المرحلة ب). وبعد تعيينهم، علّمتهم إطار العمل السحابي الخاص بالوظيفة (المرحلة ج)، ووزعت عليهم المهام والموارد (الوظيفة س)، والآن تراقب أسبوعياً مدى التزامهم بالمواعيد النهائية (الوظيفة ص)."],
+      question: ["Map Stage A, Stage B, Stage C, Function X, and Function Y to their exact Lecture 6 terms.","طابق كلاً من (أ، ب، ج، س، ص) مع مصطلحاتها الدقيقة في المحاضرة السادسة."],
+      options: [
+        {
+          txt: ["Stage A = Selection, Stage B = Recruitment, Stage C = Development, Function X = Controlling, Function Y = Planning.","(أ) = الاختيار، (ب) = الاستقطاب، (ج) = التطوير، (س) = الرقابة، (ص) = التخطيط."],
+          ok: false,
+          socratic: ["Look closely! Posting ads to attract people is Recruitment (not Selection), and checking deadlines against goals is Controlling (not Planning).","دقق النظر! نشر الإعلانات لجذب المرشحين هو الاستقطاب (Recruitment)، ومتابعة المواعيد ومقارنتها بالأهداف هي الرقابة (Controlling)."]
+        },
+        {
+          txt: ["Stage A = Recruitment (attracting), Stage B = Selection (choosing/testing), Stage C = Training (current job skills), Function X = Organizing (allocating resources/tasks), and Function Y = Controlling (monitoring deadlines).","(أ) = الاستقطاب (جذب المرشحين)، (ب) = الاختيار (المقابلات واختبار المهارات)، (ج) = التدريب (مهارات الوظيفة الحالية)، (س) = التنظيم (توزيع المهام والموارد)، (ص) = الرقابة (متابعة الأداء والمواعيد)."],
+          ok: true,
+          socratic: ["Flawless mapping! You mastered every distinction in Management (P-O-L-C) and HRM.","مطابقة مثالية! لقد أتقنت جميع الفروق الدقيقة في وظائف الإدارة (P-O-L-C) وإدارة الموارد البشرية."]
+        },
+        {
+          txt: ["Stage A & B are both Controlling, and Stage C is Financial Motivation.","المرحلتان (أ) و(ب) هما الرقابة، والمرحلة (ج) هي التحفيز المالي."],
+          ok: false,
+          socratic: ["Wait: Hiring and interviewing belong to HRM (Recruitment & Selection), and teaching a technical skill is Training, not salary/bonus!","مهلاً: جذب المرشحين ومقابلتهم يتبعان التوظيف والاختيار في الموارد البشرية، وتعليم مهارة تقنية هو تدريب (Training) وليس مكافأة مالية!"]
+        }
+      ]
+    },
+    hints: [
+      ["Remember the acronym P-O-L-C for the four core management functions.","تذكر الاختصار (P-O-L-C) لوظائف الإدارة الأربع الأساسية (تخطيط، تنظيم، قيادة، رقابة)."],
+      ["Who sits at the very apex of the organizational pyramid making long-term strategic decisions?","من يقف في قمة الهرم الإداري ويتخذ القرارات الاستراتيجية طويلة المدى للشركة؟"],
+      ["Attracting candidates with ads is Recruitment; what is the next stage where you interview and pick the best one?","جذب المرشحين بالإعلانات هو الاستقطاب (Recruitment)؛ أما المرحلة التي تراجع فيها الطلبات وتختبر المهارات لانتقاء الأفضل فهي..."],
+      ["Which P-O-L-C function measures actual performance, compares it against planned goals, and makes corrections?","أي وظيفة من وظائف الإدارة الأربع تقيس الأداء الفعلي وتقارنه بالأهداف المخططة لتصحيح المسار؟"],
+      ["Non-financial motivation doesn't involve direct cash payouts (unlike salary, bonuses, or financial incentives).","التحفيز غير المالي لا يتضمن دفع أموال مباشرة (عكس الراتب والمكافآت والحوافز المالية)."],
+      ["Teaching a specific skill needed for their current job right now (like a programming language) is Training vs. Development.","تعليم الموظف مهارة تقنية محددة يحتاجها لأداء وظيفته الحالية الآن (وليس إعداداً قيادياً طويل المدى) يُسمى..."],
+      ["Supervisors and Team Leaders oversee day-to-day code commits and daily tasks at the base of management.","قادة الفرق والمشرفون يشرفون على المهام اليومية المباشرة في المستوى الأساسي للإدارة."],
+      ["Which option is a way to ATTRACT applicants to apply in the first place (Recruitment)?","أي خيار يمثل وسيلة لجذب الباحثين عن عمل للتقديم على الوظيفة في البداية (الاستقطاب)؟"],
+      ["Retaining means keeping your best people so they don't leave for competitors.","الاحتفاظ بالموظفين (Retention) يعني الحفاظ على الكفاءات ومنع تسربهم للشركات المنافسة."],
+      ["In IT, fast-changing tech, fierce competition for talent, and intense workloads cause what psychological/physical exhaustion?","في قطاع تقنية المعلومات، يؤدي ضغط العمل المستمر وسرعة تغير التقنية إلى استنزاف الموظف؛ فماذا يُسمى هذا التحدي؟"]
+    ]
+  },
+  l7: {
+    gates: [
+      ["Most beginners think 'Marketing = Advertising/Selling'. Why does Lecture 7 explicitly state that Marketing starts BEFORE the product is even created?","يظن معظم المبتدئين أن 'التسويق = الإعلان والبيع'. لماذا تؤكد المحاضرة السابعة أن التسويق يبدأ قبل إنشاء المنتج أصلاً؟"],
+      ["Look at the Customer Value formula (`Value = Benefits - Cost`): How can two apps have the exact same price ($10), yet one has massive Customer Value and the other has negative value?","تأمل معادلة قيمة العميل (`Value = Benefits - Cost`): كيف يمكن لتطبيقين أن يكون سعرهما 10$، ومع ذلك يقدم أحدهما قيمة عالية للعميل والآخر قيمة منخفضة؟"],
+      ["When an IT company sells a cloud service via a monthly subscription on an App Store and runs SEO campaigns, how do those map to the 4Ps (Product, Price, Place, Promotion)?","عندما تبيع شركة تقنية خدمة سحابية باشتراك شهري عبر متجر التطبيقات وتطلِق حملة تحسين محركات البحث (SEO)، فكيف يتوزع ذلك على عناصر المزيج التسويقي (4Ps)؟"],
+      ["Why can Dell store 10,000 laptops in a warehouse for next month (Manufacturing Operations), whereas an IT Support or Cloud Hosting firm cannot 'store' 10,000 hours of service in a box (Service Operations)?","لماذا تستطيع شركة تصنيع حواسيب تخزين 10,000 جهاز في المستودع للشهر القادم (عمليات صناعية)، بينما لا تستطيع شركة دعم فني أو استضافة سحابية تخزين خدماتها في صناديق (عمليات خدمية)؟"],
+      ["What is the critical difference between 'Quality Assurance (QA)' and 'Quality Control (QC)' in software engineering? Which one is preventive and which one is inspection-based?","ما الفرق الجوهري بين 'ضمان الجودة (Quality Assurance)' و'مراقبة الجودة (Quality Control)' في هندسة البرمجيات؟ أيهما يركز على منع العيوب وأيهما يركز على فحص المنتج؟"],
+      ["What happens if the Marketing team promises customers a revolutionary AI app feature next week without coordinating with the Operations team?","ماذا يحدث إذا وعد فريق التسويق العملاء بميزة ذكاء اصطناعي خارقة الأسبوع القادم دون التنسيق مع فريق إدارة العمليات؟"]
+    ],
+    feynman: [
+      {
+        topic: ["Customer Value & The 4Ps Marketing Mix (قيمة العميل والمزيج التسويقي 4Ps)", "معادلة وأنواع قيمة العميل والمزيج التسويقي (4Ps)"],
+        pillars: [
+          { kw: ["benefit","cost","فوائد","تكلفة"], name: ["Value Formula (Value = Benefits - Cost) & 3 Types (Functional, Emotional, Social)","معادلة القيمة (الفوائد - التكلفة) وأنواعها الثلاثة (وظيفية، عاطفية، اجتماعية)"] },
+          { kw: ["product","design","feature","quality","منتج","تصميم","ميزات","جودة"], name: ["Product (Design, features, quality, branding)","المنتج (التصميم، الميزات، الجودة، العلامة)"] },
+          { kw: ["price","subscription","premium","سعر","اشتراك","تسعير"], name: ["Price (Low, premium, subscription models)","السعر (منخفض، مميز، نماذج الاشتراك)"] },
+          { kw: ["place","distribut","store","platform","مكان","توزيع","متجر","منصة"], name: ["Place (Distribution channels: stores, online platforms, app stores)","المكان/التوزيع (المتاجر، المنصات الإلكترونية، متاجر التطبيقات)"] },
+          { kw: ["promotion","advertis","seo","social media","ترويج","إعلان","تواصل"], name: ["Promotion & Digital Marketing (Ads, Social Media, SEO, Email)","الترويج والتسويق الرقمي (الإعلانات، SEO، البريد، وسائل التواصل)"] }
+        ],
+        probe: ["If an IT company moves its software from being sold on physical DVDs in retail shops to being downloaded directly from a cloud web portal, which 'P' of the 4Ps did it fundamentally transform?","إذا حولت شركة برمجيات طريقة بيع برنامجها من أقراص DVD في المتاجر الفعلية إلى التحميل المباشر عبر بوابة إلكترونية ومتجر تطبيقات، فأي عنصر من عناصر الـ 4Ps الأربعة قد غيّرته جذرياً؟"]
+      },
+      {
+        topic: ["Operations: Manufacturing vs Service, Supply Chain & QA vs QC (إدارة العمليات والجودة وسلسلة الإمداد)", "العمليات الصناعية مقابل الخدمية، سلسلة الإمداد، وضمان ومراقبة الجودة"],
+        pillars: [
+          { kw: ["manufactur","service","tangible","store","صناعي","خدمي","ملموس","تخزين"], name: ["Manufacturing (Tangible, Storable) vs. Service Operations (Intangible, Not storable, Simultaneous)","العمليات الصناعية (ملموسة وتُخزن) مقابل الخدمية (غير ملموسة، لا تُخزن، تُنتج وتُستهلك معاً)"] },
+          { kw: ["supply chain","supplier","manufacturer","distributor","retailer","سلسلة الإمداد","مورد","مصنع","موزع","تجزئة"], name: ["Supply Chain (Supplier → Manufacturer → Distributor/Retailer → Customer)","سلسلة الإمداد ومكوناتها بالترتيب"] },
+          { kw: ["control","assurance","check","prevent","مراقبة الجودة","ضمان الجودة","فحص","منع"], name: ["Quality Control (Checking products) vs. Quality Assurance (Preventing defects)","مراقبة الجودة (فحص المنتجات) مقابل ضمان الجودة (منع العيوب)"] }
+        ],
+        probe: ["In a software company, writing coding standards and automated CI/CD guidelines BEFORE coding to avoid bugs is ______; whereas running manual tests on the compiled app right before release to catch bugs is ______. Fill in the blanks with QA and QC!","في شركة برمجيات، وضع معايير هندسية صارمة قبل البرمجة لمنع ظهور الأخطاء من الأساس هو (......)، بينما فحص النسخة النهائية للتطبيق لاكتشاف الأخطاء قبل الإصدار هو (......). كيف توزع QA و QC هنا؟"]
+      }
+    ],
+    scenario: {
+      role: ["Chief Operating & Marketing Officer (COMO)","مدير العمليات والتسويق التنفيذي"],
+      situation: ["Your company is launching 'SecuCloud', a cloud cybersecurity service. You decide to charge $15/month (Decision 1), offer it via your web portal and mobile app store (Decision 2), and use Search Engine Optimization - SEO (Decision 3). Meanwhile, your engineering team sets up processes to prevent bugs during coding (Process A) and tests the final build to check for defects before deployment (Process B).","تطلق شركتك خدمة سحابية للأمن السيبراني باسم 'SecuCloud'. قررتَ تسعيرها باشتراك 15$ شهرياً (القرار 1)، وتوفيرها عبر الموقع ومتجر التطبيقات (القرار 2)، واستخدام تحسين محركات البحث SEO لجذب الزوار (القرار 3). وفي قسم العمليات، وضع الفريق الهندسي إجراءات لمنع حدوث الأخطاء أثناء البرمجة (العملية أ)، واختبر النسخة النهائية لفحصها قبل النشر (العملية ب)."],
+      question: ["Classify Decisions 1, 2, 3 under the 4Ps, identify whether SecuCloud is a Manufacturing or Service operation, and distinguish Process A from Process B.","صنّف القرارات (1، 2، 3) ضمن الـ 4Ps، وحدد هل عمليات SecuCloud صناعية أم خدمية، وفرّق بين العملية (أ) والعملية (ب)."],
+      options: [
+        {
+          txt: ["Decision 1 = Price (subscription model), Decision 2 = Place (distribution channel), Decision 3 = Promotion (Digital Marketing/SEO). SecuCloud is a Service Operation (intangible, cannot be stored, produced & consumed simultaneously). Process A = Quality Assurance (preventing defects) and Process B = Quality Control (checking products).","القرار 1 = السعر (نموذج اشتراك)، القرار 2 = المكان/التوزيع (Place)، القرار 3 = الترويج (تسويق رقمي عبر SEO). وخدمة SecuCloud هي عمليات خدمية (غير ملموسة ولا تُخزن). والعملية (أ) = ضمان الجودة (QA - منع العيوب)، والعملية (ب) = مراقبة الجودة (QC - فحص المنتجات)."],
+          ok: true,
+          socratic: ["Complete mastery of Lecture 7! You nailed the 4Ps, Digital Marketing, Service Operations, and the exact distinction between QA and QC.","إتقان كامل للمحاضرة السابعة! لقد أصبت بدقة في تصنيف الـ 4Ps، والتسويق الرقمي، والعمليات الخدمية، والفرق الدقيق بين ضمان الجودة ومراقبة الجودة."]
+        },
+        {
+          txt: ["Decision 1 = Product, Decision 2 = Promotion, Decision 3 = Place. SecuCloud is a Manufacturing Operation that can be stored in warehouses, Process A = Quality Control, and Process B = Quality Assurance.","القرار 1 = المنتج، القرار 2 = الترويج، القرار 3 = المكان. والخدمة السحابية هي عملية صناعية يمكن تخزينها، والعملية (أ) = مراقبة الجودة، و(ب) = ضمان الجودة."],
+          ok: false,
+          socratic: ["Wait! Look at three reversals: App stores/websites are WHERE products are distributed (Place, not Promotion). Cloud services are intangible Service Operations (cannot be stored). And preventing defects is Quality Assurance (QA), while checking finished products is Quality Control (QC)!","انتبه لثلاثة أخطاء معكوسة: متاجر التطبيقات والمواقع هي قنوات توزيع (Place)، والخدمات السحابية غير ملموسة (عمليات خدمية لا تُخزن)، ومنع العيوب هو ضمان الجودة (QA) بينما فحص المنتج هو مراقبة الجودة (QC)!"]
+        },
+        {
+          txt: ["Marketing and Operations work independently and never need to coordinate on customer needs.","يعمل قسم التسويق وقسم العمليات بشكل منفصل تماماً ولا يحتاجان للتنسيق حول احتياجات العملاء."],
+          ok: false,
+          socratic: ["Remember the final section of Lecture 7: Marketing identifies customer needs, and Operations produces/delivers the software to meet those exact needs!","تذكر القسم الأخير من المحاضرة السابعة: التسويق يحدد احتياجات العملاء، والعمليات تطور وتنتج التطبيقات لتلبية تلك الاحتياجات!"]
+        }
+      ]
+    },
+    hints: [
+      ["Remember the four P's: what you sell, how much it costs, where it's distributed, and how you communicate it.","تذكر الكلمات الأربع التي تبدأ بحرف P في التسويق: المنتج، السعر، المكان (التوزيع)، والترويج."],
+      ["Customer Value compares what you GET (Benefits) minus what you GIVE UP (Cost).","تقارن قيمة العميل بين ما يحصل عليه العميل من منافع (Benefits) مطروحاً منه التكلفة التي يدفعها (Cost)."],
+      ["Monthly subscriptions, premium pricing, and low pricing all determine how much the customer pays.","الاشتراك الشهري والتسعير المميز والمنخفض كلها استراتيجيات تحدد المبلغ الذي يدفعه العميل."],
+      ["Can you put 'IT technical support' or 'cloud hosting' inside a cardboard box in a warehouse?","هل يمكنك وضع 'الدعم الفني' أو 'الاستضافة السحابية' داخل صندوق في مستودع لتخزينها؟"],
+      ["Assurance = Prevention (proactive). Control = Checking/Inspection (reactive).","ضمان الجودة (Assurance) يركز على الوقاية ومنع العيوب قبل وقوعها، بينما المراقبة (Control) تركز على الفحص."],
+      ["Trace the hardware journey from raw parts -> factory -> store -> end user.","تتبع رحلة جهاز الكمبيوتر منطقياً: من مورد القطع ← المصنع ← متجر التجزئة ← العميل النهائي."],
+      ["'Function' means how useful and practical a tool is (easy to use, fast).","القيمة التي تتعلق بمدى فائدة المنتج وأدائه لوظيفته العملية بكفاءة وسرعة تُسمى القيمة الوظيفية."],
+      ["Which of these 4 marketing methods happens entirely on digital search engines and online platforms?","أي من هذه الطرق التسويقية الأربع يعتمد كلياً على المنصات الرقمية ومحركات البحث؟"],
+      ["In the 4Ps, 'Place' is about distribution channels (physical stores, web platforms, app stores).","يركز عنصر 'المكان (Place)' في المزيج التسويقي على قنوات التوزيع (أين وكيف يصل المنتج للعميل)."],
+      ["Quality Control (QC) inspects and checks the product to verify it works properly.","تعني مراقبة الجودة (Quality Control) فحص المنتجات واختبارها للتأكد من خلوها من الأخطاء."]
+    ]
+  }
+};
+
+/* ============================================================
+   COURSE LECTURES (Complete 7 Lectures from Business_full_S2.txt)
+   ============================================================ */
+const LECTURES = [];
+
+LECTURES.push({ id:'l1', n:1,
+  title:["Introduction to Business and the Business Environment","مقدمة في الأعمال وبيئة الأعمال (Business Environment)"],
+  obj:[
+    ["Define business and explain its importance.","تعريف النشاط التجاري (Business) وشرح أهميته."],
+    ["Identify different types of businesses.","التعرف على أنواع الأعمال المختلفة."],
+    ["Understand the role of business in the economy.","فهم دور الأعمال في الاقتصاد (Economy)."],
+    ["Explain the relationship between technology and business development.","شرح العلاقة بين التكنولوجيا وتطور الأعمال."]
+  ],
+  sec:[
+   {t:["Definition of Business","تعريف الأعمال (Business)"], b:[
+     {k:'def', x:["A business is an organization or entity engaged in commercial, industrial, or professional activities. Businesses produce goods or services to satisfy customer needs and generate profit.","النشاط التجاري (Business) هو منظمة أو كيان يعمل في أنشطة تجارية أو صناعية أو مهنية. تنتج الأعمال سلعًا (Goods) أو خدمات (Services) لتلبية احتياجات العملاء وتحقيق الربح (Profit)."]}
+   ]},
+   {t:["Key Components of Business","المكونات الرئيسية للأعمال"], b:[
+     {k:'ul', h:["1 - Resources","1 - الموارد (Resources)"], x:[
+       ["Human resources (employees)","الموارد البشرية (Human resources) - الموظفون"],
+       ["Financial resources (capital)","الموارد المالية (Financial resources) - رأس المال (Capital)"],
+       ["Physical resources (equipment)","الموارد المادية (Physical resources) - المعدات"],
+       ["Information resources (data, software)","موارد المعلومات (Information resources) - البيانات والبرمجيات"]]},
+     {k:'p', x:["2 - Goods: Tangible products that customers can physically use.","2 - السلع (Goods): منتجات ملموسة (Tangible) يستطيع العملاء استخدامها فعليًا."]},
+     {k:'ul', h:["Examples of goods","أمثلة على السلع"], x:[["Computers","أجهزة الكمبيوتر"],["Smartphones","الهواتف الذكية"],["Networking devices","أجهزة الشبكات"]]},
+     {k:'p', x:["3 - Services: Intangible activities provided to customers.","3 - الخدمات (Services): أنشطة غير ملموسة (Intangible) تُقدم للعملاء."]},
+     {k:'ul', h:["Examples of services","أمثلة على الخدمات"], x:[["Software development","تطوير البرمجيات"],["Cloud hosting","الاستضافة السحابية (Cloud hosting)"],["Technical support","الدعم الفني"]]},
+     {k:'tip', x:["Goods = you can touch them (tangible). Services = you cannot touch them (intangible).","السلع = يمكن لمسها (Tangible). الخدمات = لا يمكن لمسها (Intangible)."]}
+   ]},
+   {t:["Why Businesses Exist","لماذا توجد الأعمال؟"], b:[
+     {k:'p', x:["Businesses exist to:","توجد الأعمال من أجل:"]},
+     {k:'ul', x:[["1. Produce goods and services","1. إنتاج السلع والخدمات"],["2. Generate profit","2. تحقيق الربح"],["3. Create employment","3. توفير فرص العمل"],["4. Promote innovation","4. تعزيز الابتكار"]]},
+     {k:'p', x:["1. Produce Goods and Services: Businesses create products that meet customer needs.","1. إنتاج السلع والخدمات: تصنع الأعمال منتجات تلبي احتياجات العملاء."]},
+     {k:'ex', x:["An IT company develops mobile applications for online shopping.","شركة تقنية معلومات (IT) تطور تطبيقات هاتف للتسوق عبر الإنترنت."]},
+     {k:'p', x:["2. Generate Profit: Profit is the main financial goal of most businesses.","2. تحقيق الربح: الربح (Profit) هو الهدف المالي الرئيسي لمعظم الأعمال."]},
+     {k:'formula', x:"Profit = Revenue - Expenses"},
+     {k:'ex', x:["Revenue from software sales = $50,000\nOperating costs = $30,000\nProfit = $20,000","الإيراد (Revenue) من مبيعات البرمجيات = $50,000\nتكاليف التشغيل (Operating costs) = $30,000\nالربح = $20,000"]},
+     {k:'formula', x:"Profit = 50,000 - 30,000 = 20,000"},
+     {k:'p', x:["3. Create Employment: Businesses provide jobs for people including:","3. توفير فرص العمل: توفر الأعمال وظائف للناس منها:"]},
+     {k:'ul', x:[["Software engineers","مهندسو البرمجيات"],["Network administrators","مديرو الشبكات"],["IT support specialists","أخصائيو الدعم الفني"],["Data analysts","محللو البيانات"]]},
+     {k:'p', x:["4. Promote Innovation: Businesses often invest in research and development to introduce new technologies.","4. تعزيز الابتكار: غالبًا ما تستثمر الأعمال في البحث والتطوير (Research and Development) لتقديم تقنيات جديدة."]},
+     {k:'ul', h:["Examples","أمثلة"], x:[["Artificial Intelligence","الذكاء الاصطناعي (Artificial Intelligence)"],["Cloud computing","الحوسبة السحابية (Cloud computing)"],["Blockchain technology","تقنية البلوكشين (Blockchain)"]]}
+   ]},
+   {t:["Types of Businesses","أنواع الأعمال"], b:[
+     {k:'p', x:["Businesses can be classified into different categories.","يمكن تصنيف الأعمال إلى فئات مختلفة."]},
+     {k:'cards', c:[
+       {t:["1- Manufacturing Businesses","1- الأعمال الصناعية (Manufacturing)"], l:[["Produce physical goods.","تنتج سلعًا مادية."],["Examples: Computer hardware manufacturers, Electronics companies","أمثلة: مصنعو أجهزة الكمبيوتر، شركات الإلكترونيات"]]},
+       {t:["2- Service Businesses","2- أعمال الخدمات (Service)"], l:[["Provide services instead of physical products.","تقدم خدمات بدلًا من منتجات مادية."],["Examples: Software companies, IT consulting firms","أمثلة: شركات البرمجيات، شركات الاستشارات التقنية"]]},
+       {t:["3- Retail Businesses","3- أعمال التجزئة (Retail)"], l:[["Sell products directly to customers.","تبيع المنتجات مباشرة للعملاء."],["Examples: Online stores, Electronics retailers","أمثلة: المتاجر الإلكترونية، تجار تجزئة الإلكترونيات"]]}
+     ]}
+   ]},
+   {t:["The Business Environment","بيئة الأعمال (Business Environment)"], b:[
+     {k:'p', x:["Businesses operate within a business environment that influences their success.","تعمل الأعمال داخل بيئة أعمال تؤثر في نجاحها."]},
+     {k:'cards', c:[
+       {t:["Internal Environment","البيئة الداخلية (Internal Environment)"], l:[["Factors inside the organization.","عوامل داخل المنظمة."],["Employees","الموظفون"],["Company culture","ثقافة الشركة"],["Technology systems","الأنظمة التقنية"],["Management","الإدارة"]]},
+       {t:["External Environment","البيئة الخارجية (External Environment)"], l:[["Factors outside the organization.","عوامل خارج المنظمة."],["Economic conditions","الظروف الاقتصادية"],["Government regulations","اللوائح الحكومية"],["Competitors","المنافسون"],["Technology trends","اتجاهات التكنولوجيا"]]}
+     ]}
+   ]},
+   {t:["Technology and Business","التكنولوجيا والأعمال"], b:[
+     {k:'p', x:["Technology has dramatically transformed business operations.","غيّرت التكنولوجيا عمليات الأعمال بشكل كبير."]},
+     {k:'ul', h:["Key Technologies Affecting Business","التقنيات الرئيسية المؤثرة في الأعمال"], x:[
+       ["1. Cloud Computing","1. الحوسبة السحابية (Cloud Computing)"],["2. E-commerce","2. التجارة الإلكترونية (E-commerce)"],["3. Artificial Intelligence","3. الذكاء الاصطناعي (Artificial Intelligence)"],["4. Data Analytics","4. تحليل البيانات (Data Analytics)"],["5. Cybersecurity","5. الأمن السيبراني (Cybersecurity)"]]},
+     {k:'ex', x:["Online businesses rely on cloud infrastructure to store customer data and run applications.","تعتمد الأعمال الإلكترونية على البنية التحتية السحابية لتخزين بيانات العملاء وتشغيل التطبيقات."]}
+   ]},
+   {t:["Economic, Technological, and Social Environments","البيئات الاقتصادية والتقنية والاجتماعية"], b:[
+     {k:'cards', c:[
+       {t:["Economic Environment","البيئة الاقتصادية (Economic Environment)"], l:[["The economic conditions that affect businesses. Examples include:","الظروف الاقتصادية التي تؤثر في الأعمال. تشمل:"],["inflation","التضخم (Inflation)"],["unemployment","البطالة (Unemployment)"],["interest rates","أسعار الفائدة (Interest rates)"],["economic growth","النمو الاقتصادي (Economic growth)"]]},
+       {t:["Technological Environment","البيئة التقنية (Technological Environment)"], l:[["Technology plays a major role in modern business operations.","تلعب التكنولوجيا دورًا كبيرًا في عمليات الأعمال الحديثة."],["Advancements in technology can create new business opportunities and increase efficiency.","التطورات التقنية يمكن أن تخلق فرص أعمال جديدة وتزيد الكفاءة."],["artificial intelligence","الذكاء الاصطناعي"],["cloud computing","الحوسبة السحابية"],["big data analytics","تحليل البيانات الضخمة (Big data analytics)"],["cybersecurity systems","أنظمة الأمن السيبراني"]]},
+       {t:["Social and Cultural Environment","البيئة الاجتماعية والثقافية"], l:[["Includes social values, attitudes, lifestyles, and cultural factors that influence consumer behavior.","تشمل القيم الاجتماعية والمواقف وأنماط الحياة والعوامل الثقافية التي تؤثر في سلوك المستهلك (Consumer behavior)."],["increasing use of digital services","زيادة استخدام الخدمات الرقمية"],["preference for online shopping","تفضيل التسوق عبر الإنترنت"],["growing concern for environmental sustainability","زيادة الاهتمام بالاستدامة البيئية (Sustainability)"]]}
+     ]},
+     {k:'ex', x:["During economic recessions, customers may reduce spending on technology products.","أثناء الركود الاقتصادي (Recession)، قد يقلل العملاء إنفاقهم على المنتجات التقنية."]},
+     {k:'p', x:["Businesses must continuously adapt to technological changes. Companies must understand social trends to meet customer expectations.","يجب على الأعمال التكيف باستمرار مع التغيرات التقنية. ويجب على الشركات فهم الاتجاهات الاجتماعية لتلبية توقعات العملاء."]}
+   ]},
+   {t:["Stakeholders in Business","أصحاب المصلحة (Stakeholders)"], b:[
+     {k:'def', x:["Stakeholders are individuals or groups who are affected by the activities of a business. Businesses must consider the interests of different stakeholders.","أصحاب المصلحة هم أفراد أو مجموعات يتأثرون بأنشطة الشركة. يجب على الأعمال مراعاة مصالح أصحاب المصلحة المختلفين."]},
+     {k:'cards', c:[
+       {t:["Owners / Shareholders","المالكون / المساهمون (Shareholders)"], l:[["Owners invest money in the business and expect profits.","يستثمر المالكون أموالهم في الشركة ويتوقعون الأرباح."]]},
+       {t:["Employees","الموظفون (Employees)"], l:[["Employees work for the organization and contribute to its success.","يعمل الموظفون في المنظمة ويساهمون في نجاحها."],["Examples: software developers, managers, technicians","أمثلة: مطورو البرمجيات، المديرون، الفنيون"]]},
+       {t:["Customers","العملاء (Customers)"], l:[["Customers purchase the company's products or services.","يشتري العملاء منتجات الشركة أو خدماتها."],["Customer satisfaction is critical for business success.","رضا العملاء ضروري لنجاح الأعمال."]]},
+       {t:["Suppliers","الموردون (Suppliers)"], l:[["Suppliers provide materials, equipment, or services needed for business operations.","يوفر الموردون المواد أو المعدات أو الخدمات اللازمة لعمليات الشركة."],["Example: A company purchasing computer hardware from a supplier.","مثال: شركة تشتري أجهزة كمبيوتر من مورد."]]},
+       {t:["Government","الحكومة (Government)"], l:[["Governments regulate business activities through laws and regulations.","تنظم الحكومات أنشطة الأعمال من خلال القوانين واللوائح."],["Examples: tax laws, labor regulations, data protection laws","أمثلة: قوانين الضرائب، لوائح العمل، قوانين حماية البيانات"]]}
+     ]}
+   ]}
+  ],
+  take:[
+   ["Business = produces goods or services to satisfy needs and make profit.","الأعمال = إنتاج سلع أو خدمات لتلبية الاحتياجات وتحقيق الربح."],
+   ["Profit = Revenue - Expenses.","الربح = الإيرادات - المصروفات."],
+   ["Internal environment is inside the company; external environment is outside it.","البيئة الداخلية داخل الشركة، والخارجية خارجها."],
+   ["Five stakeholders: owners, employees, customers, suppliers, government.","خمسة أصحاب مصلحة: المالكون، الموظفون، العملاء، الموردون، الحكومة."]
+  ],
+  fc:[
+   [["What is a business?","ما هو النشاط التجاري (Business)؟"],["An organization engaged in commercial, industrial, or professional activities. It produces goods or services to satisfy customer needs and make profit.","منظمة تعمل في أنشطة تجارية أو صناعية أو مهنية، وتنتج سلعًا أو خدمات لتلبية احتياجات العملاء وتحقيق الربح."]],
+   [["What is the profit formula?","ما هي معادلة الربح؟"],["Profit = Revenue - Expenses. Example: 50,000 - 30,000 = 20,000.","الربح = الإيرادات - المصروفات. مثال: 50,000 - 30,000 = 20,000."]],
+   [["What are the four types of resources?","ما هي أنواع الموارد الأربعة؟"],["Human (employees), financial (capital), physical (equipment), information (data, software).","بشرية (الموظفون)، مالية (رأس المال)، مادية (المعدات)، معلومات (البيانات والبرمجيات)."]],
+   [["Goods vs Services?","الفرق بين السلع والخدمات؟"],["Goods are tangible (computers, smartphones). Services are intangible (software development, cloud hosting, technical support).","السلع ملموسة (حاسوب، هاتف). الخدمات غير ملموسة (تطوير برمجيات، استضافة سحابية، دعم فني)."]],
+   [["Why do businesses exist? (4 reasons)","لماذا توجد الأعمال؟ (4 أسباب)"],["Produce goods and services, generate profit, create employment, promote innovation.","إنتاج السلع والخدمات، تحقيق الربح، توفير فرص العمل، تعزيز الابتكار."]],
+   [["What are the three types of businesses?","ما هي أنواع الأعمال الثلاثة؟"],["Manufacturing (produce physical goods), Service (provide services), Retail (sell directly to customers).","صناعية (تنتج سلعًا مادية)، خدمية (تقدم خدمات)، تجزئة (تبيع للعملاء مباشرة)."]],
+   [["Internal vs external environment?","البيئة الداخلية مقابل الخارجية؟"],["Internal: employees, company culture, technology systems, management. External: economic conditions, government regulations, competitors, technology trends.","الداخلية: الموظفون، ثقافة الشركة، الأنظمة التقنية، الإدارة. الخارجية: الظروف الاقتصادية، اللوائح الحكومية، المنافسون، اتجاهات التكنولوجيا."]],
+   [["Name the 5 key technologies affecting business.","اذكر التقنيات الخمس المؤثرة في الأعمال."],["Cloud computing, e-commerce, artificial intelligence, data analytics, cybersecurity.","الحوسبة السحابية، التجارة الإلكترونية، الذكاء الاصطناعي، تحليل البيانات، الأمن السيبراني."]],
+   [["Give examples of the economic environment.","أعط أمثلة على البيئة الاقتصادية."],["Inflation, unemployment, interest rates, economic growth. In a recession customers may spend less on technology.","التضخم، البطالة، أسعار الفائدة، النمو الاقتصادي. في الركود قد يقل إنفاق العملاء على التقنية."]],
+   [["Who are stakeholders? Name the 5 main ones.","من هم أصحاب المصلحة؟ اذكر الخمسة الرئيسيين."],["People or groups affected by the business: owners/shareholders, employees, customers, suppliers, government.","أفراد أو مجموعات يتأثرون بالشركة: المالكون/المساهمون، الموظفون، العملاء، الموردون، الحكومة."]]
+  ],
+  quiz:[
+   {q:["What is the profit formula?","ما هي معادلة الربح؟"], o:[["Revenue - Expenses","الإيرادات - المصروفات"],["Revenue + Expenses","الإيرادات + المصروفات"],["Expenses - Revenue","المصروفات - الإيرادات"],["Revenue ÷ Operating Costs","الإيرادات ÷ تكاليف التشغيل"]], a:0},
+   {q:["Revenue is $50,000 and operating costs are $30,000. What is the profit?","الإيراد $50,000 وتكاليف التشغيل $30,000. كم الربح؟"], o:[["$80,000","$80,000"],["$20,000","$20,000"],["$30,000","$30,000"],["$50,000","$50,000"]], a:1},
+   {q:["Which of these is an intangible service rather than a physical good?","أي مما يلي يُعد خدمة غير ملموسة (Service) وليس سلعة مادية؟"], o:[["Enterprise servers","خوادم الشركات"],["Smartphones","الهواتف الذكية"],["Cloud hosting","الاستضافة السحابية"],["Networking switches","مبدلات الشبكات"]], a:2},
+   {q:["Which factor is part of the EXTERNAL business environment?","أي عامل مما يلي يُعد جزءاً من البيئة الخارجية (External environment)؟"], o:[["Employees","الموظفون"],["Company culture","ثقافة الشركة"],["Internal IT systems","الأنظمة التقنية الداخلية"],["Government regulations","اللوائح الحكومية"]], a:3},
+   {q:["Which stakeholder group provides materials, hardware, or equipment needed for operations?","أي فئة من أصحاب المصلحة توفر المواد أو الأجهزة أو المعدات اللازمة لعمليات الشركة؟"], o:[["Suppliers","الموردون"],["Customers","العملاء"],["Shareholders","المساهمون"],["Government regulators","الهيئات الحكومية"]], a:0},
+   {q:["In business components, software developers and network administrators represent which resource?","في مكونات الأعمال، يمثل مطورو البرمجيات ومديرو الشبكات أي نوع من الموارد؟"], o:[["Human resources","الموارد البشرية"],["Physical resources","الموارد المادية"],["Information resources","موارد المعلومات"],["Financial resources","الموارد المالية"]], a:0},
+   {q:["When a business invests in R&D for AI and Blockchain, which core purpose of existence is it fulfilling?","عندما تستثمر شركة في البحث والتطوير للذكاء الاصطناعي والبلوكشين، فأي سبب من أسباب وجود الأعمال تحقق؟"], o:[["Reducing taxation","تقليل الضرائب"],["Promoting innovation","تعزيز الابتكار"],["Eliminating competitors","إلغاء المنافسين"],["Decreasing employment","تقليل التوظيف"]], a:1},
+   {q:["Which type of business sells finished products directly to end customers (such as online stores)?","أي نوع من الأعمال يبيع المنتجات النهائية مباشرة للعملاء (مثل المتاجر الإلكترونية)؟"], o:[["Manufacturing","الصناعية"],["Service","الخدمية"],["Retail","التجزئة"],["Wholesale supply","توريد المواد الخام"]], a:2},
+   {q:["Inflation, unemployment, and interest rates belong to which environment?","التضخم والبطالة وأسعار الفائدة تنتمي إلى أي بيئة؟"], o:[["Economic environment","البيئة الاقتصادية"],["Social and cultural environment","البيئة الاجتماعية والثقافية"],["Technological environment","البيئة التقنية"],["Internal organizational environment","البيئة التنظيمية الداخلية"]], a:0},
+   {q:["'Increasing use of digital services and preference for online shopping' belongs to which environment?","'زيادة استخدام الخدمات الرقمية وتفضيل التسوق عبر الإنترنت' مثال على أي بيئة؟"], o:[["Social and cultural environment","البيئة الاجتماعية والثقافية"],["Economic environment","البيئة الاقتصادية"],["Internal environment","البيئة الداخلية"],["Legal environment","البيئة القانونية"]], a:0}
+  ]
+});
+
+LECTURES.push({ id:'l2', n:2,
+  title:["Forms of Business Ownership","أشكال ملكية الأعمال (Business Ownership)"],
+  obj:[
+    ["Understand the different forms of business ownership.","فهم أشكال ملكية الأعمال المختلفة."],
+    ["Explain the characteristics of sole proprietorship, partnership, corporation, and LLC.","شرح خصائص المنشأة الفردية (Sole Proprietorship) والشراكة (Partnership) والشركة المساهمة (Corporation) والشركة ذات المسؤولية المحدودة (LLC)."],
+    ["Identify the advantages and disadvantages of each business structure.","تحديد مزايا وعيوب كل هيكل أعمال."],
+    ["Understand how entrepreneurs choose the appropriate form of business ownership.","فهم كيف يختار رواد الأعمال شكل الملكية المناسب."],
+    ["Recognize how business ownership structures apply to technology startups.","التعرف على كيفية تطبيق هياكل الملكية على الشركات التقنية الناشئة (Startups)."]
+  ],
+  sec:[
+   {t:["Introduction to Business Ownership","مقدمة في ملكية الأعمال"], b:[
+     {k:'def', x:["A business ownership structure refers to the legal form of an organization.","هيكل ملكية الأعمال (Business ownership structure) هو الشكل القانوني للمنظمة."]},
+     {k:'ul', h:["It determines:","وهو يحدد:"], x:[["who owns the business","من يملك الشركة"],["who is responsible for business decisions","من المسؤول عن قرارات الشركة"],["how profits are distributed","كيف توزع الأرباح"],["the level of legal responsibility (liability) of the owners","مستوى المسؤولية القانونية (Liability) للمالكين"]]},
+     {k:'ul', h:["Choosing the correct business structure is very important because it affects:","اختيار الهيكل الصحيح مهم جدًا لأنه يؤثر في:"], x:[["taxation","الضرائب (Taxation)"],["legal responsibilities","المسؤوليات القانونية"],["ability to raise capital","القدرة على جمع رأس المال"],["management structure","الهيكل الإداري"],["business growth opportunities","فرص نمو الشركة"]]},
+     {k:'ul', h:["There are four common forms of business ownership:","هناك أربعة أشكال شائعة لملكية الأعمال:"], x:[["1. Sole Proprietorship","1. المنشأة الفردية (Sole Proprietorship)"],["2. Partnership","2. الشراكة (Partnership)"],["3. Corporation","3. الشركة المساهمة (Corporation)"],["4. Limited Liability Company (LLC)","4. الشركة ذات المسؤولية المحدودة (LLC)"]]}
+   ]},
+   {t:["Sole Proprietorship","المنشأة الفردية (Sole Proprietorship)"], b:[
+     {k:'def', x:["A sole proprietorship is a business that is owned and managed by one individual. It is the simplest and most common form of business ownership. The owner is responsible for all business decisions and receives all profits.","المنشأة الفردية هي شركة يملكها ويديرها شخص واحد. وهي أبسط وأكثر أشكال الملكية شيوعًا. المالك مسؤول عن كل القرارات ويحصل على كل الأرباح."]},
+     {k:'ul', h:["Characteristics","الخصائص"], x:[["Owned by one person","يملكها شخص واحد"],["Easy to establish","سهلة التأسيس"],["Owner has full control of the business","للمالك سيطرة كاملة على الشركة"],["Owner receives all profits","المالك يحصل على كل الأرباح"],["Owner is personally responsible for all debts","المالك مسؤول شخصيًا عن جميع الديون"]]},
+     {k:'ul', h:["Examples","أمثلة"], x:[["freelance web developers","مطورو الويب المستقلون (Freelance)"],["small IT consultants","مستشارو تقنية المعلومات الصغار"],["online shop owners","أصحاب المتاجر الإلكترونية"],["independent app developers","مطورو التطبيقات المستقلون"]]},
+     {k:'ul', h:["Advantages","المزايا"], x:[["Easy to start: Requires minimal legal procedures.","سهلة البدء: تحتاج إجراءات قانونية قليلة."],["Full control: The owner makes all business decisions.","سيطرة كاملة: المالك يتخذ كل القرارات."],["Keep all profits: The owner does not share profits with others.","الاحتفاظ بكل الأرباح: المالك لا يشارك الأرباح مع أحد."],["Low startup cost: It usually requires less capital to start.","تكلفة بدء منخفضة: تحتاج عادة رأس مال أقل للبدء."]]},
+     {k:'ul', h:["Disadvantages","العيوب"], x:[["Unlimited liability: The owner is personally responsible for business debts.","مسؤولية غير محدودة (Unlimited liability): المالك مسؤول شخصيًا عن ديون الشركة."],["Limited financial resources: It may be difficult to raise large amounts of capital.","موارد مالية محدودة: قد يصعب جمع مبالغ كبيرة من رأس المال."],["Limited business growth: The business may depend heavily on the owner's skills and time.","نمو محدود: قد تعتمد الشركة بشدة على مهارات المالك ووقته."],["High workload: The owner must manage all aspects of the business.","عبء عمل كبير: يجب على المالك إدارة كل جوانب الشركة."]]}
+   ]},
+   {t:["Partnership","الشراكة (Partnership)"], b:[
+     {k:'def', x:["A partnership is a business owned by two or more individuals who share responsibility for managing the business and sharing profits. Partnerships are common when people want to combine their skills, resources, and expertise.","الشراكة هي شركة يملكها شخصان أو أكثر يتشاركون مسؤولية الإدارة والأرباح. الشراكات شائعة عندما يريد الناس جمع مهاراتهم ومواردهم وخبراتهم."]},
+     {k:'cards', c:[
+       {t:["General Partnership","شراكة عامة (General Partnership)"], l:[["All partners share management responsibilities and liabilities.","جميع الشركاء يتشاركون مسؤوليات الإدارة والالتزامات."]]},
+       {t:["Limited Partnership","شراكة محدودة (Limited Partnership)"], l:[["Some partners invest money but do not participate in management.","بعض الشركاء يستثمرون المال لكن لا يشاركون في الإدارة."]]}
+     ]},
+     {k:'ul', h:["Characteristics","الخصائص"], x:[["Owned by two or more people","يملكها شخصان أو أكثر"],["Shared decision making","اتخاذ القرارات مشترك"],["Shared profits and losses","الأرباح والخسائر مشتركة"],["Partnership agreement often required","غالبًا يلزم اتفاق شراكة (Partnership agreement)"]]},
+     {k:'ul', h:["Examples","أمثلة"], x:[["two software developers creating a startup","مطوران يؤسسان شركة ناشئة"],["IT consultants working together","مستشارو تقنية يعملون معًا"],["small technology firms","شركات تقنية صغيرة"]]},
+     {k:'ul', h:["Advantages","المزايا"], x:[["More financial resources: Partners contribute capital.","موارد مالية أكثر: الشركاء يساهمون برأس المال."],["Shared responsibilities: Work and management tasks are divided.","مسؤوليات مشتركة: يتم تقسيم العمل والإدارة."],["More expertise: Partners may have different skills and knowledge.","خبرة أكثر: قد يمتلك الشركاء مهارات ومعارف مختلفة."],["Easier to start than corporations","أسهل في البدء من الشركات المساهمة"]]},
+     {k:'ul', h:["Disadvantages","العيوب"], x:[["Unlimited liability: Partners may be responsible for business debts.","مسؤولية غير محدودة: قد يكون الشركاء مسؤولين عن ديون الشركة."],["Potential conflicts: Partners may disagree on decisions.","احتمال حدوث خلافات: قد يختلف الشركاء في القرارات."],["Profit sharing: Profits must be divided among partners.","تقاسم الأرباح: يجب توزيع الأرباح بين الشركاء."],["Shared risk: One partner's mistake can affect the entire business.","مخاطر مشتركة: خطأ شريك واحد قد يؤثر في الشركة كلها."]]}
+   ]},
+   {t:["Corporation","الشركة المساهمة (Corporation)"], b:[
+     {k:'def', x:["A corporation is a legal entity that is separate from its owners. Ownership is represented by shares of stock.","الشركة المساهمة كيان قانوني (Legal entity) منفصل عن مالكيها. وتُمثل الملكية بأسهم (Shares of stock)."]},
+     {k:'ul', h:["This means the corporation itself can:","وهذا يعني أن الشركة نفسها يمكنها:"], x:[["own property","امتلاك الممتلكات"],["enter contracts","إبرام العقود"],["sue or be sued","أن ترفع دعوى أو تُرفع عليها دعوى"]]},
+     {k:'ul', h:["Characteristics","الخصائص"], x:[["Separate legal entity","كيان قانوني منفصل"],["Ownership divided into shares","الملكية مقسمة إلى أسهم"],["Managed by a board of directors","يديرها مجلس إدارة (Board of directors)"],["Shareholders are owners of the company","المساهمون هم مالكو الشركة"]]},
+     {k:'ex', x:["Large companies often operate as corporations. Examples include major technology companies that sell products globally.","الشركات الكبيرة غالبًا ما تعمل كشركات مساهمة، مثل كبرى شركات التكنولوجيا التي تبيع منتجاتها عالميًا."]},
+     {k:'ul', h:["Advantages","المزايا"], x:[["Limited liability: Shareholders are not personally responsible for company debts.","مسؤولية محدودة (Limited liability): المساهمون غير مسؤولين شخصيًا عن ديون الشركة."],["Ability to raise capital: Corporations can sell shares to investors.","القدرة على جمع رأس المال: يمكن للشركات بيع الأسهم للمستثمرين."],["Business continuity: The business continues even if owners change.","استمرارية الشركة (Business continuity): تستمر الشركة حتى لو تغير المالكون."],["Large growth potential","إمكانية نمو كبيرة"]]},
+     {k:'ul', h:["Disadvantages","العيوب"], x:[["Complex and expensive to establish","معقدة ومكلفة في التأسيس"],["More government regulations","لوائح حكومية أكثر"],["Possible double taxation","احتمال الازدواج الضريبي (Double taxation)"],["Less direct control by owners","سيطرة مباشرة أقل للمالكين"]]}
+   ]},
+   {t:["Limited Liability Company (LLC)","الشركة ذات المسؤولية المحدودة (LLC)"], b:[
+     {k:'def', x:["A Limited Liability Company (LLC) is a hybrid business structure that combines features of both partnerships and corporations. It provides limited liability protection while maintaining flexible management.","الشركة ذات المسؤولية المحدودة (LLC) هي هيكل هجين (Hybrid) يجمع بين ميزات الشراكات والشركات المساهمة. توفر حماية المسؤولية المحدودة مع إدارة مرنة."]},
+     {k:'ul', h:["Characteristics","الخصائص"], x:[["Owners are called members","يسمى المالكون أعضاء (Members)"],["Members have limited liability","الأعضاء لديهم مسؤولية محدودة"],["Flexible management structure","هيكل إداري مرن"],["Combines partnership and corporate features","تجمع بين ميزات الشراكة والشركة المساهمة"]]},
+     {k:'ul', h:["Examples: Many small and medium-sized businesses operate as LLCs, including:","أمثلة: كثير من الشركات الصغيرة والمتوسطة تعمل كـ LLC، ومنها:"], x:[["IT service companies","شركات خدمات تقنية المعلومات"],["software development firms","شركات تطوير البرمجيات"],["consulting businesses","شركات الاستشارات"]]},
+     {k:'ul', h:["Advantages","المزايا"], x:[["Limited liability: Members are not personally responsible for business debts.","مسؤولية محدودة: الأعضاء غير مسؤولين شخصيًا عن ديون الشركة."],["Flexible management","إدارة مرنة"],["Less regulation than corporations","لوائح أقل من الشركات المساهمة"],["Tax advantages","مزايا ضريبية"]]},
+     {k:'ul', h:["Disadvantages","العيوب"], x:[["More complex than sole proprietorship","أكثر تعقيدًا من المنشأة الفردية"],["May require legal documentation","قد تتطلب وثائق قانونية"],["Regulations vary by country","اللوائح تختلف من بلد لآخر"]]}
+   ]},
+   {t:["Comparison of Business Ownership Types","مقارنة بين أنواع ملكية الأعمال"], b:[
+     {k:'tbl', h:[["Type","النوع"],["Owners","المالكون"],["Liability","المسؤولية"],["Ease of Setup","سهولة التأسيس"],["Capital","رأس المال"]],
+      r:[
+       [["Sole Proprietorship","منشأة فردية"],["1","1"],["Unlimited","غير محدودة"],["Very Easy","سهل جدًا"],["Limited","محدود"]],
+       [["Partnership","شراكة"],["2 or more","2 أو أكثر"],["Unlimited","غير محدودة"],["Easy","سهل"],["Moderate","متوسط"]],
+       [["Corporation","شركة مساهمة"],["Shareholders","مساهمون"],["Limited","محدودة"],["Complex","معقد"],["High","مرتفع"]],
+       [["LLC","شركة ذات مسؤولية محدودة"],["Members","أعضاء"],["Limited","محدودة"],["Moderate","متوسط"],["Moderate","متوسط"]]
+      ]},
+     {k:'tip', x:["Memory trick: the two SMALL forms (sole proprietorship and partnership) have UNLIMITED liability. The two forms with 'limited' protection are the corporation and the LLC.","حيلة للحفظ: الشكلان الصغيران (المنشأة الفردية والشراكة) مسؤوليتهما غير محدودة (Unlimited). أما الشركة المساهمة والـ LLC فمسؤوليتهما محدودة (Limited)."]}
+   ]},
+   {t:["Choosing the Right Business Structure","اختيار هيكل الأعمال المناسب"], b:[
+     {k:'ul', h:["Entrepreneurs must consider several factors when choosing a business structure. Important factors:","يجب على رواد الأعمال مراعاة عدة عوامل عند اختيار الهيكل. العوامل المهمة:"], x:[["1. Number of owners","1. عدد المالكين"],["2. Level of liability protection","2. مستوى حماية المسؤولية"],["3. Capital requirements","3. متطلبات رأس المال"],["4. Management structure","4. الهيكل الإداري"],["5. Tax considerations","5. الاعتبارات الضريبية"],["6. Future business growth","6. نمو الشركة في المستقبل"]]},
+     {k:'p', x:["Choosing the correct structure can affect the long-term success of the business.","اختيار الهيكل الصحيح يمكن أن يؤثر في نجاح الشركة على المدى الطويل."]}
+   ]},
+   {t:["Example: Technology Startup Decision","مثال: قرار شركة تقنية ناشئة"], b:[
+     {k:'p', x:["Many technology startups must decide whether to operate as a partnership or corporation.","كثير من الشركات التقنية الناشئة يجب أن تقرر هل تعمل كشراكة أم كشركة مساهمة."]},
+     {k:'cards', c:[
+       {t:["Partnership Example","مثال الشراكة"], l:[["How software developers create a mobile app and share profits equally.","كيف ينشئ مطورو البرمجيات تطبيق هاتف ويتقاسمون الأرباح بالتساوي."]]},
+       {t:["Corporation Example","مثال الشركة المساهمة"], l:[["A technology company plans to attract investors and expand globally, so it becomes a corporation.","شركة تقنية تخطط لجذب المستثمرين والتوسع عالميًا، فتصبح شركة مساهمة."]]}
+     ]},
+     {k:'ul', h:["Corporations are often preferred when startups plan to:","غالبًا تُفضّل الشركات المساهمة عندما تخطط الشركات الناشئة إلى:"], x:[["raise large investments","جمع استثمارات كبيرة"],["expand internationally","التوسع دوليًا"],["grow rapidly","النمو بسرعة"]]}
+   ]}
+  ],
+  take:[
+   ["Four forms: sole proprietorship, partnership, corporation, LLC.","أربعة أشكال: منشأة فردية، شراكة، شركة مساهمة، LLC."],
+   ["Unlimited liability: sole proprietorship and partnership. Limited liability: corporation and LLC.","مسؤولية غير محدودة: المنشأة الفردية والشراكة. مسؤولية محدودة: الشركة المساهمة والـ LLC."],
+   ["Corporation = separate legal entity, owned through shares.","الشركة المساهمة = كيان قانوني منفصل، تُملك عبر الأسهم."],
+   ["Startups that want big investment and global growth prefer corporations.","الشركات الناشئة التي تريد استثمارًا كبيرًا ونموًا عالميًا تفضل الشركة المساهمة."]
+  ],
+  fc:[
+   [["What does a business ownership structure determine?","ماذا يحدد هيكل ملكية الأعمال؟"],["Who owns the business, who makes decisions, how profits are distributed, and the owners' liability.","من يملك الشركة، ومن يتخذ القرارات، وكيف توزع الأرباح، ومسؤولية المالكين."]],
+   [["Name the four forms of business ownership.","اذكر أشكال ملكية الأعمال الأربعة."],["Sole proprietorship, partnership, corporation, LLC.","منشأة فردية، شراكة، شركة مساهمة، LLC."]],
+   [["What is a sole proprietorship?","ما هي المنشأة الفردية؟"],["A business owned and managed by one person. Simplest and most common. Owner keeps all profits but has unlimited liability.","شركة يملكها ويديرها شخص واحد. الأبسط والأشيع. المالك يحتفظ بكل الأرباح لكن مسؤوليته غير محدودة."]],
+   [["Main disadvantages of a sole proprietorship?","أهم عيوب المنشأة الفردية؟"],["Unlimited liability, limited financial resources, limited growth, high workload.","مسؤولية غير محدودة، موارد مالية محدودة، نمو محدود، عبء عمل كبير."]],
+   [["What is a partnership? Name its two types.","ما هي الشراكة؟ اذكر نوعيها."],["Owned by two or more people who share management and profits. Types: general partnership and limited partnership.","يملكها شخصان أو أكثر يتشاركون الإدارة والأرباح. النوعان: شراكة عامة وشراكة محدودة."]],
+   [["General vs limited partnership?","الشراكة العامة مقابل المحدودة؟"],["General: all partners share management and liabilities. Limited: some partners invest money but do not participate in management.","العامة: كل الشركاء يتشاركون الإدارة والالتزامات. المحدودة: بعض الشركاء يستثمرون المال دون المشاركة في الإدارة."]],
+   [["What is a corporation?","ما هي الشركة المساهمة؟"],["A legal entity separate from its owners. Ownership is in shares of stock. Managed by a board of directors.","كيان قانوني منفصل عن مالكيه. الملكية بأسهم. يديرها مجلس إدارة."]],
+   [["Advantages of a corporation?","مزايا الشركة المساهمة؟"],["Limited liability, ability to raise capital, business continuity, large growth potential.","مسؤولية محدودة، القدرة على جمع رأس المال، استمرارية الشركة، إمكانية نمو كبيرة."]],
+   [["What is an LLC? What are its owners called?","ما هي الـ LLC؟ وماذا يسمى مالكوها؟"],["A hybrid structure combining partnership and corporation features, with limited liability and flexible management. Owners are called members.","هيكل هجين يجمع ميزات الشراكة والشركة المساهمة، بمسؤولية محدودة وإدارة مرنة. يسمى المالكون أعضاء."]],
+   [["Which forms have unlimited liability and which have limited?","أي الأشكال مسؤوليتها غير محدودة وأيها محدودة؟"],["Unlimited: sole proprietorship, partnership. Limited: corporation, LLC.","غير محدودة: المنشأة الفردية والشراكة. محدودة: الشركة المساهمة والـ LLC."]],
+   [["List the 6 factors for choosing a structure.","اذكر العوامل الستة لاختيار الهيكل."],["Number of owners, liability protection, capital requirements, management structure, tax considerations, future growth.","عدد المالكين، حماية المسؤولية، متطلبات رأس المال، الهيكل الإداري، الاعتبارات الضريبية، النمو المستقبلي."]],
+   [["When do tech startups prefer a corporation?","متى تفضل الشركات التقنية الناشئة الشركة المساهمة؟"],["When they plan to raise large investments, expand internationally, and grow rapidly.","عندما تخطط لجمع استثمارات كبيرة والتوسع دوليًا والنمو بسرعة."]]
+  ],
+  quiz:[
+   {q:["Which form is owned and managed by one person and is the simplest?","أي شكل يملكه ويديره شخص واحد وهو الأبسط؟"], o:[["Partnership","الشراكة"],["Sole proprietorship","المنشأة الفردية"],["Corporation","الشركة المساهمة"],["LLC","LLC"]], a:1},
+   {q:["In a corporation, ownership is represented by:","في الشركة المساهمة، تُمثل الملكية بـ:"], o:[["Partnership agreements","اتفاقيات الشراكة"],["LLC Membership units","حصص الأعضاء"],["Shares of stock","الأسهم (Shares of stock)"],["Sole proprietor titles","صكوك ملكية فردية"]], a:2},
+   {q:["Which structure is a hybrid combining partnership and corporation features?","أي هيكل هجين يجمع ميزات الشراكة والشركة المساهمة؟"], o:[["LLC","الشركة ذات المسؤولية المحدودة (LLC)"],["Sole proprietorship","المنشأة الفردية"],["General partnership","الشراكة العامة"],["Limited partnership","الشراكة المحدودة"]], a:0},
+   {q:["In a limited partnership, some partners:","في الشراكة المحدودة، بعض الشركاء:"], o:[["Bear all management duties alone","يتحملون كل مهام الإدارة وحدهم"],["Are separate legal entities","يُعدّون كيانات قانونية منفصلة"],["Own tradable corporate stock","يمتلكون أسهماً عامة"],["Invest money but do not participate in management","يستثمرون المال لكن لا يشاركون في الإدارة"]], a:3},
+   {q:["Which structure is often preferred by startups that plan to raise large investments and expand globally?","أي هيكل تفضله غالبًا الشركات الناشئة التي تخطط لجمع استثمارات كبيرة والتوسع عالمياً؟"], o:[["Sole proprietorship","المنشأة الفردية"],["Corporation","الشركة المساهمة"],["General Partnership","الشراكة العامة"],["Freelance consultancy","الاستشارة المستقلة"]], a:1},
+   {q:["Which disadvantage specifically belongs to a corporation?","أي عيب مما يلي ينطبق تحديداً على الشركة المساهمة (Corporation)؟"], o:[["Unlimited personal liability","مسؤولية شخصية غير محدودة"],["Possible double taxation","احتمال الازدواج الضريبي (Double taxation)"],["Dependence on a single owner's time","الاعتماد على وقت مالك واحد فقط"],["Inability to sell shares","عدم القدرة على بيع الأسهم"]], a:1},
+   {q:["What are the owners of an LLC called?","ماذا يسمى مالكو الشركة ذات المسؤولية المحدودة (LLC)؟"], o:[["Members","أعضاء (Members)"],["Shareholders","مساهمون (Shareholders)"],["Board Directors","أعضاء مجلس إدارة"],["General Partners","شركاء متضامنون"]], a:0},
+   {q:["According to the comparison table, which structure has 'Very Easy' setup and 'Limited' capital?","حسب جدول المقارنة، أي هيكل سهولة تأسيسه 'سهل جدًا' ورأس ماله 'محدود'؟"], o:[["Corporation","الشركة المساهمة"],["LLC","LLC"],["Partnership","الشراكة"],["Sole proprietorship","المنشأة الفردية"]], a:3},
+   {q:["Who manages a corporation?","من يدير الشركة المساهمة؟"], o:[["A board of directors","مجلس الإدارة (Board of directors)"],["A single sole proprietor","مالك فردي واحد"],["Limited silent partners","الشركاء الموصون غير المشاركين"],["External suppliers","الموردون الخارجيون"]], a:0},
+   {q:["Which is an advantage of a partnership compared to a sole proprietorship?","أي مما يلي من مزايا الشراكة مقارنة بالمنشأة الفردية؟"], o:[["Unlimited liability","مسؤولية غير محدودة"],["Potential partner conflicts","احتمال الخلافات بين الشركاء"],["More financial resources and combined expertise","موارد مالية أكثر وخبرات مشتركة"],["Mandatory profit sharing","تقاسم الأرباح الإجباري"]], a:2}
+  ]
+});
+
+LECTURES.push({ id:'l3', n:3,
+  title:["Business Ethics and Social Responsibility","أخلاقيات الأعمال والمسؤولية الاجتماعية"],
+  obj:[
+    ["Define business ethics and explain its importance.","تعريف أخلاقيات الأعمال (Business ethics) وشرح أهميتها."],
+    ["Understand the process of ethical decision making.","فهم عملية اتخاذ القرار الأخلاقي."],
+    ["Explain corporate social responsibility (CSR).","شرح المسؤولية الاجتماعية للشركات (CSR)."],
+    ["Identify environmental responsibilities of businesses.","تحديد المسؤوليات البيئية للشركات."],
+    ["Recognize ethical issues in technology and IT industries.","التعرف على القضايا الأخلاقية في التكنولوجيا وصناعة تقنية المعلومات."]
+  ],
+  sec:[
+   {t:["Definition of Business Ethics","تعريف أخلاقيات الأعمال"], b:[
+     {k:'def', x:["Business ethics refers to the moral principles and standards that guide behavior in the world of business. It involves doing what is right, fair, and honest in business practices.","أخلاقيات الأعمال هي المبادئ والمعايير الأخلاقية التي توجه السلوك في عالم الأعمال. وتعني فعل ما هو صحيح وعادل وصادق في ممارسات الأعمال."]},
+     {k:'ul', h:["Why Business Ethics is Important?","لماذا أخلاقيات الأعمال مهمة؟"], x:[["1. Builds trust with customers","1. تبني الثقة مع العملاء"],["2. Improves company reputation","2. تحسن سمعة الشركة"],["3. Encourages fair competition","3. تشجع المنافسة العادلة"],["4. Reduces legal risks","4. تقلل المخاطر القانونية"],["5. Promotes long-term success","5. تعزز النجاح طويل المدى"]]},
+     {k:'cards', c:[
+       {t:["Examples of Ethical Behavior","أمثلة على السلوك الأخلاقي"], l:[["Honest advertising","إعلان صادق"],["Fair pricing","تسعير عادل"],["Respecting customer privacy","احترام خصوصية العملاء"],["Treating employees fairly","معاملة الموظفين بعدل"]]},
+       {t:["Examples of Unethical Behavior","أمثلة على السلوك غير الأخلاقي"], l:[["1. False advertising","1. الإعلان الكاذب"],["2. Selling low-quality products knowingly","2. بيع منتجات رديئة الجودة عن علم"],["3. Misusing customer data","3. إساءة استخدام بيانات العملاء"],["4. Corruption or bribery","4. الفساد أو الرشوة"]]}
+     ]}
+   ]},
+   {t:["Ethical Decision Making","اتخاذ القرار الأخلاقي"], b:[
+     {k:'def', x:["Ethical decision making is the process of choosing actions that are morally correct.","اتخاذ القرار الأخلاقي هو عملية اختيار الأفعال الصحيحة أخلاقيًا."]},
+     {k:'ul', h:["Steps in Ethical Decision Making","خطوات اتخاذ القرار الأخلاقي"], x:[
+       ["1. Identify the Problem: Recognize the ethical issue. Example: Should a company collect user data without consent?","1. تحديد المشكلة: التعرف على القضية الأخلاقية. مثال: هل يجب على شركة جمع بيانات المستخدمين دون موافقة (Consent)؟"],
+       ["2. Gather Information: Understand all facts and stakeholders involved.","2. جمع المعلومات: فهم كل الحقائق وأصحاب المصلحة المعنيين."],
+       ["3. Evaluate Alternatives: Consider different possible actions.","3. تقييم البدائل: النظر في الإجراءات الممكنة المختلفة."],
+       ["4. Make a Decision: Choose the most ethical option.","4. اتخاذ القرار: اختيار الخيار الأكثر أخلاقية."],
+       ["5. Take Action: Implement the decision.","5. اتخاذ الإجراء: تنفيذ القرار."],
+       ["6. Review the Outcome: Evaluate the consequences.","6. مراجعة النتيجة: تقييم العواقب."]]},
+     {k:'tip', x:["Steps in order: Identify → Gather → Evaluate → Decide → Act → Review.","الخطوات بالترتيب: حدد ← اجمع ← قيّم ← قرر ← نفّذ ← راجع."]},
+     {k:'ul', h:["Ethical Principles","المبادئ الأخلاقية"], x:[["Honesty","الصدق (Honesty)"],["Integrity","النزاهة (Integrity)"],["Fairness","العدالة (Fairness)"],["Responsibility","المسؤولية (Responsibility)"],["Accountability","المساءلة (Accountability)"]]}
+   ]},
+   {t:["Corporate Social Responsibility (CSR)","المسؤولية الاجتماعية للشركات (CSR)"], b:[
+     {k:'def', x:["Corporate Social Responsibility (CSR) means that businesses have a responsibility to contribute positively to society.","المسؤولية الاجتماعية للشركات (CSR) تعني أن على الأعمال مسؤولية المساهمة بشكل إيجابي في المجتمع."]},
+     {k:'ul', h:["Businesses should not only focus on profit but also consider:","يجب ألا تركز الأعمال على الربح فقط بل تراعي أيضًا:"], x:[["social impact","الأثر الاجتماعي"],["environmental impact","الأثر البيئي"],["ethical responsibilities","المسؤوليات الأخلاقية"]]},
+     {k:'cards', c:[
+       {t:["1. Economic Responsibility","1. المسؤولية الاقتصادية"], l:[["Be profitable and sustainable.","أن تكون مربحة ومستدامة."]]},
+       {t:["2. Legal Responsibility","2. المسؤولية القانونية"], l:[["Follow laws and regulations.","اتباع القوانين واللوائح."]]},
+       {t:["3. Ethical Responsibility","3. المسؤولية الأخلاقية"], l:[["Do what is right beyond legal requirements.","فعل الصواب بما يتجاوز المتطلبات القانونية."]]},
+       {t:["4. Philanthropic Responsibility","4. المسؤولية الخيرية (Philanthropic)"], l:[["Contribute to society through donations or community support.","المساهمة في المجتمع عبر التبرعات أو دعم المجتمع."]]}
+     ]},
+     {k:'tip', x:["Remember CSR types with E-L-E-P: Economic, Legal, Ethical, Philanthropic.","تذكر أنواع CSR بالحروف E-L-E-P: اقتصادية، قانونية، أخلاقية، خيرية."]},
+     {k:'ul', h:["Examples of CSR Activities","أمثلة على أنشطة CSR"], x:[["1. Supporting education programs","1. دعم برامج التعليم"],["2. Donating to charities","2. التبرع للجمعيات الخيرية"],["3. Promoting sustainability","3. تعزيز الاستدامة"],["4. Providing fair working conditions","4. توفير ظروف عمل عادلة"]]}
+   ]},
+   {t:["Environmental Responsibility","المسؤولية البيئية"], b:[
+     {k:'p', x:["Businesses must minimize their negative impact on the environment.","يجب على الأعمال تقليل أثرها السلبي على البيئة."]},
+     {k:'ul', h:["Key Environmental Responsibilities","المسؤوليات البيئية الرئيسية"], x:[["Reducing pollution","تقليل التلوث"],["Conserving energy","توفير الطاقة"],["Recycling materials","إعادة تدوير المواد"],["Using sustainable resources","استخدام موارد مستدامة"]]},
+     {k:'ex', x:["A company reducing paper usage by using digital systems instead of printed documents.","شركة تقلل استخدام الورق باستخدام أنظمة رقمية بدلًا من المستندات المطبوعة."]},
+     {k:'ul', h:["Importance for IT Companies: Even IT companies affect the environment through:","أهمية ذلك لشركات تقنية المعلومات: حتى هذه الشركات تؤثر في البيئة من خلال:"], x:[["data centers (energy consumption)","مراكز البيانات (Data centers) - استهلاك الطاقة"],["electronic waste","النفايات الإلكترونية (Electronic waste)"],["hardware production","تصنيع الأجهزة"]]},
+     {k:'p', x:["Companies must adopt green IT practices.","يجب على الشركات تبني ممارسات تقنية المعلومات الخضراء (Green IT)."]}
+   ]},
+   {t:["Ethical Issues in Technology","القضايا الأخلاقية في التكنولوجيا"], b:[
+     {k:'p', x:["Technology creates many ethical challenges, especially in IT-related fields.","تخلق التكنولوجيا تحديات أخلاقية كثيرة، خاصة في مجالات تقنية المعلومات."]},
+     {k:'cards', c:[
+       {t:["1. Data Privacy","1. خصوصية البيانات (Data Privacy)"], l:[["Data privacy refers to protecting personal information of users.","خصوصية البيانات تعني حماية المعلومات الشخصية للمستخدمين."],["Issues: collecting user data without consent","المشكلات: جمع بيانات المستخدمين دون موافقة"],["Issues: sharing data with third parties","المشكلات: مشاركة البيانات مع أطراف ثالثة"],["Issues: storing sensitive information insecurely","المشكلات: تخزين معلومات حساسة بشكل غير آمن"],["Example: A mobile app collecting user location data without permission.","مثال: تطبيق هاتف يجمع بيانات موقع المستخدم دون إذن."]]},
+       {t:["2. Protection of Customer Data","2. حماية بيانات العملاء"], l:[["Businesses must ensure customer data is secure.","يجب على الأعمال ضمان أمان بيانات العملاء."],["Responsibilities: using encryption","المسؤوليات: استخدام التشفير (Encryption)"],["Responsibilities: securing databases","المسؤوليات: تأمين قواعد البيانات"],["Responsibilities: preventing data breaches","المسؤوليات: منع اختراق البيانات (Data breaches)"],["Example: Protecting customer payment details in e-commerce systems.","مثال: حماية بيانات الدفع للعملاء في أنظمة التجارة الإلكترونية."]]},
+       {t:["3. Ethical Use of Artificial Intelligence","3. الاستخدام الأخلاقي للذكاء الاصطناعي"], l:[["Artificial Intelligence (AI) must be used responsibly.","يجب استخدام الذكاء الاصطناعي (AI) بمسؤولية."],["Concerns: bias in algorithms","المخاوف: التحيز في الخوارزميات (Bias in algorithms)"],["Concerns: lack of transparency","المخاوف: نقص الشفافية (Transparency)"],["Concerns: misuse of AI systems","المخاوف: إساءة استخدام أنظمة الذكاء الاصطناعي"],["Example: AI systems making unfair hiring decisions.","مثال: أنظمة ذكاء اصطناعي تتخذ قرارات توظيف غير عادلة."]]},
+       {t:["4. Intellectual Property Rights","4. حقوق الملكية الفكرية (Intellectual Property Rights)"], l:[["Businesses must respect ownership of: software, digital content, innovations","يجب على الأعمال احترام ملكية: البرمجيات، المحتوى الرقمي، الابتكارات"],["Example: Illegal copying of software is unethical and illegal.","مثال: النسخ غير القانوني للبرمجيات غير أخلاقي وغير قانوني."]]},
+       {t:["5. Cybersecurity Ethics","5. أخلاقيات الأمن السيبراني"], l:[["Organizations must protect systems and data from cyber threats.","يجب على المنظمات حماية الأنظمة والبيانات من التهديدات السيبرانية."],["Ethical responsibility: protecting users from hacking","المسؤولية الأخلاقية: حماية المستخدمين من الاختراق"],["Ethical responsibility: ensuring secure systems","المسؤولية الأخلاقية: ضمان أنظمة آمنة"],["Ethical responsibility: reporting security issues","المسؤولية الأخلاقية: الإبلاغ عن المشكلات الأمنية"]]}
+     ]}
+   ]},
+   {t:["Importance of Ethics in IT Industry","أهمية الأخلاقيات في صناعة تقنية المعلومات"], b:[
+     {k:'ul', h:["Ethics is especially important in IT because:","الأخلاقيات مهمة بشكل خاص في تقنية المعلومات لأن:"], x:[["businesses collect large amounts of user data","الشركات تجمع كميات كبيرة من بيانات المستخدمين"],["systems affect millions of users","الأنظمة تؤثر في ملايين المستخدمين"],["technology decisions have global impact","قرارات التكنولوجيا لها أثر عالمي"]]},
+     {k:'ul', h:["Unethical behavior can lead to:","السلوك غير الأخلاقي قد يؤدي إلى:"], x:[["loss of trust","فقدان الثقة"],["legal penalties","عقوبات قانونية"],["business failure","فشل الشركة"]]},
+     {k:'ul', h:["Examples (Applied to IT)","أمثلة (مطبقة على تقنية المعلومات)"], x:[["Example 1: Data Privacy - A company collects user emails and sells them without permission = unethical.","مثال 1: خصوصية البيانات - شركة تجمع بريد المستخدمين وتبيعه دون إذن = غير أخلاقي."],["Example 2: AI Ethics - An AI system discriminates against certain groups = unethical.","مثال 2: أخلاقيات الذكاء الاصطناعي - نظام ذكاء اصطناعي يميز ضد فئات معينة = غير أخلاقي."],["Example 3: Customer Data Protection - A company fails to secure customer data, leading to a data breach = unethical and harmful.","مثال 3: حماية بيانات العملاء - شركة تفشل في تأمين بيانات العملاء مما يؤدي إلى اختراق = غير أخلاقي وضار."]]}
+   ]}
+  ],
+  take:[
+   ["Ethics = doing what is right, fair, and honest in business.","الأخلاقيات = فعل ما هو صحيح وعادل وصادق في الأعمال."],
+   ["Six decision steps: Identify, Gather, Evaluate, Decide, Act, Review.","ست خطوات للقرار: حدد، اجمع، قيّم، قرر، نفّذ، راجع."],
+   ["Four CSR types: Economic, Legal, Ethical, Philanthropic.","أربعة أنواع CSR: اقتصادية، قانونية، أخلاقية، خيرية."],
+   ["Five IT ethics issues: data privacy, customer data protection, AI, intellectual property, cybersecurity.","خمس قضايا أخلاقية في IT: الخصوصية، حماية البيانات، الذكاء الاصطناعي، الملكية الفكرية، الأمن السيبراني."]
+  ],
+  fc:[
+   [["What is business ethics?","ما هي أخلاقيات الأعمال؟"],["Moral principles and standards that guide behavior in business: doing what is right, fair, and honest.","المبادئ والمعايير الأخلاقية التي توجه السلوك في الأعمال: فعل ما هو صحيح وعادل وصادق."]],
+   [["Why is business ethics important? (5 reasons)","لماذا أخلاقيات الأعمال مهمة؟ (5 أسباب)"],["Builds trust, improves reputation, encourages fair competition, reduces legal risks, promotes long-term success.","تبني الثقة، تحسن السمعة، تشجع المنافسة العادلة، تقلل المخاطر القانونية، تعزز النجاح طويل المدى."]],
+   [["Examples of unethical behavior?","أمثلة على السلوك غير الأخلاقي؟"],["False advertising, selling low-quality products knowingly, misusing customer data, corruption or bribery.","الإعلان الكاذب، بيع منتجات رديئة عن علم، إساءة استخدام بيانات العملاء، الفساد أو الرشوة."]],
+   [["List the 6 steps of ethical decision making.","اذكر خطوات القرار الأخلاقي الست."],["Identify the problem, gather information, evaluate alternatives, make a decision, take action, review the outcome.","تحديد المشكلة، جمع المعلومات، تقييم البدائل، اتخاذ القرار، التنفيذ، مراجعة النتيجة."]],
+   [["List the 5 ethical principles.","اذكر المبادئ الأخلاقية الخمسة."],["Honesty, integrity, fairness, responsibility, accountability.","الصدق، النزاهة، العدالة، المسؤولية، المساءلة."]],
+   [["What is CSR?","ما هي المسؤولية الاجتماعية للشركات (CSR)؟"],["Businesses have a responsibility to contribute positively to society, not only to focus on profit.","على الأعمال مسؤولية المساهمة إيجابيًا في المجتمع وليس التركيز على الربح فقط."]],
+   [["Name the 4 types of CSR (E-L-E-P).","اذكر أنواع CSR الأربعة (E-L-E-P)."],["Economic (be profitable and sustainable), Legal (follow laws), Ethical (do right beyond the law), Philanthropic (donations, community support).","اقتصادية (مربحة ومستدامة)، قانونية (اتباع القوانين)، أخلاقية (الصواب بما يتجاوز القانون)، خيرية (التبرعات ودعم المجتمع)."]],
+   [["Key environmental responsibilities?","المسؤوليات البيئية الرئيسية؟"],["Reducing pollution, conserving energy, recycling materials, using sustainable resources.","تقليل التلوث، توفير الطاقة، إعادة التدوير، استخدام موارد مستدامة."]],
+   [["How do IT companies affect the environment?","كيف تؤثر شركات IT في البيئة؟"],["Data centers (energy use), electronic waste, hardware production. They must adopt green IT practices.","مراكز البيانات (استهلاك الطاقة)، النفايات الإلكترونية، تصنيع الأجهزة. ويجب تبني ممارسات Green IT."]],
+   [["Name the 5 ethical issues in technology.","اذكر القضايا الأخلاقية الخمس في التكنولوجيا."],["Data privacy, protection of customer data, ethical use of AI, intellectual property rights, cybersecurity ethics.","خصوصية البيانات، حماية بيانات العملاء، الاستخدام الأخلاقي للذكاء الاصطناعي، الملكية الفكرية، أخلاقيات الأمن السيبراني."]],
+   [["AI ethical concerns?","المخاوف الأخلاقية للذكاء الاصطناعي؟"],["Bias in algorithms, lack of transparency, misuse of AI systems. Example: unfair hiring decisions.","التحيز في الخوارزميات، نقص الشفافية، إساءة الاستخدام. مثال: قرارات توظيف غير عادلة."]],
+   [["Why is ethics especially important in IT?","لماذا الأخلاقيات مهمة خاصة في IT؟"],["Businesses collect large amounts of user data, systems affect millions of users, and decisions have global impact. Unethical behavior leads to loss of trust, legal penalties, business failure.","الشركات تجمع بيانات ضخمة، والأنظمة تؤثر في ملايين المستخدمين، والقرارات لها أثر عالمي. السلوك غير الأخلاقي يؤدي لفقدان الثقة وعقوبات قانونية وفشل الشركة."]]
+  ],
+  quiz:[
+   {q:["What is the FIRST step in ethical decision making?","ما هي الخطوة الأولى في اتخاذ القرار الأخلاقي؟"], o:[["Identify the problem","تحديد المشكلة (Identify the problem)"],["Gather stakeholder information","جمع المعلومات عن أصحاب المصلحة"],["Evaluate possible alternatives","تقييم البدائل الممكنة"],["Review the final outcome","مراجعة النتيجة النهائية"]], a:0},
+   {q:["Which CSR type means 'be profitable and sustainable'?","أي نوع من CSR يعني 'أن تكون مربحة ومستدامة'؟"], o:[["Legal responsibility","المسؤولية القانونية"],["Philanthropic responsibility","المسؤولية الخيرية"],["Economic responsibility","المسؤولية الاقتصادية"],["Ethical responsibility","المسؤولية الأخلاقية"]], a:2},
+   {q:["A mobile app collects user location without permission. This is a violation of:","تطبيق هاتف يجمع موقع المستخدم دون إذن. هذه مشكلة في:"], o:[["Intellectual property rights","حقوق الملكية الفكرية"],["Data privacy","خصوصية البيانات (Data privacy)"],["Algorithmic bias","التحيز الخوارزمي"],["Philanthropic CSR","المسؤولية الخيرية"]], a:1},
+   {q:["Which is an example of unethical business behavior?","أي مما يلي مثال على سلوك غير أخلاقي في الأعمال؟"], o:[["Honest advertising","الإعلان الصادق"],["Fair pricing","التسعير العادل"],["Respecting customer privacy","احترام خصوصية العميل"],["Selling user emails without permission","بيع بريد المستخدمين دون إذن"]], a:3},
+   {q:["Which is a direct negative environmental impact of IT companies that requires Green IT?","أي مما يلي أثر بيئي سلبي مباشر لشركات تقنية المعلومات يتطلب ممارسات Green IT؟"], o:[["Data center energy consumption and e-waste","استهلاك الطاقة في مراكز البيانات والنفايات الإلكترونية"],["Supporting education programs","دعم البرامج التعليمية"],["Using digital documents instead of paper","استخدام الأنظمة الرقمية بدلاً من الورق"],["Encrypting customer databases","تشفير قواعد بيانات العملاء"]], a:0},
+   {q:["Illegal copying and piracy of software directly violates:","النسخ غير القانوني للبرمجيات ينتهك بشكل مباشر:"], o:[["Data center sustainability","استدامة مراكز البيانات"],["Intellectual property rights","حقوق الملكية الفكرية (Intellectual property rights)"],["Environmental recycling rules","قواعد إعادة التدوير البيئية"],["Algorithmic transparency","شفافية الخوارزميات"]], a:1},
+   {q:["Which of these is NOT one of the 5 ethical principles from Lecture 3?","أي مما يلي ليس من المبادئ الأخلاقية الخمسة في المحاضرة الثالثة؟"], o:[["Honesty","الصدق (Honesty)"],["Integrity","النزاهة (Integrity)"],["Corruption","الفساد (Corruption)"],["Accountability","المساءلة (Accountability)"]], a:2},
+   {q:["Which CSR type means 'do what is right beyond legal requirements'?","أي نوع CSR يعني 'فعل الصواب بما يتجاوز المتطلبات القانونية'؟"], o:[["Economic","اقتصادية"],["Legal","قانونية"],["Philanthropic","خيرية"],["Ethical","أخلاقية"]], a:3},
+   {q:["Using encryption, securing databases, and preventing data breaches belongs to which issue?","استخدام التشفير وتأمين قواعد البيانات ومنع الاختراقات ينتمي إلى أي قضية؟"], o:[["Protection of customer data","حماية بيانات العملاء (Protection of customer data)"],["Intellectual property rights","حقوق الملكية الفكرية"],["Environmental responsibility","المسؤولية البيئية"],["Philanthropic donations","التبرعات الخيرية"]], a:0},
+   {q:["AI systems making unfair hiring decisions is a problem of:","أنظمة ذكاء اصطناعي تتخذ قرارات توظيف غير عادلة هي مشكلة في:"], o:[["Electronic waste","النفايات الإلكترونية"],["Double taxation","الازدواج الضريبي"],["Bias in algorithms (ethical use of AI)","التحيز في الخوارزميات (الاستخدام الأخلاقي للذكاء الاصطناعي)"],["Supply chain delays","تأخر سلسلة الإمداد"]], a:2}
+  ]
+});
+
+LECTURES.push({ id:'l4', n:4,
+  title:["Business in a Global Environment","الأعمال في البيئة العالمية"],
+  obj:[
+    ["Define globalization and explain its importance.","تعريف العولمة (Globalization) وشرح أهميتها."],
+    ["Understand international trade and how it works.","فهم التجارة الدولية (International trade) وكيف تعمل."],
+    ["Identify global markets and their characteristics.","التعرف على الأسواق العالمية وخصائصها."],
+    ["Explain the role of multinational companies.","شرح دور الشركات متعددة الجنسيات (Multinational companies)."],
+    ["Recognize the importance of cultural differences in business.","إدراك أهمية الاختلافات الثقافية في الأعمال."],
+    ["Analyze the impact of globalization on modern businesses, especially in IT.","تحليل أثر العولمة على الأعمال الحديثة، خاصة في تقنية المعلومات."]
+  ],
+  sec:[
+   {t:["Globalization","العولمة (Globalization)"], b:[
+     {k:'def', x:["Globalization is the process by which businesses and economies become connected and integrated across the world. It allows companies to operate beyond their local markets and reach customers globally.","العولمة هي العملية التي ترتبط بها الشركات والاقتصادات وتتكامل حول العالم. وتسمح للشركات بالعمل خارج أسواقها المحلية والوصول إلى العملاء عالميًا."]},
+     {k:'ul', h:["Key Features of Globalization","السمات الرئيسية للعولمة"], x:[["Free movement of goods and services","حرية حركة السلع والخدمات"],["International investment","الاستثمار الدولي"],["Global communication","التواصل العالمي"],["Technology-driven connectivity","الترابط المدفوع بالتكنولوجيا"]]},
+     {k:'ul', h:["Drivers of Globalization","محركات العولمة"], x:[["1. Technology (internet, cloud computing)","1. التكنولوجيا (الإنترنت، الحوسبة السحابية)"],["2. Transportation (faster logistics and shipping)","2. النقل (لوجستيات وشحن أسرع)"],["3. Trade agreements between countries","3. اتفاقيات التجارة بين الدول"],["4. Global communication systems","4. أنظمة الاتصال العالمية"]]},
+     {k:'ex', x:["A software company can develop an application in one country and sell it worldwide through online platforms.","شركة برمجيات تستطيع تطوير تطبيق في بلد وبيعه عالميًا عبر المنصات الإلكترونية."]}
+   ]},
+   {t:["International Trade","التجارة الدولية (International Trade)"], b:[
+     {k:'def', x:["International trade refers to the exchange of goods and services between countries.","التجارة الدولية هي تبادل السلع والخدمات بين الدول."]},
+     {k:'cards', c:[
+       {t:["Exports","الصادرات (Exports)"], l:[["Goods and services sold to other countries.","السلع والخدمات التي تُباع لدول أخرى."],["Example: A company selling software to international customers.","مثال: شركة تبيع برمجيات لعملاء دوليين."]]},
+       {t:["Imports","الواردات (Imports)"], l:[["Goods and services purchased from other countries.","السلع والخدمات التي تُشترى من دول أخرى."],["Example: Buying computer hardware from another country.","مثال: شراء أجهزة كمبيوتر من بلد آخر."]]}
+     ]},
+     {k:'cards', c:[
+       {t:["Benefits of International Trade","فوائد التجارة الدولية"], l:[["Access to new markets","الوصول إلى أسواق جديدة"],["Increased revenue opportunities","زيادة فرص الإيرادات"],["Availability of diverse products","توفر منتجات متنوعة"],["Lower production costs","تكاليف إنتاج أقل"]]},
+       {t:["Challenges of International Trade","تحديات التجارة الدولية"], l:[["Trade restrictions (tariffs, taxes)","قيود التجارة (الرسوم الجمركية Tariffs، الضرائب)"],["Currency differences","اختلاف العملات"],["Political risks","المخاطر السياسية"],["Legal regulations","اللوائح القانونية"]]}
+     ]}
+   ]},
+   {t:["Global Markets","الأسواق العالمية (Global Markets)"], b:[
+     {k:'def', x:["A global market is a market where businesses sell products or services across multiple countries.","السوق العالمي هو سوق تبيع فيه الشركات منتجات أو خدمات عبر دول متعددة."]},
+     {k:'ul', h:["Characteristics of Global Markets","خصائص الأسواق العالمية"], x:[["Large customer base","قاعدة عملاء كبيرة"],["High competition","منافسة عالية"],["Diverse customer needs","احتياجات عملاء متنوعة"],["Different regulations","لوائح مختلفة"]]},
+     {k:'ex', x:["Example in IT: Digital products such as mobile applications, online platforms, and cloud services can be sold globally without physical distribution.","مثال في IT: المنتجات الرقمية مثل تطبيقات الهاتف والمنصات الإلكترونية والخدمات السحابية يمكن بيعها عالميًا دون توزيع مادي."]}
+   ]},
+   {t:["Multinational Companies (MNCs)","الشركات متعددة الجنسيات (MNCs)"], b:[
+     {k:'def', x:["A multinational company (MNC) is a business that operates in more than one country.","الشركة متعددة الجنسيات (MNC) هي شركة تعمل في أكثر من بلد."]},
+     {k:'ul', h:["Characteristics","الخصائص"], x:[["Offices or operations in multiple countries","مكاتب أو عمليات في دول متعددة"],["Global workforce","قوة عاملة عالمية"],["Large-scale production and services","إنتاج وخدمات بنطاق واسع"],["International management structure","هيكل إداري دولي"]]},
+     {k:'cards', c:[
+       {t:["Advantages of MNCs","مزايا الشركات متعددة الجنسيات"], l:[["Access to global resources","الوصول إلى موارد عالمية"],["Larger markets","أسواق أكبر"],["Increased profits","أرباح أكبر"],["Economies of scale","وفورات الحجم (Economies of scale)"]]},
+       {t:["Challenges for MNCs","تحديات الشركات متعددة الجنسيات"], l:[["Cultural differences","الاختلافات الثقافية"],["Legal and regulatory differences","الاختلافات القانونية والتنظيمية"],["Communication barriers","عوائق التواصل"],["Political risks","المخاطر السياسية"]]}
+     ]},
+     {k:'ul', h:["Example: Technology companies often operate globally by:","مثال: شركات التكنولوجيا تعمل غالبًا عالميًا عن طريق:"], x:[["providing services worldwide","تقديم الخدمات حول العالم"],["hiring international teams","توظيف فرق دولية"],["managing global operations","إدارة العمليات العالمية"]]}
+   ]},
+   {t:["Cultural Differences in Business","الاختلافات الثقافية في الأعمال"], b:[
+     {k:'def', x:["Culture refers to the values, beliefs, behaviors, and customs of a group of people. Cultural differences affect how business is conducted in different countries.","الثقافة (Culture) هي القيم والمعتقدات والسلوكيات والعادات لمجموعة من الناس. وتؤثر الاختلافات الثقافية في كيفية ممارسة الأعمال في الدول المختلفة."]},
+     {k:'ul', h:["Key Cultural Factors","العوامل الثقافية الرئيسية"], x:[["Language","اللغة"],["Communication style","أسلوب التواصل"],["Work habits","عادات العمل"],["Business etiquette","آداب الأعمال (Business etiquette)"],["Decision-making styles","أساليب اتخاذ القرار"]]},
+     {k:'ul', h:["Examples of Cultural Differences","أمثلة على الاختلافات الثقافية"], x:[["Some cultures prefer formal communication, others prefer informal.","بعض الثقافات تفضل التواصل الرسمي وبعضها غير الرسمي."],["In some countries, business decisions are made quickly; in others, they take more time.","في بعض الدول تُتخذ قرارات الأعمال بسرعة، وفي أخرى تستغرق وقتًا أطول."],["Attitudes toward time, deadlines, and teamwork may differ.","قد تختلف المواقف تجاه الوقت والمواعيد النهائية والعمل الجماعي."]]},
+     {k:'ul', h:["Importance in Business: Understanding culture helps businesses:","الأهمية في الأعمال: فهم الثقافة يساعد الشركات على:"], x:[["communicate effectively","التواصل بفعالية"],["avoid misunderstandings","تجنب سوء الفهم"],["build strong relationships","بناء علاقات قوية"],["succeed in global markets","النجاح في الأسواق العالمية"]]}
+   ]},
+   {t:["Impact of Globalization on Businesses","أثر العولمة على الأعمال"], b:[
+     {k:'p', x:["Globalization has both positive and negative impacts.","للعولمة آثار إيجابية وسلبية."]},
+     {k:'cards', c:[
+       {t:["Positive Impacts","الآثار الإيجابية"], l:[["1. Market Expansion: Businesses can reach customers worldwide.","1. توسع السوق: تستطيع الشركات الوصول إلى عملاء حول العالم."],["2. Increased Innovation: Companies learn from global competition and improve their products.","2. زيادة الابتكار: تتعلم الشركات من المنافسة العالمية وتحسن منتجاتها."],["3. Cost Reduction: Businesses can outsource production to reduce costs.","3. خفض التكاليف: تستطيع الشركات الاستعانة بمصادر خارجية (Outsource) للإنتاج لتقليل التكاليف."],["4. Access to Talent: Companies can hire skilled employees from different countries.","4. الوصول إلى المواهب: تستطيع الشركات توظيف موظفين مهرة من دول مختلفة."]]},
+       {t:["Negative Impacts","الآثار السلبية"], l:[["1. Increased Competition: Local businesses face global competitors.","1. زيادة المنافسة: الشركات المحلية تواجه منافسين عالميين."],["2. Cultural Challenges: Businesses must adapt to different cultures.","2. تحديات ثقافية: يجب على الشركات التكيف مع ثقافات مختلفة."],["3. Economic Risks: Global crises can affect businesses worldwide.","3. مخاطر اقتصادية: الأزمات العالمية قد تؤثر في الشركات حول العالم."],["4. Job Displacement: Outsourcing may reduce jobs in some regions.","4. فقدان الوظائف (Job displacement): الاستعانة بمصادر خارجية قد تقلل الوظائف في بعض المناطق."]]}
+     ]}
+   ]},
+   {t:["Role of IT in Global Business","دور تقنية المعلومات في الأعمال العالمية"], b:[
+     {k:'p', x:["Technology is a key factor in globalization.","التكنولوجيا عامل رئيسي في العولمة."]},
+     {k:'ul', h:["Examples","أمثلة"], x:[["1. E-commerce: Businesses sell products globally through websites and apps.","1. التجارة الإلكترونية: تبيع الشركات المنتجات عالميًا عبر المواقع والتطبيقات."],["2. Cloud Computing: Companies manage global operations using cloud systems.","2. الحوسبة السحابية: تدير الشركات عملياتها العالمية باستخدام الأنظمة السحابية."],["3. Digital Communication: Teams collaborate across countries using video conferencing, messaging platforms, and project management tools.","3. التواصل الرقمي: تتعاون الفرق عبر الدول باستخدام مؤتمرات الفيديو (Video conferencing) ومنصات المراسلة وأدوات إدارة المشاريع."],["4. Remote Work: Employees work from different countries on the same projects.","4. العمل عن بعد (Remote work): يعمل الموظفون من دول مختلفة على نفس المشاريع."]]},
+     {k:'ul', h:["Example: A global software company may:","مثال: شركة برمجيات عالمية قد:"], x:[["develop software in one country","تطور البرمجيات في بلد"],["test it in another","تختبرها في بلد آخر"],["sell it worldwide","تبيعها حول العالم"],["support customers online globally","تدعم العملاء عبر الإنترنت عالميًا"]]}
+   ]}
+  ],
+  take:[
+   ["Globalization connects businesses and economies across the world.","العولمة تربط الشركات والاقتصادات حول العالم."],
+   ["Exports = sold to other countries. Imports = bought from other countries.","الصادرات = تُباع لدول أخرى. الواردات = تُشترى من دول أخرى."],
+   ["MNC = a business that operates in more than one country.","MNC = شركة تعمل في أكثر من بلد."],
+   ["Understanding culture helps avoid misunderstandings and build relationships.","فهم الثقافة يساعد على تجنب سوء الفهم وبناء العلاقات."]
+  ],
+  fc:[
+   [["What is globalization?","ما هي العولمة؟"],["The process by which businesses and economies become connected and integrated across the world.","العملية التي ترتبط بها الشركات والاقتصادات وتتكامل حول العالم."]],
+   [["What are the 4 drivers of globalization?","ما هي المحركات الأربعة للعولمة؟"],["Technology, transportation, trade agreements between countries, global communication systems.","التكنولوجيا، النقل، اتفاقيات التجارة بين الدول، أنظمة الاتصال العالمية."]],
+   [["Exports vs imports?","الصادرات مقابل الواردات؟"],["Exports: goods and services sold to other countries. Imports: goods and services purchased from other countries.","الصادرات: سلع وخدمات تُباع لدول أخرى. الواردات: سلع وخدمات تُشترى من دول أخرى."]],
+   [["Benefits of international trade?","فوائد التجارة الدولية؟"],["Access to new markets, increased revenue opportunities, diverse products, lower production costs.","الوصول لأسواق جديدة، زيادة فرص الإيرادات، منتجات متنوعة، تكاليف إنتاج أقل."]],
+   [["Challenges of international trade?","تحديات التجارة الدولية؟"],["Trade restrictions (tariffs, taxes), currency differences, political risks, legal regulations.","قيود التجارة (رسوم جمركية، ضرائب)، اختلاف العملات، مخاطر سياسية، لوائح قانونية."]],
+   [["What is a global market? Its characteristics?","ما هو السوق العالمي؟ وخصائصه؟"],["A market where businesses sell across multiple countries. Large customer base, high competition, diverse customer needs, different regulations.","سوق تبيع فيه الشركات عبر دول متعددة. قاعدة عملاء كبيرة، منافسة عالية، احتياجات متنوعة، لوائح مختلفة."]],
+   [["What is a multinational company (MNC)?","ما هي الشركة متعددة الجنسيات (MNC)؟"],["A business that operates in more than one country.","شركة تعمل في أكثر من بلد."]],
+   [["Advantages and challenges of MNCs?","مزايا وتحديات الـ MNCs؟"],["Advantages: global resources, larger markets, increased profits, economies of scale. Challenges: cultural, legal and regulatory differences, communication barriers, political risks.","المزايا: موارد عالمية، أسواق أكبر، أرباح أكبر، وفورات حجم. التحديات: اختلافات ثقافية وقانونية، عوائق تواصل، مخاطر سياسية."]],
+   [["What is culture? Name key cultural factors.","ما هي الثقافة؟ اذكر العوامل الثقافية."],["Values, beliefs, behaviors and customs of a group. Factors: language, communication style, work habits, business etiquette, decision-making styles.","القيم والمعتقدات والسلوكيات والعادات لمجموعة. العوامل: اللغة، أسلوب التواصل، عادات العمل، آداب الأعمال، أساليب القرار."]],
+   [["Why does understanding culture matter?","لماذا يهم فهم الثقافة؟"],["It helps businesses communicate effectively, avoid misunderstandings, build strong relationships, and succeed in global markets.","يساعد على التواصل بفعالية، وتجنب سوء الفهم، وبناء علاقات قوية، والنجاح في الأسواق العالمية."]],
+   [["Positive impacts of globalization?","الآثار الإيجابية للعولمة؟"],["Market expansion, increased innovation, cost reduction, access to talent.","توسع السوق، زيادة الابتكار، خفض التكاليف، الوصول إلى المواهب."]],
+   [["Negative impacts of globalization?","الآثار السلبية للعولمة؟"],["Increased competition, cultural challenges, economic risks, job displacement.","زيادة المنافسة، تحديات ثقافية، مخاطر اقتصادية، فقدان الوظائف."]],
+   [["Role of IT in global business?","دور IT في الأعمال العالمية؟"],["E-commerce, cloud computing, digital communication (video conferencing, messaging, project tools), remote work.","التجارة الإلكترونية، الحوسبة السحابية، التواصل الرقمي، العمل عن بعد."]]
+  ],
+  quiz:[
+   {q:["What are exports in international trade?","ما هي الصادرات (Exports) في التجارة الدولية؟"], o:[["Goods and services purchased from other countries","سلع وخدمات تُشترى من دول أخرى"],["Goods and services sold to other countries","سلع وخدمات تُباع لدول أخرى"],["Domestic trade tariffs","الرسوم الجمركية المحلية"],["Foreign currency exchange rates","أسعار صرف العملات الأجنبية"]], a:1},
+   {q:["Which of the following is one of the 4 main drivers of globalization?","أي مما يلي يُعد من المحركات الأربعة الرئيسية للعولمة؟"], o:[["High import tariffs","الرسوم الجمركية المرتفعة"],["Strict local-only regulations","اللوائح المحلية الصارمة"],["Trade agreements between countries","اتفاقيات التجارة بين الدول"],["Communication barriers","عوائق التواصل"]], a:2},
+   {q:["A multinational company (MNC) is defined as a business that:","تُعرّف الشركة متعددة الجنسيات (MNC) بأنها شركة:"], o:[["Exports products from a single home office only","تصدّر منتجاتها من مكتب محلي واحد فقط"],["Operates only within domestic borders","تعمل داخل الحدود المحلية فقط"],["Avoids hiring international teams","تتجنب توظيف الفرق الدولية"],["Operates in more than one country","تعمل في أكثر من بلد"]], a:3},
+   {q:["Which is a NEGATIVE impact of globalization on some regions?","أي مما يلي يُعد أثراً سلبياً للعولمة في بعض المناطق؟"], o:[["Market expansion","توسع السوق"],["Job displacement due to outsourcing","فقدان الوظائف (Job displacement) بسبب الاستعانة بمصادر خارجية"],["Access to global talent","الوصول إلى المواهب العالمية"],["Cost reduction in production","خفض تكاليف الإنتاج"]], a:1},
+   {q:["Why is understanding cultural differences critical in global business?","لماذا يُعد فهم الاختلافات الثقافية أمراً حاسماً في الأعمال العالمية؟"], o:[["It helps avoid misunderstandings and build strong relationships","يساعد على تجنب سوء الفهم وبناء علاقات قوية"],["It eliminates international tariffs automatically","يلغي الرسوم الجمركية الدولية تلقائياً"],["It standardizes global currencies","يوحد العملات العالمية"],["It removes legal regulations","يزيل اللوائح القانونية"]], a:0},
+   {q:["Which is a challenge of international trade?","أي مما يلي من تحديات التجارة الدولية؟"], o:[["Access to new markets","الوصول إلى أسواق جديدة"],["Lower production costs","تكاليف إنتاج أقل"],["Currency differences and trade restrictions","اختلاف العملات وقيود التجارة (الرسوم الجمركية)"],["Availability of diverse products","توفر منتجات متنوعة"]], a:2},
+   {q:["What are imports?","ما هي الواردات (Imports)؟"], o:[["Goods and services sold to foreign customers","سلع وخدمات تُباع لعملاء أجانب"],["Goods and services purchased from other countries","سلع وخدمات تُشترى من دول أخرى"],["Services provided by local employees","خدمات يقدمها موظفون محليون"],["International trade agreements","اتفاقيات التجارة الدولية"]], a:1},
+   {q:["Which is a benefit of international trade?","أي مما يلي من فوائد التجارة الدولية؟"], o:[["Access to new markets and lower production costs","الوصول إلى أسواق جديدة وتكاليف إنتاج أقل"],["High import tariffs","الرسوم الجمركية المرتفعة"],["Currency fluctuations","تقلبات العملات"],["Political instability risks","مخاطر عدم الاستقرار السياسي"]], a:0},
+   {q:["Which is a key characteristic of global markets?","أي مما يلي من الخصائص الرئيسية للأسواق العالمية؟"], o:[["Small customer base","قاعدة عملاء صغيرة"],["High competition and diverse customer needs","منافسة عالية واحتياجات عملاء متنوعة"],["Identical cultural habits worldwide","عادات ثقافية متطابقة حول العالم"],["A single unified legal regulation","لائحة قانونية واحدة موحدة"]], a:1},
+   {q:["Which is an example of IT's role in enabling global business operations?","أي مما يلي مثال على دور تقنية المعلومات (IT) في تمكين الأعمال العالمية؟"], o:[["Using cloud computing and digital communication for remote global teams","استخدام الحوسبة السحابية والتواصل الرقمي لإدارة الفرق والعمليات العالمية عن بعد"],["Restricting sales to physical brick-and-mortar shops","حصر المبيعات في المتاجر الفعلية التقليدية"],["Replacing digital workflows with paper mail","استبدال الأنظمة الرقمية بالبريد الورقي"],["Avoiding e-commerce platforms","تجنب منصات التجارة الإلكترونية"]], a:0}
+  ]
+});
+
+LECTURES.push({ id:'l5', n:5,
+  title:["Entrepreneurship and Starting a Business","ريادة الأعمال وبدء مشروع"],
+  obj:[
+    ["Define entrepreneurship and explain its importance.","تعريف ريادة الأعمال (Entrepreneurship) وشرح أهميتها."],
+    ["Identify key characteristics of successful entrepreneurs.","تحديد الخصائص الرئيسية لرواد الأعمال الناجحين."],
+    ["Understand what startup businesses are.","فهم ما هي الشركات الناشئة (Startups)."],
+    ["Explain the process of business planning.","شرح عملية تخطيط الأعمال."],
+    ["Identify different sources of business ideas.","تحديد مصادر أفكار المشاريع المختلفة."],
+    ["Recognize challenges involved in starting a business.","إدراك التحديات المرتبطة ببدء مشروع."]
+  ],
+  sec:[
+   {t:["What is Entrepreneurship?","ما هي ريادة الأعمال؟"], b:[
+     {k:'def', x:["Entrepreneurship is the process of identifying a business opportunity and creating, organizing, and managing a new business, while taking risks in order to make a profit.","ريادة الأعمال هي عملية تحديد فرصة تجارية وإنشاء وتنظيم وإدارة مشروع جديد، مع تحمل المخاطر من أجل تحقيق الربح."]},
+     {k:'def', x:["An entrepreneur is a person who starts and manages a business.","رائد الأعمال (Entrepreneur) هو شخص يبدأ ويدير مشروعًا."]},
+     {k:'ul', h:["Importance of Entrepreneurship: it plays a major role in economic development","أهمية ريادة الأعمال: لها دور كبير في التنمية الاقتصادية"], x:[["Creates new jobs","تخلق وظائف جديدة"],["Encourages innovation","تشجع الابتكار"],["Promotes economic growth","تعزز النمو الاقتصادي"],["Introduces new products and services","تقدم منتجات وخدمات جديدة"]]},
+     {k:'ex', x:["IT Context: A developer creates a mobile application that solves a problem (e.g., food delivery, education app) and launches it as a business.","في سياق IT: مطور ينشئ تطبيق هاتف يحل مشكلة (مثل توصيل الطعام أو تطبيق تعليمي) ويطلقه كمشروع تجاري."]}
+   ]},
+   {t:["Characteristics of Entrepreneurs","خصائص رواد الأعمال"], b:[
+     {k:'cards', c:[
+       {t:["1. Creativity","1. الإبداع (Creativity)"], l:[["Ability to generate new ideas and solutions.","القدرة على توليد أفكار وحلول جديدة."],["Example: Creating a unique app feature.","مثال: ابتكار ميزة فريدة في تطبيق."]]},
+       {t:["2. Risk-Taking","2. تحمل المخاطر (Risk-Taking)"], l:[["Willingness to take financial and business risks.","الاستعداد لتحمل المخاطر المالية والتجارية."]]},
+       {t:["3. Innovation","3. الابتكار (Innovation)"], l:[["Developing new products, services, or processes.","تطوير منتجات أو خدمات أو عمليات جديدة."]]},
+       {t:["4. Leadership","4. القيادة (Leadership)"], l:[["Ability to manage and motivate a team.","القدرة على إدارة الفريق وتحفيزه."]]},
+       {t:["5. Persistence","5. المثابرة (Persistence)"], l:[["Continuing efforts despite challenges and failures.","مواصلة الجهود رغم التحديات والفشل."]]},
+       {t:["6. Problem-Solving Skills","6. مهارات حل المشكلات"], l:[["Ability to identify and solve business problems.","القدرة على تحديد مشكلات العمل وحلها."]]},
+       {t:["7. Vision","7. الرؤية (Vision)"], l:[["Ability to plan for the future and set goals.","القدرة على التخطيط للمستقبل ووضع الأهداف."]]}
+     ]},
+     {k:'tip', x:["Seven traits: Creativity, Risk-taking, Innovation, Leadership, Persistence, Problem-solving, Vision.","سبع صفات: الإبداع، تحمل المخاطر، الابتكار، القيادة، المثابرة، حل المشكلات، الرؤية."]}
+   ]},
+   {t:["Startup Businesses","الشركات الناشئة (Startups)"], b:[
+     {k:'def', x:["A startup is a newly established business designed to develop a unique and scalable product or service. Startups are common in the technology sector.","الشركة الناشئة هي شركة حديثة التأسيس مصممة لتطوير منتج أو خدمة فريدة وقابلة للتوسع (Scalable). والشركات الناشئة شائعة في قطاع التكنولوجيا."]},
+     {k:'ul', h:["Characteristics of Startups","خصائص الشركات الناشئة"], x:[["Focus on innovation","التركيز على الابتكار"],["High growth potential","إمكانية نمو عالية"],["Use of technology","استخدام التكنولوجيا"],["Limited initial resources","موارد أولية محدودة"],["High risk","مخاطر عالية"]]},
+     {k:'ul', h:["Types of Tech Startups","أنواع الشركات التقنية الناشئة"], x:[["Mobile app startups","شركات تطبيقات الهاتف"],["Software as a Service (SaaS) companies","شركات البرمجيات كخدمة (SaaS)"],["E-commerce platforms","منصات التجارة الإلكترونية"],["Artificial Intelligence startups","شركات الذكاء الاصطناعي الناشئة"]]},
+     {k:'ex', x:["A startup developing a mobile app for online learning.","شركة ناشئة تطور تطبيق هاتف للتعلم عبر الإنترنت."]}
+   ]},
+   {t:["Business Planning","تخطيط الأعمال (Business Planning)"], b:[
+     {k:'def', x:["A business plan is a written document that outlines a business idea and how it will be implemented.","خطة العمل (Business plan) وثيقة مكتوبة توضح فكرة المشروع وكيف سيتم تنفيذها."]},
+     {k:'ul', h:["Importance of a Business Plan","أهمية خطة العمل"], x:[["Guides business operations","توجه عمليات الشركة"],["Helps secure funding","تساعد في الحصول على التمويل"],["Defines business goals","تحدد أهداف الشركة"],["Reduces risks","تقلل المخاطر"]]},
+     {k:'cards', c:[
+       {t:["1. Business Idea","1. فكرة العمل"], l:[["Description of the product or service.","وصف المنتج أو الخدمة."]]},
+       {t:["2. Market Analysis","2. تحليل السوق (Market Analysis)"], l:[["Understanding customers and competitors.","فهم العملاء والمنافسين."]]},
+       {t:["3. Marketing Strategy","3. استراتيجية التسويق"], l:[["How the business will attract customers.","كيف ستجذب الشركة العملاء."]]},
+       {t:["4. Operations Plan","4. خطة العمليات"], l:[["How the product/service will be delivered.","كيف سيتم تقديم المنتج/الخدمة."]]},
+       {t:["5. Financial Plan","5. الخطة المالية"], l:[["Estimated costs, revenue, and profit.","التكاليف والإيرادات والأرباح المقدرة."]]},
+       {t:["6. Management Team","6. فريق الإدارة"], l:[["People responsible for running the business.","الأشخاص المسؤولون عن إدارة الشركة."]]}
+     ]},
+     {k:'tip', x:["Six plan parts: Idea, Market, Marketing, Operations, Financial, Management team.","ست أجزاء للخطة: الفكرة، السوق، التسويق، العمليات، المالية، فريق الإدارة."]}
+   ]},
+   {t:["Sources of Business Ideas","مصادر أفكار المشاريع"], b:[
+     {k:'p', x:["Entrepreneurs can generate business ideas from various sources.","يستطيع رواد الأعمال توليد أفكار المشاريع من مصادر متنوعة."]},
+     {k:'cards', c:[
+       {t:["1. Personal Experience","1. الخبرة الشخصية"], l:[["Identifying problems in daily life.","ملاحظة المشكلات في الحياة اليومية."],["Example: Creating an app to solve a personal problem.","مثال: إنشاء تطبيق لحل مشكلة شخصية."]]},
+       {t:["2. Market Needs","2. احتياجات السوق"], l:[["Identifying gaps in the market.","اكتشاف الفجوات في السوق."],["Example: Lack of a specific online service.","مثال: غياب خدمة إلكترونية معينة."]]},
+       {t:["3. Technology Trends","3. اتجاهات التكنولوجيا"], l:[["Using new technologies to create opportunities.","استخدام تقنيات جديدة لخلق الفرص."],["Examples: AI applications, Mobile apps, Cloud services","أمثلة: تطبيقات الذكاء الاصطناعي، تطبيقات الهاتف، الخدمات السحابية"]]},
+       {t:["4. Innovation and Creativity","4. الابتكار والإبداع"], l:[["Developing new or improved products.","تطوير منتجات جديدة أو محسنة."]]},
+       {t:["5. Customer Feedback","5. ملاحظات العملاء"], l:[["Listening to customer needs and suggestions.","الاستماع لاحتياجات العملاء واقتراحاتهم."]]},
+       {t:["6. Competitor Analysis","6. تحليل المنافسين"], l:[["Improving existing products offered by competitors.","تحسين المنتجات الحالية التي يقدمها المنافسون."]]}
+     ]}
+   ]},
+   {t:["Challenges of Starting a Business","تحديات بدء مشروع"], b:[
+     {k:'p', x:["Starting a business involves many challenges.","بدء مشروع يتضمن تحديات كثيرة."]},
+     {k:'ul', x:[["1. Financial Constraints: Limited funding and resources.","1. القيود المالية: تمويل وموارد محدودة."],["2. Market Competition: Competing with existing businesses.","2. منافسة السوق: التنافس مع الشركات القائمة."],["3. Lack of Experience: New entrepreneurs may lack business knowledge.","3. نقص الخبرة: قد يفتقر رواد الأعمال الجدد إلى المعرفة التجارية."],["4. Risk of Failure: Many startups fail due to poor planning or execution.","4. خطر الفشل: كثير من الشركات الناشئة تفشل بسبب سوء التخطيط أو التنفيذ."],["5. Legal and Regulatory Issues: Businesses must comply with laws and regulations.","5. قضايا قانونية وتنظيمية: يجب على الشركات الالتزام بالقوانين واللوائح."],["6. Managing Growth: Rapid growth can create operational challenges.","6. إدارة النمو: النمو السريع قد يخلق تحديات تشغيلية."],["7. Technology Challenges: Developing reliable systems, maintaining security, handling data.","7. تحديات تقنية: تطوير أنظمة موثوقة، الحفاظ على الأمان، التعامل مع البيانات."]]}
+   ]},
+   {t:["Example: Developing a Mobile App Startup","مثال: تطوير شركة ناشئة لتطبيق هاتف"], b:[
+     {k:'p', x:["Let's apply the concepts:","لنطبق المفاهيم:"]},
+     {k:'ul', x:[["Step 1: Identify Idea - A mobile app for car rental booking.","الخطوة 1: تحديد الفكرة - تطبيق هاتف لحجز تأجير السيارات."],["Step 2: Market Research - Who are the customers? Are there competitors?","الخطوة 2: أبحاث السوق (Market Research) -
