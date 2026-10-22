@@ -50,6 +50,26 @@ tailwind.config = {
   .flip.on .flip-inner { transform: rotateY(180deg); }
   .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1.5rem; border-radius: 1rem; overflow: auto; }
   .back { transform: rotateY(180deg); }
+    /* ---------- Downloads page animations ---------- */
+  .dl-ico { display:inline-block; animation: dlbounce 1.6s ease-in-out infinite; }
+  @keyframes dlbounce { 0%,100% { transform: translateY(-2px); } 50% { transform: translateY(3px); } }
+  .dl-hero-ico { display:inline-block; animation: dlfloat 2.4s ease-in-out infinite; }
+  @keyframes dlfloat { 0%,100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-8px) rotate(3deg); } }
+  .dl-card { animation: dlin .5s cubic-bezier(.2,.8,.2,1) both; animation-delay: var(--d,0ms); transition: transform .25s, border-color .25s, box-shadow .25s; }
+  .dl-card:hover { transform: translateY(-4px); border-color: rgb(var(--b5)); box-shadow: 0 10px 30px -12px rgb(var(--b5) / .5); }
+  .dl-card:hover .dl-card-ico { transform: scale(1.15) rotate(-6deg); }
+  .dl-card-ico { display:inline-block; transition: transform .3s; }
+  @keyframes dlin { from { opacity:0; transform: translateY(24px) scale(.97); } to { opacity:1; transform:none; } }
+  .dl-btn { position:relative; overflow:hidden; isolation:isolate; transition: transform .15s, background .3s; }
+  .dl-btn:active { transform: scale(.96); }
+  .dl-btn::after { content:''; position:absolute; top:0; bottom:0; width:40%; left:-60%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.35), transparent); animation: dlshine 3s ease-in-out infinite; z-index:-1; }
+  @keyframes dlshine { 0% { left:-60%; } 55%,100% { left:130%; } }
+  .dl-bar { position:absolute; inset:0 auto 0 0; width:0; background: rgba(255,255,255,.28); z-index:-1; }
+  [dir="rtl"] .dl-bar { inset:0 0 0 auto; }
+  .dl-busy .dl-bar { animation: dlfill .9s linear forwards; }
+  @keyframes dlfill { to { width:100%; } }
+  .dl-done { background:#16a34a !important; animation: dlpop .45s ease; }
+  @keyframes dlpop { 0% { transform: scale(1); } 40% { transform: scale(1.08); } 100% { transform: scale(1); } }
 </style>
 </head>
 <body class="bg-dark-base text-dark-text min-h-screen">
@@ -99,6 +119,9 @@ const UI = {
   lectures:["Lectures","المحاضرات"], mistakes:["Questions you missed","الأسئلة التي أخطأت فيها"], yourAns:["Correct answer","الإجابة الصحيحة"],
   glossFlash:["Term Flashcards","بطاقات المصطلحات"], glossList:["All Terms","كل المصطلحات"], questions:["questions","سؤالًا"],
   question:["Question","السؤال"],
+      dl:["Downloads","التحميلات"], download:["Download","تحميل"], dlPrep:["Preparing...","جارٍ التجهيز..."], dlDone:["Downloaded ✔","تم التحميل ✔"],
+  dlIntro:["Download the lecture slides to revise offline.","حمّل شرائح المحاضرات لتراجعها بدون إنترنت."],
+  dlMore:["More files","ملفات إضافية"],
   chooseSize:["Choose the number of questions","اختر عدد الأسئلة"], all:["All","الكل"], answerEN:["English","English"],
   masteryHow:["Mastery = average of your best score in each lecture quiz and your best final exam score. Reading lectures does not raise it.","الإتقان = متوسط أفضل نتيجة لك في اختبار كل محاضرة وأفضل نتيجة في الاختبار النهائي. قراءة المحاضرات وحدها لا ترفعه."]
 };
@@ -826,6 +849,141 @@ LECTURES.push({ id:'l7', n:7,
   ]
 });
 
+LECTURES.push({ id:'l8', n:8,
+  title:["Accounting, Finance, and Information Technology in Business","المحاسبة والتمويل وتقنية المعلومات في الأعمال"],
+  obj:[
+    ["Understand the role of accounting in business.","فهم دور المحاسبة (Accounting) في الأعمال."],
+    ["Explain basic financial concepts.","شرح المفاهيم المالية الأساسية."],
+    ["Identify major financial statements.","التعرف على القوائم المالية الرئيسية."],
+    ["Understand the importance of finance in business decision making.","فهم أهمية التمويل (Finance) في اتخاذ القرارات التجارية."],
+    ["Explain the role of information technology in modern organizations.","شرح دور تقنية المعلومات (IT) في المؤسسات الحديثة."],
+    ["Recognize how information systems support business operations.","إدراك كيف تدعم نظم المعلومات عمليات الشركة."],
+    ["Understand the importance of cybersecurity and digital transformation.","فهم أهمية الأمن السيبراني والتحول الرقمي."]
+  ],
+  sec:[
+   {t:["Introduction to Accounting","مقدمة في المحاسبة"], b:[
+     {k:'def', x:["Accounting is the process of recording, organizing, summarizing, and reporting financial information. It helps businesses understand their financial performance and make informed decisions.","المحاسبة هي عملية تسجيل المعلومات المالية وتنظيمها وتلخيصها والإبلاغ عنها. وتساعد الشركات على فهم أدائها المالي واتخاذ قرارات مدروسة."]},
+     {k:'ul', h:["Importance of Accounting","أهمية المحاسبة"], x:[["Track income and expenses","تتبع الدخل والمصروفات"],["Measure profit or loss","قياس الربح أو الخسارة"],["Prepare budgets","إعداد الميزانيات التقديرية (Budgets)"],["Make financial decisions","اتخاذ القرارات المالية"],["Comply with laws and regulations","الالتزام بالقوانين واللوائح"]]}
+   ]},
+   {t:["Users of Accounting Information","مستخدمو المعلومات المحاسبية"], b:[
+     {k:'cards', c:[
+       {t:["Internal Users (inside the organization)","المستخدمون الداخليون (داخل المنظمة)"], l:[["Managers","المديرون"],["Owners","الملاك"],["Employees","الموظفون"]]},
+       {t:["External Users (outside the organization)","المستخدمون الخارجيون (خارج المنظمة)"], l:[["Investors","المستثمرون"],["Banks","البنوك"],["Government agencies","الجهات الحكومية"],["Customers","العملاء"]]}
+     ]}
+   ]},
+   {t:["Basic Accounting Concepts","المفاهيم المحاسبية الأساسية"], b:[
+     {k:'cards', c:[
+       {t:["Revenue","الإيرادات (Revenue)"], l:[["Income a business earns from selling goods or services.","الدخل الذي تكسبه الشركة من بيع السلع أو الخدمات."],["Example: income from software subscriptions.","مثال: الدخل من اشتراكات البرمجيات."]]},
+       {t:["Expenses","المصروفات (Expenses)"], l:[["The costs incurred in running the business.","التكاليف التي تتحملها الشركة لتشغيل نشاطها."],["Examples: salaries, rent, internet services, software licenses.","أمثلة: الرواتب، الإيجار، خدمات الإنترنت، تراخيص البرمجيات."]]},
+       {t:["Profit","الربح (Profit)"], l:[["The amount remaining after expenses are subtracted from revenue.","المبلغ المتبقي بعد خصم المصروفات من الإيرادات."]]},
+       {t:["Assets","الأصول (Assets)"], l:[["Resources owned by the business.","الموارد التي تملكها الشركة."],["Examples: computers, servers, office equipment, cash.","أمثلة: أجهزة الكمبيوتر، الخوادم، معدات المكتب، النقد."]]},
+       {t:["Liabilities","الالتزامات (Liabilities)"], l:[["Debts or obligations owed by the business.","الديون أو الالتزامات المستحقة على الشركة."],["Examples: loans, unpaid bills.","أمثلة: القروض، الفواتير غير المدفوعة."]]}
+     ]},
+     {k:'formula', x:"Profit = Revenue - Expenses"}
+   ]},
+   {t:["Financial Statements","القوائم المالية"], b:[
+     {k:'def', x:["Financial statements are reports used to evaluate business performance.","القوائم المالية هي تقارير تُستخدم لتقييم أداء الشركة."]},
+     {k:'cards', c:[
+       {t:["1. Income Statement","1. قائمة الدخل (Income Statement)"], l:[["Shows: revenue, expenses, profit or loss.","تعرض: الإيرادات، المصروفات، الربح أو الخسارة."],["Purpose: measures business profitability.","الهدف: قياس ربحية الشركة."]]},
+       {t:["2. Balance Sheet","2. الميزانية العمومية (Balance Sheet)"], l:[["Shows: assets, liabilities, owner's equity.","تعرض: الأصول، الالتزامات، حقوق الملكية (Owner's equity)."],["Purpose: shows the financial position of the business.","الهدف: إظهار المركز المالي للشركة."]]},
+       {t:["3. Cash Flow Statement","3. قائمة التدفقات النقدية (Cash Flow Statement)"], l:[["Shows how cash enters and leaves the business.","تعرض كيف يدخل النقد إلى الشركة ويخرج منها."],["Importance: helps businesses manage liquidity.","الأهمية: تساعد الشركات على إدارة السيولة (Liquidity)."]]}
+     ]},
+     {k:'tbl', h:[["Item (Income Statement example)","البند (مثال قائمة الدخل)"],["Amount","المبلغ"]],
+      r:[[["Revenue","الإيرادات"],["$50,000","50,000$"]],[["Expenses","المصروفات"],["$30,000","30,000$"]],[["Profit","الربح"],["$20,000","20,000$"]]]},
+     {k:'formula', x:"Assets = Liabilities + Owner's Equity"}
+   ]},
+   {t:["Introduction to Finance","مقدمة في التمويل"], b:[
+     {k:'def', x:["Finance is the management of money and financial resources.","التمويل (Finance) هو إدارة الأموال والموارد المالية."]},
+     {k:'ul', h:["Finance focuses on","يركز التمويل على"], x:[["Investments","الاستثمارات"],["Budgeting","إعداد الميزانيات"],["Funding","التمويل (الحصول على الأموال)"],["Financial planning","التخطيط المالي"]]},
+     {k:'ul', h:["Importance of Finance","أهمية التمويل"], x:[["Plan future growth","التخطيط للنمو المستقبلي"],["Manage costs","إدارة التكاليف"],["Make investment decisions","اتخاذ قرارات الاستثمار"],["Obtain funding","الحصول على التمويل"],["Manage risks","إدارة المخاطر"]]}
+   ]},
+   {t:["Budgeting","إعداد الميزانية التقديرية"], b:[
+     {k:'def', x:["A budget is a financial plan that estimates future income and expenses.","الميزانية التقديرية (Budget) هي خطة مالية تقدّر الدخل والمصروفات المستقبلية."]},
+     {k:'ul', h:["Importance of Budgeting","أهمية الميزانية"], x:[["Controls spending","تتحكم في الإنفاق"],["Helps achieve financial goals","تساعد على تحقيق الأهداف المالية"],["Prevents financial problems","تمنع المشاكل المالية"]]},
+     {k:'ex', x:["A software company budgeting for employee salaries, cloud hosting, and marketing expenses.","شركة برمجيات تضع ميزانية لرواتب الموظفين والاستضافة السحابية ومصروفات التسويق."]}
+   ]},
+   {t:["Business Investment Decisions","قرارات الاستثمار في الأعمال"], b:[
+     {k:'def', x:["Businesses invest money to improve operations and increase profits.","تستثمر الشركات الأموال لتحسين العمليات وزيادة الأرباح."]},
+     {k:'ul', h:["Examples of Investments","أمثلة على الاستثمارات"], x:[["Purchasing new technology","شراء تقنية جديدة"],["Developing software systems","تطوير أنظمة برمجية"],["Expanding business operations","توسيع عمليات الشركة"]]},
+     {k:'tip', x:["Risk and Return: higher investments may produce higher profits but also involve higher risk.","المخاطرة والعائد (Risk and Return): الاستثمارات الأكبر قد تحقق أرباحًا أعلى لكنها تنطوي أيضًا على مخاطر أعلى."]}
+   ]},
+   {t:["Information Technology in Business","تقنية المعلومات في الأعمال"], b:[
+     {k:'p', x:["Technology is a critical part of modern business operations.","التقنية جزء أساسي من عمليات الأعمال الحديثة."]},
+     {k:'ul', h:["Role of IT in Business","دور IT في الأعمال"], x:[["Store and manage data","تخزين البيانات وإدارتها"],["Communicate effectively","التواصل بفعالية"],["Automate processes","أتمتة العمليات (Automation)"],["Improve decision making","تحسين اتخاذ القرار"],["Increase efficiency","زيادة الكفاءة"]]}
+   ]},
+   {t:["Information Systems","نظم المعلومات"], b:[
+     {k:'def', x:["An information system is a combination of hardware, software, data, people, and processes used to collect and manage information.","نظام المعلومات (Information system) هو مزيج من الأجهزة والبرمجيات والبيانات والأفراد والعمليات يُستخدم لجمع المعلومات وإدارتها."]},
+     {k:'cards', c:[
+       {t:["1. Transaction Processing Systems (TPS)","1. نظم معالجة المعاملات (TPS)"], l:[["Handle daily transactions.","تتعامل مع المعاملات اليومية."],["Examples: online purchases, payroll systems.","أمثلة: المشتريات عبر الإنترنت، أنظمة الرواتب."]]},
+       {t:["2. Management Information Systems (MIS)","2. نظم المعلومات الإدارية (MIS)"], l:[["Provide reports for managers.","توفر تقارير للمديرين."],["Example: sales performance reports.","مثال: تقارير أداء المبيعات."]]},
+       {t:["3. Decision Support Systems (DSS)","3. نظم دعم القرار (DSS)"], l:[["Help managers make decisions using data analysis.","تساعد المديرين على اتخاذ القرارات باستخدام تحليل البيانات."]]}
+     ]}
+   ]},
+   {t:["Data Management","إدارة البيانات"], b:[
+     {k:'p', x:["Businesses collect large amounts of data.","تجمع الشركات كميات كبيرة من البيانات."]},
+     {k:'ul', h:["Importance of Data Management","أهمية إدارة البيانات"], x:[["Improves decision making","تحسن اتخاذ القرار"],["Supports customer service","تدعم خدمة العملاء"],["Increases operational efficiency","تزيد الكفاءة التشغيلية"]]},
+     {k:'ex', x:["E-commerce companies analyze customer purchasing behavior.","شركات التجارة الإلكترونية تحلل سلوك الشراء لدى العملاء."]}
+   ]},
+   {t:["Cybersecurity","الأمن السيبراني"], b:[
+     {k:'def', x:["Cybersecurity refers to protecting systems, networks, and data from cyber threats.","الأمن السيبراني (Cybersecurity) يعني حماية الأنظمة والشبكات والبيانات من التهديدات الإلكترونية."]},
+     {k:'ul', h:["Common Cybersecurity Threats","التهديدات السيبرانية الشائعة"], x:[["Hacking","الاختراق (Hacking)"],["Malware","البرمجيات الخبيثة (Malware)"],["Data breaches","تسرب/اختراق البيانات (Data breaches)"]]},
+     {k:'ul', h:["Businesses must protect","يجب على الشركات حماية"], x:[["Customer data","بيانات العملاء"],["Financial information","المعلومات المالية"],["Business systems","أنظمة الشركة"]]},
+     {k:'ex', x:["Protecting customer payment information in online stores.","حماية معلومات الدفع الخاصة بالعملاء في المتاجر الإلكترونية."]}
+   ]},
+   {t:["Digital Transformation","التحول الرقمي"], b:[
+     {k:'def', x:["Digital transformation is the use of digital technologies to improve business operations.","التحول الرقمي (Digital transformation) هو استخدام التقنيات الرقمية لتحسين عمليات الشركة."]},
+     {k:'ul', h:["Examples","أمثلة"], x:[["Cloud computing","الحوسبة السحابية"],["Online services","الخدمات الإلكترونية"],["Mobile applications","تطبيقات الهاتف"],["Artificial intelligence","الذكاء الاصطناعي"]]},
+     {k:'ul', h:["Benefits","الفوائد"], x:[["Improved efficiency","تحسين الكفاءة"],["Faster communication","تواصل أسرع"],["Better customer experience","تجربة عملاء أفضل"],["Reduced operational costs","تقليل التكاليف التشغيلية"]]}
+   ]},
+   {t:["Role of IT in Modern Businesses","دور IT في الشركات الحديثة"], b:[
+     {k:'cards', c:[
+       {t:["E-commerce Platforms","منصات التجارة الإلكترونية"], l:[["Allow businesses to sell products online.","تتيح للشركات بيع المنتجات عبر الإنترنت."]]},
+       {t:["Cloud Services","الخدمات السحابية"], l:[["Provide online storage and computing power.","توفر تخزينًا وقدرة حوسبة عبر الإنترنت."]]},
+       {t:["Business Communication Systems","أنظمة الاتصال في الأعمال"], l:[["Enable collaboration between employees worldwide.","تتيح التعاون بين الموظفين حول العالم."]]},
+       {t:["Data Analytics","تحليل البيانات"], l:[["Businesses analyze data to improve decisions.","تحلل الشركات البيانات لتحسين قراراتها."]]}
+     ]}
+   ]}
+  ],
+  take:[
+   ["Profit = Revenue - Expenses. Assets = Liabilities + Owner's Equity.","الربح = الإيرادات - المصروفات. الأصول = الالتزامات + حقوق الملكية."],
+   ["Three financial statements: Income Statement (profitability), Balance Sheet (financial position), Cash Flow Statement (cash in and out).","ثلاث قوائم مالية: قائمة الدخل (الربحية)، الميزانية العمومية (المركز المالي)، قائمة التدفقات النقدية (دخول وخروج النقد)."],
+   ["Higher investment can bring higher profit but also higher risk.","الاستثمار الأكبر قد يحقق ربحًا أعلى لكنه ينطوي على مخاطر أعلى."],
+   ["Information systems: TPS (daily transactions), MIS (manager reports), DSS (decision support).","نظم المعلومات: TPS (المعاملات اليومية)، MIS (تقارير المديرين)، DSS (دعم القرار)."],
+   ["Cybersecurity protects systems, networks and data from hacking, malware and data breaches.","الأمن السيبراني يحمي الأنظمة والشبكات والبيانات من الاختراق والبرمجيات الخبيثة وتسرب البيانات."]
+  ],
+  fc:[
+   [["What is accounting?","ما هي المحاسبة؟"],["The process of recording, organizing, summarizing, and reporting financial information.","عملية تسجيل المعلومات المالية وتنظيمها وتلخيصها والإبلاغ عنها."]],
+   [["Why is accounting important?","لماذا المحاسبة مهمة؟"],["Track income and expenses, measure profit or loss, prepare budgets, make financial decisions, comply with laws.","تتبع الدخل والمصروفات، قياس الربح أو الخسارة، إعداد الميزانيات، اتخاذ القرارات المالية، الالتزام بالقوانين."]],
+   [["Who are the internal and external users of accounting information?","من هم المستخدمون الداخليون والخارجيون للمعلومات المحاسبية؟"],["Internal: managers, owners, employees. External: investors, banks, government agencies, customers.","الداخليون: المديرون، الملاك، الموظفون. الخارجيون: المستثمرون، البنوك، الجهات الحكومية، العملاء."]],
+   [["Define revenue, expenses and profit.","عرّف الإيرادات والمصروفات والربح."],["Revenue: income from selling goods or services. Expenses: costs of running the business. Profit = Revenue - Expenses.","الإيرادات: الدخل من بيع السلع أو الخدمات. المصروفات: تكاليف تشغيل الشركة. الربح = الإيرادات - المصروفات."]],
+   [["Define assets and liabilities.","عرّف الأصول والالتزامات."],["Assets: resources owned by the business (computers, servers, cash). Liabilities: debts or obligations (loans, unpaid bills).","الأصول: موارد تملكها الشركة (كمبيوترات، خوادم، نقد). الالتزامات: ديون أو التزامات (قروض، فواتير غير مدفوعة)."]],
+   [["Name the three financial statements.","اذكر القوائم المالية الثلاث."],["Income Statement, Balance Sheet, Cash Flow Statement.","قائمة الدخل، الميزانية العمومية، قائمة التدفقات النقدية."]],
+   [["What does the income statement show?","ماذا تعرض قائمة الدخل؟"],["Revenue, expenses, and profit or loss. It measures profitability.","الإيرادات والمصروفات والربح أو الخسارة. وتقيس الربحية."]],
+   [["What does the balance sheet show? Its formula?","ماذا تعرض الميزانية العمومية؟ ومعادلتها؟"],["Assets, liabilities and owner's equity (financial position). Assets = Liabilities + Owner's Equity.","الأصول والالتزامات وحقوق الملكية (المركز المالي). الأصول = الالتزامات + حقوق الملكية."]],
+   [["What is the cash flow statement for?","ما فائدة قائمة التدفقات النقدية؟"],["It shows how cash enters and leaves the business and helps manage liquidity.","تُظهر كيف يدخل النقد إلى الشركة ويخرج منها وتساعد على إدارة السيولة."]],
+   [["What is finance and what does it focus on?","ما هو التمويل وعلى ماذا يركز؟"],["Management of money and financial resources: investments, budgeting, funding, financial planning.","إدارة الأموال والموارد المالية: الاستثمارات، الميزانية، التمويل، التخطيط المالي."]],
+   [["What is a budget and why is it important?","ما هي الميزانية التقديرية ولماذا هي مهمة؟"],["A financial plan estimating future income and expenses. It controls spending, helps reach goals, prevents financial problems.","خطة مالية تقدّر الدخل والمصروفات المستقبلية. تتحكم في الإنفاق وتحقق الأهداف وتمنع المشاكل المالية."]],
+   [["Explain risk and return in investment.","اشرح المخاطرة والعائد في الاستثمار."],["Higher investments may produce higher profits but also involve higher risk.","الاستثمارات الأكبر قد تحقق أرباحًا أعلى لكنها تنطوي على مخاطر أعلى."]],
+   [["What is an information system?","ما هو نظام المعلومات؟"],["A combination of hardware, software, data, people and processes used to collect and manage information.","مزيج من الأجهزة والبرمجيات والبيانات والأفراد والعمليات لجمع المعلومات وإدارتها."]],
+   [["Name the three types of information systems.","اذكر أنواع نظم المعلومات الثلاثة."],["TPS (daily transactions, e.g. payroll), MIS (manager reports, e.g. sales reports), DSS (decision support using data analysis).","TPS (المعاملات اليومية مثل الرواتب)، MIS (تقارير المديرين مثل تقارير المبيعات)، DSS (دعم القرار بتحليل البيانات)."]],
+   [["What is cybersecurity and its common threats?","ما هو الأمن السيبراني وما تهديداته الشائعة؟"],["Protecting systems, networks and data from cyber threats: hacking, malware, data breaches.","حماية الأنظمة والشبكات والبيانات من التهديدات الإلكترونية: الاختراق، البرمجيات الخبيثة، تسرب البيانات."]],
+   [["What is digital transformation? Its benefits?","ما هو التحول الرقمي؟ وفوائده؟"],["Using digital technologies to improve operations. Benefits: efficiency, faster communication, better customer experience, lower costs.","استخدام التقنيات الرقمية لتحسين العمليات. الفوائد: كفاءة، تواصل أسرع، تجربة عملاء أفضل، تكاليف أقل."]]
+  ],
+  quiz:[
+   {q:["What is the formula for profit?","ما معادلة الربح؟"], o:[["Revenue + Expenses","الإيرادات + المصروفات"],["Revenue - Expenses","الإيرادات - المصروفات"],["Assets - Liabilities","الأصول - الالتزامات"],["Expenses - Revenue","المصروفات - الإيرادات"]], a:1},
+   {q:["Which of the following is an external user of accounting information?","أي مما يلي مستخدم خارجي للمعلومات المحاسبية؟"], o:[["Managers","المديرون"],["Owners","الملاك"],["Banks","البنوك"],["Employees","الموظفون"]], a:2},
+   {q:["Which financial statement measures business profitability?","أي قائمة مالية تقيس ربحية الشركة؟"], o:[["Balance Sheet","الميزانية العمومية"],["Income Statement","قائمة الدخل"],["Cash Flow Statement","قائمة التدفقات النقدية"],["Budget","الميزانية التقديرية"]], a:1},
+   {q:["The basic formula of the balance sheet is:","المعادلة الأساسية للميزانية العمومية هي:"], o:[["Assets = Revenue - Expenses","الأصول = الإيرادات - المصروفات"],["Assets = Liabilities + Owner's Equity","الأصول = الالتزامات + حقوق الملكية"],["Liabilities = Assets + Owner's Equity","الالتزامات = الأصول + حقوق الملكية"],["Profit = Assets - Liabilities","الربح = الأصول - الالتزامات"]], a:1},
+   {q:["Which statement shows how cash enters and leaves the business?","أي قائمة توضح كيف يدخل النقد إلى الشركة ويخرج منها؟"], o:[["Income Statement","قائمة الدخل"],["Balance Sheet","الميزانية العمومية"],["Cash Flow Statement","قائمة التدفقات النقدية"],["Trial balance","ميزان المراجعة"]], a:2},
+   {q:["A budget is:","الميزانية التقديرية هي:"], o:[["A record of past sales only","سجل للمبيعات السابقة فقط"],["A financial plan estimating future income and expenses","خطة مالية تقدّر الدخل والمصروفات المستقبلية"],["A type of loan","نوع من القروض"],["A cyber threat","تهديد سيبراني"]], a:1},
+   {q:["Higher investments usually involve:","الاستثمارات الأكبر تنطوي عادة على:"], o:[["Lower risk always","مخاطر أقل دائمًا"],["No risk","لا مخاطر"],["Higher potential profit but higher risk","ربح محتمل أعلى لكن مخاطر أعلى"],["Lower profit only","ربح أقل فقط"]], a:2},
+   {q:["Payroll systems and online purchases are examples of:","أنظمة الرواتب والمشتريات عبر الإنترنت أمثلة على:"], o:[["DSS","نظم دعم القرار DSS"],["MIS","نظم المعلومات الإدارية MIS"],["TPS","نظم معالجة المعاملات TPS"],["Cloud storage","التخزين السحابي"]], a:2},
+   {q:["Which system provides reports for managers, such as sales performance reports?","أي نظام يوفر تقارير للمديرين مثل تقارير أداء المبيعات؟"], o:[["TPS","TPS"],["MIS","MIS"],["DSS","DSS"],["ERP only","ERP فقط"]], a:1},
+   {q:["Which is a common cybersecurity threat?","أي مما يلي تهديد سيبراني شائع؟"], o:[["Budgeting","إعداد الميزانية"],["Malware","البرمجيات الخبيثة"],["Cloud computing","الحوسبة السحابية"],["Data analytics","تحليل البيانات"]], a:1},
+   {q:["Which is a benefit of digital transformation?","أي مما يلي من فوائد التحول الرقمي؟"], o:[["Slower communication","تواصل أبطأ"],["Higher operational costs","تكاليف تشغيلية أعلى"],["Better customer experience","تجربة عملاء أفضل"],["Less efficiency","كفاءة أقل"]], a:2}
+  ]
+});
+
 const GLOSSARY = [
 ["Business","نشاط تجاري / أعمال"],["Goods","سلع"],["Services","خدمات"],["Resources","موارد"],["Human resources","الموارد البشرية"],["Financial resources","الموارد المالية"],["Capital","رأس المال"],["Physical resources","الموارد المادية"],["Information resources","موارد المعلومات"],["Tangible","ملموس"],["Intangible","غير ملموس"],["Revenue","الإيرادات"],["Expenses","المصروفات"],["Profit","الربح"],["Operating costs","تكاليف التشغيل"],["Employment","التوظيف / فرص العمل"],["Innovation","الابتكار"],["Research and Development (R&D)","البحث والتطوير"],["Artificial Intelligence (AI)","الذكاء الاصطناعي"],["Cloud computing","الحوسبة السحابية"],["Blockchain","البلوكشين (سلسلة الكتل)"],["Manufacturing","التصنيع"],["Retail","التجزئة"],["Business environment","بيئة الأعمال"],["Internal environment","البيئة الداخلية"],["External environment","البيئة الخارجية"],["Economic environment","البيئة الاقتصادية"],["Inflation","التضخم"],["Unemployment","البطالة"],["Interest rates","أسعار الفائدة"],["Economic growth","النمو الاقتصادي"],["Recession","الركود الاقتصادي"],["Technological environment","البيئة التقنية"],["Big data analytics","تحليل البيانات الضخمة"],["Data analytics","تحليل البيانات"],["Cybersecurity","الأمن السيبراني"],["E-commerce","التجارة الإلكترونية"],["Social and cultural environment","البيئة الاجتماعية والثقافية"],["Consumer behavior","سلوك المستهلك"],["Sustainability","الاستدامة"],["Stakeholders","أصحاب المصلحة"],["Shareholders","المساهمون"],["Suppliers","الموردون"],["Government regulations","اللوائح الحكومية"],
 ["Business ownership structure","هيكل ملكية الأعمال"],["Liability","المسؤولية القانونية"],["Unlimited liability","مسؤولية غير محدودة"],["Limited liability","مسؤولية محدودة"],["Taxation","الضرائب"],["Sole proprietorship","منشأة فردية"],["Partnership","شراكة"],["General partnership","شراكة عامة"],["Limited partnership","شراكة محدودة"],["Partnership agreement","اتفاقية الشراكة"],["Corporation","شركة مساهمة"],["Legal entity","كيان قانوني"],["Shares of stock","أسهم"],["Board of directors","مجلس الإدارة"],["Business continuity","استمرارية الأعمال"],["Double taxation","الازدواج الضريبي"],["Limited Liability Company (LLC)","شركة ذات مسؤولية محدودة"],["Members","أعضاء (مالكو الـ LLC)"],["Hybrid","هجين"],["Startup","شركة ناشئة"],["Investors","مستثمرون"],
@@ -833,7 +991,8 @@ const GLOSSARY = [
 ["Globalization","العولمة"],["International trade","التجارة الدولية"],["Exports","الصادرات"],["Imports","الواردات"],["Tariffs","الرسوم الجمركية"],["Trade agreements","اتفاقيات التجارة"],["Logistics","اللوجستيات"],["Global market","السوق العالمي"],["Multinational company (MNC)","شركة متعددة الجنسيات"],["Economies of scale","وفورات الحجم"],["Culture","الثقافة"],["Business etiquette","آداب الأعمال"],["Outsourcing","الاستعانة بمصادر خارجية"],["Job displacement","فقدان الوظائف"],["Remote work","العمل عن بعد"],["Video conferencing","مؤتمرات الفيديو"],["Workforce","القوة العاملة"],
 ["Entrepreneurship","ريادة الأعمال"],["Entrepreneur","رائد أعمال"],["Creativity","الإبداع"],["Risk-taking","تحمل المخاطر"],["Leadership","القيادة"],["Persistence","المثابرة"],["Vision","الرؤية"],["Scalable","قابل للتوسع"],["Software as a Service (SaaS)","البرمجيات كخدمة"],["Business plan","خطة العمل"],["Market analysis","تحليل السوق"],["Marketing strategy","استراتيجية التسويق"],["Operations plan","خطة العمليات"],["Financial plan","الخطة المالية"],["Management team","فريق الإدارة"],["Market research","أبحاث السوق"],["Pricing model","نموذج التسعير"],["Competitor analysis","تحليل المنافسين"],["Customer feedback","ملاحظات العملاء"],["Financial constraints","القيود المالية"],
 ["Management","الإدارة"],["Planning","التخطيط"],["Organizing","التنظيم"],["Leading","القيادة"],["Controlling","الرقابة"],["Top-level management","الإدارة العليا"],["Middle-level management","الإدارة الوسطى"],["Operational management","الإدارة التشغيلية"],["Human Resource Management (HRM)","إدارة الموارد البشرية"],["Recruitment","الاستقطاب / التوظيف"],["Selection","الاختيار"],["Training","التدريب"],["Development","التطوير"],["Motivation","التحفيز"],["Financial motivation","التحفيز المالي"],["Non-financial motivation","التحفيز غير المالي"],["Incentives","الحوافز"],["Retention","الاحتفاظ بالموظفين"],["Turnover","دوران الموظفين"],["Burnout","الإرهاق الوظيفي"],["Work-life balance","التوازن بين العمل والحياة"],
-["Marketing","التسويق"],["Customer value","قيمة العميل"],["Functional value","القيمة الوظيفية"],["Emotional value","القيمة العاطفية"],["Social value","القيمة الاجتماعية"],["Marketing mix (4Ps)","المزيج التسويقي"],["Product","المنتج"],["Price","السعر"],["Place","المكان (التوزيع)"],["Promotion","الترويج"],["Branding","العلامة التجارية"],["Premium pricing","التسعير المميز"],["Subscription","الاشتراك"],["Digital marketing","التسويق الرقمي"],["Search engine optimization (SEO)","تحسين محركات البحث"],["Brand awareness","الوعي بالعلامة التجارية"],["Competitive advantage","ميزة تنافسية"],["Operations management","إدارة العمليات"],["Supply chain","سلسلة الإمداد"],["Distributors","الموزعون"],["Retailers","تجار التجزئة"],["Manufacturers","المصنّعون"],["Quality management","إدارة الجودة"],["Quality control","مراقبة الجودة"],["Quality assurance","ضمان الجودة"],["Deploy","نشر (إطلاق النظام)"],["Cloud infrastructure","البنية التحتية السحابية"]
+["Marketing","التسويق"],["Customer value","قيمة العميل"],["Functional value","القيمة الوظيفية"],["Emotional value","القيمة العاطفية"],["Social value","القيمة الاجتماعية"],["Marketing mix (4Ps)","المزيج التسويقي"],["Product","المنتج"],["Price","السعر"],["Place","المكان (التوزيع)"],["Promotion","الترويج"],["Branding","العلامة التجارية"],["Premium pricing","التسعير المميز"],["Subscription","الاشتراك"],["Digital marketing","التسويق الرقمي"],["Search engine optimization (SEO)","تحسين محركات البحث"],["Brand awareness","الوعي بالعلامة التجارية"],["Competitive advantage","ميزة تنافسية"],["Operations management","إدارة العمليات"],["Supply chain","سلسلة الإمداد"],["Distributors","الموزعون"],["Retailers","تجار التجزئة"],["Manufacturers","المصنّعون"],["Quality management","إدارة الجودة"],["Quality control","مراقبة الجودة"],["Quality assurance","ضمان الجودة"],["Deploy","نشر (إطلاق النظام)"],["Cloud infrastructure","البنية التحتية السحابية"],
+["Accounting","المحاسبة"],["Financial statements","القوائم المالية"],["Income statement","قائمة الدخل"],["Balance sheet","الميزانية العمومية"],["Cash flow statement","قائمة التدفقات النقدية"],["Assets","الأصول"],["Liabilities","الالتزامات"],["Owner's equity","حقوق الملكية"],["Liquidity","السيولة"],["Internal users","المستخدمون الداخليون"],["External users","المستخدمون الخارجيون"],["Finance","التمويل"],["Budget","الميزانية التقديرية"],["Funding","التمويل (الحصول على الأموال)"],["Risk and return","المخاطرة والعائد"],["Information system","نظام المعلومات"],["Transaction Processing System (TPS)","نظام معالجة المعاملات"],["Management Information System (MIS)","نظام المعلومات الإدارية"],["Decision Support System (DSS)","نظام دعم القرار"],["Data management","إدارة البيانات"],["Hacking","الاختراق"],["Malware","البرمجيات الخبيثة"],["Digital transformation","التحول الرقمي"],["Automation","الأتمتة"]
 ].sort((a,b)=>a[0].localeCompare(b[0]));
 
 /* ============================================================
@@ -1073,6 +1232,79 @@ function renderGlossary(){
     <div id="gList" class="grid gap-2">${gItems(G)}</div></div>`;
 }
 
+/* ---------- DOWNLOADS ---------- */
+/* ملفات جاهزة (PDF وغيره): فك التعليق وعدّل المسار */
+const CUSTOM_DOWNLOADS = [
+   {icon:'📕', title:["Lecture slides (PDF)","شرائح المحاضرات (PDF)"], desc:["Original slides","الشرائح الأصلية"], url:'lec/Business_S2_full.pdf', file:'Business_S2_full.pdf'},
+];
+const bt = (a,mode)=> mode===2 ? clean(a[0])+'\n    '+clean(a[1]) : clean(a[mode]);
+function blockText(b,m){
+  const T=a=>bt(a,m);
+  if(b.k==='p') return T(b.x);
+  if(b.k==='def'||b.k==='ex'||b.k==='tip') return '['+UI[b.k][m===2?0:m]+'] '+T(b.x);
+  if(b.k==='formula') return '    '+b.x;
+  if(b.k==='ul') return (b.h?T(b.h)+':\n':'')+b.x.map(i=>'  - '+T(i)).join('\n');
+  if(b.k==='cards') return b.c.map(c=>'  * '+T(c.t)+'\n'+c.l.map(i=>'      - '+T(i)).join('\n')).join('\n');
+  if(b.k==='tbl') return [b.h].concat(b.r).map(r=>'  | '+r.map(c=>bt(c,m===2?0:m)).join(' | ')).join('\n');
+  return '';
+}
+function notesText(){
+  const m=2, line='='.repeat(60);
+  let out=bt(subj().name,m)+' - STUDY NOTES\nملخص المذاكرة\n'+line+'\n\n';
+  LECT().forEach(L=>{
+    out+=line+'\nLECTURE '+L.n+': '+bt(L.title,m)+'\n'+line+'\n\n';
+    out+='Learning Objectives / أهداف التعلم\n'+L.obj.map(o=>'  v '+bt(o,m)).join('\n')+'\n\n';
+    L.sec.forEach((s,i)=>{
+      out+='--- '+(i+1)+'. '+bt(s.t,m)+' ---\n'+s.b.map(b=>blockText(b,m)).join('\n\n')+'\n\n';
+    });
+    out+='Key Takeaways / أهم النقاط\n'+L.take.map(t=>'  * '+bt(t,m)).join('\n')+'\n\n\n';
+  });
+  return out;
+}
+const DL_ITEMS = [];
+function saveBlob(name,text,mime){
+  const blob=new Blob(['\ufeff'+text],{type:mime+';charset=utf-8'});
+  const url=URL.createObjectURL(blob), a=document.createElement('a');
+  a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+function renderDownloads(){
+  const btn=(attrs)=>`<button ${attrs} class="dl-btn w-full px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold flex items-center justify-center gap-2"><span class="dl-bar"></span><span class="dl-label flex items-center gap-2"><span>⬇️</span><span>${u('download')}</span></span></button>`;
+  const cards=DL_ITEMS.map((it,i)=>{
+    const kb=Math.max(1,Math.round(new Blob([it.gen()]).size/1024));
+    return `<div class="dl-card bg-dark-elevated border border-dark-border rounded-2xl p-5 flex flex-col" style="--d:${120+i*110}ms">
+      <div class="dl-card-ico text-4xl mb-3">${it.icon}</div>
+      <div class="font-bold text-lg mb-1">${tx(it.title)}</div>
+      <p class="text-sm text-dark-muted leading-relaxed flex-1 mb-3">${tx(it.desc)}</p>
+      <div class="mono text-xs text-dark-muted mb-3" dir="ltr">${it.file.split('.').pop().toUpperCase()} • ~${kb} KB</div>
+      ${btn(`data-act="dl" data-id="${it.id}"`)}</div>`;
+  }).join('');
+  const custom=CUSTOM_DOWNLOADS.length?`<div class="grid gap-4 max-w-md mx-auto">${CUSTOM_DOWNLOADS.map((it,i)=>`<div class="dl-card bg-dark-elevated border border-dark-border rounded-2xl p-5 flex flex-col" style="--d:${120+i*110}ms"><div class="dl-card-ico text-4xl mb-3">${it.icon||'📄'}</div><div class="font-bold text-lg mb-1">${tx(it.title)}</div><p class="text-sm text-dark-muted flex-1 mb-3">${tx(it.desc)}</p>${btn(`data-act="dl-url" data-url="${esc(it.url)}" data-file="${esc(it.file||'')}"`)}</div>`).join('')}</div>`:'';
+  return `<div class="fade">
+    <div class="rounded-2xl bg-gradient-to-br from-brand-600 to-dark-elevated p-6 mb-6 border border-dark-border text-center">
+      <div class="dl-hero-ico text-5xl mb-2">⬇️</div>
+      <h1 class="text-3xl font-extrabold mb-1">${u('dl')}</h1>
+      <p class="text-white/80 max-w-xl mx-auto">${u('dlIntro')}</p>
+    </div>
+    ${cards}${custom}</div>`;
+}
+function runDownload(a){
+  if(a.classList.contains('dl-busy')) return;
+  const label=a.querySelector('.dl-label'), orig=label.innerHTML;
+  a.classList.add('dl-busy'); label.innerHTML=`<span>⏳</span><span>${u('dlPrep')}</span>`;
+  setTimeout(()=>{
+    if(a.dataset.act==='dl'){
+      const it=DL_ITEMS.find(x=>x.id===a.dataset.id); saveBlob(it.file,it.gen(),it.mime);
+    } else {
+      const l=document.createElement('a'); l.href=a.dataset.url; l.download=a.dataset.file||''; document.body.appendChild(l); l.click(); l.remove();
+    }
+    a.classList.remove('dl-busy'); a.classList.add('dl-done'); label.innerHTML=`<span>${u('dlDone')}</span>`;
+    setTimeout(()=>{ a.classList.remove('dl-done'); label.innerHTML=orig; },2200);
+  },950);
+}
+
+/* ---------- FINAL EXAM ---------- */
+
 /* ---------- FINAL EXAM ---------- */
 function pool(){ const p=[]; LECT().forEach(l=>l.quiz.forEach(q=>p.push(q))); return p; }
 function newExam(size){
@@ -1120,7 +1352,7 @@ function renderNav(){
   h += `<div class="px-3 pt-3 pb-1 text-sm font-bold text-brand-500">${s.icon} ${tx(s.name)}</div>`;
   h += item('home','🏠',u('home'));
   h += head(u('lectures')) + s.lectures.map(l=>item(l.id,`<span class="mono text-xs">${l.n}</span>`,tx(l.title),d.best[l.id]!=null?`<span class="mono text-[10px] opacity-80">${d.best[l.id]}%</span>`:'')).join('');
-  h += head(u('tools')) + item('exam','🏆',u('exam'),d.exam?`<span class="mono text-[10px] opacity-80">${d.exam}%</span>`:'') + item('glossary','📖','Glossary / قاموس المصطلحات');
+  h += head(u('tools')) + item('exam','🏆',u('exam'),d.exam?`<span class="mono text-[10px] opacity-80">${d.exam}%</span>`:'') + item('glossary','📖','Glossary / قاموس المصطلحات') + item('downloads','<span class="dl-ico">⬇️</span>',u('dl')) ;
   $('nav').innerHTML=h;
 }
 function applyLayout(){
@@ -1147,6 +1379,7 @@ function render(){
   else if(idx>=0){ html=renderLecture(lects[idx],idx); title=`${u('lecture')} ${lects[idx].n}`; }
   else if(state.page==='exam'){ html=renderExam(); title=u('exam'); }
   else if(state.page==='glossary'){ html=renderGlossary(); title='Glossary / قاموس المصطلحات'; }
+    else if(state.page==='downloads'){ html=renderDownloads(); title=u('dl'); }
   $('app').innerHTML=html; $('topTitle').textContent=title;
   updateTop(); renderNav(); applyLayout();
 }
@@ -1202,6 +1435,7 @@ document.addEventListener('click',e=>{
 
   const a=e.target.closest('[data-act]'); if(!a) return;
   const act=a.dataset.act;
+    if(act==='dl'||act==='dl-url'){ runDownload(a); return; }
   if(act.startsWith('dk-')){
     const id=a.dataset.deck, d=state.decks[id]; if(!d) return;
     if(act==='dk-flip'){ d.flip=!d.flip; const f=document.querySelector(`#deck-${id} .flip`); if(f) f.classList.toggle('on',d.flip); return; }

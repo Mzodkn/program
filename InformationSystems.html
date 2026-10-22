@@ -50,6 +50,26 @@ tailwind.config = {
   .flip.on .flip-inner { transform: rotateY(180deg); }
   .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1.5rem; border-radius: 1rem; overflow: auto; }
   .back { transform: rotateY(180deg); }
+    /* ---------- Downloads page animations ---------- */
+  .dl-ico { display:inline-block; animation: dlbounce 1.6s ease-in-out infinite; }
+  @keyframes dlbounce { 0%,100% { transform: translateY(-2px); } 50% { transform: translateY(3px); } }
+  .dl-hero-ico { display:inline-block; animation: dlfloat 2.4s ease-in-out infinite; }
+  @keyframes dlfloat { 0%,100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-8px) rotate(3deg); } }
+  .dl-card { animation: dlin .5s cubic-bezier(.2,.8,.2,1) both; animation-delay: var(--d,0ms); transition: transform .25s, border-color .25s, box-shadow .25s; }
+  .dl-card:hover { transform: translateY(-4px); border-color: rgb(var(--b5)); box-shadow: 0 10px 30px -12px rgb(var(--b5) / .5); }
+  .dl-card:hover .dl-card-ico { transform: scale(1.15) rotate(-6deg); }
+  .dl-card-ico { display:inline-block; transition: transform .3s; }
+  @keyframes dlin { from { opacity:0; transform: translateY(24px) scale(.97); } to { opacity:1; transform:none; } }
+  .dl-btn { position:relative; overflow:hidden; isolation:isolate; transition: transform .15s, background .3s; }
+  .dl-btn:active { transform: scale(.96); }
+  .dl-btn::after { content:''; position:absolute; top:0; bottom:0; width:40%; left:-60%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.35), transparent); animation: dlshine 3s ease-in-out infinite; z-index:-1; }
+  @keyframes dlshine { 0% { left:-60%; } 55%,100% { left:130%; } }
+  .dl-bar { position:absolute; inset:0 auto 0 0; width:0; background: rgba(255,255,255,.28); z-index:-1; }
+  [dir="rtl"] .dl-bar { inset:0 0 0 auto; }
+  .dl-busy .dl-bar { animation: dlfill .9s linear forwards; }
+  @keyframes dlfill { to { width:100%; } }
+  .dl-done { background:#16a34a !important; animation: dlpop .45s ease; }
+  @keyframes dlpop { 0% { transform: scale(1); } 40% { transform: scale(1.08); } 100% { transform: scale(1); } }
 </style>
 </head>
 <body class="bg-dark-base text-dark-text min-h-screen">
@@ -99,6 +119,8 @@ const UI = {
   lectures:["Lectures","المحاضرات"], mistakes:["Questions you missed","الأسئلة التي أخطأت فيها"], yourAns:["Correct answer","الإجابة الصحيحة"],
   glossFlash:["Term Flashcards","بطاقات المصطلحات"], glossList:["All Terms","كل المصطلحات"], questions:["questions","سؤالًا"],
   question:["Question","السؤال"],
+  dl:["Download the lecture","تحميل المحاضرات"], download:["Download","تحميل"], dlPrep:["Preparing...","جارٍ التجهيز..."], dlDone:["Downloaded ✔","تم التحميل ✔"],
+  dlIntro:["Download the lecture ","حمّل ملف المحاضرات."],
   chooseSize:["Choose the number of questions","اختر عدد الأسئلة"], all:["All","الكل"], answerEN:["English","English"],
   masteryHow:["Mastery = average of your best score in each lecture quiz and your best final exam score. Reading lectures does not raise it.","الإتقان = متوسط أفضل نتيجة لك في اختبار كل محاضرة وأفضل نتيجة في الاختبار النهائي. قراءة المحاضرات وحدها لا ترفعه."]
 };
@@ -1382,7 +1404,34 @@ function renderGlossary(){
     <input id="gSearch" placeholder="${u('search')}" class="w-full p-3 rounded-xl bg-dark-elevated border border-dark-border focus:border-brand-500 outline-none mb-4">
     <div id="gList" class="grid gap-2">${gItems(G)}</div></div>`;
 }
-
+/* ---------- DOWNLOADS ---------- */
+const DL_FILE = {icon:'📕', title:["Lecture slides (PDF)"," المحاضرات كاملة(PDF)"], desc:["in one file","في ملف واحد"], url:'lec/IS_S2_Full.pdf', file:'IS_S2_Full.pdf'};
+function renderDownloads(){
+  const it=DL_FILE;
+  return `<div class="fade">
+    <div class="rounded-2xl bg-gradient-to-br from-brand-600 to-dark-elevated p-6 mb-6 border border-dark-border text-center">
+      <div class="dl-hero-ico text-5xl mb-2">⬇️</div>
+      <h1 class="text-3xl font-extrabold mb-1">${u('dl')}</h1>
+      <p class="text-white/80 max-w-xl mx-auto">${u('dlIntro')}</p>
+    </div>
+    <div class="grid gap-4 max-w-md mx-auto">
+      <div class="dl-card bg-dark-elevated border border-dark-border rounded-2xl p-5 flex flex-col" style="--d:120ms">
+        <div class="dl-card-ico text-4xl mb-3">${it.icon}</div>
+        <div class="font-bold text-lg mb-1">${tx(it.title)}</div>
+        <p class="text-sm text-dark-muted flex-1 mb-3">${tx(it.desc)}</p>
+        <button data-act="dl-url" data-url="${esc(it.url)}" data-file="${esc(it.file)}" class="dl-btn w-full px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold flex items-center justify-center gap-2"><span class="dl-bar"></span><span class="dl-label flex items-center gap-2"><span>⬇️</span><span>${u('download')}</span></span></button>
+      </div></div></div>`;
+}
+function runDownload(a){
+  if(a.classList.contains('dl-busy')) return;
+  const label=a.querySelector('.dl-label'), orig=label.innerHTML;
+  a.classList.add('dl-busy'); label.innerHTML=`<span>⏳</span><span>${u('dlPrep')}</span>`;
+  setTimeout(()=>{
+    const l=document.createElement('a'); l.href=a.dataset.url; l.download=a.dataset.file; document.body.appendChild(l); l.click(); l.remove();
+    a.classList.remove('dl-busy'); a.classList.add('dl-done'); label.innerHTML=`<span>${u('dlDone')}</span>`;
+    setTimeout(()=>{ a.classList.remove('dl-done'); label.innerHTML=orig; },2200);
+  },950);
+}
 /* ---------- FINAL EXAM ---------- */
 function pool(){ const p=[]; LECT().forEach(l=>l.quiz.forEach(q=>p.push(q))); return p; }
 function newExam(size){
@@ -1430,7 +1479,7 @@ function renderNav(){
   h += `<div class="px-3 pt-3 pb-1 text-sm font-bold text-brand-500">${s.icon} ${tx(s.name)}</div>`;
   h += item('home','🏠',u('home'));
   h += head(u('lectures')) + s.lectures.map(l=>item(l.id,`<span class="mono text-xs">${l.n}</span>`,tx(l.title),d.best[l.id]!=null?`<span class="mono text-[10px] opacity-80">${d.best[l.id]}%</span>`:'')).join('');
-  h += head(u('tools')) + item('exam','🏆',u('exam'),d.exam?`<span class="mono text-[10px] opacity-80">${d.exam}%</span>`:'') + item('glossary','📖','Glossary / قاموس المصطلحات');
+  h += head(u('tools')) + item('exam','🏆',u('exam'),d.exam?`<span class="mono text-[10px] opacity-80">${d.exam}%</span>`:'') + item('downloads','<span class="dl-ico">⬇️</span>',u('dl')) + item('glossary','📖','Glossary / قاموس المصطلحات');
   $('nav').innerHTML=h;
 }
 function applyLayout(){
@@ -1456,6 +1505,8 @@ function render(){
   if(state.page==='home'){ html=renderHome(); title=tx(subj().name).replace(/<[^>]+>/g,''); }
   else if(idx>=0){ html=renderLecture(lects[idx],idx); title=`${u('lecture')} ${lects[idx].n}`; }
   else if(state.page==='exam'){ html=renderExam(); title=u('exam'); }
+    else if(state.page==='Downloads Lectures'){ html=renderDownloads(); title=u('dl'); }
+
   else if(state.page==='glossary'){ html=renderGlossary(); title='Glossary / قاموس المصطلحات'; }
   $('app').innerHTML=html; $('topTitle').textContent=title;
   updateTop(); renderNav(); applyLayout();
@@ -1512,6 +1563,7 @@ document.addEventListener('click',e=>{
 
   const a=e.target.closest('[data-act]'); if(!a) return;
   const act=a.dataset.act;
+  if(act==='dl-url'){ runDownload(a); return; }
   if(act.startsWith('dk-')){
     const id=a.dataset.deck, d=state.decks[id]; if(!d) return;
     if(act==='dk-flip'){ d.flip=!d.flip; const f=document.querySelector(`#deck-${id} .flip`); if(f) f.classList.toggle('on',d.flip); return; }
