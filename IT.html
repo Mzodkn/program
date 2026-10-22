@@ -1929,7 +1929,7 @@ function render(){
   if(state.page==='home'){ html=renderHome(); title=tx(subj().name).replace(/<[^>]+>/g,''); }
   else if(idx>=0){ html=renderLecture(lects[idx],idx); title=`${u('lecture')} ${lects[idx].n}`; }
   else if(state.page==='exam'){ html=renderExam(); title=u('exam'); }
-    else if(state.page==='Downloads Lectures'){ html=renderDownloads(); title=u('dl'); }
+    else if(state.page==='downloads'){ html=renderDownloads(); title=u('dl'); }
 
   else if(state.page==='glossary'){ html=renderGlossary(); title='Glossary / قاموس المصطلحات'; }
   $('app').innerHTML=html; $('topTitle').textContent=title;

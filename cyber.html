@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="it-logo.svg">
+<title>IT Study Hub | بوابة تقنية المعلومات</title>
+<script>
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        brand: {
+          400: 'rgb(var(--b4) / <alpha-value>)',
+          500: 'rgb(var(--b5) / <alpha-value>)',
+          600: 'rgb(var(--b6) / <alpha-value>)'
+        },
+        dark: {
+          base: '#04070e',
+          surface: '#0a0f1d',
+          elevated: '#11182b',
+          border: '#1e293b',
+          text: '#f8fafc',
+          muted: '#94a3b8'
+        }
+      },
+      fontFamily: {
+        sans: ['Inter', 'sans-serif'],
+        arabic: ['Cairo', 'sans-serif'],
+        mono: ['JetBrains Mono', 'monospace']
+      }
+    }
+  }
+}
+</script>
+<style>
+  :root {
+    --b4: 251 146 60;
+    --b5: 249 115 22; /* Cyber Orange Default */
+    --b6: 234 88 12;
+  }
+
+  [data-theme="cyan"] {
+    --b4: 56 189 248;
+    --b5: 6 182 212;
+    --b6: 8 145 178;
+  }
+  [data-theme="emerald"] {
+    --b4: 52 211 153;
+    --b5: 16 185 129;
+    --b6: 5 150 105;
+  }
+  [data-theme="violet"] {
+    --b4: 192 132 252;
+    --b5: 168 85 247;
+    --b6: 147 51 234;
+  }
+
+  html[lang="en"] body { font-family: 'Inter', sans-serif; }
+  html[lang="ar"] body { font-family: 'Cairo', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  body {
+    background-color: #04070e;
+    background-image:
+      radial-gradient(circle at 50% 0%, rgb(var(--b5) / 0.12), transparent 55%),
+      linear-gradient(to right, rgba(30, 41, 59, 0.35) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(30, 41, 59, 0.35) 1px, transparent 1px);
+    background-size: 100% 100%, 40px 40px, 40px 40px;
+    overflow-x: hidden;
+  }
+
+  /* Ambient Orbs */
+  .bg-glow { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+  .bg-glow span {
+    position: absolute; border-radius: 50%; filter: blur(110px); will-change: transform;
+  }
+  .bg-glow .orb1 { width: 460px; height: 460px; top: -12%; left: -8%; background: rgb(var(--b5) / .24); animation: drift1 24s ease-in-out infinite; }
+  .bg-glow .orb2 { width: 400px; height: 400px; bottom: -14%; right: -8%; background: rgba(56, 189, 248, .18); animation: drift2 30s ease-in-out infinite; }
+  .bg-glow .orb3 { width: 320px; height: 320px; top: 42%; left: 55%; background: rgba(168, 85, 247, .14); animation: drift3 36s ease-in-out infinite; }
+
+  @keyframes drift1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(110px,70px) scale(1.15); } }
+  @keyframes drift2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-90px,-60px) scale(1.1); } }
+  @keyframes drift3 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-70px,50px) scale(1.2); } }
+
+  #netCanvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  main, header, footer { position: relative; z-index: 1; }
+
+  /* Custom Cyber Scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #04070e; }
+  ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
+  ::-webkit-scrollbar-thumb:hover { background: rgb(var(--b5)); }
+
+  /* Animations */
+  .fade { animation: fade .3s cubic-bezier(0.16, 1, 0.3, 1); }
+  @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+  .terminal-cursor { animation: blink 0.8s infinite; }
+
+  /* Cyber Card Spotlight & Corner Brackets */
+  .cyber-card {
+    position: relative;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.82) 0%, rgba(10, 15, 29, 0.94) 100%);
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.28s ease, box-shadow 0.28s ease;
+    overflow: hidden;
+  }
+  .cyber-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      500px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+      rgb(var(--card-rgb, var(--b5)) / 0.14),
+      transparent 45%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .cyber-card:hover::before {
+    opacity: 1;
+  }
+  .cyber-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 38px -15px rgba(0, 0, 0, 0.7), 0 0 25px -5px rgb(var(--card-rgb, var(--b5)) / 0.28);
+  }
+
+  /* Subtle CRT Scanline overlay for Terminal Box */
+  .scanlines {
+    background: linear-gradient(
+      to bottom,
+      rgba(255,255,255,0),
+      rgba(255,255,255,0) 50%,
+      rgba(0, 0, 0, 0.2) 50%,
+      rgba(0, 0, 0, 0.2)
+    );
+    background-size: 100% 4px;
+  }
+
+  /* Shimmer Progress Bar */
+  .progress-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  .progress-shimmer::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; bottom: 0; left: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+    transform: translateX(-100%);
+    animation: shimmer 2.8s infinite;
+  }
+  @keyframes shimmer {
+    100% { transform: translateX(100%); }
+  }
+</style>
+</head>
+<body class="bg-dark-base text-dark-text min-h-screen flex flex-col selection:bg-brand-500 selection:text-black">
+
+<!-- Interactive Network Topology Canvas -->
+<canvas id="netCanvas"></canvas>
+<div class="bg-glow" aria-hidden="true">
+  <span class="orb1"></span>
+  <span class="orb2"></span>
+  <span class="orb3"></span>
+</div>
+
+<!-- Top Cyber-HUD Telemetry Bar (Waybar Inspired) -->
+<header class="fixed top-0 inset-x-0 z-40 h-16 bg-dark-surface/85 backdrop-blur-xl border-b border-dark-border/80 px-3 sm:px-6 flex items-center justify-between gap-2">
+  <!-- Brand Identity -->
+  <div class="flex items-center gap-3">
+    <a href="index.html" class="group flex items-center gap-2.5 focus:outline-none">
+      <div class="relative w-9 h-9 rounded-xl bg-dark-elevated border border-brand-500/40 flex items-center justify-center p-1.5 shadow-inner group-hover:border-brand-500 transition">
+        <img src="it-logo.svg" alt="IT Logo" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+        <svg class="hidden w-5 h-5 text-brand-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="4 17 10 11 4 5"></polyline>
+          <line x1="12" y1="19" x2="20" y2="19"></line>
+        </svg>
+        <span class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-emerald-400 rounded-full ring-2 ring-dark-base"></span>
+      </div>
+      <div class="flex flex-col">
+        <div class="font-extrabold text-sm sm:text-base tracking-tight mono flex items-center gap-1.5">
+          <span class="text-white">IT_HUB</span>
+          <span class="text-brand-500">&gt;_</span>
+          <span class="hidden sm:inline-block text-[10px] px-1.5 py-0.5 rounded bg-brand-500/15 text-brand-400 border border-brand-500/30 font-semibold">SYS.v2.6</span>
+        </div>
+        <span class="text-[10px] mono text-dark-muted hidden sm:block">ARCH_ENV // FACULTY OF IT</span>
+      </div>
+    </a>
+  </div>
+
+  <!-- Center Live System Telemetry (Desktop) -->
+  <div class="hidden lg:flex items-center gap-2 bg-dark-base/90 border border-dark-border/90 rounded-xl px-3 py-1.5 text-xs mono">
+    <span class="inline-flex items-center gap-1.5 text-emerald-400 font-semibold">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+      KERNEL: ONLINE
+    </span>
+    <span class="text-dark-border">|</span>
+    <span class="text-sky-400 font-semibold">SEM: 02</span>
+    <span class="text-dark-border">|</span>
+    <span id="hudMasteryBadge" class="text-brand-400 font-semibold">SYNC: 0%</span>
+    <span class="text-dark-border">|</span>
+    <span id="liveClock" class="text-dark-muted">00:00:00</span>
+  </div>
+
+  <!-- Right Controls: Theme Dots + Language Toggle -->
+  <div class="flex items-center gap-2 sm:gap-3">
+    <!-- Accent Theme Switcher -->
+    <div class="flex items-center gap-1.5 bg-dark-base/90 border border-dark-border rounded-xl px-2.5 py-1.5" title="Switch HUD Accent Color">
+      <button onclick="setAccent('orange')" class="w-3.5 h-3.5 rounded-full bg-orange-500 hover:scale-125 transition ring-2 ring-offset-1 ring-offset-dark-base ring-transparent" id="theme-orange" aria-label="Orange Theme"></button>
+      <button onclick="setAccent('cyan')" class="w-3.5 h-3.5 rounded-full bg-cyan-400 hover:scale-125 transition ring-2 ring-offset-1 ring-offset-dark-base ring-transparent" id="theme-cyan" aria-label="Cyan Theme"></button>
+      <button onclick="setAccent('emerald')" class="w-3.5 h-3.5 rounded-full bg-emerald-400 hover:scale-125 transition ring-2 ring-offset-1 ring-offset-dark-base ring-transparent" id="theme-emerald" aria-label="Emerald Theme"></button>
+      <button onclick="setAccent('violet')" class="w-3.5 h-3.5 rounded-full bg-purple-500 hover:scale-125 transition ring-2 ring-offset-1 ring-offset-dark-base ring-transparent" id="theme-violet" aria-label="Violet Theme"></button>
+    </div>
+
+    <!-- Language Toggle Button -->
+    <button id="langBtn" class="px-3.5 py-1.5 rounded-xl bg-dark-elevated hover:bg-brand-500/20 border border-dark-border hover:border-brand-500 text-white text-xs sm:text-sm font-bold mono transition flex items-center gap-1.5 shadow-sm"></button>
+  </div>
+</header>
+
+<!-- Main Application Container -->
+<main class="pt-20 flex-1">
+  <div id="app" class="max-w-6xl mx-auto p-4 sm:p-6 pb-20"></div>
+</main>
+
+<!-- Cyber Footer -->
+<footer class="border-t border-dark-border/60 bg-dark-surface/60 backdrop-blur py-5 px-4 text-center text-xs mono text-dark-muted">
+  <div class="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-brand-500"></span>
+      <span>IT STUDY HUB // ENGINEERED FOR INFORMATION TECHNOLOGY STUDENTS</span>
+    </div>
+    <div class="text-dark-muted/80">
+      <span>[ tip: press <kbd class="px-1.5 py-0.5 bg-dark-elevated border border-dark-border rounded text-brand-400">/</kbd> to search modules ]</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Core Subjects Data (100% Preserved File Links & IDs)
+const SUBJECTS = [
+  {id:'prg', code:'0x01', category:'core', file:'Programming.html', color:'yellow', ready:true, icon:'⚡', header:'Programming.h', lecCount:'10',
+   name:["Programming","البرمجة المتقدمة"],
+   desc:["Object-Oriented C++, Pointers, Memory & Data Structures","البرمجة الشيئية بلغة C++، المؤشرات، وهياكل البيانات"]},
+  {id:'it',  code:'0x02', category:'core', file:'IT.html', color:'blue', ready:true, icon:'🌐', header:'Networking.h', lecCount:'10 ',
+   name:["Introduction to IT","مقدمة في تقنية المعلومات"],
+   desc:["Network Architecture, Protocols, OS & System Infrastructure","معمارية الشبكات، البروتوكولات، أنظمة التشغيل والبنية التحتية"]},
+  {id:'mth', code:'0x03', category:'math', file:'DiscreteMath.html', color:'pink', ready:true, icon:'🧮', header:'Math.h', lecCount:'8',
+   name:["Discrete Math","الرياضيات المنفصلة"],
+   desc:["Logic Gates, Set Theory, Relations, Graph Theory & Proofs","المنطق الرياضي، الفئات، العلاقات، نظرية المخططات والإثبات"]},
+  {id:'is',  code:'0x04', category:'core', file:'InformationSystems.html', color:'orange', ready:true, icon:'🗄️', header:'Systems.h', lecCount:'7',
+   name:["Information Systems","نظم المعلومات (IS)"],
+   desc:["TPS, MIS, DSS, Database Management & Enterprise Architecture","نظم معالجة المعاملات، دعم القرار، وإدارة قواعد البيانات"]},
+  {id:'Etc', code:'0x05', category:'biz', file:'ComputerEthics.html', color:'green', ready:true, icon:'⚖️', header:'Ethics.h', lecCount:'8',
+   name:["Computer Ethics","أخلاقيات الكمبيوتر"],
+   desc:["Cybersecurity Ethics, Data Privacy, IP Rights & AI Governance","أخلاقيات الأمن السيبراني، خصوصية البيانات، وحوكمة الذكاء الاصطناعي"]},
+  {id:'eng', code:'0x06', category:'math', file:'TechnicalEnglish.html', color:'red', ready:true, icon:'📜', header:'English.h غير مكتمله', lecCount:'8',
+   name:["Technical English II","اللغة الإنجليزية التقنية 2"],
+   desc:["SRS Formulation, Incident Reports, Security Policies & IT Emails","كتابة مواصفات الأنظمة SRS، تقارير الحوادث، والمراسلات التقنية"]},
+  {id:'biz', code:'0x07', category:'biz', file:'Business.html', color:'teal', ready:true, icon:'💼', header:'Business.h', lecCount:'7 ',
+   name:["Business Fundamentals","أساسيات الأعمال"],
+   desc:["Tech Startups, Ownership Models, Marketing Mix & Operations","الشركات التقنية الناشئة، نماذج الملكية، التسويق وإدارة العمليات"]},
+  {id:'acc', code:'0x08', category:'biz', file:'Accounting.html', color:'purple', ready:true, icon:'📊', header:'Financial.h', lecCount:'6',
+   name:["Principles of Accounting","مبادئ المحاسبة"],
+   desc:["Financial Statements, Balance Sheets, Budgeting & FinTech","القوائم المالية، الميزانية العمومية، التخطيط المالي والتقنية المالية"]},
+];
+
+const THEMES = {
+  teal:   ['20 184 166','13 148 136'],
+  pink:   ['236 72 153','219 39 119'],
+  purple: ['168 85 247','147 51 234'],
+  blue:   ['59 130 246','37 99 235'],
+  orange: ['249 115 22','234 88 12'],
+  green:  ['34 197 94','22 163 74'],
+  yellow: ['234 179 8','202 138 4'],
+  red:    ['239 68 68','220 38 38']
+};
+
+const KEY = 'studyHubV2';
+function load() {
+  try { return JSON.parse(localStorage.getItem(KEY) || '{}'); }
+  catch(e) { return {}; }
+}
+function saveState(updater) {
+  try {
+    const current = load();
+    updater(current);
+    localStorage.setItem(KEY, JSON.stringify(current));
+  } catch(e) {}
+}
+
+let lang = load().lang || 'ar';
+let currentAccent = load().accent || 'orange';
+let activeFilter = 'all';
+let searchQuery = '';
+let terminalHistory = [];
+
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+// Apply HUD Accent Theme
+function setAccent(accent) {
+  currentAccent = accent;
+  if (accent === 'orange') {
+    document.documentElement.removeAttribute('data-theme');
+  } else {
+    document.documentElement.setAttribute('data-theme', accent);
+  }
+  ['orange','cyan','emerald','violet'].forEach(a => {
+    const btn = document.getElementById('theme-' + a);
+    if (btn) {
+      btn.classList.toggle('ring-white', a === accent);
+      btn.classList.toggle('scale-110', a === accent);
+    }
+  });
+  saveState(c => { c.accent = accent; });
+}
+
+// Live Clock in Header
+function updateClock() {
+  const el = document.getElementById('liveClock');
+  if (!el) return;
+  const now = new Date();
+  el.textContent = now.toTimeString().split(' ')[0];
+}
+setInterval(updateClock, 1000);
+
+// Compute Aggregate Statistics
+function getStats() {
+  const data = load().data || {};
+  let totalMastery = 0;
+  let totalLectures = 0;
+  let startedCount = 0;
+  SUBJECTS.forEach(s => {
+    const m = s.ready ? Number((data[s.id] || {}).mastery || 0) : 0;
+    totalMastery += m;
+    if (m > 0) startedCount++;
+    totalLectures += parseInt(s.lecCount, 10) || 0;
+  });
+  const avgMastery = Math.round(totalMastery / SUBJECTS.length);
+  return { avgMastery, totalLectures, startedCount, totalModules: SUBJECTS.length };
+}
+
+function render() {
+  const ar = lang === 'ar';
+  const data = load().data || {};
+  const stats = getStats();
+
+  document.documentElement.lang = lang;
+  document.documentElement.dir = ar ? 'rtl' : 'ltr';
+  document.getElementById('langBtn').innerHTML = ar
+    ? `<span>EN</span><span class="text-brand-400 text-[11px]">/ العربية</span>`
+    : `<span>AR</span><span class="text-brand-400 text-[11px]">/ English</span>`;
+
+  const hudBadge = document.getElementById('hudMasteryBadge');
+  if (hudBadge) hudBadge.textContent = `SYNC: ${stats.avgMastery}%`;
+
+  // Filter Subjects by Category + Search Query
+  const filteredSubjects = SUBJECTS.filter(s => {
+    const matchesCategory = activeFilter === 'all' || s.category === activeFilter;
+    const q = searchQuery.trim().toLowerCase();
+    const matchesSearch = !q ||
+      s.name[0].toLowerCase().includes(q) ||
+      s.name[1].toLowerCase().includes(q) ||
+      s.header.toLowerCase().includes(q) ||
+      s.id.toLowerCase().includes(q) ||
+      s.desc[0].toLowerCase().includes(q) ||
+      s.desc[1].toLowerCase().includes(q);
+    return matchesCategory && matchesSearch;
+  });
+
+  const cards = filteredSubjects.map(s => {
+    const t = THEMES[s.color];
+    const d = data[s.id] || {};
+    const m = s.ready ? (d.mastery || 0) : 0;
+    const tag = s.ready ? `a href="${esc(s.file)}"` : 'div';
+    const close = s.ready ? 'a' : 'div';
+    const statusLabel = m >= 80 ? (ar ? 'مكتمل ممتاز' : 'OPTIMAL') : m > 0 ? (ar ? 'قيد الدراسة' : 'IN_PROGRESS') : (ar ? 'جاهز للتشغيل' : 'READY');
+
+    return `<${tag} class="cyber-card group block text-start rounded-2xl p-5 sm:p-6 border border-dark-border/90 hover:border-brand-500/60 transition ${s.ready ? 'cursor-pointer' : 'opacity-70 cursor-not-allowed'}" style="--card-rgb: ${t[0]}; border-top: 3px solid rgb(${t[0]})">
+      <!-- Top Meta Row -->
+      <div class="flex items-center justify-between gap-2 mb-3.5 relative z-10">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl border transition group-hover:scale-110" style="background: rgb(${t[0]} / 0.12); border-color: rgb(${t[0]} / 0.35); box-shadow: 0 0 20px rgb(${t[0]} / 0.15);">
+            ${s.icon}
+          </div>
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-[11px] mono px-1.5 py-0.5 rounded bg-dark-base/90 border border-dark-border text-dark-muted font-bold">${s.code}</span>
+              <span class="text-[10px] mono px-2 py-0.5 rounded font-semibold" style="background:rgb(${t[0]} / .14); color:rgb(${t[0]})">${statusLabel}</span>
+            </div>
+            <h3 class="font-extrabold text-lg sm:text-xl text-white group-hover:text-brand-400 transition mt-0.5">${esc(s.name[ar ? 1 : 0])}</h3>
+          </div>
+        </div>
+
+        <!-- Mastery Pill -->
+        <div class="text-end">
+          <span class="text-sm mono px-2.5 py-1 rounded-lg font-extrabold inline-block border" style="background:rgb(${t[0]} / .15); color:rgb(${t[0]}); border-color:rgb(${t[0]} / .3)">
+            ${s.ready ? m + '%' : (ar ? 'قريبًا' : 'Soon')}
+          </span>
+        </div>
+      </div>
+
+      <!-- C++ Header Include Badge -->
+      <div class="mb-2.5 relative z-10 flex items-center justify-between gap-2 bg-dark-base/80 border border-dark-border/80 rounded-lg px-3 py-1.5 mono text-xs">
+        <div class="truncate">
+          <span class="text-purple-400 font-semibold">#include</span>
+          <span class="text-amber-300 font-semibold"> &lt;${esc(s.header)}&gt;</span>
+        </div>
+        <span class="text-[11px] text-dark-muted shrink-0">${s.lecCount.trim()} ${ar ? 'محاضرات' : 'Lecs'}</span>
+      </div>
+
+      <!-- Module Technical Description -->
+      <p class="text-xs text-dark-muted mb-4 line-clamp-2 relative z-10 leading-relaxed">
+        ${esc(s.desc[ar ? 1 : 0])}
+      </p>
+
+      <!-- Progress Bar & Action Footer -->
+      ${s.ready ? `
+      <div class="relative z-10">
+        <div class="flex items-center justify-between text-[11px] mono text-dark-muted mb-1.5">
+          <span>${ar ? 'مؤشر الإتقان' : 'MASTERY_INDEX'}</span>
+          <span class="group-hover:text-white transition flex items-center gap-1 font-semibold" style="color:rgb(${t[0]})">
+            <span>${ar ? 'فتح المقرر' : 'EXECUTE'}</span>
+            <span class="inline-block transition-transform ${ar ? 'group-hover:-translate-x-1' : 'group-hover:translate-x-1'}">${ar ? '←' : '→'}</span>
+          </span>
+        </div>
+        <div class="h-2 bg-dark-base rounded-full overflow-hidden border border-dark-border/60 p-0.5">
+          <div class="h-full rounded-full transition-all duration-500 progress-shimmer" style="width:${Math.max(m, 4)}%; background:rgb(${t[0]}); box-shadow: 0 0 10px rgb(${t[0]})"></div>
+        </div>
+      </div>` : ''}
+    </${close}>`;
+  }).join('');
+
+  document.getElementById('app').innerHTML = `<div class="fade space-y-6">
+
+    <!-- HERO SECTION: Interactive Cyber Terminal & Telemetry Matrix -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+
+      <!-- Main Terminal Box (8 Columns on Desktop) -->
+      <div class="lg:col-span-8 rounded-2xl bg-dark-surface/90 backdrop-blur-xl border border-brand-500/40 shadow-2xl relative overflow-hidden flex flex-col justify-between">
+        <!-- Terminal Window Top Bar -->
+        <div class="bg-dark-elevated/90 border-b border-dark-border px-4 py-2.5 flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-red-500/90 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-yellow-500/90 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-emerald-500/90 inline-block"></span>
+            <span class="text-xs mono text-dark-muted ms-2 font-semibold">root@it-study-hub:~/sem2/it_hub_main.cpp</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">GCC 14.2 C++23</span>
+          </div>
+        </div>
+
+        <!-- Terminal Body -->
+        <div class="p-5 sm:p-7 relative z-10 flex-1 flex flex-col justify-between scanlines">
+          <div class="absolute -right-12 -top-12 w-56 h-56 bg-brand-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
+          <div class="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-start">
+            <!-- Glowing IT Emblem -->
+            <div class="relative shrink-0 p-3.5 bg-dark-base/95 rounded-2xl border border-brand-500/40 shadow-inner group">
+              <div class="absolute inset-0 rounded-2xl bg-brand-500/10 blur-md group-hover:bg-brand-500/20 transition"></div>
+              <img src="it-logo.svg" alt="IT Logo" style="width: 112px; height: 112px;" class="relative z-10 object-contain drop-shadow-[0_0_20px_rgba(249,115,22,0.45)]" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+              <div class="hidden relative z-10 w-[112px] h-[112px] items-center justify-center flex-col text-brand-500 mono">
+                <span class="text-4xl font-black">&lt;IT/&gt;</span>
+                <span class="text-[10px] text-dark-muted mt-1">STUDY_HUB</span>
+              </div>
+            </div>
+
+            <!-- Hero Typography & Typewriter -->
+            <div class="w-full">
+              <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-brand-500/10 border border-brand-500/30 text-brand-400 text-xs mono mb-2 font-semibold">
+                <span>&gt; g++ -O3 IT_TOP.cpp -o hub &amp;&amp; ./hub</span>
+              </div>
+              <h1 class="text-2xl sm:text-4xl font-black mb-2 tracking-tight flex items-center justify-center sm:justify-start gap-2">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-white via-brand-400 to-amber-300">
+                  ${ar ? 'مركز تقنية المعلومات' : 'IT Study Hub'}
+                </span>
+              </h1>
+              <div class="bg-dark-base/80 border border-dark-border/80 rounded-xl px-3.5 py-2 mono text-xs sm:text-sm text-emerald-400 min-h-[38px] flex items-center justify-center sm:justify-start">
+                <span id="typed-text"></span><span class="text-brand-500 terminal-cursor font-extrabold ms-0.5">█</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Mini CLI Console -->
+          <div class="mt-5 pt-4 border-t border-dark-border/80">
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+              <span class="text-[11px] mono text-dark-muted">
+                ${ar ? '// الطرفية التفاعلية السريعة (اضغط أو اكتب أمرًا مثل help أو ls أو open prg):' : '// Interactive Shell (Click a chip or type: help, ls, open prg, stats):'}
+              </span>
+              <div class="flex flex-wrap items-center gap-1.5">
+                <button onclick="runCommand('help')" class="text-[11px] mono px-2 py-0.5 rounded bg-dark-elevated hover:bg-brand-500/20 border border-dark-border hover:border-brand-500/50 text-brand-400 transition">help</button>
+                <button onclick="runCommand('ls')" class="text-[11px] mono px-2 py-0.5 rounded bg-dark-elevated hover:bg-brand-500/20 border border-dark-border hover:border-brand-500/50 text-sky-400 transition">ls -la</button>
+                <button onclick="runCommand('stats')" class="text-[11px] mono px-2 py-0.5 rounded bg-dark-elevated hover:bg-brand-500/20 border border-dark-border hover:border-brand-500/50 text-emerald-400 transition">stats</button>
+                <button onclick="runCommand('clear')" class="text-[11px] mono px-2 py-0.5 rounded bg-dark-elevated hover:bg-brand-500/20 border border-dark-border hover:border-brand-500/50 text-dark-muted transition">clear</button>
+              </div>
+            </div>
+
+            <!-- CLI Output Log -->
+            <div id="cliOutput" class="hidden mb-2 max-h-28 overflow-y-auto rounded-lg bg-black/70 border border-dark-border p-2.5 text-xs mono text-slate-300 space-y-1 text-start" dir="ltr"></div>
+
+            <!-- CLI Input Row -->
+            <form onsubmit="handleCliSubmit(event)" class="flex items-center gap-2 bg-dark-base border border-dark-border focus-within:border-brand-500 rounded-xl px-3 py-1.5" dir="ltr">
+              <span class="text-xs mono text-brand-500 font-bold select-none">it@arch:~$</span>
+              <input id="cliInput" type="text" autocomplete="off" placeholder="type 'help' or 'open prg'..." class="w-full bg-transparent text-xs mono text-white outline-none placeholder:text-dark-muted/50">
+              <button type="submit" class="text-[11px] mono px-2.5 py-1 rounded-lg bg-brand-500/20 hover:bg-brand-500 text-brand-400 hover:text-black font-bold transition">RUN</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry & Semester Control Column (4 Columns on Desktop) -->
+      <div class="lg:col-span-4 flex flex-col justify-between gap-4">
+
+        <!-- System Telemetry HUD Card -->
+        <div class="rounded-2xl bg-dark-surface/90 backdrop-blur-xl border border-dark-border p-5 flex-1 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs mono text-brand-400 font-bold flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-brand-500 animate-ping"></span>
+                ${ar ? 'قياسات النظام الحية' : 'SYSTEM_TELEMETRY'}
+              </span>
+              <span class="text-[11px] mono text-dark-muted">SEM_02</span>
+            </div>
+
+            <!-- 3 Mini Bento Stats -->
+            <div class="grid grid-cols-3 gap-2.5 text-center">
+              <div class="bg-dark-base/90 border border-dark-border/80 rounded-xl p-3">
+                <div class="text-xl sm:text-2xl font-black mono text-brand-400">${stats.avgMastery}%</div>
+                <div class="text-[10px] mono text-dark-muted mt-0.5">${ar ? 'الإتقان العام' : 'MASTERY'}</div>
+              </div>
+              <div class="bg-dark-base/90 border border-dark-border/80 rounded-xl p-3">
+                <div class="text-xl sm:text-2xl font-black mono text-sky-400">${stats.totalModules}</div>
+                <div class="text-[10px] mono text-dark-muted mt-0.5">${ar ? 'المقررات' : 'MODULES'}</div>
+              </div>
+              <div class="bg-dark-base/90 border border-dark-border/80 rounded-xl p-3">
+                <div class="text-xl sm:text-2xl font-black mono text-emerald-400">${stats.totalLectures}</div>
+                <div class="text-[10px] mono text-dark-muted mt-0.5">${ar ? 'محاضرة' : 'LECTURES'}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Overall Progress Bar -->
+          <div class="mt-4 pt-3 border-t border-dark-border/70">
+            <div class="flex justify-between text-xs mono mb-1">
+              <span class="text-dark-muted">${ar ? 'مزامنة الفصل الدراسي' : 'SEMESTER_PROGRESS'}</span>
+              <span class="text-white font-bold">${stats.startedCount} / ${stats.totalModules} ${ar ? 'نشط' : 'ACTIVE'}</span>
+            </div>
+            <div class="h-2 bg-dark-base rounded-full overflow-hidden border border-dark-border">
+              <div class="h-full bg-gradient-to-r from-brand-600 to-brand-400 transition-all duration-500" style="width: ${Math.max(stats.avgMastery, 5)}%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Semester Switcher Card (Preserves semesterSelect & typed-semester) -->
+        <div class="rounded-2xl p-5 border border-brand-500/40 bg-dark-surface/90 backdrop-blur-xl shadow-lg">
+          <div class="flex items-center justify-between mb-1.5">
+            <label for="semesterSelect" class="block text-xs mono text-brand-400 font-bold">
+              ${ar ? '// تغير السمستر الدراسي' : '// Jump to Your Semester'}
+            </label>
+            <span class="text-lg">🎓</span>
+          </div>
+
+          <p class="text-dark-muted text-xs mono min-h-[20px] mb-2.5">
+            <span id="typed-semester"></span><span class="text-brand-500 terminal-cursor">_</span>
+          </p>
+
+          <!-- Quick Segmented Buttons + Original Select Dropdown -->
+          <div class="grid grid-cols-2 gap-2 mb-2.5">
+            <a href="s1/index.html" class="text-center py-2 px-3 rounded-xl text-xs font-bold mono bg-dark-base hover:bg-dark-elevated text-dark-muted hover:text-white border border-dark-border transition">
+              ${ar ? 'السمستر 01' : 'SEMESTER 01'}
+            </a>
+            <a href="index.html" class="text-center py-2 px-3 rounded-xl text-xs font-bold mono bg-brand-500/20 text-brand-400 border border-brand-500/60 shadow-sm">
+              ${ar ? 'السمستر 02 ●' : 'SEMESTER 02 ●'}
+            </a>
+          </div>
+
+          <select id="semesterSelect" onchange="if(this.value) window.location.href=this.value;" class="w-full bg-dark-base border border-dark-border focus:border-brand-500 rounded-xl px-3 py-2 text-xs sm:text-sm font-semibold text-white outline-none transition cursor-pointer">
+            <option value="" disabled>${ar ? '— اختر السمستر الدراسي —' : '— Select Semester —'}</option>
+            <option value="s1/index.html">${ar ? 'السمستر الأول (Semester 1)' : 'Semester 1'}</option>
+            <option value="index.html" selected>${ar ? 'السمستر الثاني (Semester 2)' : 'Semester 2'}</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FILTER & SEARCH COMMAND BAR -->
+    <div class="rounded-2xl bg-dark-surface/90 backdrop-blur border border-dark-border p-3.5 sm:p-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+      <!-- Category Filter Tabs -->
+      <div class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
+        <button onclick="setFilter('all')" class="px-3 py-1.5 rounded-xl text-xs font-bold mono transition shrink-0 ${activeFilter === 'all' ? 'bg-brand-500 text-black shadow-md' : 'bg-dark-base text-dark-muted hover:text-white border border-dark-border'}">
+          ${ar ? 'كل المقررات (8)' : 'ALL_MODULES (8)'}
+        </button>
+        <button onclick="setFilter('core')" class="px-3 py-1.5 rounded-xl text-xs font-bold mono transition shrink-0 ${activeFilter === 'core' ? 'bg-brand-500 text-black shadow-md' : 'bg-dark-base text-dark-muted hover:text-white border border-dark-border'}">
+          ${ar ? 'البرمجة والشبكات والنظم' : 'CORE_CS & IT'}
+        </button>
+        <button onclick="setFilter('math')" class="px-3 py-1.5 rounded-xl text-xs font-bold mono transition shrink-0 ${activeFilter === 'math' ? 'bg-brand-500 text-black shadow-md' : 'bg-dark-base text-dark-muted hover:text-white border border-dark-border'}">
+          ${ar ? 'الرياضيات والإنجليزية التقنية' : 'MATH & TECH_ENG'}
+        </button>
+        <button onclick="setFilter('biz')" class="px-3 py-1.5 rounded-xl text-xs font-bold mono transition shrink-0 ${activeFilter === 'biz' ? 'bg-brand-500 text-black shadow-md' : 'bg-dark-base text-dark-muted hover:text-white border border-dark-border'}">
+          ${ar ? 'الأخلاقيات والأعمال والمحاسبة' : 'ETHICS & FINTECH'}
+        </button>
+      </div>
+
+      <!-- Live Search Input -->
+      <div class="relative min-w-[240px]">
+        <input
+          id="moduleSearch"
+          type="text"
+          value="${esc(searchQuery)}"
+          oninput="handleSearch(this.value)"
+          placeholder="${ar ? 'ابحث عن مقرر أو ملف .h (اضغط /)...' : 'Filter modules or .h headers (Press /)...'}"
+          class="w-full bg-dark-base border border-dark-border focus:border-brand-500 rounded-xl ps-3.5 pe-9 py-2 text-xs sm:text-sm text-white outline-none transition mono placeholder:text-dark-muted/60"
+        >
+        <span class="absolute top-1/2 -translate-y-1/2 ${ar ? 'left-3' : 'right-3'} text-[10px] mono px-1.5 py-0.5 rounded bg-dark-elevated text-dark-muted border border-dark-border pointer-events-none">/</span>
+      </div>
+    </div>
+
+    <!-- SUBJECTS BENTO GRID -->
+    ${filteredSubjects.length > 0 ? `
+      <div id="cardsGrid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">${cards}</div>
+    ` : `
+      <div class="rounded-2xl border border-dark-border bg-dark-surface/80 p-10 text-center mono">
+        <div class="text-3xl mb-2">🔍</div>
+        <div class="text-white font-bold mb-1">${ar ? 'لم يتم العثور على مقررات مطابقة' : 'ERR_404: NO_MATCHING_MODULE'}</div>
+        <div class="text-xs text-dark-muted mb-4">${ar ? 'جرب البحث بكلمة أخرى أو إعادة ضبط الفلتر' : 'Try another keyword or reset the filter'}</div>
+        <button onclick="resetFilters()" class="px-4 py-2 rounded-xl bg-brand-500 text-black text-xs font-bold mono">${ar ? 'إظهار الكل' : 'RESET_FILTERS'}</button>
+      </div>
+    `}
+  </div>`;
+
+  // Re-populate terminal history if any exists
+  renderCliHistory();
+  bindSpotlightCards();
+  startTypewriter(ar);
+  updateClock();
+}
+
+// Mouse Spotlight Effect on Cyber Cards
+function bindSpotlightCards() {
+  const cards = document.querySelectorAll('.cyber-card');
+  cards.forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty('--mouse-x', `${e.clientX - rect.left}px`);
+      card.style.setProperty('--mouse-y', `${e.clientY - rect.top}px`);
+    });
+  });
+}
+
+// Filter & Search Handlers
+function setFilter(cat) {
+  activeFilter = cat;
+  render();
+}
+function handleSearch(val) {
+  searchQuery = val;
+  const cursorPos = document.getElementById('moduleSearch')?.selectionStart || val.length;
+  render();
+  const input = document.getElementById('moduleSearch');
+  if (input) {
+    input.focus();
+    input.setSelectionRange(cursorPos, cursorPos);
+  }
+}
+function resetFilters() {
+  activeFilter = 'all';
+  searchQuery = '';
+  render();
+}
+
+// Interactive Terminal Commands
+function handleCliSubmit(e) {
+  e.preventDefault();
+  const input = document.getElementById('cliInput');
+  if (!input || !input.value.trim()) return;
+  const cmd = input.value.trim();
+  input.value = '';
+  runCommand(cmd);
+}
+
+function runCommand(rawCmd) {
+  const cmd = rawCmd.trim().toLowerCase();
+  const stats = getStats();
+
+  if (cmd === 'clear' || cmd === 'cls') {
+    terminalHistory = [];
+    renderCliHistory();
+    return;
+  }
+
+  let response = '';
+  if (cmd === 'help') {
+    response = `Available commands: <span class="text-brand-400">ls</span> (list modules), <span class="text-brand-400">open [id]</span> (e.g. open prg, open it, open mth), <span class="text-brand-400">stats</span>, <span class="text-brand-400">theme [orange|cyan|emerald|violet]</span>, <span class="text-brand-400">lang</span>, <span class="text-brand-400">clear</span>`;
+  } else if (cmd === 'ls' || cmd === 'ls -la' || cmd === 'dir') {
+    response = SUBJECTS.map(s => `<a href="${esc(s.file)}" class="text-sky-400 hover:underline mr-3">[${s.id}] ${esc(s.header)}</a>`).join(' ');
+  } else if (cmd === 'stats' || cmd === 'status') {
+    response = `KERNEL: ARCH_IT_v2.6 | MODULES: ${stats.totalModules} | LECTURES: ${stats.totalLectures} | OVERALL_MASTERY: ${stats.avgMastery}%`;
+  } else if (cmd === 'lang') {
+    toggleLanguage();
+    return;
+  } else if (cmd.startsWith('theme ')) {
+    const t = cmd.replace('theme ', '').trim();
+    if (['orange','cyan','emerald','violet'].includes(t)) {
+      setAccent(t);
+      response = `HUD theme switched to [${t.toUpperCase()}].`;
+    } else {
+      response = `Unknown theme. Choose: orange, cyan, emerald, violet`;
+    }
+  } else if (cmd.startsWith('open ') || cmd.startsWith('cd ')) {
+    const target = cmd.split(' ')[1];
+    const found = SUBJECTS.find(s => s.id.toLowerCase() === target || s.header.toLowerCase().startsWith(target));
+    if (found) {
+      response = `Executing ${esc(found.file)}...`;
+      terminalHistory.push({ cmd: rawCmd, res: response });
+      renderCliHistory();
+      setTimeout(() => { window.location.href = found.file; }, 300);
+      return;
+    } else {
+      response = `Module '${esc(target)}' not found. Type <span class="text-brand-400">ls</span> for module IDs.`;
+    }
+  } else if (cmd === 'whoami') {
+    response = `root // Future Senior IT Engineer & Cybersecurity Specialist`;
+  } else {
+    response = `zsh: command not found: ${esc(rawCmd)}. Type <span class="text-brand-400">help</span> for commands.`;
+  }
+
+  terminalHistory.push({ cmd: rawCmd, res: response });
+  if (terminalHistory.length > 6) terminalHistory.shift();
+  renderCliHistory();
+}
+
+function renderCliHistory() {
+  const box = document.getElementById('cliOutput');
+  if (!box) return;
+  if (terminalHistory.length === 0) {
+    box.classList.add('hidden');
+    box.innerHTML = '';
+    return;
+  }
+  box.classList.remove('hidden');
+  box.innerHTML = terminalHistory.map(item => `
+    <div>
+      <span class="text-brand-500 font-bold">$ ${esc(item.cmd)}</span>
+      <div class="text-slate-300 ps-3">${item.res}</div>
+    </div>
+  `).join('');
+  box.scrollTop = box.scrollHeight;
+}
+
+// Typewriter Effect (Preserves original spirit + smooth non-buggy dual index)
+let typingInterval;
+function startTypewriter(isAr) {
+  const el = document.getElementById('typed-text');
+  const els = document.getElementById('typed-semester');
+  if (!el || !els) return;
+
+  const texts = isAr ? [
+    '// تقنية معلومات فوووق ⚡',
+    '// ونبيس عمك 🏴‍☠️',
+    '// احضر بلاك كلوفر اول و امشي أقراااا%'
+  ] : [
+    '// IT Top on University !! ⚡',
+    '// One Piece your uncle 🏴‍☠️',
+    '// Prepare for final exams and قوم أقري'
+  ];
+
+  const texts_s = isAr ? [
+    '// السمستر الافتراضي: 2 الثاني',
+    '// الخطة الدراسية نشطة [8 مقررات]',
+    '// اختر السمستر للمتابعة'
+  ] : [
+    '// Default Semester: 2 [Active]',
+    '// Study plan active [8 Modules]',
+    '// Select semester to proceed'
+  ];
+
+  let textIdx = 0, charIdx = 0, isDeleting = false, pauseTicks = 0;
+
+  clearInterval(typingInterval);
+  typingInterval = setInterval(() => {
+    const currentText = texts[textIdx];
+    const currentText_s = texts_s[textIdx];
+    const maxLen = Math.max(currentText.length, currentText_s.length);
+
+    if (pauseTicks > 0) {
+      pauseTicks--;
+      return;
+    }
+
+    if (!isDeleting) {
+      charIdx++;
+      el.textContent = currentText.substring(0, charIdx);
+      els.textContent = currentText_s.substring(0, charIdx);
+      if (charIdx >= maxLen) {
+        isDeleting = true;
+        pauseTicks = 28; // Pause before deleting
+      }
+    } else {
+      charIdx--;
+      el.textContent = currentText.substring(0, charIdx);
+      els.textContent = currentText_s.substring(0, charIdx);
+      if (charIdx <= 0) {
+        isDeleting = false;
+        textIdx = (textIdx + 1) % texts.length;
+        pauseTicks = 6;
+      }
+    }
+  }, 55);
+}
+
+function toggleLanguage() {
+  lang = lang === 'ar' ? 'en' : 'ar';
+  saveState(c => { c.lang = lang; });
+  render();
+}
+
+document.getElementById('langBtn').onclick = toggleLanguage;
+
+// Keyboard shortcut '/' or 'Ctrl+K' to focus search
+window.addEventListener('keydown', e => {
+  if ((e.key === '/' || (e.ctrlKey && e.key.toLowerCase() === 'k')) && document.activeElement.tagName !== 'INPUT') {
+    e.preventDefault();
+    document.getElementById('moduleSearch')?.focus();
+  }
+});
+
+// Initialize Theme & Render
+setAccent(currentAccent);
+render();
+
+// Interactive Network Topology Canvas with Mouse Node Connection
+(function networkBackground(){
+  const canvas = document.getElementById('netCanvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const colors = ['249,115,22','56,189,248'];
+  let w, h, particles = [], rafId = null;
+  let mouse = { x: -9999, y: -9999 };
+
+  window.addEventListener('mousemove', e => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+  window.addEventListener('mouseleave', () => {
+    mouse.x = -9999;
+    mouse.y = -9999;
+  });
+
+  function resize(){
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+
+  function initParticles(){
+    const density = reduceMotion ? 0 : Math.min(70, Math.round((w * h) / 21000));
+    particles = Array.from({length: density}, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.35,
+      vy: (Math.random() - 0.5) * 0.35,
+    }));
+  }
+
+  function step(){
+    ctx.clearRect(0, 0, w, h);
+    for(const p of particles){
+      p.x += p.vx; p.y += p.vy;
+      if(p.x < 0 || p.x > w) p.vx *= -1;
+      if(p.y < 0 || p.y > h) p.vy *= -1;
+    }
+    for(let i = 0; i < particles.length; i++){
+      const a = particles[i];
+      ctx.beginPath();
+      ctx.arc(a.x, a.y, 1.6, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(148,163,184,.55)';
+      ctx.fill();
+
+      // Connect to mouse cursor if nearby
+      const mdx = a.x - mouse.x, mdy = a.y - mouse.y;
+      const mDist = Math.sqrt(mdx * mdx + mdy * mdy);
+      if (mDist < 160) {
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(mouse.x, mouse.y);
+        ctx.strokeStyle = `rgba(249,115,22,${0.32 * (1 - mDist / 160)})`;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+      }
+
+      for(let j = i + 1; j < particles.length; j++){
+        const b = particles[j];
+        const dx = a.x - b.x, dy = a.y - b.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if(dist < 130){
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = `rgba(${colors[(i + j) % 2]},${0.16 * (1 - dist / 130)})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function loop(){ step(); rafId = requestAnimationFrame(loop); }
+  function start(){ if(!rafId && !reduceMotion) rafId = requestAnimationFrame(loop); }
+  function stop(){ if(rafId){ cancelAnimationFrame(rafId); rafId = null; } }
+
+  window.addEventListener('resize', () => { resize(); initParticles(); });
+  document.addEventListener('visibilitychange', () => { document.hidden ? stop() : start(); });
+
+  resize();
+  initParticles();
+  if(reduceMotion){ step(); } else { start(); }
+})();
+</script>
+</body>
+</html>
