@@ -72,6 +72,7 @@ tailwind.config = {
   .dl-done { background:#16a34a !important; animation: dlpop .45s ease; }
   @keyframes dlpop { 0% { transform: scale(1); } 40% { transform: scale(1.08); } 100% { transform: scale(1); } }
 
+.gr-en{unicode-bidi:isolate;direction:ltr;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.88em;background:rgb(var(--b5) / .14);border:1px solid rgb(var(--b5) / .35);border-radius:6px;padding:0 .35em;margin:0 .12em;display:inline;white-space:normal}
 </style>
 </head>
 <body class="bg-dark-base text-dark-text min-h-screen">
@@ -128,13 +129,17 @@ const UI = {
 };
 const LECTURES = [];
 
-LECTURES.push({ id:'l1', n:1,
-  title:["Introduction to Technical English & Vocabulary","مقدمة في اللغة الإنجليزية التقنية والمفردات"],
+LECTURES.push({ id:'e1', n:1,
+  title:["Introduction to Technical English II","مقدمة في اللغة الإنجليزية التقنية (2): المفردات والمبني للمعلوم/المجهول"],
   obj:[
     ["Define Technical English and distinguish it from General English.","تعريف اللغة الإنجليزية التقنية والتمييز بينها وبين اللغة الإنجليزية العامة."],
     ["Explain why English proficiency matters in technical and IT fields.","توضيح أهمية إتقان اللغة الإنجليزية في المجالات التقنية وتقنية المعلومات."],
     ["Define technical vocabulary and describe strategies for building it.","تعريف المفردات التقنية ووصف استراتيجيات بنائها."],
-    ["Identify the main methods of word formation, including derivation via affixes.","تحديد الطرق الرئيسية لتكوين الكلمات، بما في ذلك الاشتقاق عبر الزوائد."]
+    ["Identify the main methods of word formation, including derivation via affixes.","تحديد الطرق الرئيسية لتكوين الكلمات، بما في ذلك الاشتقاق عبر الزوائد."],
+    ["Define voice and explain the relationship between voice and tense.","تعريف الصيغة (Voice) وتوضيح العلاقة بينها وبين الزمن (Tense)."],
+    ["Convert sentences between active and passive voice using the standard steps.","تحويل الجمل بين المبني للمعلوم والمبني للمجهول باستخدام الخطوات القياسية."],
+    ["Recognize the active and passive forms of a verb across all eight tenses covered.","التعرف على صيغتي المبني للمعلوم والمجهول للفعل عبر جميع الأزمنة الثمانية المغطاة."],
+    ["Explain when to use active voice versus passive voice, and which verbs can be transformed.","شرح متى تُستخدم كل من الصيغتين، وأي الأفعال يمكن تحويلها."]
   ],
   sec:[
    {t:["What Is Technical English?","ما هي اللغة الإنجليزية التقنية؟"], b:[
@@ -168,50 +173,7 @@ LECTURES.push({ id:'l1', n:1,
      {k:'ul', h:["Affixes can be divided into two categories:","يمكن تقسيم الزوائد إلى فئتين:"], x:[
        ["Prefixes — added before the root word.","البادئات (Prefixes) — تُضاف قبل الكلمة الجذرية."],
        ["Suffixes — added after the root word.","اللواحق (Suffixes) — تُضاف بعد الكلمة الجذرية."]]}
-   ]}
-  ],
-  take:[
-   ["Technical English emphasizes clarity, accuracy, and technical vocabulary — a way to explain technical information without ambiguity.","تُركّز اللغة الإنجليزية التقنية على الوضوح والدقة والمفردات التقنية — وهي وسيلة لشرح المعلومات التقنية دون غموض."],
-   ["English matters in technical fields for reading references, using software interfaces, and understanding technical terms.","تهم اللغة الإنجليزية في المجالات التقنية لقراءة المراجع، واستخدام واجهات البرمجيات، وفهم المصطلحات التقنية."],
-   ["Building vocabulary relies on dictionaries, learning word origins, and cautious inference from context.","يعتمد بناء المفردات على القواميس، وتعلّم أصول الكلمات، والاستنتاج الحذر من السياق."],
-   ["Word formation methods include blending, compounding, coinage, borrowing, and clipping; derivation uses prefixes and suffixes.","تشمل طرق تكوين الكلمات المزج والتركيب والصياغة والاقتراض والقص؛ ويستخدم الاشتقاق البادئات واللواحق."]
-  ],
-  fc:[
-   [["Define Technical English.","عرّف اللغة الإنجليزية التقنية."],["The form of English used in scientific, engineering, and computing fields, emphasizing clarity, accuracy, and technical vocabulary.","صيغة اللغة الإنجليزية المستخدمة في المجالات العلمية والهندسية والحاسوبية، وتُركّز على الوضوح والدقة والمفردات التقنية."]],
-   [["How does General English differ from Technical English?","كيف تختلف اللغة الإنجليزية العامة عن التقنية؟"],["General English is used in daily life communication; Technical English is used in scientific and technical fields.","تُستخدم اللغة الإنجليزية العامة في التواصل اليومي؛ وتُستخدم التقنية في المجالات العلمية والتقنية."]],
-   [["Name the three reasons English is important in technical fields.","اذكر الأسباب الثلاثة لأهمية الإنجليزية في المجالات التقنية."],["Understanding technical books/references, using software/applications, and understanding technical terms.","فهم الكتب/المراجع التقنية، استخدام البرمجيات/التطبيقات، وفهم المصطلحات التقنية."]],
-   [["Define technical vocabulary.","عرّف المفردات التقنية."],["The specialized vocabulary of a field, evolving from experts' need to communicate with clarity, precision, relevance, and brevity.","المفردات المتخصصة لمجال ما، تتطور من حاجة الخبراء للتواصل بوضوح ودقة وملاءمة وإيجاز."]],
-   [["Why is building general English vocabulary important before technical vocabulary?","لماذا يُعد بناء المفردات الإنجليزية العامة مهمًا قبل المفردات التقنية؟"],["Because improving general vocabulary is essential groundwork before developing specialized technical vocabulary.","لأن تحسين المفردات العامة أساس ضروري قبل تطوير المفردات التقنية المتخصصة."]],
-   [["Name two strategies for building vocabulary.","اذكر استراتيجيتين لبناء المفردات."],["Any two of: learning word origins, using a dictionary, inferring meaning from context.","أي استراتيجيتين من: تعلّم أصول الكلمات، استخدام القاموس، استنتاج المعنى من السياق."]],
-   [["Why should you be cautious when inferring a word's meaning from context?","لماذا يجب الحذر عند استنتاج معنى كلمة من السياق؟"],["Because the inferred meaning may not be exact.","لأن المعنى المستنتج قد لا يكون دقيقًا."]],
-   [["Name the five methods of word formation mentioned.","اذكر طرق تكوين الكلمات الخمس المذكورة."],["Blending, compounding, coinage, borrowing, and clipping.","المزج، والتركيب، والصياغة، والاقتراض، والقص."]],
-   [["What is derivation, and what tool enables it?","ما هو الاشتقاق، وما الأداة التي تُمكّنه؟"],["The process in which a word's form changes, enabled by affixes attached to root words.","العملية التي تتغيّر فيها صيغة الكلمة، وتُمكّنها الزوائد المُضافة إلى الكلمات الجذرية."]],
-   [["What are the two categories of affixes?","ما فئتا الزوائد؟"],["Prefixes (before the root word) and suffixes (after the root word).","البادئات (قبل الكلمة الجذرية) واللواحق (بعد الكلمة الجذرية)."]],
-   [["Give two examples of prefixes mentioned in the lecture.","اذكر مثالين للبادئات المذكورة في المحاضرة."],["Any two of: un-, mis-, pre-.","أي اثنين من: un-، mis-، pre-."]]
-  ],
-  quiz:[
-   {q:["Technical English is best defined as:","تُعرَّف اللغة الإنجليزية التقنية على أفضل وجه بأنها:"], o:[["English used only in daily conversation","إنجليزية تُستخدم فقط في المحادثة اليومية"],["The form of English used in scientific, engineering, and computing fields","صيغة الإنجليزية المستخدمة في المجالات العلمية والهندسية والحاسوبية"],["A dialect spoken only in the UK","لهجة تُستخدم فقط في المملكة المتحدة"],["English used exclusively in literature","إنجليزية تُستخدم حصريًا في الأدب"]], a:1},
-   {q:["General English is used for:","تُستخدم اللغة الإنجليزية العامة من أجل:"], o:[["Scientific research papers only","أبحاث علمية فقط"],["Daily life communication","التواصل في الحياة اليومية"],["Software source code only","شيفرة مصدر البرمجيات فقط"],["Legal contracts only","العقود القانونية فقط"]], a:1},
-   {q:["Which is NOT listed as a reason English matters in the technical field?","أي مما يلي لم يُذكر كسبب لأهمية الإنجليزية في المجال التقني؟"], o:[["Understanding technical books and references","فهم الكتب والمراجع التقنية"],["Using software and applications","استخدام البرمجيات والتطبيقات"],["Improving physical fitness","تحسين اللياقة البدنية"],["Understanding technical terms","فهم المصطلحات التقنية"]], a:2},
-   {q:["Technical vocabulary evolves primarily due to experts' need for:","تتطور المفردات التقنية أساسًا بسبب حاجة الخبراء إلى:"], o:[["Entertainment","الترفيه"],["Clarity, precision, relevance, and brevity","الوضوح والدقة والملاءمة والإيجاز"],["Longer sentences","جمل أطول"],["Poetic expression","التعبير الشعري"]], a:1},
-   {q:["Which tool is described as invaluable for building vocabulary?","أي أداة وُصفت بأنها لا تُقدَّر بثمن لبناء المفردات؟"], o:[["A calculator","آلة حاسبة"],["A dictionary","قاموس"],["A spreadsheet","جدول بيانات"],["A compiler","مترجم برمجي"]], a:1},
-   {q:["Why should inferring word meaning from context be done carefully?","لماذا يجب توخي الحذر عند استنتاج معنى الكلمة من السياق؟"], o:[["It is always 100% accurate","لأنه دقيق 100% دائمًا"],["The inferred meaning may not be exact","قد لا يكون المعنى المستنتج دقيقًا"],["Context never helps with meaning","السياق لا يساعد أبدًا في فهم المعنى"],["It is illegal to do so","لأن ذلك غير قانوني"]], a:1},
-   {q:["Which is NOT listed as a method of word formation?","أي مما يلي لم يُذكر كطريقة لتكوين الكلمات؟"], o:[["Blending","المزج"],["Compounding","التركيب"],["Translation","الترجمة"],["Clipping","القص"]], a:2},
-   {q:["Derivation is the process in which:","الاشتقاق هو العملية التي:"], o:[["A word's pronunciation changes only","يتغيّر فيها نطق الكلمة فقط"],["A word's form changes with the help of affixes","تتغيّر فيها صيغة الكلمة بمساعدة الزوائد"],["Two unrelated words are combined randomly","تُدمج فيها كلمتان غير مرتبطتين عشوائيًا"],["A word is deleted from the dictionary","تُحذف فيها كلمة من القاموس"]], a:1},
-   {q:["Which affix type is added BEFORE the root word?","أي نوع من الزوائد يُضاف قبل الكلمة الجذرية؟"], o:[["Suffix","اللاحقة"],["Prefix","البادئة"],["Root","الجذر"],["Clipping","القص"]], a:1},
-   {q:["Which affix type is added AFTER the root word?","أي نوع من الزوائد يُضاف بعد الكلمة الجذرية؟"], o:[["Prefix","البادئة"],["Suffix","اللاحقة"],["Infix","الحشو"],["Blend","المزج"]], a:1}
-  ]
-});
-
-LECTURES.push({ id:'l2', n:2,
-  title:["Active and Passive Voice","المبني للمعلوم والمبني للمجهول"],
-  obj:[
-    ["Define voice and explain the relationship between voice and tense.","تعريف الصيغة (Voice) وتوضيح العلاقة بينها وبين الزمن (Tense)."],
-    ["Convert sentences between active and passive voice using the standard steps.","تحويل الجمل بين المبني للمعلوم والمبني للمجهول باستخدام الخطوات القياسية."],
-    ["Recognize the active and passive forms of a verb across all eight tenses covered.","التعرف على صيغتي المبني للمعلوم والمجهول للفعل عبر جميع الأزمنة الثمانية المغطاة."],
-    ["Explain when to use active voice versus passive voice, and which verbs can be transformed.","شرح متى تُستخدم كل من الصيغتين، وأي الأفعال يمكن تحويلها."]
-  ],
-  sec:[
+   ]},
    {t:["What Is Voice?","ما هي الصيغة (Voice)؟"], b:[
      {k:'def', x:["In grammar, the term voice shows the two different ways an action can be viewed: (1) someone or something performing an action, and (2) the action being performed on someone or something.","في القواعد، يُستخدم مصطلح الصيغة (Voice) لبيان طريقتين مختلفتين لرؤية الفعل: (1) شخص أو شيء يقوم بالفعل، و(2) الفعل يقع على شخص أو شيء."]},
      {k:'ex', x:["1. The operators conducted a test on the turbo generator. (Active Voice — the subject 'the operators' performs the action)\n2. A test was conducted on the turbo generator by the operators. (Passive Voice — the subject 'a test' receives the action)","1. أجرى المشغّلون اختبارًا على المولد التوربيني. (مبني للمعلوم — الفاعل 'المشغّلون' يقوم بالفعل)\n2. أُجري اختبار على المولد التوربيني من قِبل المشغّلين. (مبني للمجهول — الفاعل النحوي 'اختبار' يقع عليه الفعل)"]},
@@ -278,6 +240,10 @@ LECTURES.push({ id:'l2', n:2,
    ]}
   ],
   take:[
+   ["Technical English emphasizes clarity, accuracy, and technical vocabulary — a way to explain technical information without ambiguity.","تُركّز اللغة الإنجليزية التقنية على الوضوح والدقة والمفردات التقنية — وهي وسيلة لشرح المعلومات التقنية دون غموض."],
+   ["English matters in technical fields for reading references, using software interfaces, and understanding technical terms.","تهم اللغة الإنجليزية في المجالات التقنية لقراءة المراجع، واستخدام واجهات البرمجيات، وفهم المصطلحات التقنية."],
+   ["Building vocabulary relies on dictionaries, learning word origins, and cautious inference from context.","يعتمد بناء المفردات على القواميس، وتعلّم أصول الكلمات، والاستنتاج الحذر من السياق."],
+   ["Word formation methods include blending, compounding, coinage, borrowing, and clipping; derivation uses prefixes and suffixes.","تشمل طرق تكوين الكلمات المزج والتركيب والصياغة والاقتراض والقص؛ ويستخدم الاشتقاق البادئات واللواحق."],
    ["Active Voice: the subject performs the action. Passive Voice: the subject receives the action.","المبني للمعلوم: الفاعل يقوم بالفعل. المبني للمجهول: الفاعل النحوي يقع عليه الفعل."],
    ["Passive voice formula: appropriate auxiliary + past participle (+ 'by' + agent, if needed).","صيغة المبني للمجهول: الفعل المساعد المناسب + اسم المفعول (+ 'by' + الفاعل، إذا لزم)."],
    ["Active voice = clear, direct, strong writing. Passive voice = formal writing (reports, proposals) emphasizing the action over the doer.","المبني للمعلوم = كتابة واضحة ومباشرة وقوية. المبني للمجهول = كتابة رسمية (تقارير، مقترحات) تُبرز الفعل على الفاعل."],
@@ -285,6 +251,17 @@ LECTURES.push({ id:'l2', n:2,
    ["Passive construction is verbose; active construction is crisp, direct, and unambiguous.","التركيب المبني للمجهول مُطنب؛ والمبني للمعلوم موجز ومباشر وغير غامض."]
   ],
   fc:[
+   [["Define Technical English.","عرّف اللغة الإنجليزية التقنية."],["The form of English used in scientific, engineering, and computing fields, emphasizing clarity, accuracy, and technical vocabulary.","صيغة اللغة الإنجليزية المستخدمة في المجالات العلمية والهندسية والحاسوبية، وتُركّز على الوضوح والدقة والمفردات التقنية."]],
+   [["How does General English differ from Technical English?","كيف تختلف اللغة الإنجليزية العامة عن التقنية؟"],["General English is used in daily life communication; Technical English is used in scientific and technical fields.","تُستخدم اللغة الإنجليزية العامة في التواصل اليومي؛ وتُستخدم التقنية في المجالات العلمية والتقنية."]],
+   [["Name the three reasons English is important in technical fields.","اذكر الأسباب الثلاثة لأهمية الإنجليزية في المجالات التقنية."],["Understanding technical books/references, using software/applications, and understanding technical terms.","فهم الكتب/المراجع التقنية، استخدام البرمجيات/التطبيقات، وفهم المصطلحات التقنية."]],
+   [["Define technical vocabulary.","عرّف المفردات التقنية."],["The specialized vocabulary of a field, evolving from experts' need to communicate with clarity, precision, relevance, and brevity.","المفردات المتخصصة لمجال ما، تتطور من حاجة الخبراء للتواصل بوضوح ودقة وملاءمة وإيجاز."]],
+   [["Why is building general English vocabulary important before technical vocabulary?","لماذا يُعد بناء المفردات الإنجليزية العامة مهمًا قبل المفردات التقنية؟"],["Because improving general vocabulary is essential groundwork before developing specialized technical vocabulary.","لأن تحسين المفردات العامة أساس ضروري قبل تطوير المفردات التقنية المتخصصة."]],
+   [["Name two strategies for building vocabulary.","اذكر استراتيجيتين لبناء المفردات."],["Any two of: learning word origins, using a dictionary, inferring meaning from context.","أي استراتيجيتين من: تعلّم أصول الكلمات، استخدام القاموس، استنتاج المعنى من السياق."]],
+   [["Why should you be cautious when inferring a word's meaning from context?","لماذا يجب الحذر عند استنتاج معنى كلمة من السياق؟"],["Because the inferred meaning may not be exact.","لأن المعنى المستنتج قد لا يكون دقيقًا."]],
+   [["Name the five methods of word formation mentioned.","اذكر طرق تكوين الكلمات الخمس المذكورة."],["Blending, compounding, coinage, borrowing, and clipping.","المزج، والتركيب، والصياغة، والاقتراض، والقص."]],
+   [["What is derivation, and what tool enables it?","ما هو الاشتقاق، وما الأداة التي تُمكّنه؟"],["The process in which a word's form changes, enabled by affixes attached to root words.","العملية التي تتغيّر فيها صيغة الكلمة، وتُمكّنها الزوائد المُضافة إلى الكلمات الجذرية."]],
+   [["What are the two categories of affixes?","ما فئتا الزوائد؟"],["Prefixes (before the root word) and suffixes (after the root word).","البادئات (قبل الكلمة الجذرية) واللواحق (بعد الكلمة الجذرية)."]],
+   [["Give two examples of prefixes mentioned in the lecture.","اذكر مثالين للبادئات المذكورة في المحاضرة."],["Any two of: un-, mis-, pre-.","أي اثنين من: un-، mis-، pre-."]],
    [["Define voice in grammar.","عرّف الصيغة (Voice) في القواعد."],["The term showing whether the subject performs the action (active) or receives the action (passive).","المصطلح الذي يبيّن ما إذا كان الفاعل يقوم بالفعل (مبني للمعلوم) أو يقع عليه الفعل (مبني للمجهول)."]],
    [["In 'A test was conducted on the turbo generator by the operators,' which voice is used, and why?","في جملة 'A test was conducted on the turbo generator by the operators'، أي صيغة استُخدمت، ولماذا؟"],["Passive voice — the subject 'a test' receives the action rather than performing it.","المبني للمجهول — لأن الفاعل النحوي 'a test' يقع عليه الفعل بدلًا من أن يقوم به."]],
    [["What is the passive form of 'is analyzing' (present continuous)?","ما الصيغة المبنية للمجهول لـ 'is analyzing' (المضارع المستمر)؟"],["is being analysed.","is being analysed."]],
@@ -300,6 +277,16 @@ LECTURES.push({ id:'l2', n:2,
    [["In 'The project was completed on time' vs. 'Sohan's team completed the project on time,' what differs?","في 'The project was completed on time' مقابل 'Sohan's team completed the project on time'، ما الذي يختلف؟"],["The focus: the first emphasizes the project, the second emphasizes Sohan's team (the doer).","التركيز: الأولى تُبرز المشروع، والثانية تُبرز فريق سوهان (الفاعل)."]]
   ],
   quiz:[
+   {q:["Technical English is best defined as:","تُعرَّف اللغة الإنجليزية التقنية على أفضل وجه بأنها:"], o:[["English used only in daily conversation","إنجليزية تُستخدم فقط في المحادثة اليومية"],["The form of English used in scientific, engineering, and computing fields","صيغة الإنجليزية المستخدمة في المجالات العلمية والهندسية والحاسوبية"],["A dialect spoken only in the UK","لهجة تُستخدم فقط في المملكة المتحدة"],["English used exclusively in literature","إنجليزية تُستخدم حصريًا في الأدب"]], a:1},
+   {q:["General English is used for:","تُستخدم اللغة الإنجليزية العامة من أجل:"], o:[["Scientific research papers only","أبحاث علمية فقط"],["Daily life communication","التواصل في الحياة اليومية"],["Software source code only","شيفرة مصدر البرمجيات فقط"],["Legal contracts only","العقود القانونية فقط"]], a:1},
+   {q:["Which is NOT listed as a reason English matters in the technical field?","أي مما يلي لم يُذكر كسبب لأهمية الإنجليزية في المجال التقني؟"], o:[["Understanding technical books and references","فهم الكتب والمراجع التقنية"],["Using software and applications","استخدام البرمجيات والتطبيقات"],["Improving physical fitness","تحسين اللياقة البدنية"],["Understanding technical terms","فهم المصطلحات التقنية"]], a:2},
+   {q:["Technical vocabulary evolves primarily due to experts' need for:","تتطور المفردات التقنية أساسًا بسبب حاجة الخبراء إلى:"], o:[["Entertainment","الترفيه"],["Clarity, precision, relevance, and brevity","الوضوح والدقة والملاءمة والإيجاز"],["Longer sentences","جمل أطول"],["Poetic expression","التعبير الشعري"]], a:1},
+   {q:["Which tool is described as invaluable for building vocabulary?","أي أداة وُصفت بأنها لا تُقدَّر بثمن لبناء المفردات؟"], o:[["A calculator","آلة حاسبة"],["A dictionary","قاموس"],["A spreadsheet","جدول بيانات"],["A compiler","مترجم برمجي"]], a:1},
+   {q:["Why should inferring word meaning from context be done carefully?","لماذا يجب توخي الحذر عند استنتاج معنى الكلمة من السياق؟"], o:[["It is always 100% accurate","لأنه دقيق 100% دائمًا"],["The inferred meaning may not be exact","قد لا يكون المعنى المستنتج دقيقًا"],["Context never helps with meaning","السياق لا يساعد أبدًا في فهم المعنى"],["It is illegal to do so","لأن ذلك غير قانوني"]], a:1},
+   {q:["Which is NOT listed as a method of word formation?","أي مما يلي لم يُذكر كطريقة لتكوين الكلمات؟"], o:[["Blending","المزج"],["Compounding","التركيب"],["Translation","الترجمة"],["Clipping","القص"]], a:2},
+   {q:["Derivation is the process in which:","الاشتقاق هو العملية التي:"], o:[["A word's pronunciation changes only","يتغيّر فيها نطق الكلمة فقط"],["A word's form changes with the help of affixes","تتغيّر فيها صيغة الكلمة بمساعدة الزوائد"],["Two unrelated words are combined randomly","تُدمج فيها كلمتان غير مرتبطتين عشوائيًا"],["A word is deleted from the dictionary","تُحذف فيها كلمة من القاموس"]], a:1},
+   {q:["Which affix type is added BEFORE the root word?","أي نوع من الزوائد يُضاف قبل الكلمة الجذرية؟"], o:[["Suffix","اللاحقة"],["Prefix","البادئة"],["Root","الجذر"],["Clipping","القص"]], a:1},
+   {q:["Which affix type is added AFTER the root word?","أي نوع من الزوائد يُضاف بعد الكلمة الجذرية؟"], o:[["Prefix","البادئة"],["Suffix","اللاحقة"],["Infix","الحشو"],["Blend","المزج"]], a:1},
    {q:["In Active Voice, the subject:","في المبني للمعلوم، الفاعل:"], o:[["Receives the action","يقع عليه الفعل"],["Performs the action","يقوم بالفعل"],["Is always omitted","يُحذف دائمًا"],["Is always plural","يكون جمعًا دائمًا"]], a:1},
    {q:["'A test was conducted on the turbo generator by the operators' is an example of:","'A test was conducted on the turbo generator by the operators' مثال على:"], o:[["Active Voice","المبني للمعلوم"],["Passive Voice","المبني للمجهول"],["Future tense only","المستقبل فقط"],["A question","سؤال"]], a:1},
    {q:["What is the passive form of the simple present 'Analyses'?","ما الصيغة المبنية للمجهول للمضارع البسيط 'Analyses'؟"], o:[["was analysed","was analysed"],["is analysed","is analysed"],["has analysed","has analysed"],["will analyse","will analyse"]], a:1},
@@ -315,7 +302,7 @@ LECTURES.push({ id:'l2', n:2,
   ]
 });
 
-LECTURES.push({ id:'l3', n:3,
+LECTURES.push({ id:'e2', n:2,
   title:["Note Making and Summarizing","تدوين الملاحظات والتلخيص"],
   obj:[
     ["Define note making and list its main uses.","تعريف تدوين الملاحظات وسرد استخداماته الرئيسية."],
@@ -325,12 +312,11 @@ LECTURES.push({ id:'l3', n:3,
   ],
   sec:[
    {t:["What Is Note Making?","ما هو تدوين الملاحظات؟"], b:[
-     {k:'def', x:["A note can be defined as a systematic method of quickly, briefly, and clearly writing down the important points of a text being read. It is a productive skill that integrates both reading and writing skills.","يمكن تعريف الملاحظة (Note) بأنها طريقة منهجية لتدوين النقاط المهمة من نص مقروء بسرعة وإيجاز ووضوح. وهي مهارة إنتاجية تدمج مهارتي القراءة والكتابة معًا."]},
+     {k:'def', x:["Note making can be defined as a systematic method of writing down quickly, briefly and clearly the important points of reading a text. It is a productive skill that integrates both reading and writing skills.","يمكن تعريف تدوين الملاحظات (Note making) بأنه طريقة منهجية لتدوين النقاط المهمة عند قراءة نص بسرعة وإيجاز ووضوح. وهي مهارة إنتاجية تدمج مهارتي القراءة والكتابة معًا."]},
      {k:'ul', h:["Note making is used to:","يُستخدم تدوين الملاحظات من أجل:"], x:[
        ["Keep a record of the main points of a reading text for future use and reference.","الاحتفاظ بسجل للنقاط الرئيسية لنص مقروء لاستخدامه والرجوع إليه مستقبلًا."],
        ["Revise for an exam.","المراجعة لامتحان."],
-       ["Update information.","تحديث المعلومات."],
-       ["Analyze a text.","تحليل نص."]]}
+       ["Update information.","تحديث المعلومات."]]}
    ]},
    {t:["Reading Strategy for Note Making","استراتيجية القراءة لتدوين الملاحظات"], b:[
      {k:'p', x:["A careful reading plan is to identify the central idea, important points, and supporting details. This enables you to understand the text quickly and make appropriate notes.","تتمثل خطة القراءة الدقيقة في تحديد الفكرة المركزية والنقاط المهمة والتفاصيل الداعمة. وهذا يُمكّنك من فهم النص بسرعة وتدوين الملاحظات المناسبة."]},
@@ -382,7 +368,7 @@ LECTURES.push({ id:'l3', n:3,
   ],
   fc:[
    [["Define a note.","عرّف الملاحظة."],["A systematic method of quickly, briefly, and clearly writing down the important points of a text being read.","طريقة منهجية لتدوين النقاط المهمة من نص مقروء بسرعة وإيجاز ووضوح."]],
-   [["List the four uses of note making.","اذكر الاستخدامات الأربعة لتدوين الملاحظات."],["Keeping a record for future reference, revising for an exam, updating information, and analyzing a text.","الاحتفاظ بسجل للرجوع إليه مستقبلًا، المراجعة لامتحان، تحديث المعلومات، وتحليل نص."]],
+   [["List the three uses of note making.","اذكر الاستخدامات الثلاثة لتدوين الملاحظات."],["Keeping a record for future reference, revising for an exam, and updating information.","الاحتفاظ بسجل للرجوع إليه مستقبلًا، المراجعة لامتحان، وتحديث المعلومات."]],
    [["Name two parts of the reading strategy for note making.","اذكر جزأين من استراتيجية القراءة لتدوين الملاحظات."],["Any two of: recognize key lexical items, identify relationships among text units, read key points/signal words, ignore irrelevant matter, deduce meaning from context, interpret graphic aids.","أي جزأين من: التعرف على المفردات الرئيسية، تحديد العلاقات بين وحدات النص، قراءة النقاط الرئيسية/الكلمات الدلالية، تجاهل المحتوى غير ذي الصلة، استنتاج المعنى من السياق، تفسير الوسائل البيانية."]],
    [["What question does the 'Heading' step answer?","ما السؤال الذي تجيب عليه خطوة 'العنوان'؟"],["What is the main idea of the passage?","ما الفكرة الرئيسية للنص؟"],],
    [["What question does the 'Subheadings' step answer?","ما السؤال الذي تجيب عليه خطوة 'العناوين الفرعية'؟"],["How was the main idea presented and developed, and are there subordinate ideas?","كيف قُدّمت الفكرة الرئيسية وطُوّرت، وهل هناك أفكار فرعية؟"]],
@@ -409,7 +395,7 @@ LECTURES.push({ id:'l3', n:3,
   ]
 });
 
-LECTURES.push({ id:'l4', n:4,
+LECTURES.push({ id:'e3', n:3,
   title:["Nouns, Compound Nouns, and Negative Prefixes","الأسماء، الأسماء المركبة، والبادئات السلبية"],
   obj:[
     ["Identify the main types of nouns, including compound nouns.","تحديد الأنواع الرئيسية للأسماء، بما في ذلك الأسماء المركبة."],
@@ -420,16 +406,16 @@ LECTURES.push({ id:'l4', n:4,
   sec:[
    {t:["Types of Nouns","أنواع الأسماء"], b:[
      {k:'def', x:["A noun is the part of speech which names a person, animal, place, thing, or a quality of a thing.","الاسم (Noun) هو قسم الكلام الذي يُسمّي شخصًا أو حيوانًا أو مكانًا أو شيئًا أو صفة لشيء."]},
-     {k:'tbl', h:[["Type","النوع"],["Examples"]],
+     {k:'tbl', h:[["Type","النوع"],["Examples","أمثلة"]],
       r:[
-       [["Common noun","الاسم العام"],["girl, boy, woman, book, town, country"]],
-       [["Abstract noun","الاسم المجرد"],["honesty, charity, wisdom"]],
-       [["Collective noun","اسم الجماعة"],["crowd, fleet, team, group"]],
-       [["Concrete noun","الاسم المحسوس"],["iron, gold, silver"]],
-       [["Countable noun","الاسم المعدود"],["pens, chairs, people, car (singular or plural)"]],
-       [["Uncountable noun","الاسم غير المعدود"],["sugar"]],
-       [["Proper noun","اسم العلم"],["Sita, Rama, Madras, Delhi"]],
-       [["Gerund noun","اسم المصدر (Gerund)"],["singing (verb + -ing; follows a verb, preposition, or adjective) — e.g. I love singing."]]
+       [["Common noun","الاسم العام"],["girl, boy, woman, book, town, country","girl, boy, woman, book, town, country (فتاة، ولد، امرأة، كتاب، بلدة، دولة)"]],
+       [["Abstract noun","الاسم المجرد"],["honesty, charity, wisdom","honesty, charity, wisdom (الصدق، الإحسان، الحكمة)"]],
+       [["Collective noun","اسم الجماعة"],["crowd, fleet, team, group","crowd, fleet, team, group (حشد، أسطول، فريق، مجموعة)"]],
+       [["Concrete noun","الاسم المحسوس"],["iron, gold, silver","iron, gold, silver (حديد، ذهب، فضة)"]],
+       [["Countable noun","الاسم المعدود"],["pens, chairs, people, car (singular or plural)","pens, chairs, people, car (مفرد أو جمع)"]],
+       [["Uncountable noun","الاسم غير المعدود"],["sugar","sugar (سكر)"]],
+       [["Proper noun","اسم العلم"],["Sita, Rama, Madras, Delhi","Sita, Rama, Madras, Delhi (أسماء أعلام)"]],
+       [["Gerund noun","اسم المصدر (Gerund)"],["singing (verb + -ing; follows a verb, preposition, or adjective) — e.g. I love singing.","singing (فعل + ing؛ يأتي بعد فعل أو حرف جر أو صفة) — مثل: I love singing."]]
       ]}
    ]},
    {t:["What Is a Compound Noun?","ما هو الاسم المركب؟"], b:[
@@ -455,7 +441,7 @@ LECTURES.push({ id:'l4', n:4,
        ["in- becomes im- before a root beginning with 'm' or 'p' — e.g. immature, impatient, improbable.","تصبح in- → im- قبل جذر يبدأ بـ 'm' أو 'p' — مثل immature وimpatient وimprobable."],
        ["in- becomes ir- before a word beginning with 'r' — e.g. irreplaceable, irreversible.","تصبح in- → ir- قبل كلمة تبدأ بـ 'r' — مثل irreplaceable وirreversible."],
        ["in- becomes il- before a word beginning with 'l' — e.g. illegal, illegible, illiterate.","تصبح in- → il- قبل كلمة تبدأ بـ 'l' — مثل illegal وillegible وilliterate."]]},
-     {k:'tip', x:["The prefix in- does not always have a negative meaning — often it gives the idea of 'inside' or 'into', e.g. impart, internal, insert, income.","لا تحمل البادئة in- معنى سلبيًا دائمًا — فغالبًا ما تُعطي فكرة 'الداخل' أو 'إلى الداخل'، مثل impart وinternal وinsert وincome."]}
+     {k:'tip', x:["The prefix in- does not always have a negative meaning — often it gives the idea of 'inside' or 'into', e.g. impart, internal.","لا تحمل البادئة in- معنى سلبيًا دائمًا — فغالبًا ما تُعطي فكرة 'الداخل' أو 'إلى الداخل'، مثل impart وinternal."]}
    ]},
    {t:["Negative Prefixes with Verbs","البادئات السلبية مع الأفعال"], b:[
      {k:'p', x:["Although it is mainly adjectives that are made negative by prefixes, in- and dis- can also form the opposites of verbs, reversing the action of the verb — e.g. appear → disappear.","رغم أن الصفات هي التي تُجعل سلبية بالبادئات في الغالب، يمكن لـ in- وdis- أيضًا تكوين عكس الأفعال، بعكس فعل الفعل — مثل appear ← disappear."]},
@@ -464,13 +450,13 @@ LECTURES.push({ id:'l4', n:4,
        ["unbend, undo, undress, unfold, unload, unlock, unveil, unwrap, unzip.","unbend وundo وundress وunfold وunload وunlock وunveil وunwrap وunzip."]]}
    ]},
    {t:["Categories of Prefixes","فئات البادئات"], b:[
-     {k:'tbl', h:[["Category","الفئة"],["Prefixes","البادئات"],["Examples"]],
+     {k:'tbl', h:[["Category","الفئة"],["Prefixes","البادئات"],["Examples","أمثلة"]],
       r:[
-       [["Reversative — reverses the action of the base, without negative implication.","انعكاسية (Reversative) — تعكس فعل الأساس، دون دلالة سلبية."],["un-, de-, dis-","un-، de-، dis-"],["undo, untie, unpack, dehydrate, decode, defrost, decentralise, disown"]],
-       [["Pejorative — gives the sense of ill, bad, wrong, or not in the right way.","تحقيرية (Pejorative) — تُعطي معنى السيئ أو الخاطئ أو غير الصحيح."],["mis-, mal-, pseudo-","mis-، mal-، pseudo-"],["misuse, misunderstanding, malfunction, malnutrition, pseudo-intellectual"]],
-       [["Time and Order","الزمن والترتيب"],["fore-, pre-, post-, ex-, re-","fore-، pre-، post-، ex-، re-"],["forewarn, pre-war, post-war, ex-president, reappear"]],
-       [["Change word-class — convert the base into a different word class.","مُغيّرة لفئة الكلمة — تُحوّل الأساس إلى فئة كلمة مختلفة."],["be-, en-, a-","be-، en-، a-"],["bewitch, empower, astray"]],
-       [["Negative — reverse or negate the meaning of the word.","سلبية (Negative) — تعكس أو تنفي معنى الكلمة."],["a-, de-, il-, im-, in-, ir-, dis-, mis-, non-, un-","a-، de-، il-، im-، in-، ir-، dis-، mis-، non-، un-"],["amoral, decentralize, disrespect, illogical, illegal"]]
+       [["Reversative — reverses the action of the base, without negative implication.","انعكاسية (Reversative) — تعكس فعل الأساس، دون دلالة سلبية."],["un-, de-, dis-","un-، de-، dis-"],["undo, untie, unpack, dehydrate, decode, defrost, decentralise, disown","undo, untie, unpack, dehydrate, decode, defrost, decentralise, disown"]],
+       [["Pejorative — gives the sense of ill, bad, wrong, or not in the right way.","تحقيرية (Pejorative) — تُعطي معنى السيئ أو الخاطئ أو غير الصحيح."],["mis-, mal-, pseudo-","mis-، mal-، pseudo-"],["misuse, misunderstanding, malfunction, malnutrition, pseudo-intellectual","misuse, misunderstanding, malfunction, malnutrition, pseudo-intellectual"]],
+       [["Time and Order","الزمن والترتيب"],["fore-, pre-, post-, ex-, re-","fore-، pre-، post-، ex-، re-"],["forewarn, pre-war, post-war, ex-president, reappear","forewarn, pre-war, post-war, ex-president, reappear"]],
+       [["Change word-class — convert the base into a different word class.","مُغيّرة لفئة الكلمة — تُحوّل الأساس إلى فئة كلمة مختلفة."],["be-, en-, a-","be-، en-، a-"],["bewitch, empower, astray","bewitch, empower, astray"]],
+       [["Negative — reverse or negate the meaning of the word.","سلبية (Negative) — تعكس أو تنفي معنى الكلمة."],["a-, de-, il-, im-, in-, ir-, dis-, mis-, non-, un-","a-، de-، il-، im-، in-، ir-، dis-، mis-، non-، un-"],["amoral, decentralize, disrespect, illogical, illegal","amoral, decentralize, disrespect, illogical, illegal"]]
       ]}
    ]}
   ],
@@ -490,7 +476,7 @@ LECTURES.push({ id:'l4', n:4,
    [["Give one example each of a compound noun written as one word, with a hyphen, and as separate words.","اذكر مثالًا لكل من: اسم مركب يُكتب ككلمة واحدة، بفاصل، وككلمات منفصلة."],["Earring (one word), Pen-name (hyphen), Tin opener (separate words).","Earring (كلمة واحدة)، Pen-name (بفاصل)، Tin opener (كلمات منفصلة)."]],
    [["State the spelling rule for in- before a root starting with 'm' or 'p'.","اذكر قاعدة التهجئة لـ in- قبل جذر يبدأ بـ 'm' أو 'p'."],["in- becomes im- — e.g. immature, impatient.","تصبح in- ← im- — مثل immature وimpatient."]],
    [["State the spelling rule for in- before a word starting with 'r'.","اذكر قاعدة التهجئة لـ in- قبل كلمة تبدأ بـ 'r'."],["in- becomes ir- — e.g. irreplaceable, irreversible.","تصبح in- ← ir- — مثل irreplaceable وirreversible."]],
-   [["Does the prefix in- always mean negation? Give an example.","هل تعني البادئة in- النفي دائمًا؟ اذكر مثالًا."],["No — it can mean 'inside/into', e.g. insert, internal.","لا — قد تعني 'الداخل/إلى الداخل'، مثل insert وinternal."]],
+   [["Does the prefix in- always mean negation? Give an example.","هل تعني البادئة in- النفي دائمًا؟ اذكر مثالًا."],["No — it can mean 'inside/into', e.g. impart, internal.","لا — قد تعني 'الداخل/إلى الداخل'، مثل impart وinternal."]],
    [["Give an example of a verb made negative with dis-.","اذكر مثالًا على فعل جُعل سلبيًا بـ dis-."],["Any of: disagree, disapprove, disconnect, dislike.","أي من: disagree، disapprove، disconnect، dislike."]],
    [["What meaning do Pejorative prefixes (mis-, mal-, pseudo-) give?","ما المعنى الذي تُعطيه البادئات التحقيرية (mis-، mal-، pseudo-)؟"],["The sense of ill, bad, wrong, or not in the right way — e.g. misuse, malfunction.","معنى السيئ أو الخاطئ أو غير الصحيح — مثل misuse وmalfunction."]],
    [["Give an example of a 'Time and Order' prefix and a word using it.","اذكر مثالًا لبادئة 'الزمن والترتيب' وكلمة تستخدمها."],["Any of: fore- (forewarn), pre- (pre-war), post- (post-war), ex- (ex-president), re- (reappear).","أي من: fore- (forewarn)، pre- (pre-war)، post- (post-war)، ex- (ex-president)، re- (reappear)."]],
@@ -504,7 +490,7 @@ LECTURES.push({ id:'l4', n:4,
    {q:["Which compound noun is used ONLY in the plural, per the lecture?","أي اسم مركب يُستخدم فقط بصيغة الجمع، وفق المحاضرة؟"], o:[["Mother-tongue","Mother-tongue"],["Sun-glasses","Sun-glasses"],["Income-tax","Income-tax"],["Blood-pressure","Blood-pressure"]], a:1},
    {q:["According to the spelling rule, 'in-' becomes 'im-' before a root beginning with:","وفق قاعدة التهجئة، تصبح 'in-' إلى 'im-' قبل جذر يبدأ بـ:"], o:[["'r' or 'l'","'r' أو 'l'"],["'m' or 'p'","'m' أو 'p'"],["Any vowel","أي حرف علة"],["'s' or 't'","'s' أو 't'"]], a:1},
    {q:["Which word correctly shows 'in-' becoming 'il-' before a root beginning with 'l'?","أي كلمة تُظهر بشكل صحيح تحوّل 'in-' إلى 'il-' قبل جذر يبدأ بـ 'l'؟"], o:[["irreplaceable","irreplaceable"],["impatient","impatient"],["illegal","illegal"],["disagree","disagree"]], a:2},
-   {q:["Which word shows that 'in-' does NOT always mean negation?","أي كلمة تُظهر أن 'in-' لا تعني النفي دائمًا؟"], o:[["insert","insert"],["indecent","indecent"],["improbable","improbable"],["irreversible","irreversible"]], a:0},
+   {q:["Which word shows that 'in-' does NOT always mean negation?","أي كلمة تُظهر أن 'in-' لا تعني النفي دائمًا؟"], o:[["internal","internal"],["indecent","indecent"],["improbable","improbable"],["irreversible","irreversible"]], a:0},
    {q:["Which prefix type reverses an action WITHOUT negative implication?","أي نوع من البادئات يعكس فعلًا دون دلالة سلبية؟"], o:[["Pejorative","التحقيرية"],["Reversative","الانعكاسية"],["Time and Order","الزمن والترتيب"],["Word-class-changing","مُغيّرة فئة الكلمة"]], a:1},
    {q:["Which prefixes form the Pejorative category?","أي بادئات تُشكّل الفئة التحقيرية؟"], o:[["un-, de-, dis-","un-، de-، dis-"],["fore-, pre-, post-","fore-، pre-، post-"],["mis-, mal-, pseudo-","mis-، mal-، pseudo-"],["be-, en-, a-","be-، en-، a-"]], a:2},
    {q:["Which prefix set belongs to the 'Time and Order' category?","أي مجموعة بادئات تنتمي لفئة 'الزمن والترتيب'؟"], o:[["be-, en-, a-","be-، en-، a-"],["fore-, pre-, post-, ex-, re-","fore-، pre-، post-، ex-، re-"],["mis-, mal-, pseudo-","mis-، mal-، pseudo-"],["un-, de-, dis-","un-، de-، dis-"]], a:1},
@@ -512,13 +498,17 @@ LECTURES.push({ id:'l4', n:4,
   ]
 });
 
-LECTURES.push({ id:'l5', n:5,
-  title:["Writing System Requirements & Specifications","كتابة متطلبات ومواصفات الأنظمة"],
+LECTURES.push({ id:'e4', n:4,
+  title:["Writing System Requirements & Software and Process Documentation","كتابة متطلبات النظام وتوثيق البرمجيات والعمليات"],
   obj:[
     ["Explain why Requirements Engineering is critical to software project success.","شرح أهمية هندسة المتطلبات لنجاح مشاريع البرمجيات."],
     ["Distinguish System Requirements Specification (SyRS) from Software Requirements Specification (SRS).","التمييز بين مواصفات متطلبات النظام (SyRS) ومواصفات متطلبات البرمجيات (SRS)."],
     ["Write a functional requirement using the standard structure, and classify it into one of the four functional categories.","كتابة متطلب وظيفي باستخدام البنية القياسية، وتصنيفه ضمن إحدى الفئات الوظيفية الأربع."],
-    ["Distinguish functional from non-functional requirements, and write a quantified, testable NFR.","التمييز بين المتطلبات الوظيفية وغير الوظيفية، وكتابة متطلب غير وظيفي كمّي وقابل للاختبار."]
+    ["Distinguish functional from non-functional requirements, and write a quantified, testable NFR.","التمييز بين المتطلبات الوظيفية وغير الوظيفية، وكتابة متطلب غير وظيفي كمّي وقابل للاختبار."],
+    ["Explain the difference between SRS and Software & Process Documentation, and list what the latter covers.","شرح الفرق بين SRS وتوثيق البرمجيات والعمليات، وسرد ما يغطيه الأخير."],
+    ["Identify the five pillars of effective technical writing for software.","تحديد الركائز الخمس للكتابة التقنية الفعّالة للبرمجيات."],
+    ["Describe the standard structure of a user manual.","وصف البنية القياسية لدليل المستخدم."],
+    ["Describe the standard process description template and the two UML notations used for process mapping.","وصف قالب وصف العملية القياسي ونوعي ترميز UML المستخدمين لتخطيط العمليات."]
   ],
   sec:[
    {t:["Why Requirements Engineering Matters","لماذا تهم هندسة المتطلبات"], b:[
@@ -552,55 +542,9 @@ LECTURES.push({ id:'l5', n:5,
       r:[
        [["Performance","الأداء"],["The web application shall render the dashboard within 1.5 seconds under a load of 500 concurrent active users.","يجب أن يعرض تطبيق الويب لوحة التحكم خلال 1.5 ثانية تحت حمل 500 مستخدم نشط متزامن."],["The system must load pages quickly.","يجب أن يُحمّل النظام الصفحات بسرعة."],["Latency, Throughput, Resource Usage","زمن الاستجابة، معدل الإنتاجية، استهلاك الموارد"]],
        [["Security","الأمان"],["The system shall encrypt all sensitive user data at rest using AES-256 and in transit using TLS 1.3.","يجب أن يُشفّر النظام جميع بيانات المستخدم الحساسة أثناء التخزين باستخدام AES-256 وأثناء النقل باستخدام TLS 1.3."],["The database must be secure from hackers.","يجب أن تكون قاعدة البيانات آمنة من القراصنة."],["Encryption, Authentication, Confidentiality","التشفير، المصادقة، السرية"]],
-       [["Availability / Reliability","التوفر / الموثوقية"],["The core API service shall maintain an operational uptime of 99.95% per calendar month, excluding scheduled maintenance.","يجب أن تحافظ خدمة واجهة برمجة التطبيقات الأساسية على نسبة تشغيل 99.95% شهريًا، باستثناء الصيانة المجدولة."],["The system should almost never go down.","يجب ألا يتوقف النظام تقريبًا أبدًا."],["Uptime, Mean Time Between Failures (MTBF)","نسبة التشغيل، متوسط الوقت بين الأعطال (MTBF)"]]
+       [["Availability / Reliability","التوفر / الموثوقية"],["The core API service shall maintain an operational uptime of 99.95% per …","يجب أن تحافظ خدمة واجهة برمجة التطبيقات الأساسية على نسبة تشغيل 99.95% لكل …"],["The system should almost never go down.","يجب ألا يتوقف النظام تقريبًا أبدًا."],["Uptime, Mean Time Between Failures (MTBF)","نسبة التشغيل، متوسط الوقت بين الأعطال (MTBF)"]]
       ]}
-   ]}
-  ],
-  take:[
-   ["More software projects fail from poor requirements than from coding errors — RE bridges business goals and implementation.","تفشل مشاريع برمجية أكثر بسبب متطلبات ضعيفة أكثر مما تفشل بسبب أخطاء برمجية — وهندسة المتطلبات تسد الفجوة بين أهداف الأعمال والتنفيذ."],
-   ["SyRS covers the whole system (hardware+software+people+infrastructure); SRS focuses only on software.","تغطي SyRS النظام بأكمله (عتاد+برمجيات+أشخاص+بنية تحتية)؛ بينما تُركّز SRS على البرمجيات فقط."],
-   ["Functional requirement structure: [Subject] + [Modal Verb] + [System Action] + [Object] + [Condition/Context].","بنية المتطلب الوظيفي: [الفاعل] + [الفعل الواصفي] + [فعل النظام] + [المفعول به] + [الشرط/السياق]."],
-   ["Four functional categories: User Auth/Authorization, Data Processing/Storage, External Interface Interactions, Business Logic Execution.","أربع فئات وظيفية: المصادقة/التفويض، معالجة/تخزين البيانات، تفاعلات الواجهة الخارجية، تنفيذ منطق الأعمال."],
-   ["Good NFRs are quantified and testable ('within 1.5 seconds'); bad NFRs are vague ('quickly').","المتطلبات غير الوظيفية الجيدة كمّية وقابلة للاختبار ('خلال 1.5 ثانية')؛ أما الضعيفة فغامضة ('بسرعة')."]
-  ],
-  fc:[
-   [["What does Requirements Engineering (RE) do in the SDLC?","ماذا تفعل هندسة المتطلبات (RE) في دورة حياة تطوير البرمجيات؟"],["Bridges the gap between high-level business goals and implementation-level code.","تسد الفجوة بين أهداف الأعمال رفيعة المستوى والشيفرة على مستوى التنفيذ."]],
-   [["What causes more software project failures: poor requirements or coding errors?","ما الذي يُسبب فشل مشاريع برمجية أكثر: المتطلبات الضعيفة أم الأخطاء البرمجية؟"],["Poor, ambiguous, or incomplete requirements.","المتطلبات الضعيفة أو الغامضة أو الناقصة."]],
-   [["Define a requirement.","عرّف المتطلب."],["A statement identifying a product/process operational constraint, characteristic, or attribute that must be verified and is contractually binding.","عبارة تحدد قيدًا تشغيليًا أو خاصية أو سمة لمنتج/عملية، يجب التحقق منها وتكون ملزمة تعاقديًا."]],
-   [["What does SyRS stand for, and what does it cover?","ماذا يعني اختصار SyRS، وماذا يغطي؟"],["System Requirements Specification — high-level needs of the whole system (hardware, software, operators, infrastructure).","مواصفات متطلبات النظام — الاحتياجات رفيعة المستوى للنظام بأكمله (العتاد، البرمجيات، المشغّلون، البنية التحتية)."]],
-   [["What does SRS stand for, and what does it cover?","ماذا يعني اختصار SRS، وماذا يغطي؟"],["Software Requirements Specification — a detailed breakdown of software features, data behaviors, interfaces, and external constraints.","مواصفات متطلبات البرمجيات — تفصيل دقيق لميزات البرمجيات وسلوكيات البيانات والواجهات والقيود الخارجية."]],
-   [["Give the standard structure for writing a functional requirement.","اذكر البنية القياسية لكتابة متطلب وظيفي."],["[Subject] + [Modal Verb] + [System Action] + [Object] + [Condition/Context].","[الفاعل] + [الفعل الواصفي] + [فعل النظام] + [المفعول به] + [الشرط/السياق]."]],
-   [["List the four functional categories.","اذكر الفئات الوظيفية الأربع."],["User Authentication & Authorization, Data Processing & Storage, External Interface Interactions, Business Logic Execution.","المصادقة والتفويض، معالجة وتخزين البيانات، تفاعلات الواجهة الخارجية، تنفيذ منطق الأعمال."]],
-   [["What do CRUD operations stand for?","ماذا تعني عمليات CRUD؟"],["Create, Read, Update, Delete.","الإنشاء، القراءة، التحديث، الحذف."]],
-   [["What do non-functional requirements describe?","ماذا تصف المتطلبات غير الوظيفية؟"],["How well the system performs its functions — system properties and quality attributes.","مدى جودة أداء النظام لوظائفه — خصائص النظام وسمات الجودة."]],
-   [["Give the 'good' (quantified) NFR example for Performance.","اذكر مثال NFR 'الجيد' (الكمّي) للأداء."],["The web application shall render the dashboard within 1.5 seconds under a load of 500 concurrent active users.","يجب أن يعرض تطبيق الويب لوحة التحكم خلال 1.5 ثانية تحت حمل 500 مستخدم نشط متزامن."]],
-   [["Why is 'The system must load pages quickly' a BAD NFR?","لماذا يُعد 'يجب أن يُحمّل النظام الصفحات بسرعة' متطلبًا غير وظيفي ضعيفًا؟"],["It is vague and not quantified or testable.","لأنه غامض وغير كمّي أو قابل للاختبار."]],
-   [["Which NFR category covers encryption and authentication?","أي فئة من المتطلبات غير الوظيفية تغطي التشفير والمصادقة؟"],["Security.","الأمان."]]
-  ],
-  quiz:[
-   {q:["What does Requirements Engineering (RE) primarily do?","ماذا تفعل هندسة المتطلبات (RE) بشكل أساسي؟"], o:[["Writes the final source code","تكتب الشيفرة المصدرية النهائية"],["Bridges business goals and implementation-level code","تسد الفجوة بين أهداف الأعمال وشيفرة التنفيذ"],["Tests the hardware only","تختبر العتاد فقط"],["Replaces the need for documentation","تُلغي الحاجة للتوثيق"]], a:1},
-   {q:["According to the lecture, more software projects fail due to:","وفق المحاضرة، تفشل مشاريع برمجية أكثر بسبب:"], o:[["Technical coding errors","أخطاء برمجية تقنية"],["Poor, ambiguous, or incomplete requirements","متطلبات ضعيفة أو غامضة أو ناقصة"],["Hardware failures","أعطال العتاد"],["Lack of funding only","نقص التمويل فقط"]], a:1},
-   {q:["A 'requirement' is defined as a statement that is:","يُعرَّف 'المتطلب' بأنه عبارة:"], o:[["Optional and non-binding","اختيارية وغير ملزمة"],["Verified and contractually binding","يُتحقق منها وملزمة تعاقديًا"],["Written only in code","مكتوبة بالشيفرة فقط"],["Always vague by design","غامضة دائمًا بالتصميم"]], a:1},
-   {q:["SyRS (System Requirements Specification) covers:","تغطي مواصفات متطلبات النظام (SyRS):"], o:[["Software features only","ميزات البرمجيات فقط"],["The whole system: hardware, software, operators, infrastructure","النظام بأكمله: العتاد، البرمجيات، المشغّلون، البنية التحتية"],["Only the user interface","واجهة المستخدم فقط"],["Only the database schema","مخطط قاعدة البيانات فقط"]], a:1},
-   {q:["SRS (Software Requirements Specification) focuses exclusively on:","تُركّز مواصفات متطلبات البرمجيات (SRS) حصريًا على:"], o:[["Physical infrastructure","البنية التحتية المادية"],["Software features, data behaviors, interfaces, and external constraints","ميزات البرمجيات وسلوكيات البيانات والواجهات والقيود الخارجية"],["Human operator training","تدريب المشغّلين البشريين"],["Marketing strategy","استراتيجية التسويق"]], a:1},
-   {q:["Which is the correct structure for a functional requirement?","ما البنية الصحيحة للمتطلب الوظيفي؟"], o:[["[Object] + [Subject] + [Price]","[المفعول به] + [الفاعل] + [السعر]"],["[Subject] + [Modal Verb] + [System Action] + [Object] + [Condition/Context]","[الفاعل] + [الفعل الواصفي] + [فعل النظام] + [المفعول به] + [الشرط/السياق]"],["Just a single verb","فعل واحد فقط"],["A diagram only, no text","مخطط فقط، دون نص"]], a:1},
-   {q:["Which is NOT one of the four functional categories listed?","أي مما يلي ليس من الفئات الوظيفية الأربع المذكورة؟"], o:[["User Authentication & Authorization","المصادقة والتفويض"],["Data Processing & Storage","معالجة وتخزين البيانات"],["Office furniture procurement","شراء أثاث المكتب"],["Business Logic Execution","تنفيذ منطق الأعمال"]], a:2},
-   {q:["CRUD operations fall under which functional category?","تندرج عمليات CRUD تحت أي فئة وظيفية؟"], o:[["External Interface Interactions","تفاعلات الواجهة الخارجية"],["Data Processing & Storage","معالجة وتخزين البيانات"],["Business Logic Execution","تنفيذ منطق الأعمال"],["User Authentication & Authorization","المصادقة والتفويض"]], a:1},
-   {q:["Non-functional requirements describe:","تصف المتطلبات غير الوظيفية:"], o:[["What the system does","ما يفعله النظام"],["How well the system performs its functions","مدى جودة أداء النظام لوظائفه"],["The project budget only","ميزانية المشروع فقط"],["The company's org chart","الهيكل التنظيمي للشركة"]], a:1},
-   {q:["Which is an example of a GOOD (quantified) NFR?","أي مما يلي مثال على متطلب غير وظيفي جيد (كمّي)؟"], o:[["The system should almost never go down","يجب ألا يتوقف النظام تقريبًا أبدًا"],["The database must be secure from hackers","يجب أن تكون قاعدة البيانات آمنة من القراصنة"],["The core API shall maintain 99.95% uptime per month, excluding scheduled maintenance","يجب أن تحافظ واجهة برمجة التطبيقات الأساسية على 99.95% نسبة تشغيل شهريًا، باستثناء الصيانة المجدولة"],["The system must load pages quickly","يجب أن يُحمّل النظام الصفحات بسرعة"]], a:2},
-   {q:["AES-256 encryption and TLS 1.3 are examples used under which NFR category?","يُستخدم تشفير AES-256 وTLS 1.3 كمثال تحت أي فئة من المتطلبات غير الوظيفية؟"], o:[["Performance","الأداء"],["Security","الأمان"],["Availability / Reliability","التوفر / الموثوقية"],["Business Logic","منطق الأعمال"]], a:1}
-  ]
-});
-
-LECTURES.push({ id:'l6', n:6,
-  title:["Software & Process Documentation","توثيق البرمجيات والعمليات"],
-  obj:[
-    ["Explain the difference between SRS and Software & Process Documentation, and list what the latter covers.","شرح الفرق بين SRS وتوثيق البرمجيات والعمليات، وسرد ما يغطيه الأخير."],
-    ["Identify the five pillars of effective technical writing for software.","تحديد الركائز الخمس للكتابة التقنية الفعّالة للبرمجيات."],
-    ["Describe the standard structure of a user manual.","وصف البنية القياسية لدليل المستخدم."],
-    ["Describe the standard process description template and the two UML notations used for process mapping.","وصف قالب وصف العملية القياسي ونوعي ترميز UML المستخدمين لتخطيط العمليات."]
-  ],
-  sec:[
+   ]},
    {t:["What Is Software & Process Documentation?","ما هو توثيق البرمجيات والعمليات؟"], b:[
      {k:'p', x:["In the modern IT ecosystem, software is only as good as its documentation. Software & Process Documentation refers to the structured written materials, visual guides, and technical specifications that accompany software products to assist end-users, system administrators, and software engineers.","في منظومة تقنية المعلومات الحديثة، لا تكون البرمجيات أفضل من توثيقها. ويشير توثيق البرمجيات والعمليات (Software & Process Documentation) إلى المواد المكتوبة المنظّمة والأدلة البصرية والمواصفات التقنية المرافقة للمنتجات البرمجية لمساعدة المستخدمين النهائيين ومديري الأنظمة ومهندسي البرمجيات."]},
      {k:'p', x:["While Requirements Specifications (SRS) focus on what to build, Software & Process Documentation focuses on:","بينما تُركّز مواصفات المتطلبات (SRS) على ما الذي يجب بناؤه، يُركّز توثيق البرمجيات والعمليات على:"]},
@@ -646,11 +590,15 @@ LECTURES.push({ id:'l6', n:6,
        ["Triggers — what initiates the process (e.g., user clicks 'Forgot Password').","المُحفّزات — ما الذي يُطلق العملية (مثل نقر المستخدم على 'نسيت كلمة المرور')."],
        ["Inputs — required data or conditions before execution.","المُدخلات — البيانات أو الشروط المطلوبة قبل التنفيذ."],
        ["Execution Steps — sequential list of actions taken by actors/systems.","خطوات التنفيذ — قائمة متسلسلة بالإجراءات التي يتخذها الفاعلون/الأنظمة."],
-       ["Outputs — resulting state, data saved, or notifications dispatched.","المُخرجات — الحالة الناتجة، أو البيانات المحفوظة، أو الإشعارات المُرسلة."],
-       ["Exceptions / Alternative Flows — how errors during the process are handled.","الاستثناءات / المسارات البديلة — كيفية التعامل مع الأخطاء أثناء العملية."]]}
+       ["Outputs — resulting state, data saved, or notifications dispatched.","المُخرجات — الحالة الناتجة، أو البيانات المحفوظة، أو الإشعارات المُرسلة."]]}
    ]}
   ],
   take:[
+   ["More software projects fail from poor requirements than from coding errors — RE bridges business goals and implementation.","تفشل مشاريع برمجية أكثر بسبب متطلبات ضعيفة أكثر مما تفشل بسبب أخطاء برمجية — وهندسة المتطلبات تسد الفجوة بين أهداف الأعمال والتنفيذ."],
+   ["SyRS covers the whole system (hardware+software+people+infrastructure); SRS focuses only on software.","تغطي SyRS النظام بأكمله (عتاد+برمجيات+أشخاص+بنية تحتية)؛ بينما تُركّز SRS على البرمجيات فقط."],
+   ["Functional requirement structure: [Subject] + [Modal Verb] + [System Action] + [Object] + [Condition/Context].","بنية المتطلب الوظيفي: [الفاعل] + [الفعل الواصفي] + [فعل النظام] + [المفعول به] + [الشرط/السياق]."],
+   ["Four functional categories: User Auth/Authorization, Data Processing/Storage, External Interface Interactions, Business Logic Execution.","أربع فئات وظيفية: المصادقة/التفويض، معالجة/تخزين البيانات، تفاعلات الواجهة الخارجية، تنفيذ منطق الأعمال."],
+   ["Good NFRs are quantified and testable ('within 1.5 seconds'); bad NFRs are vague ('quickly').","المتطلبات غير الوظيفية الجيدة كمّية وقابلة للاختبار ('خلال 1.5 ثانية')؛ أما الضعيفة فغامضة ('بسرعة')."],
    ["Software is only as good as its documentation; SRS defines what to build, while S&PD explains how to use, how it flows internally, how it integrates, and how to fix it.","لا تكون البرمجيات أفضل من توثيقها؛ تُحدّد SRS ما يجب بناؤه، بينما يشرح توثيق البرمجيات والعمليات كيفية الاستخدام، والتدفق الداخلي، والتكامل، والإصلاح."],
    ["Five pillars of software documentation: conciseness, clarity, consistency, accuracy, accessibility.","خمس ركائز لتوثيق البرمجيات: الإيجاز، الوضوح، الاتساق، الدقة، سهولة الوصول."],
    ["A user manual follows a 7-part structure: title/metadata, prerequisites, getting started, interface overview, core tasks, troubleshooting/FAQ, glossary/index.","يتبع دليل المستخدم بنية من 7 أجزاء: العنوان/البيانات الوصفية، المتطلبات المسبقة، البدء، نظرة الواجهة، المهام الأساسية، استكشاف الأخطاء/الأسئلة الشائعة، المصطلحات/الفهرس."],
@@ -658,6 +606,18 @@ LECTURES.push({ id:'l6', n:6,
    ["A process description includes: title, objective, triggers, inputs, execution steps, outputs, and exceptions/alternative flows.","يتضمن وصف العملية: العنوان، الهدف، المُحفّزات، المُدخلات، خطوات التنفيذ، المُخرجات، والاستثناءات/المسارات البديلة."]
   ],
   fc:[
+   [["What does Requirements Engineering (RE) do in the SDLC?","ماذا تفعل هندسة المتطلبات (RE) في دورة حياة تطوير البرمجيات؟"],["Bridges the gap between high-level business goals and implementation-level code.","تسد الفجوة بين أهداف الأعمال رفيعة المستوى والشيفرة على مستوى التنفيذ."]],
+   [["What causes more software project failures: poor requirements or coding errors?","ما الذي يُسبب فشل مشاريع برمجية أكثر: المتطلبات الضعيفة أم الأخطاء البرمجية؟"],["Poor, ambiguous, or incomplete requirements.","المتطلبات الضعيفة أو الغامضة أو الناقصة."]],
+   [["Define a requirement.","عرّف المتطلب."],["A statement identifying a product/process operational constraint, characteristic, or attribute that must be verified and is contractually binding.","عبارة تحدد قيدًا تشغيليًا أو خاصية أو سمة لمنتج/عملية، يجب التحقق منها وتكون ملزمة تعاقديًا."]],
+   [["What does SyRS stand for, and what does it cover?","ماذا يعني اختصار SyRS، وماذا يغطي؟"],["System Requirements Specification — high-level needs of the whole system (hardware, software, operators, infrastructure).","مواصفات متطلبات النظام — الاحتياجات رفيعة المستوى للنظام بأكمله (العتاد، البرمجيات، المشغّلون، البنية التحتية)."]],
+   [["What does SRS stand for, and what does it cover?","ماذا يعني اختصار SRS، وماذا يغطي؟"],["Software Requirements Specification — a detailed breakdown of software features, data behaviors, interfaces, and external constraints.","مواصفات متطلبات البرمجيات — تفصيل دقيق لميزات البرمجيات وسلوكيات البيانات والواجهات والقيود الخارجية."]],
+   [["Give the standard structure for writing a functional requirement.","اذكر البنية القياسية لكتابة متطلب وظيفي."],["[Subject] + [Modal Verb] + [System Action] + [Object] + [Condition/Context].","[الفاعل] + [الفعل الواصفي] + [فعل النظام] + [المفعول به] + [الشرط/السياق]."]],
+   [["List the four functional categories.","اذكر الفئات الوظيفية الأربع."],["User Authentication & Authorization, Data Processing & Storage, External Interface Interactions, Business Logic Execution.","المصادقة والتفويض، معالجة وتخزين البيانات، تفاعلات الواجهة الخارجية، تنفيذ منطق الأعمال."]],
+   [["What do CRUD operations stand for?","ماذا تعني عمليات CRUD؟"],["Create, Read, Update, Delete.","الإنشاء، القراءة، التحديث، الحذف."]],
+   [["What do non-functional requirements describe?","ماذا تصف المتطلبات غير الوظيفية؟"],["How well the system performs its functions — system properties and quality attributes.","مدى جودة أداء النظام لوظائفه — خصائص النظام وسمات الجودة."]],
+   [["Give the 'good' (quantified) NFR example for Performance.","اذكر مثال NFR 'الجيد' (الكمّي) للأداء."],["The web application shall render the dashboard within 1.5 seconds under a load of 500 concurrent active users.","يجب أن يعرض تطبيق الويب لوحة التحكم خلال 1.5 ثانية تحت حمل 500 مستخدم نشط متزامن."]],
+   [["Why is 'The system must load pages quickly' a BAD NFR?","لماذا يُعد 'يجب أن يُحمّل النظام الصفحات بسرعة' متطلبًا غير وظيفي ضعيفًا؟"],["It is vague and not quantified or testable.","لأنه غامض وغير كمّي أو قابل للاختبار."]],
+   [["Which NFR category covers encryption and authentication?","أي فئة من المتطلبات غير الوظيفية تغطي التشفير والمصادقة؟"],["Security.","الأمان."]],
    [["What does Software & Process Documentation refer to?","إلى ماذا يشير توثيق البرمجيات والعمليات؟"],["Structured written materials, visual guides, and technical specs accompanying software to assist end-users, admins, and engineers.","المواد المكتوبة المنظّمة والأدلة البصرية والمواصفات التقنية المرافقة للبرمجيات لمساعدة المستخدمين النهائيين ومديري الأنظمة والمهندسين."]],
    [["How does SRS differ from Software & Process Documentation in focus?","كيف يختلف تركيز SRS عن توثيق البرمجيات والعمليات؟"],["SRS focuses on what to build; S&PD focuses on how to use, how it flows internally, integrates, and is fixed.","تُركّز SRS على ما يجب بناؤه؛ بينما يُركّز توثيق البرمجيات والعمليات على كيفية الاستخدام والتدفق الداخلي والتكامل والإصلاح."]],
    [["List the five pillars of technical writing for software.","اذكر الركائز الخمس للكتابة التقنية للبرمجيات."],["Conciseness, clarity, consistency, accuracy, accessibility.","الإيجاز، الوضوح، الاتساق، الدقة، سهولة الوصول."]],
@@ -667,10 +627,20 @@ LECTURES.push({ id:'l6', n:6,
    [["Which UML notation is used for decision trees and control flow?","أي ترميز UML يُستخدم لأشجار القرار وتدفق التحكم؟"],["UML Activity Diagrams / Flowcharts.","مخططات النشاط UML / المخططات الانسيابية."]],
    [["Which UML notation is used for interaction between subsystems or APIs?","أي ترميز UML يُستخدم للتفاعل بين الأنظمة الفرعية أو واجهات برمجة التطبيقات؟"],["UML Sequence Diagrams.","مخططات التسلسل UML."]],
    [["What does the 'Triggers' element of a process description specify?","ماذا يُحدّد عنصر 'المُحفّزات' في وصف العملية؟"],["What initiates the process (e.g., user clicks 'Forgot Password').","ما الذي يُطلق العملية (مثل نقر المستخدم على 'نسيت كلمة المرور')."]],
-   [["What does the 'Exceptions / Alternative Flows' element describe?","ماذا يصف عنصر 'الاستثناءات / المسارات البديلة'؟"],["How errors during the process are handled.","كيفية التعامل مع الأخطاء أثناء العملية."]],
-   [["Name three of the seven elements of the standard process description template.","اذكر ثلاثة من العناصر السبعة لقالب وصف العملية القياسي."],["Any three of: Process Title, Objective, Triggers, Inputs, Execution Steps, Outputs, Exceptions/Alternative Flows.","أي ثلاثة من: عنوان العملية، الهدف، المُحفّزات، المُدخلات، خطوات التنفيذ، المُخرجات، الاستثناءات/المسارات البديلة."]]
+   [["Name three of the six elements of the standard process description template.","اذكر ثلاثة من العناصر الستة لقالب وصف العملية القياسي."],["Any three of: Process Title, Objective, Triggers, Inputs, Execution Steps, Outputs.","أي ثلاثة من: عنوان العملية، الهدف، المُحفّزات، المُدخلات، خطوات التنفيذ، المُخرجات."]]
   ],
   quiz:[
+   {q:["What does Requirements Engineering (RE) primarily do?","ماذا تفعل هندسة المتطلبات (RE) بشكل أساسي؟"], o:[["Writes the final source code","تكتب الشيفرة المصدرية النهائية"],["Bridges business goals and implementation-level code","تسد الفجوة بين أهداف الأعمال وشيفرة التنفيذ"],["Tests the hardware only","تختبر العتاد فقط"],["Replaces the need for documentation","تُلغي الحاجة للتوثيق"]], a:1},
+   {q:["According to the lecture, more software projects fail due to:","وفق المحاضرة، تفشل مشاريع برمجية أكثر بسبب:"], o:[["Technical coding errors","أخطاء برمجية تقنية"],["Poor, ambiguous, or incomplete requirements","متطلبات ضعيفة أو غامضة أو ناقصة"],["Hardware failures","أعطال العتاد"],["Lack of funding only","نقص التمويل فقط"]], a:1},
+   {q:["A 'requirement' is defined as a statement that is:","يُعرَّف 'المتطلب' بأنه عبارة:"], o:[["Optional and non-binding","اختيارية وغير ملزمة"],["Verified and contractually binding","يُتحقق منها وملزمة تعاقديًا"],["Written only in code","مكتوبة بالشيفرة فقط"],["Always vague by design","غامضة دائمًا بالتصميم"]], a:1},
+   {q:["SyRS (System Requirements Specification) covers:","تغطي مواصفات متطلبات النظام (SyRS):"], o:[["Software features only","ميزات البرمجيات فقط"],["The whole system: hardware, software, operators, infrastructure","النظام بأكمله: العتاد، البرمجيات، المشغّلون، البنية التحتية"],["Only the user interface","واجهة المستخدم فقط"],["Only the database schema","مخطط قاعدة البيانات فقط"]], a:1},
+   {q:["SRS (Software Requirements Specification) focuses exclusively on:","تُركّز مواصفات متطلبات البرمجيات (SRS) حصريًا على:"], o:[["Physical infrastructure","البنية التحتية المادية"],["Software features, data behaviors, interfaces, and external constraints","ميزات البرمجيات وسلوكيات البيانات والواجهات والقيود الخارجية"],["Human operator training","تدريب المشغّلين البشريين"],["Marketing strategy","استراتيجية التسويق"]], a:1},
+   {q:["Which is the correct structure for a functional requirement?","ما البنية الصحيحة للمتطلب الوظيفي؟"], o:[["[Object] + [Subject] + [Price]","[المفعول به] + [الفاعل] + [السعر]"],["[Subject] + [Modal Verb] + [System Action] + [Object] + [Condition/Context]","[الفاعل] + [الفعل الواصفي] + [فعل النظام] + [المفعول به] + [الشرط/السياق]"],["Just a single verb","فعل واحد فقط"],["A diagram only, no text","مخطط فقط، دون نص"]], a:1},
+   {q:["Which is NOT one of the four functional categories listed?","أي مما يلي ليس من الفئات الوظيفية الأربع المذكورة؟"], o:[["User Authentication & Authorization","المصادقة والتفويض"],["Data Processing & Storage","معالجة وتخزين البيانات"],["Office furniture procurement","شراء أثاث المكتب"],["Business Logic Execution","تنفيذ منطق الأعمال"]], a:2},
+   {q:["CRUD operations fall under which functional category?","تندرج عمليات CRUD تحت أي فئة وظيفية؟"], o:[["External Interface Interactions","تفاعلات الواجهة الخارجية"],["Data Processing & Storage","معالجة وتخزين البيانات"],["Business Logic Execution","تنفيذ منطق الأعمال"],["User Authentication & Authorization","المصادقة والتفويض"]], a:1},
+   {q:["Non-functional requirements describe:","تصف المتطلبات غير الوظيفية:"], o:[["What the system does","ما يفعله النظام"],["How well the system performs its functions","مدى جودة أداء النظام لوظائفه"],["The project budget only","ميزانية المشروع فقط"],["The company's org chart","الهيكل التنظيمي للشركة"]], a:1},
+   {q:["Which is an example of a GOOD (quantified) NFR?","أي مما يلي مثال على متطلب غير وظيفي جيد (كمّي)؟"], o:[["The system should almost never go down","يجب ألا يتوقف النظام تقريبًا أبدًا"],["The database must be secure from hackers","يجب أن تكون قاعدة البيانات آمنة من القراصنة"],["The core API service shall maintain an operational uptime of 99.95%","يجب أن تحافظ خدمة واجهة برمجة التطبيقات الأساسية على نسبة تشغيل 99.95%"],["The system must load pages quickly","يجب أن يُحمّل النظام الصفحات بسرعة"]], a:2},
+   {q:["AES-256 encryption and TLS 1.3 are examples used under which NFR category?","يُستخدم تشفير AES-256 وTLS 1.3 كمثال تحت أي فئة من المتطلبات غير الوظيفية؟"], o:[["Performance","الأداء"],["Security","الأمان"],["Availability / Reliability","التوفر / الموثوقية"],["Business Logic","منطق الأعمال"]], a:1},
    {q:["SRS focuses on 'what to build.' What does Software & Process Documentation focus on?","تُركّز SRS على 'ما يجب بناؤه'. فعلى ماذا يُركّز توثيق البرمجيات والعمليات؟"], o:[["Marketing the software","تسويق البرنامج"],["How to use, how it flows, how it integrates, and how to fix it","كيفية الاستخدام والتدفق والتكامل والإصلاح"],["The company's hiring process","عملية التوظيف في الشركة"],["Stock price projections","توقعات سعر السهم"]], a:1},
    {q:["Which is NOT one of the five pillars of technical writing for software?","أي مما يلي ليس من الركائز الخمس للكتابة التقنية للبرمجيات؟"], o:[["Conciseness","الإيجاز"],["Clarity","الوضوح"],["Entertainment value","القيمة الترفيهية"],["Accuracy","الدقة"]], a:2},
    {q:["A User Manual is best defined as:","يُعرَّف دليل المستخدم على أفضل وجه بأنه:"], o:[["Marketing material for investors","مادة تسويقية للمستثمرين"],["Step-by-step instructions for operating a software application","تعليمات خطوة بخطوة لتشغيل تطبيق برمجي"],["The source code of the application","الشيفرة المصدرية للتطبيق"],["A legal contract","عقد قانوني"]], a:1},
@@ -679,12 +649,11 @@ LECTURES.push({ id:'l6', n:6,
    {q:["UML Activity Diagrams / Flowcharts are used for:","تُستخدم مخططات النشاط UML / المخططات الانسيابية من أجل:"], o:[["Decision trees and control flow","أشجار القرار وتدفق التحكم"],["Marketing budgets","الميزانيات التسويقية"],["Employee salaries","رواتب الموظفين"],["Office floor plans","مخططات تصميم المكاتب"]], a:0},
    {q:["UML Sequence Diagrams are used for:","تُستخدم مخططات التسلسل UML من أجل:"], o:[["Interaction between subsystems or APIs","التفاعل بين الأنظمة الفرعية أو واجهات برمجة التطبيقات"],["Company organizational charts","الهياكل التنظيمية للشركة"],["Color palettes for the UI","لوحات ألوان الواجهة"],["Font selection","اختيار الخطوط"]], a:0},
    {q:["Which element of a process description specifies what initiates the process?","أي عنصر من وصف العملية يُحدّد ما الذي يُطلق العملية؟"], o:[["Outputs","المُخرجات"],["Triggers","المُحفّزات"],["Objective","الهدف"],["Process Title","عنوان العملية"]], a:1},
-   {q:["Which element of a process description describes how errors are handled?","أي عنصر من وصف العملية يصف كيفية التعامل مع الأخطاء؟"], o:[["Inputs","المُدخلات"],["Execution Steps","خطوات التنفيذ"],["Exceptions / Alternative Flows","الاستثناءات / المسارات البديلة"],["Process Title","عنوان العملية"]], a:2},
    {q:["'User Password Reset Workflow' is an example of which process description element?","'سير عمل إعادة تعيين كلمة مرور المستخدم' مثال على أي عنصر من وصف العملية؟"], o:[["Outputs","المُخرجات"],["Process Title","عنوان العملية"],["Triggers","المُحفّزات"],["Exceptions","الاستثناءات"]], a:1}
   ]
 });
 
-LECTURES.push({ id:'l7', n:7,
+LECTURES.push({ id:'e5', n:5,
   title:["Technical Incident Report","تقرير الحادثة التقنية"],
   obj:[
     ["Define a technical incident and a technical incident report, and list the eight questions it should answer.","تعريف الحادثة التقنية وتقرير الحادثة التقنية، وسرد الأسئلة الثمانية التي يجب أن يُجيب عليها."],
@@ -780,7 +749,7 @@ LECTURES.push({ id:'l7', n:7,
   ]
 });
 
-LECTURES.push({ id:'l8', n:8,
+LECTURES.push({ id:'e6', n:6,
   title:["Network and Security Policies","سياسات الشبكة والأمان"],
   obj:[
     ["Define network policy and security policy, and distinguish between them.","تعريف سياسة الشبكة وسياسة الأمان والتمييز بينهما."],
@@ -863,6 +832,89 @@ LECTURES.push({ id:'l8', n:8,
   ]
 });
 
+LECTURES.push({ id:'e7', n:7,
+  title:["Professional IT Correspondence","المراسلات المهنية في تقنية المعلومات"],
+  obj:[
+    ["Define professional correspondence and IT correspondence.","تعريف المراسلات المهنية ومراسلات تقنية المعلومات."],
+    ["Explain the importance and functions of professional IT correspondence.","شرح أهمية ووظائف المراسلات المهنية في IT."],
+    ["Identify the types and characteristics of IT correspondence.","التعرف على أنواع المراسلات في IT وخصائصها."],
+    ["Write a professional email using the correct structure.","كتابة بريد إلكتروني مهني بالبنية الصحيحة."],
+    ["Distinguish formal from informal emails, and report a technical problem.","التمييز بين البريد الرسمي وغير الرسمي، والإبلاغ عن مشكلة تقنية."]
+  ],
+  sec:[
+   {t:["Introduction","مقدمة"], b:[
+     {k:'p', x:["Professional IT correspondence refers to written communication used by IT professionals in the workplace. It includes emails, formal letters, memos, reports, requests, notices, and other forms of professional communication.","تشير المراسلات المهنية في IT إلى التواصل الكتابي الذي يستخدمه متخصصو تقنية المعلومات في مكان العمل. وتشمل رسائل البريد الإلكتروني، والخطابات الرسمية، والمذكرات، والتقارير، والطلبات، والإشعارات، وأشكال التواصل المهني الأخرى."]}
+   ]},
+   {t:["Definition of:","التعريف"], b:[
+     {k:'def', x:["Professional Correspondence: formal written communication used in a workplace, organization, or academic environment.","المراسلات المهنية (Professional Correspondence): تواصل كتابي رسمي يُستخدم في مكان العمل أو المنظمة أو البيئة الأكاديمية."]},
+     {k:'def', x:["IT Correspondence: professional written communication related to information technology, computer systems, software, hardware, networks, databases, technical support, and IT projects.","مراسلات تقنية المعلومات (IT Correspondence): تواصل كتابي مهني متعلق بتقنية المعلومات، وأنظمة الحاسوب، والبرمجيات، والأجهزة، والشبكات، وقواعد البيانات، والدعم الفني، ومشاريع IT."]}
+   ]},
+   {t:["Importance of Professional IT Correspondence","أهمية المراسلات المهنية في IT"], b:[
+     {k:'p', x:["Professional correspondence is important because IT professionals communicate with different people every day.","المراسلات المهنية مهمة لأن متخصصي IT يتواصلون مع أشخاص مختلفين كل يوم."]},
+     {k:'ul', h:["They communicate with:","يتواصلون مع:"], x:[["Managers","المديرين"],["Clients","العملاء (Clients)"],["Customers","الزبائن (Customers)"],["Developers","المطورين"],["System administrators","مديري الأنظمة"],["Network engineers","مهندسي الشبكات"],["Technical support teams","فرق الدعم الفني"],["University staff","موظفي الجامعة"],["Other departments","الأقسام الأخرى"]]}
+   ]},
+   {t:["Functions of Professional IT Correspondence","وظائف المراسلات المهنية في IT"], b:[
+     {k:'p', x:["Professional correspondence performs several functions.","تؤدي المراسلات المهنية عدة وظائف."]},
+     {k:'ul', x:[["1. Information","1. الإعلام (Information)"],["2. Request","2. الطلب (Request)"],["3. Notification","3. الإشعار (Notification)"],["4. Complaint","4. الشكوى (Complaint)"],["5. Confirmation","5. التأكيد (Confirmation)"],["6. Explanation","6. التوضيح (Explanation)"]]}
+   ]},
+   {t:["Types of IT Correspondence","أنواع المراسلات في IT"], b:[
+     {k:'ul', x:[["1. Professional Email.","1. البريد الإلكتروني المهني."],["2. Formal Letter.","2. الخطاب الرسمي."],["3. Technical Request.","3. الطلب الفني."],["4. Technical Support Message","4. رسالة الدعم الفني."],["5. Project Update","5. تحديث المشروع."],["6. Meeting Invitation","6. دعوة اجتماع."],["7. Complaint","7. الشكوى."]]},
+     {k:'def', x:["A professional email is an electronic message used to communicate formally in a workplace or academic environment.","البريد الإلكتروني المهني هو رسالة إلكترونية تُستخدم للتواصل بشكل رسمي في مكان العمل أو البيئة الأكاديمية."]}
+   ]},
+   {t:["Characteristics of Professional IT Correspondence","خصائص المراسلات المهنية في IT"], b:[
+     {k:'ul', h:["Effective IT correspondence should be:","يجب أن تكون المراسلات الفعّالة في IT:"], x:[["Clear","واضحة (Clear)"],["Concise","موجزة (Concise)"],["Correct","صحيحة (Correct)"],["Complete","كاملة (Complete)"],["Professional","مهنية (Professional)"],["Polite","مهذبة (Polite)"]]}
+   ]},
+   {t:["Structure of a Professional Email","بنية البريد الإلكتروني المهني"], b:[
+     {k:'ul', x:[["1. To","1. إلى (To)"],["2. Subject","2. الموضوع (Subject)"],["3. Greeting","3. التحية (Greeting)"],["4. Opening","4. الافتتاحية (Opening)"],["5. Main message","5. الرسالة الأساسية (Main message)"],["6. Closing","6. الخاتمة (Closing)"],["7. Signature","7. التوقيع (Signature)"]]},
+     {k:'ex', x:["To: manager@example.com\nSubject: Request for System Maintenance\nDear Mr. Ahmed,\nI am writing to request system maintenance for the computer laboratory.\nThe computers in Laboratory 2 have been experiencing network connection problems. We would appreciate your assistance in checking the network configuration.\nPlease let us know when the maintenance can be performed.\nBest regards,\nMohamed Ali\nIT Department","إلى: manager@example.com\nالموضوع: طلب صيانة النظام\nالسيد أحمد المحترم،\nأكتب إليكم لطلب صيانة النظام في معمل الحاسوب.\nتعاني الحواسيب في المعمل 2 من مشكلات في الاتصال بالشبكة. نقدّر مساعدتكم في فحص إعدادات الشبكة.\nنرجو إبلاغنا بموعد إجراء الصيانة.\nمع أطيب التحيات،\nمحمد علي\nقسم تقنية المعلومات"]}
+   ]},
+   {t:["Formal vs Informal Email","البريد الرسمي مقابل غير الرسمي"], b:[
+     {k:'cards', c:[
+       {t:["Formal","رسمي (Formal)"], l:[["Dear Dr. Ahmed,","عزيزي د. أحمد،"],["I am writing to request information about the examination schedule.","أكتب لأطلب معلومات عن جدول الامتحانات."],["Could you please provide the updated schedule?","هل يمكنك تزويدي بالجدول المحدّث؟"],["Kind regards,","مع خالص التحية،"],["Ali Hassan","علي حسن"]]},
+       {t:["Informal","غير رسمي (Informal)"], l:[["Hi Ahmed,","مرحبًا أحمد،"],["Can you send me the exam schedule?","هل تستطيع إرسال جدول الامتحان لي؟"],["Thanks,","شكرًا،"],["Ali","علي"]]}
+     ]}
+   ]},
+   {t:["Reporting a Technical Problem","الإبلاغ عن مشكلة تقنية"], b:[
+     {k:'ul', h:["A report of a technical problem includes:","يتضمن الإبلاغ عن مشكلة تقنية:"], x:[["The problem.","المشكلة."],["When it happened.","متى حدثت."],["Where it happened.","أين حدثت."],["The effect.","التأثير."],["The requested action.","الإجراء المطلوب."]]},
+     {k:'ex', x:["Subject: Network Connection Problem\nDear IT Support Team,\nI am writing to report a network connection problem in Laboratory 2.\nThe computers have been unable to connect to the Internet since 10:00 a.m. today.\nThis problem is affecting the students' access to online learning materials.\nCould you please check the network connection?\nBest regards,\nAhmed Hassan","الموضوع: مشكلة في الاتصال بالشبكة\nإلى فريق الدعم الفني،\nأكتب للإبلاغ عن مشكلة في الاتصال بالشبكة في المعمل 2.\nلم تتمكن الحواسيب من الاتصال بالإنترنت منذ الساعة 10:00 صباحًا اليوم.\nتؤثر هذه المشكلة على وصول الطلاب إلى مواد التعلم الإلكتروني.\nهل يمكنكم فحص الاتصال بالشبكة؟\nمع أطيب التحيات،\nأحمد حسن"]}
+   ]}
+  ],
+  take:[
+   ["Professional IT correspondence is formal written communication used by IT professionals at work.","المراسلات المهنية في IT هي تواصل كتابي رسمي يستخدمه متخصصو IT في العمل."],
+   ["Its six functions: information, request, notification, complaint, confirmation, explanation.","وظائفها الست: الإعلام، الطلب، الإشعار، الشكوى، التأكيد، التوضيح."],
+   ["Good correspondence is clear, concise, correct, complete, professional, and polite.","المراسلات الجيدة واضحة وموجزة وصحيحة وكاملة ومهنية ومهذبة."],
+   ["A professional email has seven parts: To, Subject, Greeting, Opening, Main message, Closing, Signature.","البريد المهني له سبعة أجزاء: إلى، الموضوع، التحية، الافتتاحية، الرسالة الأساسية، الخاتمة، التوقيع."],
+   ["To report a problem, state: the problem, when, where, the effect, and the requested action.","للإبلاغ عن مشكلة اذكر: المشكلة، متى، أين، التأثير، والإجراء المطلوب."]
+  ],
+  fc:[
+   [["What is professional correspondence?","ما هي المراسلات المهنية؟"],["Formal written communication used in a workplace, organization, or academic environment.","تواصل كتابي رسمي يُستخدم في مكان العمل أو المنظمة أو البيئة الأكاديمية."]],
+   [["What is IT correspondence?","ما هي مراسلات IT؟"],["Professional written communication related to information technology, computer systems, software, hardware, networks, databases, technical support, and IT projects.","تواصل كتابي مهني متعلق بتقنية المعلومات وأنظمة الحاسوب والبرمجيات والأجهزة والشبكات وقواعد البيانات والدعم الفني ومشاريع IT."]],
+   [["Who do IT professionals communicate with?","مع من يتواصل متخصصو IT؟"],["Managers, clients, customers, developers, system administrators, network engineers, technical support teams, university staff, other departments.","المديرون، العملاء، الزبائن، المطورون، مديرو الأنظمة، مهندسو الشبكات، فرق الدعم الفني، موظفو الجامعة، الأقسام الأخرى."]],
+   [["Name the six functions of professional correspondence.","اذكر الوظائف الست للمراسلات المهنية."],["Information, request, notification, complaint, confirmation, explanation.","الإعلام، الطلب، الإشعار، الشكوى، التأكيد، التوضيح."]],
+   [["Name the seven types of IT correspondence.","اذكر الأنواع السبعة للمراسلات في IT."],["Professional email, formal letter, technical request, technical support message, project update, meeting invitation, complaint.","بريد مهني، خطاب رسمي، طلب فني، رسالة دعم فني، تحديث مشروع، دعوة اجتماع، شكوى."]],
+   [["What is a professional email?","ما هو البريد الإلكتروني المهني؟"],["An electronic message used to communicate formally in a workplace or academic environment.","رسالة إلكترونية تُستخدم للتواصل رسميًا في مكان العمل أو البيئة الأكاديمية."]],
+   [["List the six characteristics of effective IT correspondence.","اذكر الخصائص الست للمراسلات الفعّالة في IT."],["Clear, concise, correct, complete, professional, polite.","واضحة، موجزة، صحيحة، كاملة، مهنية، مهذبة."]],
+   [["List the seven parts of a professional email.","اذكر الأجزاء السبعة للبريد المهني."],["To, Subject, Greeting, Opening, Main message, Closing, Signature.","إلى، الموضوع، التحية، الافتتاحية، الرسالة الأساسية، الخاتمة، التوقيع."]],
+   [["Give an example of a professional email subject.","أعطِ مثالًا على موضوع بريد مهني."],["Request for System Maintenance.","طلب صيانة النظام."]],
+   [["What is a formal greeting and a formal closing?","ما هي التحية الرسمية والخاتمة الرسمية؟"],["Greeting: Dear Dr. Ahmed. Closing: Kind regards.","التحية: Dear Dr. Ahmed. الخاتمة: Kind regards."]],
+   [["Give an informal greeting and closing.","أعطِ تحية وخاتمة غير رسميتين."],["Greeting: Hi Ahmed. Closing: Thanks.","التحية: Hi Ahmed. الخاتمة: Thanks."]],
+   [["What should a technical problem report include?","ماذا يجب أن يتضمن الإبلاغ عن مشكلة تقنية؟"],["The problem, when it happened, where it happened, the effect, and the requested action.","المشكلة، متى حدثت، أين حدثت، التأثير، والإجراء المطلوب."]]
+  ],
+  quiz:[
+   {q:["Professional correspondence is:","المراسلات المهنية هي:"], o:[["Formal written communication in a workplace or academic environment","تواصل كتابي رسمي في مكان العمل أو البيئة الأكاديمية"],["Casual chat between friends","محادثة عادية بين الأصدقاء"],["Only phone calls","مكالمات هاتفية فقط"],["Only verbal meetings","اجتماعات شفهية فقط"]], a:0},
+   {q:["Which is NOT one of the functions of professional correspondence?","أي مما يلي ليس من وظائف المراسلات المهنية؟"], o:[["Request","الطلب"],["Complaint","الشكوى"],["Entertainment","الترفيه"],["Confirmation","التأكيد"]], a:2},
+   {q:["Which is a type of IT correspondence?","أي مما يلي نوع من مراسلات IT؟"], o:[["Meeting Invitation","دعوة اجتماع"],["Poem","قصيدة"],["Novel","رواية"],["Advertisement poster","ملصق إعلاني"]], a:0},
+   {q:["Which is NOT a characteristic of effective IT correspondence?","أي مما يلي ليس من خصائص المراسلات الفعّالة في IT؟"], o:[["Clear","واضحة"],["Concise","موجزة"],["Rude","فظّة"],["Polite","مهذبة"]], a:2},
+   {q:["What is the correct order of the first three parts of a professional email?","ما الترتيب الصحيح لأول ثلاثة أجزاء في البريد المهني؟"], o:[["Greeting, To, Subject","التحية، إلى، الموضوع"],["To, Subject, Greeting","إلى، الموضوع، التحية"],["Subject, Signature, To","الموضوع، التوقيع، إلى"],["Closing, To, Subject","الخاتمة، إلى، الموضوع"]], a:1},
+   {q:["How many parts does a professional email structure have?","كم جزءًا في بنية البريد المهني؟"], o:[["Five","خمسة"],["Six","ستة"],["Seven","سبعة"],["Nine","تسعة"]], a:2},
+   {q:["'Dear Dr. Ahmed,' and 'Kind regards,' belong to which type of email?","'Dear Dr. Ahmed,' و'Kind regards,' ينتميان لأي نوع من البريد؟"], o:[["Informal","غير رسمي"],["Formal","رسمي"],["Spam","مزعج"],["Social media post","منشور تواصل اجتماعي"]], a:1},
+   {q:["Which closing is informal?","أي خاتمة غير رسمية؟"], o:[["Kind regards,","Kind regards,"],["Best regards,","Best regards,"],["Thanks,","Thanks,"],["Yours sincerely,","Yours sincerely,"]], a:2},
+   {q:["Which is NOT part of reporting a technical problem?","أي مما يلي ليس جزءًا من الإبلاغ عن مشكلة تقنية؟"], o:[["The problem","المشكلة"],["When it happened","متى حدثت"],["The requested action","الإجراء المطلوب"],["Your favourite color","لونك المفضل"]], a:3},
+   {q:["'Subject: Network Connection Problem' is an example of:","'Subject: Network Connection Problem' مثال على:"], o:[["A signature","توقيع"],["An email subject for reporting a technical problem","موضوع بريد للإبلاغ عن مشكلة تقنية"],["A greeting","تحية"],["A closing","خاتمة"]], a:1}
+  ]
+});
+
+
 const GLOSSARY = [
   ["Technical English","اللغة الإنجليزية التقنية (Technical English)"],
   ["General English","اللغة الإنجليزية العامة (General English)"],
@@ -930,6 +982,18 @@ const GLOSSARY = [
   ["Access Control Policy","سياسة التحكم في الوصول (Access Control Policy)"],
   ["Backup Policy","سياسة النسخ الاحتياطي (Backup Policy)"],
   ["Incident Response Policy","سياسة الاستجابة للحوادث (Incident Response Policy)"]
+  ["Professional correspondence","المراسلات المهنية"],
+  ["IT correspondence","مراسلات تقنية المعلومات"],
+  ["Formal letter","خطاب رسمي"],
+  ["Memo","مذكرة"],
+  ["Greeting","التحية"],
+  ["Closing","الخاتمة"],
+  ["Signature","التوقيع"],
+  ["Formal email","بريد رسمي"],
+  ["Informal email","بريد غير رسمي"],
+  ["Technical request","طلب فني"],
+  ["Meeting invitation","دعوة اجتماع"],
+  ["Project update","تحديث المشروع"],
 ].sort((a,b)=>a[0].localeCompare(b[0]));
 
 /* ============================================================
@@ -1097,6 +1161,7 @@ function renderHome(){
     </div>
     <div class="grid gap-3 sm:grid-cols-2 mb-6">
       <button data-go="exam" class="bg-dark-elevated border border-dark-border hover:border-brand-500 rounded-xl p-4 font-semibold text-start">🏆 ${u('exam')}<div class="mono text-xs text-dark-muted mt-1">${u('best')}: ${d.exam?d.exam+'%':'—'}</div></button>
+      <button data-go="grammar" class="bg-dark-elevated border border-dark-border hover:border-brand-500 rounded-xl p-4 font-semibold text-start">✍️ قواعد مهمة / Important Grammar<div class="mono text-xs text-dark-muted mt-1">15 topics</div></button>
       <button data-go="glossary" class="bg-dark-elevated border border-dark-border hover:border-brand-500 rounded-xl p-4 font-semibold text-start">📖 Glossary / قاموس المصطلحات<div class="mono text-xs text-dark-muted mt-1">${s.glossary.length} • ${u('glossFlash')}</div></button>
     </div>
     <div class="border-s-4 border-violet-400 bg-violet-400/10 rounded-e-xl p-5">
@@ -1168,6 +1233,244 @@ function renderGlossary(){
     <input id="gSearch" placeholder="${u('search')}" class="w-full p-3 rounded-xl bg-dark-elevated border border-dark-border focus:border-brand-500 outline-none mb-4">
     <div id="gList" class="grid gap-2">${gItems(G)}</div></div>`;
 }
+/* wraps every English run inside Arabic text in a small LTR chip so Arabic and English never mix */
+const _eh=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function rich(str){
+  const t=clean(str), re=/-?[A-Za-z0-9](?:[A-Za-z0-9'’_\-.\/+*%$#=:,!? ]*[A-Za-z0-9'’+\-])?/g;
+  let out='',last=0,m;
+  while((m=re.exec(t))){
+    out+=_eh(t.slice(last,m.index));
+    out+=/[A-Za-z]/.test(m[0])?`<code class="gr-en" dir="ltr">${_eh(m[0])}</code>`:_eh(m[0]);
+    last=m.index+m[0].length;
+  }
+  return out+_eh(t.slice(last));
+}
+/* ---------- GRAMMAR (قواعد مهمة) ---------- */
+/* topic: {id, icon, t:[en,ar], intro, rules:[[heading, explanation, [[en,ar],...]]], table:{h:[..], r:[[..]]}, mistakes:[[wrong,right,why]], q:[[question,[opts],correctIdx,why]]} */
+const GRAMMAR = [
+{id:'g1', icon:'🧱', t:["Parts of Speech","أقسام الكلام"],
+ intro:"كل كلمة في الجملة لها وظيفة. معرفة نوع الكلمة (اسم؟ فعل؟ صفة؟) هي أول خطوة لفهم أي جملة إنجليزية وكتابتها بشكل صحيح.",
+ rules:[
+  ["الاسم (Noun)","يدل على شخص أو مكان أو شيء أو فكرة. يأتي غالبًا بعد the / a / an أو بعد صفة.",[["The server stores data.","الخادم يخزّن البيانات."],["Security is important.","الأمان مهم."]]],
+  ["الفعل (Verb)","يدل على حدث أو حالة. هو قلب الجملة، وبدونه لا توجد جملة.",[["Engineers test the system.","المهندسون يختبرون النظام."],["The network is slow.","الشبكة بطيئة."]]],
+  ["الصفة (Adjective)","تصف الاسم وتأتي قبله أو بعد فعل الكينونة (is/are).",[["a fast computer","حاسوب سريع"],["The data is secure.","البيانات آمنة."]]],
+  ["الظرف (Adverb)","يصف الفعل أو الصفة، وغالبًا ينتهي بـ -ly.",[["The system runs quickly.","النظام يعمل بسرعة."],["It is extremely useful.","إنه مفيد جدًا."]]],
+  ["حرف الجر (Preposition)","يربط الاسم بباقي الجملة ويبيّن الزمان أو المكان: in, on, at, to, from, with, by, for.",[["The file is on the desktop.","الملف على سطح المكتب."]]],
+  ["أداة الربط (Conjunction)","تربط كلمات أو جملًا: and, but, or, because, so.",[["The server is fast but expensive.","الخادم سريع لكنه غالٍ."]]],
+  ["الضمير (Pronoun)","يحل محل الاسم: I, you, he, she, it, we, they.",[["The router failed. It restarted.","فشل الموجّه. أُعيد تشغيله."]]]
+ ],
+ table:null,
+ mistakes:[["The system is securely.","The system is secure.","secure صفة، وبعد is نستخدم الصفة وليس الظرف."],["He runs quick.","He runs quickly.","لوصف الفعل (runs) نحتاج ظرفًا (quickly) وليس صفة."]],
+ q:[["The program runs ____.",["quick","quickly","quickness","quicker than"],1,"نصف الفعل runs بظرف: quickly."],["Which word is a noun?",["database","fast","quickly","install"],0,"database اسم (شيء)."],["'Secure' in 'a secure network' is a(n):",["noun","verb","adjective","adverb"],2,"تصف الاسم network، فهي صفة."]]},
+
+{id:'g2', icon:'⏰', t:["Present Simple","المضارع البسيط"],
+ intro:"أكثر زمن يُستخدم في الكتابة التقنية: لوصف الحقائق، وطريقة عمل الأنظمة، والخطوات المتكررة، والتعليمات.",
+ rules:[
+  ["متى نستخدمه؟ (Use)","للحقائق العامة، والعادات، وشرح طريقة عمل أي نظام أو جهاز.",[["A router connects networks.","الموجّه يربط الشبكات."],["The user enters a password.","المستخدم يُدخل كلمة مرور."]]],
+  ["الصيغة المثبتة (Affirmative)","الفاعل + الفعل في صورته الأولى (V1). مع he / she / it / مفرد نضيف s أو es للفعل.",[["I work in IT. / They work in IT.","أعمل في IT. / هم يعملون في IT."],["She works in IT. / The server works.","هي تعمل في IT. / الخادم يعمل."]]],
+  ["إضافة s / es","الأصل نضيف s. إذا انتهى الفعل بـ s, sh, ch, x, o نضيف es. إذا انتهى بحرف ساكن + y نحوّل y إلى ies.",[["process → processes, fix → fixes","process → processes، fix → fixes"],["copy → copies, apply → applies","copy → copies، apply → applies"],["play → plays (حرف علة + y: نضيف s فقط)","play → plays"]]],
+  ["النفي والسؤال (Negative & Question)","نستخدم do / does. وبعد do/does يرجع الفعل إلى صورته الأولى بدون s.",[["The system does not support Arabic.","النظام لا يدعم العربية."],["Does the router work?","هل يعمل الموجّه؟"],["Do students use the lab?","هل يستخدم الطلاب المعمل؟"]]],
+  ["كلمات تدل عليه","always, usually, often, sometimes, never, every day, every week.",[["Engineers always back up data.","المهندسون دائمًا ينسخون البيانات احتياطيًا."]]]
+ ],
+ table:null,
+ mistakes:[["The server store data.","The server stores data.","الفاعل مفرد (the server) فنضيف s للفعل."],["Does the system supports Arabic?","Does the system support Arabic?","بعد does يرجع الفعل لصورته الأولى بدون s."]],
+ q:[["The database ____ customer data.",["store","stores","storing","stored"],1,"الفاعل مفرد فنضيف s: stores."],["Engineers ____ the code every week.",["reviews","reviewing","review","reviewed"],2,"الفاعل جمع (Engineers) فالفعل بدون s."],["____ the system support Arabic?",["Do","Does","Is","Are"],1,"الفاعل مفرد (the system) فنستخدم Does."]]},
+
+{id:'g3', icon:'⌛', t:["Past Simple","الماضي البسيط"],
+ intro:"نستخدمه لحدث بدأ وانتهى في الماضي ووقته محدد. هو زمن تقارير الحوادث (Incident Reports) لأنها تحكي ما حدث بالفعل.",
+ rules:[
+  ["متى نستخدمه؟ (Use)","لحدث انتهى في وقت محدد في الماضي (yesterday, last week, at 10:30, in 2025...).",[["The Internet stopped working at 10:30 AM.","توقف الإنترنت عن العمل الساعة 10:30 صباحًا."]]],
+  ["الأفعال المنتظمة (Regular Verbs)","نضيف ed للفعل. إذا انتهى بـ e نضيف d فقط. حرف ساكن + y تتحول إلى ied. ومقطع واحد (ساكن+علة+ساكن) نضاعف الحرف الأخير.",[["restart → restarted, restore → restored","restart → restarted، restore → restored"],["apply → applied","apply → applied"],["stop → stopped, plan → planned","stop → stopped، plan → planned"]]],
+  ["الأفعال الشاذة (Irregular Verbs)","لها صورة ثانية يجب حفظها (V2). انظر الجدول أدناه.",[["The team found the error and fixed it.","وجد الفريق الخطأ وأصلحه."]]],
+  ["النفي والسؤال (Negative & Question)","نستخدم did. وبعدها يرجع الفعل إلى صورته الأولى (V1) لأن did حملت الماضي.",[["The router did not restart.","لم يُعاد تشغيل الموجّه."],["Did the server fail?","هل فشل الخادم؟"]]]
+ ],
+ table:{h:["V1 (Base)","V2 (Past)","المعنى (Meaning)"], r:[["go","went","ذهب"],["run","ran","شغّل / ركض"],["write","wrote","كتب"],["send","sent","أرسل"],["build","built","بنى"],["find","found","وجد"],["break","broke","كسر / تعطّل"],["begin","began","بدأ"],["lose","lost","فقد"],["fall","fell","سقط / انهار"]]},
+ mistakes:[["The server didn't stopped.","The server didn't stop.","بعد did / didn't يرجع الفعل للصورة الأولى."],["The system crashed yesterday and I fix it.","...and I fixed it.","الجملة كلها في الماضي فنحافظ على زمن واحد."]],
+ q:[["The network ____ at 9:00 a.m. yesterday.",["fails","failed","fail","has fail"],1,"وقت محدد في الماضي: failed."],["The team did not ____ the problem.",["found","find","finds","finding"],1,"بعد did not يرجع الفعل للأصل: find."],["Yesterday the technician ____ the router.",["restart","restarts","restarted","restarting"],2,"فعل منتظم في الماضي: restarted."]]},
+
+{id:'g4', icon:'🔗', t:["Present Perfect","المضارع التام"],
+ intro:"يربط الماضي بالحاضر. نستخدمه عندما تهمنا النتيجة الآن أو عندما لا يكون وقت الحدث محددًا، وهو شائع في رسائل الدعم الفني وتحديث المشاريع.",
+ rules:[
+  ["الصيغة","have / has + الفعل في صورته الثالثة (V3). مع he/she/it/مفرد نستخدم has.",[["I have installed the update.","لقد ثبّتُّ التحديث."],["The server has crashed.","لقد تعطل الخادم."]]],
+  ["متى نستخدمه؟ (Use)","(1) نتيجة حالية لحدث ماضٍ. (2) حدث بدأ في الماضي ومستمر للآن. (3) تجربة بدون وقت محدد.",[["The computers have been unable to connect since 10:00.","الحواسيب غير قادرة على الاتصال منذ الساعة 10:00."]]],
+  ["since و for","since + نقطة بداية (since 10:00, since Monday, since 2024). for + مدة (for two hours, for three days).",[["since 10:00 a.m. / for two hours","منذ الساعة 10 صباحًا / لمدة ساعتين"]]],
+  ["كلمات تدل عليه","already, yet, just, recently, ever, never.",[["Has the problem been solved yet?","هل حُلّت المشكلة بعد؟"]]],
+  ["الفرق عن الماضي البسيط","إذا ذكرنا وقتًا محددًا انتهى (yesterday, at 10:30) نستخدم الماضي البسيط وليس التام.",[["We fixed it yesterday. (وليس have fixed yesterday)","أصلحناه أمس."]]]
+ ],
+ table:null,
+ mistakes:[["We have fixed the error yesterday.","We fixed the error yesterday.","yesterday وقت محدد منتهٍ، فنستخدم الماضي البسيط."],["The server has crash.","The server has crashed.","بعد has/have نستخدم V3 (crashed)."]],
+ q:[["The students ____ unable to access the system since 8:00.",["are","have been","were being","will be"],1,"since مع حالة مستمرة للآن: have been."],["She ____ already sent the report.",["have","has","is","did"],1,"الفاعل مفرد: has + V3."],["We have waited ____ two hours.",["since","for","at","in"],1,"two hours مدة، فنستخدم for."]]},
+
+{id:'g5', icon:'🔮', t:["Future: will & going to","المستقبل"],
+ intro:"في الإنجليزية التقنية نعبّر عن المستقبل للتنبؤ، وللوعود، وللخطط، وأيضًا لكتابة المتطلبات (the system will / shall ...).",
+ rules:[
+  ["will + V1","للتنبؤ، ولقرار لحظي، وللوعد، ولوصف ما سيفعله النظام. الصيغة واحدة لكل الفاعلين.",[["The update will fix the bug.","التحديث سيصلح الخطأ."],["I will call the support team.","سأتصل بفريق الدعم."]]],
+  ["be going to + V1","لخطة مقررة مسبقًا أو لشيء سيحدث بوضوح الآن.",[["We are going to upgrade the servers next month.","سنقوم بترقية الخوادم الشهر القادم."]]],
+  ["النفي والسؤال (Negative & Question)","will not (won't) + V1. والسؤال بتقديم will على الفاعل.",[["The system will not start.","لن يبدأ النظام."],["Will the maintenance take long?","هل ستستغرق الصيانة وقتًا طويلًا؟"]]],
+  ["بعد when و if و before","لا نستخدم will بعدها، بل المضارع البسيط.",[["When the download finishes, the program will open.","عندما ينتهي التحميل سيفتح البرنامج."]]]
+ ],
+ table:null,
+ mistakes:[["The system will starts.","The system will start.","بعد will يأتي الفعل بصورته الأولى بدون s."],["When the file will upload, we will notify you.","When the file uploads, we will notify you.","بعد when نستخدم المضارع البسيط."]],
+ q:[["The new version ____ released next week.",["will be","is","was","has"],0,"حدث مستقبلي ومبني للمجهول: will be released."],["We ____ upgrade the servers next month. (plan)",["are going to","did","have","are"],0,"خطة مقررة: be going to."],["When the update ____, restart the device.",["will finish","finishes","finish","finishing"],1,"بعد when نستخدم المضارع البسيط."]]},
+
+{id:'g6', icon:'🔄', t:["Continuous Tenses","الأزمنة المستمرة"],
+ intro:"نستخدمها لحدث جارٍ في لحظة معينة: الآن، أو وقت وقوع الحادثة.",
+ rules:[
+  ["المضارع المستمر (Present Continuous)","am / is / are + V-ing. لشيء يحدث الآن.",[["The IT team is checking the router.","فريق IT يفحص الموجّه الآن."]]],
+  ["الماضي المستمر (Past Continuous)","was / were + V-ing. لشيء كان جاريًا في وقت معين في الماضي.",[["At 10:00 the students were using the lab.","في الساعة 10 كان الطلاب يستخدمون المعمل."]]],
+  ["إضافة ing","نحذف e الأخيرة (make → making). نضاعف الحرف الأخير للمقطع الواحد (run → running, stop → stopping). ie تصبح ying (die → dying).",[["write → writing, plan → planning","write → writing، plan → planning"]]],
+  ["أفعال لا تُستخدم مستمرة (Stative Verbs)","أفعال الحالة مثل know, want, need, understand, like, believe.",[["I need the file. (وليس: I am needing)","أحتاج الملف."]]]
+ ],
+ table:null,
+ mistakes:[["The server is work now.","The server is working now.","بعد is/are نضيف ing للفعل."],["I am needing a new laptop.","I need a new laptop.","need فعل حالة لا يُستخدم في المستمر."]],
+ q:[["Right now, the technician ____ the network.",["check","checks","is checking","checked"],2,"شيء يحدث الآن: is checking."],["At 10:00 the computers ____ using the old system.",["were","was","are","be"],0,"الفاعل جمع في الماضي: were."],["Which verb is NOT normally used in the continuous?",["work","need","run","install"],1,"need فعل حالة."]]},
+
+{id:'g7', icon:'🔁', t:["Active & Passive Voice","المبني للمعلوم والمبني للمجهول"],
+ intro:"في المبني للمعلوم (Active) نهتم بمن يقوم بالفعل. وفي المبني للمجهول (Passive) نهتم بالفعل نفسه أو بالنتيجة، ونستخدمه كثيرًا في التقارير والكتابة الرسمية.",
+ rules:[
+  ["الفكرة (Main Idea)","Active: الفاعل + الفعل + المفعول. Passive: المفعول يصبح بداية الجملة + be + V3 + (by الفاعل).",[["Active: The team fixed the router.","الفريق أصلح الموجّه."],["Passive: The router was fixed (by the team).","أُصلح الموجّه (بواسطة الفريق)."]]],
+  ["خطوات التحويل (Steps)","1) حدد الفاعل والمفعول. 2) حدد زمن الفعل. 3) ابدأ بالمفعول. 4) ضع be بنفس الزمن ثم V3. 5) أضف by + الفاعل إن كان مهمًا.",[["Active: Engineers will test the software.","سيختبر المهندسون البرنامج."],["Passive: The software will be tested.","سيُختبر البرنامج."]]],
+  ["متى نستخدم المبني للمجهول؟","عندما يكون الفاعل غير معروف أو غير مهم أو واضحًا، وفي التقارير الرسمية.",[["Internet access was restored at 12:15 PM.","أُعيد الاتصال بالإنترنت الساعة 12:15."]]],
+  ["شرط مهم (Transitive Verbs)","فقط الأفعال المتعدية (التي لها مفعول به) تتحول للمبني للمجهول. فعل مثل arrive أو happen لا يتحول.",[["The error happened. (لا يوجد passive)","حدث الخطأ."]]]
+ ],
+ table:{h:["الزمن (Tense)","Active","Passive"], r:[["Simple present","analyses","is analysed"],["Present continuous","is analysing","is being analysed"],["Simple past","analysed","was analysed"],["Past continuous","was analysing","was being analysed"],["Present perfect","has analysed","has been analysed"],["Future (will)","will analyse","will be analysed"],["Conditional","would analyse","would be analysed"],["Perfect conditional","would have analysed","would have been analysed"]]},
+ note:"تنبيه: في جدول الأزمنة داخل الشيت يظهر سطرا المستقبل (Future) والشرطي (Conditional) بنفس الشكل في الـ Active والـ Passive (will analyse / would analyse). هذا خطأ مطبعي في الشيت، والصيغة الصحيحة للمبني للمجهول هي will be analysed و would be analysed كما في هذا الجدول. اعتمد هذا الجدول عند المذاكرة وحل الأسئلة.",
+ mistakes:[["The report written by Ali.","The report was written by Ali.","لا بد من be (was) قبل V3."],["A test was conduct.","A test was conducted.","بعد be نستخدم V3 (conducted)."]],
+ q:[["Active: 'They are repairing the road.' Passive:",["The road is repaired.","The road is being repaired.","The road was repaired.","The road repairs."],1,"المضارع المستمر: is being + V3."],["Passive of 'The Committee has approved the Plan.'",["The Plan was approved.","The Plan has been approved.","The Plan is approved.","The Plan had approved."],1,"المضارع التام: has been + V3."],["Passive of 'We will carry out the research.'",["will carry out","will be carried out","was carried out","is carried out"],1,"المستقبل: will be + V3."]]},
+
+{id:'g8', icon:'📏', t:["Modal Verbs","الأفعال الناقصة (Modals)"],
+ intro:"الأفعال الناقصة تعبّر عن القدرة والإلزام والنصيحة والاحتمال. وهي أساس كتابة المتطلبات والسياسات (The system shall ...).",
+ rules:[
+  ["القاعدة الذهبية (Golden Rule)","modal + الفعل بصورته الأولى. بدون to، وبدون s، وبدون ing. والنفي بإضافة not، والسؤال بتقديم الـ modal.",[["The system can store data.","النظام يستطيع تخزين البيانات."],["Can the system store data?","هل يستطيع النظام تخزين البيانات؟"]]],
+  ["can / could","can: قدرة أو إمكانية الآن. could: قدرة في الماضي أو طلب مهذب.",[["Users can reset their passwords.","يستطيع المستخدمون إعادة تعيين كلمات المرور."],["Could you please check the network?","هل يمكنك فحص الشبكة من فضلك؟"]]],
+  ["must / have to","إلزام قوي. must not = ممنوع.",[["Users must change their password every 90 days.","يجب على المستخدمين تغيير كلمة المرور كل 90 يومًا."],["You must not share your password.","يُمنع مشاركة كلمة المرور."]]],
+  ["should","نصيحة أو توصية (ليست إلزامًا).",[["Router configurations should be backed up regularly.","ينبغي نسخ إعدادات الموجّه احتياطيًا بانتظام."]]],
+  ["may / might","احتمال، أو إذن (may).",[["The update may take an hour.","قد يستغرق التحديث ساعة."],["May I use the lab?","هل يمكنني استخدام المعمل؟"]]],
+  ["shall في المتطلبات","في وثائق المواصفات (SRS) تعني shall إلزامًا تعاقديًا: النظام يجب أن يفعل هذا.",[["The system shall encrypt all sensitive data.","يجب أن يشفّر النظام كل البيانات الحساسة."]]],
+  ["will / would","will: مستقبل أو وعد. would: طلب مهذب أو شرط.",[["We would appreciate your assistance.","نقدّر مساعدتكم."]]]
+ ],
+ table:{h:["الكلمة (Modal)","القوة (Strength)","مثال تقني (Example)"], r:[["shall / must","إلزام قوي","The system shall log all attempts."],["should","توصية","Users should update their software."],["may / can","اختياري / إمكانية","Users may export the report."],["must not / shall not","ممنوع","Users must not share passwords."]]},
+ mistakes:[["The system can to store data.","The system can store data.","لا نستخدم to بعد modal."],["The server must stores logs.","The server must store logs.","بعد modal لا نضيف s."]],
+ q:[["The system ____ encrypt all sensitive user data. (requirement)",["shall","is","does","has"],0,"في المتطلبات نستخدم shall."],["Which is correct?",["She can to run it.","She can runs it.","She can run it.","She cans run it."],2,"modal + V1 فقط."],["You ____ share your password. (forbidden)",["must not","should","may","can"],0,"must not للمنع."]]},
+
+{id:'g9', icon:'📚', t:["Nouns: Singular, Plural & Uncountable","الأسماء: المفرد والجمع وغير المعدود"],
+ intro:"أكثر أخطاء الطلاب في الأسماء تأتي من الجمع، ومن كلمات تعتبرها العربية معدودة بينما هي في الإنجليزية غير معدودة (مثل information).",
+ rules:[
+  ["تكوين الجمع (Plural Forms)","الأصل نضيف s. ما ينتهي بـ s, sh, ch, x, z نضيف es. حرف ساكن + y تصبح ies.",[["server → servers, file → files","server → servers"],["virus → viruses, box → boxes","virus → viruses"],["entry → entries, policy → policies","entry → entries"]]],
+  ["الجمع الشاذ (Irregular Plurals)","كلمات لها جمع خاص يجب حفظه.",[["child → children, person → people","child → children"],["analysis → analyses, index → indices","analysis → analyses"],["criterion → criteria, medium → media","criterion → criteria"]]],
+  ["الأسماء غير المعدودة (Uncountable Nouns)","لا تأخذ s ولا a / an ولا رقمًا قبلها: information, software, hardware, equipment, advice, research, knowledge, bandwidth, traffic.",[["The software is up to date.","البرنامج محدّث."],["We need more information.","نحتاج مزيدًا من المعلومات."]]],
+  ["كيف نعدّ غير المعدود؟ (Counting Uncountables)","نستخدم وحدة قبله: a piece of / an item of.",[["a piece of information","معلومة واحدة"],["two pieces of equipment","قطعتان من المعدات"]]],
+  ["much / many / a few / a little","many و a few مع المعدود الجمع. much و a little مع غير المعدود.",[["many computers / much information","حواسيب كثيرة / معلومات كثيرة"],["a few errors / a little time","بضعة أخطاء / قليل من الوقت"]]]
+ ],
+ table:null,
+ mistakes:[["We need more informations.","We need more information.","information غير معدودة، بلا s."],["The softwares are old.","The software is old.","software غير معدودة، والفعل مفرد."],["many information","a lot of information / much information","many مع المعدود فقط."]],
+ q:[["We need more ____.",["informations","information","an information","informations are"],1,"information غير معدودة."],["Three ____ were detected on the server.",["viruss","viruses","virus","virii"],1,"ما ينتهي بـ s نضيف es: viruses."],["Which is correct?",["a few software","a little software","many software","two softwares"],1,"software غير معدودة: a little."]]},
+
+{id:'g10', icon:'🔤', t:["Articles: a / an / the","أدوات التعريف: a / an / the"],
+ intro:"الأدوات صغيرة لكنها كثيرة الظهور. العربية فيها 'ال' فقط، أما الإنجليزية ففيها a و an و the أو لا شيء.",
+ rules:[
+  ["a و an","نستخدمهما مع المفرد المعدود غير المحدد (أول ذكر). an قبل الصوت المتحرك، و a قبل الصوت الساكن. العبرة بالنطق لا بالحرف.",[["a server, a router, a user (يوزر: صوت ي)","خادم، موجّه، مستخدم"],["an error, an update, an hour (ساعة: h صامتة)","خطأ، تحديث، ساعة"]]],
+  ["the","نستخدمها عندما يعرف القارئ الشيء المقصود، أو عند الذكر الثاني، أو لشيء فريد.",[["I found a bug. The bug crashes the app.","وجدت خطأ. الخطأ يتسبب بتعطل التطبيق."],["the Internet, the university network","الإنترنت، شبكة الجامعة"]]],
+  ["بدون أداة","مع الجمع والأسماء غير المعدودة عند الكلام العام.",[["Servers store data.","الخوادم تخزّن البيانات."],["Security is important.","الأمان مهم."]]]
+ ],
+ table:null,
+ mistakes:[["I need a information.","I need some information.","information غير معدودة فلا تأخذ a."],["She is a engineer.","She is an engineer.","engineer تبدأ بصوت متحرك."]],
+ q:[["It is ____ unusual error.",["a","an","the","—"],1,"unusual تبدأ بصوت متحرك (ا): an."],["We use ____ Internet every day.",["a","an","the","—"],2,"الإنترنت شيء فريد: the."],["____ passwords must be strong.",["The","A","An","—"],3,"كلام عام عن الجمع: بدون أداة."]]},
+
+{id:'g11', icon:'📍', t:["Prepositions: in, on, at & more","حروف الجر"],
+ intro:"حروف الجر تُحفظ مع الكلمات ولا تُترجم حرفيًا. أهم ما نحتاجه في الكتابة التقنية: حروف الزمان والمكان، والتعابير الثابتة.",
+ rules:[
+  ["حروف الزمان (Prepositions of Time)","at مع الساعة، on مع الأيام والتواريخ، in مع الأشهر والسنوات والفترات.",[["at 10:30 AM, at night","الساعة 10:30، في الليل"],["on Monday, on 20 September","يوم الاثنين، في 20 سبتمبر"],["in September, in 2026, in the morning","في سبتمبر، في 2026، في الصباح"]]],
+  ["حروف المكان (Prepositions of Place)","at لنقطة محددة، in لداخل شيء، on لسطح.",[["at the entrance of the lab","عند مدخل المعمل"],["in the laboratory, in the network","داخل المعمل، في الشبكة"],["on the screen, on the server","على الشاشة، على الخادم"]]],
+  ["by و with","by للفاعل أو الوسيلة، with للأداة.",[["The report was written by Ali.","كُتب التقرير بواسطة علي."],["Open the file with Notepad.","افتح الملف بالمفكرة."]]],
+  ["تعابير ثابتة تقنية","احفظ الحرف مع الكلمة.",[["connect to, access to, depend on","يتصل بـ، الوصول إلى، يعتمد على"],["consist of, responsible for, different from","يتكون من، مسؤول عن، يختلف عن"],["result in / result from","يؤدي إلى / ينتج عن"]]]
+ ],
+ table:null,
+ mistakes:[["The incident happened in Monday.","The incident happened on Monday.","مع الأيام نستخدم on."],["The computer is connected with the network.","The computer is connected to the network.","connect to وليس with."]],
+ q:[["The meeting is ____ 9:00 a.m.",["on","in","at","by"],2,"الساعة: at."],["The system depends ____ the network.",["in","on","at","of"],1,"depend on."],["The incident occurred ____ 20 September.",["in","at","on","by"],2,"التاريخ المحدد: on."]]},
+
+{id:'g12', icon:'🤝', t:["Subject–Verb Agreement","اتفاق الفاعل والفعل"],
+ intro:"الفعل لازم يتفق مع فاعله: فاعل مفرد = فعل مفرد، وفاعل جمع = فعل جمع. الخطأ هنا من أكثر الأخطاء ظهورًا في الامتحانات.",
+ rules:[
+  ["القاعدة الأساسية","في المضارع: مفرد + s (the router works)، جمع بدون s (the routers work). مع be: is / are و was / were.",[["The server is fast. / The servers are fast.","الخادم سريع. / الخوادم سريعة."]]],
+  ["تجاهل ما بين الفاعل والفعل","الجملة الاعتراضية لا تغيّر الفاعل.",[["The list of users is long.","قائمة المستخدمين طويلة."],["The computers in Laboratory 2 are slow.","الحواسيب في المعمل 2 بطيئة."]]],
+  ["كلمات مفردة دائمًا","each, every, everyone, nobody, information, software, news تأخذ فعلًا مفردًا.",[["Each user has a password.","كل مستخدم لديه كلمة مرور."],["The information is correct.","المعلومات صحيحة."]]],
+  ["and و there is / are","فاعلان بينهما and يعطيان جمعًا. وفي there is/are نتبع الاسم الذي يأتي بعدها.",[["The router and the switch are new.","الموجّه والمحوّل جديدان."],["There are three servers. / There is one server.","هناك ثلاثة خوادم. / هناك خادم واحد."]]]
+ ],
+ table:null,
+ mistakes:[["The students in the lab is working.","The students in the lab are working.","الفاعل students جمع."],["The information are wrong.","The information is wrong.","information مفردة."]],
+ q:[["The list of errors ____ long.",["are","is","were","be"],1,"الفاعل list مفرد."],["Each user ____ a password.",["have","has","are","having"],1,"each مفردة."],["There ____ two servers in the room.",["is","are","was","be"],1,"two servers جمع: are."]]},
+
+{id:'g13', icon:'🔀', t:["Conditionals: If Sentences","جمل الشرط"],
+ intro:"نستخدم الشرط لوصف النتائج: ماذا يحدث إذا حدث شيء؟ مهم في التعليمات والسياسات والتقارير.",
+ rules:[
+  ["شرط الحقيقة (Zero Conditional)","If + مضارع بسيط، مضارع بسيط. لحقائق ونتائج دائمة.",[["If you press Ctrl+S, the file saves.","إذا ضغطت Ctrl+S يُحفظ الملف."]]],
+  ["شرط محتمل (First Conditional)","If + مضارع بسيط، will + V1. لشيء محتمل في المستقبل.",[["If the router fails, the network will stop.","إذا تعطل الموجّه ستتوقف الشبكة."]]],
+  ["unless","unless = if ... not.",[["Unless you log in, you cannot access the system.","ما لم تسجل الدخول لا يمكنك الوصول للنظام."]]],
+  ["قاعدة مهمة","لا نضع will بعد if.",[["If the server crashes, we will restore it.","إذا تعطل الخادم سنعيده للعمل."]]]
+ ],
+ table:null,
+ mistakes:[["If the server will fail, we will restart it.","If the server fails, we will restart it.","لا نضع will بعد if."],["If you will click here, the page opens.","If you click here, the page opens.","بعد if نستخدم المضارع البسيط."]],
+ q:[["If the connection ____, the system will stop.",["fails","will fail","failed","failing"],0,"بعد if مضارع بسيط."],["____ you update the software, it may stop working.",["If","Unless","Because","So"],1,"المعنى: إن لم تحدث."],["If you press Ctrl+S, the file ____.",["save","saves","will saved","saving"],1,"شرط الحقيقة: مضارع بسيط."]]},
+
+{id:'g14', icon:'🧩', t:["Linking Words (Connectors)","أدوات الربط"],
+ intro:"أدوات الربط تجعل الكتابة منظمة وواضحة وتربط الأفكار ببعضها، وهي ضرورية في التقارير والرسائل.",
+ rules:[
+  ["للإضافة (Addition)","and, also, in addition, moreover.",[["The server is fast. Moreover, it is secure.","الخادم سريع. وعلاوة على ذلك هو آمن."]]],
+  ["للتضاد (Contrast)","but, however, although, while.",[["The system is fast, but it is expensive.","النظام سريع لكنه غالٍ."],["Although it is old, it works well.","رغم أنه قديم إلا أنه يعمل جيدًا."]]],
+  ["للسبب والنتيجة (Cause & Result)","because / since (سبب)، so / therefore / as a result (نتيجة).",[["The network stopped because a cable failed.","توقفت الشبكة لأن كابلًا تعطل."],["A cable failed. Therefore, the network stopped.","تعطل كابل. لذلك توقفت الشبكة."]]],
+  ["للترتيب (Sequence)","first, then, next, after that, finally.",[["First, restart the router. Then, test the connection.","أولًا أعد تشغيل الموجّه. ثم اختبر الاتصال."]]],
+  ["للغرض (Purpose)","to + V1, in order to, so that.",[["We backed up the data to prevent loss.","نسخنا البيانات احتياطيًا لمنع الفقدان."]]],
+  ["علامات الترقيم (Punctuation)","نضع فاصلة بعد However / Therefore / Moreover إذا بدأت بها الجملة.",[["However, the problem continued.","لكن المشكلة استمرت."]]]
+ ],
+ table:null,
+ mistakes:[["Although it is old, but it works.","Although it is old, it works.","لا نستخدم although و but معًا."],["Because the router failed. The network stopped.","The network stopped because the router failed.","Because لا تأتي وحدها كجملة."]],
+ q:[["The server crashed; ____, users lost data.",["because","therefore","although","but"],1,"therefore تدل على نتيجة."],["The system is fast ____ expensive.",["but","because","so that","therefore"],0,"تضاد: but."],["____ it is simple, it is very powerful.",["Because","Although","Therefore","So"],1,"معنى التنازل: Although."]]},
+
+{id:'g15', icon:'✉️', t:["Formal Email Language","لغة الرسائل الرسمية"],
+ intro:"الرسائل الرسمية لها عبارات جاهزة تجعل رسالتك مهذبة ومهنية. احفظ هذه العبارات واستخدمها مباشرة.",
+ rules:[
+  ["افتتاح الرسالة","Dear Mr. / Dr. / Ms. + الاسم. وإذا كنت لا تعرف الاسم: Dear IT Support Team.",[["Dear Dr. Ahmed,","عزيزي د. أحمد،"]]],
+  ["عبارات الغرض","I am writing to + V1.",[["I am writing to request system maintenance.","أكتب لأطلب صيانة النظام."],["I am writing to report a network problem.","أكتب للإبلاغ عن مشكلة في الشبكة."]]],
+  ["الطلب بأدب","Could you please + V1? أو We would appreciate your assistance.",[["Could you please check the connection?","هل يمكنك فحص الاتصال من فضلك؟"]]],
+  ["الخاتمة","Best regards, / Kind regards, ثم الاسم والقسم.",[["Best regards,\nMohamed Ali\nIT Department","مع أطيب التحيات،\nمحمد علي\nقسم IT"]]],
+  ["قواعد الأسلوب","لا نستخدم الاختصارات (don't) ولا العامية. نكتب جملًا كاملة وواضحة.",[["I do not have access. (وليس: I don't have access.)","ليس لدي صلاحية الوصول."]]]
+ ],
+ table:{h:["غير رسمي (Informal)","رسمي (Formal)"], r:[["Hi Ahmed,","Dear Dr. Ahmed,"],["Can you send me...?","Could you please send me...?"],["I want...","I would like to..."],["Thanks,","Thank you for your assistance."],["ASAP","at your earliest convenience"],["Bye,","Kind regards,"]]},
+ mistakes:[["Hi Dr. Ahmed, send me the schedule now.","Dear Dr. Ahmed, could you please send me the schedule?","الأسلوب الأمر غير مهذب في المراسلات الرسمية."],["I don't know.","I do not know.","نتجنب الاختصارات في الكتابة الرسمية."]],
+ q:[["Which is the most formal request?",["Send me the file!","Can you send the file?","Could you please send me the file?","Give me the file."],2,"Could you please ... هي الأكثر أدبًا."],["Which closing is formal?",["Bye","Thanks!","Kind regards,","See you"],2,"Kind regards, ختام رسمي."],["Which sentence is formal?",["I wanna report a problem.","I am writing to report a problem.","Hey, there's a problem.","Problem!"],1,"I am writing to ... عبارة رسمية."]]}
+];
+
+function renderGrammar(){
+  const ar=state.lang==='ar';
+  const chips=GRAMMAR.map(g=>`<button data-act="gr-open" data-id="${g.id}" class="px-3 py-1.5 rounded-full bg-dark-elevated border border-dark-border hover:border-brand-500 text-sm transition">${g.icon} ${esc(g.t[0])}</button>`).join('');
+  const topic=g=>{
+    const rules=g.rules.map((r,i)=>`<div class="bg-dark-surface border border-dark-border rounded-xl p-4 my-3">
+        <div class="font-bold text-brand-500 mb-1"><span class="mono text-xs bg-brand-600 text-white rounded px-1.5 py-0.5 me-2">${i+1}</span>${rich(r[0])}</div>
+        <p class="leading-relaxed mb-2">${rich(r[1])}</p>
+        <ul class="space-y-1.5">${r[2].map(e=>`<li class="border-s-2 border-brand-500/60 ps-3"><div class="mono text-sm" dir="ltr" style="white-space:pre-line">${esc(e[0])}</div><div class="text-dark-muted text-sm" style="white-space:pre-line">${rich(e[1])}</div></li>`).join('')}</ul></div>`).join('');
+    const table=g.table?`<div class="overflow-x-auto my-3 rounded-xl border border-dark-border"><table class="w-full text-sm"><thead class="bg-brand-600 text-white"><tr>${g.table.h.map(h=>`<th class="p-3 text-start font-semibold">${rich(h)}</th>`).join('')}</tr></thead><tbody>${g.table.r.map((r,i)=>`<tr class="${i%2?'bg-dark-surface':'bg-dark-elevated'}">${r.map(c=>`<td class="p-3 border-t border-dark-border">${esc(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:'';
+    const note=g.note?`<div class="border-s-4 border-amber-400 bg-amber-400/10 rounded-e-xl p-4 my-3 leading-relaxed">⚠️ ${rich(g.note)}</div>`:'';
+    const mist=`<div class="my-3"><div class="font-bold mb-2">🚫 أخطاء شائعة <span class="text-dark-muted font-normal">(Common Mistakes)</span></div>${g.mistakes.map(m=>`<div class="bg-dark-surface border border-dark-border rounded-xl p-3 mb-2 text-sm"><div dir="ltr" class="mono text-red-400">❌ ${esc(m[0])}</div><div dir="ltr" class="mono text-green-400 mt-1">✅ ${esc(m[1])}</div><div class="text-dark-muted mt-1">${rich(m[2])}</div></div>`).join('')}</div>`;
+    const qs=`<div class="my-3"><div class="font-bold mb-2">✍️ جرّب بنفسك <span class="text-dark-muted font-normal">(Practice)</span></div>${g.q.map((q,qi)=>`<div class="grbox bg-dark-surface border border-dark-border rounded-xl p-3 mb-2" data-a="${q[2]}" data-why="${esc(q[3])}">
+        <div class="font-semibold mb-2 mono text-sm" dir="ltr">${qi+1}. ${esc(q[0])}</div>
+        <div class="grid gap-2 sm:grid-cols-2" dir="ltr">${q[1].map((o,oi)=>`<button data-act="gr-opt" data-i="${oi}" class="gopt text-start p-2 rounded-lg border border-dark-border bg-dark-elevated hover:border-brand-500 transition text-sm"><span class="mono text-dark-muted">${'ABCD'[oi]}.</span> ${esc(o)}</button>`).join('')}</div>
+        <div class="grfb mt-2 text-sm font-semibold hidden"></div></div>`).join('')}</div>`;
+    return `<details id="gr-${g.id}" class="group bg-dark-elevated border border-dark-border open:border-brand-500 rounded-2xl mb-4 overflow-hidden">
+      <summary class="cursor-pointer list-none px-5 py-4 flex items-center justify-between hover:bg-white/5 select-none">
+        <span class="font-bold text-lg flex items-center gap-3"><span class="text-2xl">${g.icon}</span><span>${esc(g.t[0])}<span class="block text-sm font-normal text-dark-muted">${esc(g.t[1])}</span></span></span>
+        <span class="mono text-xs text-brand-500 transition-transform duration-300 group-open:rotate-180">▼</span></summary>
+      <div class="px-5 pb-5 pt-3 border-t border-dark-border">
+        <p class="leading-relaxed bg-brand-500/10 border border-brand-500/40 rounded-xl p-4">💡 ${rich(g.intro)}</p>
+        ${rules}${table}${note}${mist}${qs}</div></details>`;
+  };
+  return `<div class="fade">
+    <h1 class="text-3xl font-extrabold mb-1">✍️ قواعد مهمة <span class="text-dark-muted text-xl">/ Important Grammar</span></h1>
+    <p class="text-dark-muted mb-4">شرح مبسّط لأهم القواعد التي تحتاجها في هذه المادة، مع أمثلة تقنية وأخطاء شائعة وتدريب سريع بعد كل قاعدة.</p>
+    <div class="flex flex-wrap gap-2 mb-5">${chips}</div>
+    ${GRAMMAR.map(topic).join('')}</div>`;
+}
+
 /* ---------- DOWNLOADS ---------- */
 const DL_FILE = {icon:'📕', title:["Lecture slides (PDF)"," المحاضرات كاملة(PDF)"], desc:["in one file","في ملف واحد"], url:'lec/English_S2_full.pdf', file:'English_S2_full.pdf'};
 function renderDownloads(){
@@ -1245,7 +1548,7 @@ function renderNav(){
   h += `<div class="px-3 pt-3 pb-1 text-sm font-bold text-brand-500">${s.icon} ${tx(s.name)}</div>`;
   h += item('home','🏠',u('home'));
   h += head(u('lectures')) + s.lectures.map(l=>item(l.id,`<span class="mono text-xs">${l.n}</span>`,tx(l.title),d.best[l.id]!=null?`<span class="mono text-[10px] opacity-80">${d.best[l.id]}%</span>`:'')).join('');
-  h += head(u('tools')) + item('exam','🏆',u('exam'),d.exam?`<span class="mono text-[10px] opacity-80">${d.exam}%</span>`:'') + item('glossary','📖','Glossary / قاموس المصطلحات');
+  h += head(u('tools')) + item('exam','🏆',u('exam'),d.exam?`<span class="mono text-[10px] opacity-80">${d.exam}%</span>`:'') + item('grammar','✍️','قواعد مهمة / Important Grammar') + item('glossary','📖','Glossary / قاموس المصطلحات') + item('downloads','<span class="dl-ico">⬇️</span>',u('dl'));
   $('nav').innerHTML=h;
 }
 function applyLayout(){
@@ -1271,6 +1574,8 @@ function render(){
   if(state.page==='home'){ html=renderHome(); title=tx(subj().name).replace(/<[^>]+>/g,''); }
   else if(idx>=0){ html=renderLecture(lects[idx],idx); title=`${u('lecture')} ${lects[idx].n}`; }
   else if(state.page==='exam'){ html=renderExam(); title=u('exam'); }
+  else if(state.page==='grammar'){ html=renderGrammar(); title='قواعد مهمة / Important Grammar'; }
+  else if(state.page==='downloads'){ html=renderDownloads(); title=u('dl'); }
   else if(state.page==='glossary'){ html=renderGlossary(); title='Glossary / قاموس المصطلحات'; }
   $('app').innerHTML=html; $('topTitle').textContent=title;
   updateTop(); renderNav(); applyLayout();
@@ -1327,6 +1632,16 @@ document.addEventListener('click',e=>{
 
   const a=e.target.closest('[data-act]'); if(!a) return;
   const act=a.dataset.act;
+  if(act==='dl-url'){ runDownload(a); return; }
+  if(act==='gr-open'){ const d=document.getElementById('gr-'+a.dataset.id); if(d){ d.open=true; d.scrollIntoView({behavior:'smooth',block:'start'}); } return; }
+  if(act==='gr-opt'){
+    const box=a.closest('.grbox'); if(box.dataset.done) return; box.dataset.done='1';
+    const ans=+box.dataset.a, i=+a.dataset.i, ok=i===ans;
+    box.querySelectorAll('.gopt').forEach(b=>{ b.disabled=true; b.classList.add('cursor-not-allowed'); if(+b.dataset.i===ans) b.classList.add('!bg-green-600/30','!border-green-500'); });
+    if(!ok) a.classList.add('!bg-red-600/30','!border-red-500');
+    const fb=box.querySelector('.grfb'); fb.classList.remove('hidden'); fb.classList.add(ok?'text-green-400':'text-red-400');
+    fb.innerHTML=(ok?'✅ صحيح. ':'❌ غير صحيح. ')+rich(box.dataset.why); return;
+  }
   if(act.startsWith('dk-')){
     const id=a.dataset.deck, d=state.decks[id]; if(!d) return;
     if(act==='dk-flip'){ d.flip=!d.flip; const f=document.querySelector(`#deck-${id} .flip`); if(f) f.classList.toggle('on',d.flip); return; }
