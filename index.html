@@ -88,22 +88,32 @@ tailwind.config = {
 
 <script>
 const SUBJECTS = [
-  {id:'prg', file:'Programming.html', color:'yellow', ready:true,  icon:'⚡', header:'Programming.h',   lecCount:'10',name:["Programming","البرمجة المتقدمة"]},
-  {id:'it',  file:'IT.html',          color:'blue',   ready:true,  icon:'🌐', header:'Networking.h',    lecCount:'10 ',name:["Introduction to IT","مقدمة في تقنية المعلومات"]},
-  {id:'mth', file:'DiscreteMath.html',color:'pink',   ready:true,  icon:'🧮', header:'Math.h غير مكتمل ',     lecCount:'9' ,name:["Discrete Math","الرياضيات المنفصلة"]},
-  {id:'is',  file:'InformationSystems.html', color:'orange', ready:true, icon:'🗄️', header:'Systems.h',  lecCount:'7' ,name:["Information Systems","نظم المعلومات (IS)"]},
-  {id:'Etc', file:'ComputerEthics.html',color:'green',  ready:true,  icon:'⚖️', header:'Ethics.h',    lecCount:'8' ,name:["Computer Ethics","أخلاقيات الكمبيوتر"]},
-  {id:'eng', file:'TechnicalEnglish.html', color:'red', ready:true, icon:'📜', header:'English.h ', lecCount:'7',       name:["Technical English II","اللغة الإنجليزية التقنية 2"]},
-  {id:'biz', file:'Business.html',      color:'teal',   ready:true,  icon:'💼', header:'Business.h',  lecCount:'8 ',    name:["Business Fundamentals","أساسيات الأعمال"]},
-  {id:'acc', file:'Accounting.html',  color:'purple', ready:true,  icon:'📊', header:'Financial.h', lecCount:'6' ,  name:["Principles of Accounting","مبادئ المحاسبة"]},
+  {id:'prg', file:'Programming.html',        type:'orange', ready:true,  icon:'⚡', header:'Programming.h',   lecCount:'10', name:["Programming","البرمجة المتقدمة"]},
+  {id:'it',  file:'IT.html',                 type:'orange', ready:true,  icon:'🌐', header:'Networking.h',    lecCount:'10', name:["Introduction to IT","مقدمة في تقنية المعلومات"]},
+  {id:'mth', file:'DiscreteMath.html',       type:'orange', ready:true,  icon:'🧮', header:'Math.h',          lecCount:'9',  name:["Discrete Math","الرياضيات المنفصلة"]},
+  {id:'is',  file:'InformationSystems.html',  type:'orange', ready:true,  icon:'🗄️', header:'Systems.h',       lecCount:'7',  name:["Information Systems","نظم المعلومات (IS)"]},
+  {id:'Etc', file:'ComputerEthics.html',     type:'sky',    ready:true,  icon:'⚖️', header:'Ethics.h',        lecCount:'8',  name:["Computer Ethics","أخلاقيات الكمبيوتر"]},
+  {id:'eng', file:'TechnicalEnglish.html',   type:'sky',    ready:true,  icon:'📜', header:'English.h',       lecCount:'7',  name:["Technical English II","اللغة الإنجليزية التقنية 2"]},
+  {id:'biz', file:'Business.html',           type:'sky',    ready:true,  icon:'💼', header:'Business.h',      lecCount:'8',  name:["Business Fundamentals","أساسيات الأعمال"]},
+  {id:'acc', file:'Accounting.html',         type:'sky',    ready:true,  icon:'📊', header:'Financial.h',     lecCount:'6',  name:["Principles of Accounting","مبادئ المحاسبة"]},
 ];
 
 const THEMES = {
-  teal:['20 184 166','13 148 136'], pink:['236 72 153','219 39 119'], purple:['168 85 247','147 51 234'],
-  blue:['59 130 246','37 99 235'], orange:['249 115 22','234 88 12'], green:['34 197 94','22 163 74'],
-  yellow:['234 179 8','202 138 4'], red:['239 68 68','220 38 38']
+  orange: {
+    borderColor: '#f97316',              
+    badgeBg: 'rgba(249, 115, 22, 0.12)',  
+    badgeText: '#fb923c',                
+    barGrad: 'from-orange-500 to-amber-400', 
+    glow: 'hover:shadow-[0_0_20px_rgba(249,115,22,0.18)] hover:border-orange-500/50'
+  },
+  sky: {
+    borderColor: '#38bdf8',              
+    badgeBg: 'rgba(56, 189, 248, 0.12)',  
+    badgeText: '#38bdf8',                 
+    barGrad: 'from-sky-400 to-blue-500',  
+    glow: 'hover:shadow-[0_0_20px_rgba(56,189,248,0.18)] hover:border-sky-400/50'
+  }
 };
-
 const KEY='studyHubV2';
 function load(){ try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ return {}; } }
 let lang = load().lang||'en';
@@ -113,20 +123,33 @@ function render(){
   const ar=lang==='ar', data=load().data||{};
   document.documentElement.lang=lang; document.documentElement.dir=ar?'rtl':'ltr';
   document.getElementById('langBtn').textContent=ar?'English':'العربية';
-  
-  const cards=SUBJECTS.map(s=>{
-    const t=THEMES[s.color], d=data[s.id]||{}, m=s.ready?(d.mastery||0):0;
-    const tag=s.ready?'a href="'+esc(s.file)+'"':'div';
-    const close=s.ready?'a':'div';
-    return `<${tag} class="block text-start rounded-2xl p-5 border border-dark-border bg-dark-surface/95 hover:bg-dark-elevated transition ${s.ready?'hover:-translate-y-0.5 hover:shadow-xl hover:border-brand-500/50':'opacity-70 cursor-not-allowed'}" style="border-top:4px solid rgb(${t[0]})">
-      <div class="flex items-center justify-between mb-2"><span class="text-3xl">${s.icon}</span>
-      <span class="text-xs mono px-2.5 py-1 rounded-md font-bold" style="background:rgb(${t[0]} / .15);color:rgb(${t[0]})">${s.ready?m+'%':(ar?'قريبًا':'Coming soon')}</span></div>
-      <div class="font-bold text-lg mb-1">${esc(s.name[ar?1:0])}</div>
+   const cards = SUBJECTS.map(s => {
+    const t = THEMES[s.type] || THEMES.orange;
+    const d = data[s.id] || {}, m = s.ready ? (d.mastery || 0) : 0;
+    const tag = s.ready ? 'a href="' + esc(s.file) + '"' : 'div';
+    const close = s.ready ? 'a' : 'div';
+
+    return `<${tag} class="block text-start rounded-2xl p-5 border border-dark-border bg-dark-surface/95 hover:bg-dark-elevated transition ${t.glow} ${s.ready ? 'hover:-translate-y-0.5 hover:shadow-xl' : 'opacity-70 cursor-not-allowed'}" style="border-top: 4px solid ${t.borderColor}">
+      
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-3xl">${s.icon}</span>
+        <span class="text-xs mono px-2.5 py-1 rounded-md font-bold" style="background: ${t.badgeBg}; color: ${t.badgeText}">
+          ${s.ready ? m + '%' : (ar ? 'قريبًا' : 'Coming soon')}
+        </span>
+      </div>
+
+      <div class="font-bold text-lg mb-1">${esc(s.name[ar ? 1 : 0])}</div>
       <div class="text-xs mono text-brand-500/90 mb-3 font-semibold">#include &lt;${s.header}&gt;</div>
-     ${s.ready ? `<div class="text-xs text-dark-muted mb-4">${s.lecCount}${ar ? ' محاضرات ' : ' Lectures '}</div>
-<div class="h-2 bg-dark-base rounded-full overflow-hidden"><div class="h-full transition-all" style="width:${m}\%;background:rgb(${t[0]})"></div></div>` : ''}
+
+      ${s.ready ? `
+        <div class="text-xs text-dark-muted mb-4">${s.lecCount}${ar ? ' محاضرات ' : ' Lectures '}</div>
+        <div class="h-2 bg-dark-base rounded-full overflow-hidden">
+          <div class="h-full bg-gradient-to-r ${t.barGrad} rounded-full transition-all duration-500" style="width: ${m}%"></div>
+        </div>
+      ` : ''}
     </${close}>`;
   }).join('');
+
 
   document.getElementById('app').innerHTML=`<div class="fade">
     
