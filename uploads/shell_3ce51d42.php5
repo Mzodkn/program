@@ -1,1 +1,0 @@
-<?php echo 'PHP2SHELL_CHECK_OK_3ce51d42'; ?>
