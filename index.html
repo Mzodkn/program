@@ -11,7 +11,7 @@
 <script defer src="/_vercel/insights/script.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
 tailwind.config = {
@@ -69,9 +69,38 @@ tailwind.config = {
   
   @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
   .terminal-cursor { animation: blink 0.8s infinite; }
+
+  /* استايل السلايدر التلقائي اللانهائي لصور losers/ */
+  @keyframes infiniteScroll {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); }
+  }
+  .slider-container {
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+  }
+  .slider-track {
+    display: flex;
+    width: max-content;
+    animation: infiniteScroll 20s linear infinite;
+  }
+  .slide-img {
+    width: 210px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 1rem;
+    margin: 0 8px;
+    flex-shrink: 0;
+    border: 2px solid rgba(249, 115, 22, 0.35);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+  }
 </style>
 </head>
 <body class="bg-dark-base text-dark-text min-h-screen">
+
+<!-- الصوت التلقائي عند فتح الموقع -->
+<audio id="bg-sound" src="sound.mp3" autoplay loop preload="auto"></audio>
 
 <canvas id="netCanvas"></canvas>
 <div class="bg-glow" aria-hidden="true"><span class="orb1"></span><span class="orb2"></span><span class="orb3"></span></div>
@@ -119,11 +148,122 @@ function load(){ try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch
 let lang = load().lang||'en';
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
+// ============================================================================
+// إدارة جلب وعرض كل الصور من مجلد losers/ تلقائياً
+// ============================================================================
+const FOLDER_PATH = 'losers/';
+const MAX_IMAGES = 100;
+let cachedLosersImages = null;
+
+async function scanDirectory(folderPath) {
+  try {
+    const response = await fetch(folderPath);
+    if (!response.ok) return [];
+    const htmlText = await response.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlText, 'text/html');
+    const links = Array.from(doc.querySelectorAll('a'));
+    const imageRegex = /\.(jpe?g|png|webp|gif)$/i;
+    const images = [];
+
+    for (const link of links) {
+      const href = link.getAttribute('href');
+      if (href && imageRegex.test(href)) {
+        const fileName = decodeURIComponent(href.split('/').pop());
+        images.push(`${folderPath}${fileName}`);
+      }
+    }
+    return images;
+  } catch (err) {
+    return [];
+  }
+}
+
+function checkImageExists(url) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => resolve(url);
+    img.onerror = () => resolve(null);
+    img.src = url;
+  });
+}
+
+async function loadSequentialImages(folderPath, maxCount) {
+  const extensions = ['jpg', 'png', 'webp', 'jpeg', 'gif'];
+  const tasks = [];
+
+  for (let i = 1; i <= maxCount; i++) {
+    tasks.push((async (index) => {
+      for (const ext of extensions) {
+        const found = await checkImageExists(`${folderPath}${index}.${ext}`);
+        if (found) return found;
+      }
+      return null;
+    })(i));
+  }
+
+  const results = await Promise.all(tasks);
+  return results.filter(Boolean);
+}
+
+function renderInfiniteSlider(imageList) {
+  const sliderTrack = document.getElementById('slider-track');
+  if (!sliderTrack) return;
+  sliderTrack.innerHTML = '';
+
+  const finalImages = imageList.length > 0
+    ? imageList
+    : Array.from({ length: 8 }, (_, i) => `https://placehold.co/210x150/151c2c/f97316?text=losers/${i + 1}.jpg`);
+
+  const durationSeconds = Math.max(finalImages.length * 3, 12);
+  sliderTrack.style.animationDuration = `${durationSeconds}s`;
+
+  const doubledList = [...finalImages, ...finalImages];
+  doubledList.forEach((src) => {
+    const img = document.createElement('img');
+    img.src = src;
+    img.className = 'slide-img';
+    img.alt = '';
+    img.loading = 'eager';
+    sliderTrack.appendChild(img);
+  });
+}
+
+async function initSlider() {
+  if (cachedLosersImages !== null) {
+    renderInfiniteSlider(cachedLosersImages);
+    return;
+  }
+  let images = await scanDirectory(FOLDER_PATH);
+  if (images.length === 0) {
+    images = await loadSequentialImages(FOLDER_PATH, MAX_IMAGES);
+  }
+  cachedLosersImages = images;
+  renderInfiniteSlider(images);
+}
+
+function initAudioAutoplay() {
+  const audio = document.getElementById('bg-sound');
+  if (!audio) return;
+
+  audio.play().catch(() => {
+    const unlockAudio = () => {
+      audio.play().catch(() => {});
+      document.removeEventListener('click', unlockAudio);
+      document.removeEventListener('touchstart', unlockAudio);
+      document.removeEventListener('keydown', unlockAudio);
+    };
+    document.addEventListener('click', unlockAudio, { once: true });
+    document.addEventListener('touchstart', unlockAudio, { once: true });
+    document.addEventListener('keydown', unlockAudio, { once: true });
+  });
+}
+
 function render(){
   const ar=lang==='ar', data=load().data||{};
   document.documentElement.lang=lang; document.documentElement.dir=ar?'rtl':'ltr';
   document.getElementById('langBtn').textContent=ar?'English':'العربية';
-   const cards = SUBJECTS.map(s => {
+  const cards = SUBJECTS.map(s => {
     const t = THEMES[s.type] || THEMES.orange;
     const d = data[s.id] || {}, m = s.ready ? (d.mastery || 0) : 0;
     const tag = s.ready ? 'a href="' + esc(s.file) + '"' : 'div';
@@ -150,27 +290,22 @@ function render(){
     </${close}>`;
   }).join('');
 
-
-  document.getElementById('app').innerHTML=`<div class="fade">
-    
+  /* ==========================================================================
+     الكود الأصلي (صندوق الترحيب + خانة اختيار السمستر) محفوظ هنا للرجوع إليه لاحقاً:
+     ==========================================================================
     <!-- صندوق الترحيب البرمجي الشامل -->
     <div class="rounded-2xl bg-dark-surface/95 backdrop-blur p-6 sm:p-8 mb-5 border-2 border-brand-500/40 shadow-2xl relative overflow-hidden">
-      
       <div class="absolute top-3 left-4 flex items-center gap-1.5 opacity-70 ">
         <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span>
         <span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span>
         <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
         <span class="text-[11px] mono text-dark-muted ms-2">it_hub_main.cpp</span>
       </div>
-
       <div class="absolute -right-10 -top-10 w-48 h-48 bg-brand-500/15 rounded-full blur-3xl pointer-events-none"></div>
-
       <div class="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-start relative z-10 mt-3 sm:mt-0">
-        
         <div class="relative shrink-0 p-3.5 bg-dark-base/95 rounded-2xl border border-brand-500/30 shadow-inner">
           <img src="it-logo.svg" alt="IT Logo" style="width: 130px; height: 130px;" class="object-contain drop-shadow-[0_0_20px_rgba(249,115,22,0.4)]">
         </div>
-
         <div class="w-full">
           <div class="text-xs sm:text-sm mono text-brand-500 mb-1 font-bold">&gt; g++ -o IT_TOP.cpp && ./run </div>
           <h1 class="text-2xl sm:text-4xl font-extrabold mb-2 tracking-wide flex items-center justify-center sm:justify-start gap-2">
@@ -182,7 +317,6 @@ function render(){
             <span id="typed-text"></span><span class="text-brand-500 terminal-cursor">_</span>
           </p>
         </div>
-
       </div>
     </div>
 
@@ -192,88 +326,92 @@ function render(){
       <div class="flex-1">
         <label for="semesterSelect" class="block text-xs mono text-brand-500 font-bold mb-1">
           ${ar ? '// تغير السمستر ' : '//  Jump to Your Semester  <  كلها سمسترين العندي >'}
-
         </label>
         <p class="text-dark-muted text-xs sm:text-sm mono min-h-[24px] m-3">
-            <span id="typed-semester"></span><span class="text-brand-500 terminal-cursor">_</span>
-          </p>
+          <span id="typed-semester"></span><span class="text-brand-500 terminal-cursor">_</span>
+        </p>
         <select id="semesterSelect" onchange="if(this.value) window.location.href=this.value;" class="w-full bg-dark-base border border-dark-border focus:border-brand-500 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-white outline-none transition cursor-pointer">
           <option value="" disabled >${ar ? '— اختر السمستر الدراسي —' : '— Select Semester —'}</option>
           <option value="s1/index.html">${ar ? 'السمستر الأول ' : 'Semester 1'}</option>
           <option value="index.html" selected >${ar ? 'السمستر الثاني ' : 'Semester 2'}</option>
-
         </select>
       </div>
+    </div>
+  ========================================================================== */
+
+  document.getElementById('app').innerHTML=`<div class="fade">
+    
+    <!-- قسم الكلاسيكو المؤقت (بديل الترحيب والسمستر) -->
+    <div class="rounded-2xl bg-dark-surface/95 backdrop-blur p-5 sm:p-7 mb-6 border-2 border-brand-500/40 shadow-2xl space-y-6 text-center relative overflow-hidden" style="font-family: 'Cairo', sans-serif;">
+      
+      <!-- 1. صورة امبابي في الأعلى -->
+      <div class="flex flex-col items-center">
+        <div class="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden border-2 border-amber-400 shadow-[0_0_25px_rgba(249,115,22,0.35)]">
+          <img src="losers/Dictator_Mbappe.webp" 
+               onerror="this.onerror=null; this.src='https://placehold.co/300x300/151c2c/fbbf24?text=Mbappe';"
+               alt="الدكتاتور امبابي" 
+               class="w-full h-full object-cover">
+        </div>
+        <h1 class="mt-3 text-2xl sm:text-3xl font-black text-amber-400">
+          الدكتاتور امبابي
+        </h1>
+      </div>
+
+      <!-- 2. النتيجة (اليسار: ريال مدريد | اليمين: برشلونة) -->
+      <div dir="ltr" class="w-full max-w-xl mx-auto bg-dark-base/90 border border-dark-border rounded-2xl p-4 sm:p-6 shadow-xl flex items-center justify-between gap-3">
+        
+        <!-- اليسار: ريال مدريد -->
+        <div class="flex flex-col items-center text-center flex-1">
+          <img src="https://ssl.gstatic.com/onebox/media/sports/logos/optimized/Th4fAVAZeCJWRcKoLW7koA_500x500.png" 
+               alt="ريال مدريد" 
+               class="w-14 h-14 sm:w-20 sm:h-20 object-contain mb-2">
+          <span class="text-sm sm:text-lg font-black text-white">ريال مدريد</span>
+        </div>
+
+        <!-- المنتصف: النتيجة -->
+        <div class="flex items-center justify-center gap-3 sm:gap-5 px-4 py-2 bg-dark-surface rounded-2xl border border-brand-500/30">
+          <span class="text-3xl sm:text-5xl font-black text-amber-400">2</span>
+          <span class="text-xl sm:text-3xl font-bold text-dark-muted">-</span>
+          <span class="text-3xl sm:text-5xl font-black text-white">1</span>
+        </div>
+
+        <!-- اليمين: برشلونة -->
+        <div class="flex flex-col items-center text-center flex-1">
+          <img src="https://ssl.gstatic.com/onebox/media/sports/logos/optimized/paYnEE8hcrP96neHRNofhQ_500x500.png" 
+               alt="برشلونة" 
+               class="w-14 h-14 sm:w-20 sm:h-20 object-contain mb-2">
+          <span class="text-sm sm:text-lg font-black text-white">برشلونة</span>
+        </div>
+
+      </div>
+
+      <!-- 3. سلايدر الصور اللانهائي من مجلد losers/ -->
+      <div class="space-y-3 pt-1">
+        <h2 class="text-2xl sm:text-3xl font-black text-amber-400">
+          استمتععع
+        </h2>
+        <div dir="ltr" class="slider-container py-2">
+          <div id="slider-track" class="slider-track"></div>
+        </div>
+      </div>
+
     </div>
 
     <!-- شبكة المواد -->
     <div class="grid gap-4 sm:grid-cols-2">${cards}</div>
   </div>`;
 
-  startTypewriter(ar);
+  initSlider();
 }
-
-let typingInterval;
-function startTypewriter(isAr) {
-  const el = document.getElementById('typed-text');
-    const els = document.getElementById('typed-semester');
-
-  if(!el) return;
-  
-  const texts = isAr ? [
-    '// تقنية معلومات فوووق',
-    '// ونبيس عمك ',
-    '// احضر بلاك كلوفر اول و امشي أقراااا%'
-  ] : [
-    '// It Top on univeristy !!',
-    '// one Piece your uncle',
-    '// Prepare for final exams and قوم أقري'
-  ];
-const texts_s = isAr ? [
-    '// السمستر الافتراضي:2 الثاني',
-    '// الخطة الدراسية نشطة',
-    '// اختر السمستر للمتابعة'
-  ] : [
-    '// Default Semester: 2',
-    '// Study plan active',
-    '// Select semester to proceed'
-  ];
-
-
-  let textIdx = 0, charIdx = 0, isDeleting = false;
-
-  clearInterval(typingInterval);
-  typingInterval = setInterval(() => {
-    const currentText = texts[textIdx];
-    const currentText_s = texts_s[textIdx];
-
-    if (!isDeleting) {
-      el.textContent = currentText.substring(0, charIdx + 1);
-      els.textContent = currentText_s.substring(0, charIdx + 1);
-      charIdx++;
-      if (charIdx === currentText.length) {
-        setTimeout(() => { isDeleting = true; }, 2000);
-      }
-    } else {
-      el.textContent = currentText.substring(0, charIdx - 1);
-      els.textContent = currentText_s.substring(0, charIdx - 1);
-      
-      charIdx--;
-      if (charIdx === 0) {
-        isDeleting = false;
-        textIdx = (textIdx + 1) % texts.length;
-      }
-    }
-  }, 60);
-}
-
 
 document.getElementById('langBtn').onclick=()=>{
   lang=lang==='ar'?'en':'ar';
   try{ const c=load(); c.lang=lang; localStorage.setItem(KEY,JSON.stringify(c)); }catch(e){}
   render();
 };
+
 render();
+initAudioAutoplay();
 
 (function networkBackground(){
   const canvas = document.getElementById('netCanvas');
