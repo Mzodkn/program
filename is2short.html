@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="it-logo.svg">
+
+<title>IS Exam Short Revision | ملخص ونظم معلومات للامتحان</title>
+<script>
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+</script>
+<script defer src="/_vercel/insights/script.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      brand: { 
+        500: 'rgb(249 115 22)',
+        600: 'rgb(234 88 12)'
+      },
+      dark: { base: '#0b0f17', surface: '#111827', elevated: '#1f2937', border: '#374151', text: '#f3f4f6', muted: '#94a3b8' }
+    },
+    fontFamily: { sans: ['Inter', 'sans-serif'], arabic: ['Cairo', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
+  } }
+}
+</script>
+<style>
+  body {
+    background-color: #0b0f17;
+    background-image: 
+      linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+  html[lang="en"] body { font-family: 'Inter', sans-serif; }
+  html[lang="ar"] body { font-family: 'Cairo', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #0b0f17; }
+  ::-webkit-scrollbar-thumb { background: #374151; border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgb(249 115 22); }
+  .fade { animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .flip { perspective: 1000px; }
+  .flip-inner { transition: transform .5s; transform-style: preserve-3d; position: relative; min-height: 230px; }
+  .flip.on .flip-inner { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 1.5rem; border-radius: 1rem; overflow: auto; }
+  .back { transform: rotateY(180deg); }
+</style>
+</head>
+<body class="bg-dark-base text-dark-text min-h-screen">
+
+<header class="fixed top-0 inset-x-0 z-40 h-14 bg-dark-surface/95 backdrop-blur border-b border-dark-border flex items-center justify-between px-3">
+  <div class="flex items-center gap-3 min-w-0">
+    <button id="menuBtn" class="p-2 rounded-lg hover:bg-dark-elevated" aria-label="Menu">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <a href="index.html" class="p-2 rounded-lg hover:bg-dark-elevated" title="All subjects">🗂️</a>
+    <span id="topTitle" class="font-bold text-brand-500 truncate"></span>
+  </div>
+  <div class="flex items-center gap-3">
+    <div id="topProgWrap" class="hidden sm:flex items-center gap-2" title="Mastery">
+      <div class="w-28 h-2 bg-dark-base rounded-full overflow-hidden"><div id="topBar" class="h-full bg-brand-500 transition-all" style="width:0%"></div></div>
+      <span id="topPct" class="mono text-xs text-dark-muted w-9"></span>
+    </div>
+    <button id="langBtn" class="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold"></button>
+  </div>
+</header>
+
+<div id="backdrop" class="fixed inset-0 bg-black/60 z-30 hidden lg:hidden"></div>
+
+<aside id="sidebar" class="fixed top-14 bottom-0 start-0 w-72 z-30 bg-dark-surface border-e border-dark-border overflow-y-auto transition-transform duration-300">
+  <nav id="nav" class="p-3 space-y-1"></nav>
+</aside>
+
+<main id="main" class="pt-14 transition-all duration-300">
+  <div id="app" class="max-w-4xl mx-auto p-4 sm:p-6 pb-24"></div>
+</main>
+
+<script>
+/* ============================================================
+   UI LABELS [English, Arabic]
+   ============================================================ */
+const UI = {
+  hub:["All Subjects","كل المواد"], home:["Exam Summary Home","الرئيسية: مراجعة الامتحان"], lecture:["Chapter","الفصل"],
+  objectives:["Core Exam Topics","أهم محاور الامتحان"], def:["Key Definition","تعريف امتحاني رئيسي"], ex:["Example","مثال توضيحي"], tip:["Exam Warning / Tip","تنبيه امتحاني حاسم ⚠️"],
+  take:["Summary Takeaways","خلاصة سريعة للحفظ"], quiz:["Chapter Exam Quiz","اختبار الفصل التدريبي"], flash:["Fast Flashcards","بطاقات الحفظ السريع"],
+  exam:["Final Mock Exam","الاختبار الشامل للنهائي"], next:["Next","التالي"], prev:["Previous","السابق"],
+  correct:["Correct! ✔","إجابة صحيحة! ✔"], wrong:["Incorrect ✘ - the correct answer is highlighted","إجابة خاطئة ✘ - الإجابة الصحيحة موضحة"],
+  score:["Your score","نتيجتك"], retry:["Try again","أعد المحاولة"], search:["Search term or acronym...","ابحث عن مصطلح أو اختصار..."],
+  flip:["Tap the card to flip","اضغط على البطاقة لقلبها"], shuffle:["Shuffle","خلط"], start:["Start Exam","ابدأ الاختبار النهائي"],
+  mastery:["Exam Readiness","جاهزية الامتحان"], best:["Best","الأفضل"], plan:["How to Ace the Exam","خطة التفوق في الامتحان"],
+  finish:["Finish","إنهاء"], reset:["Reset progress","إعادة ضبط التقدم"], read:["Read","تمت المراجعة"],
+  open:["Open","فتح"], subjects:["Subjects","المواد"], tools:["Exam Tools","أدوات التفوق"],
+  lectures:["Exam Chapters","فصول المراجعة"], mistakes:["Missed Questions","أسئلة تحتاج مراجعة"], yourAns:["Correct answer","الإجابة الصحيحة"],
+  glossFlash:["Term Flashcards","بطاقات المصطلحات والاختصارات"], glossList:["All Exam Terms","قاموس المصطلحات الشامل"], questions:["questions","سؤالًا"],
+  question:["Question","السؤال"],
+  chooseSize:["Number of Exam Questions","عدد أسئلة الاختبار"], all:["All (Complete)","الكل (شامل)"], answerEN:["English","English"],
+  masteryHow:["Read the concise summaries, test yourself with flashcards, and achieve 100% in the quizzes to guarantee exam readiness.","راجع الخلاصات المركزة، راجع البطاقات، وحقق 100% في الاختبارات لضمان التفوق التام في الامتحان."]
+};
+
+const LECTURES = [];
+
+/* ============================================================
+   LECTURE 1: Introduction to IS, Data, System & CBIS
+   ============================================================ */
+LECTURES.push({ id:'l1', n:1,
+  title:["Introduction: Data, Systems & CBIS","مقدمة: البيانات، النظم ومكونات CBIS"],
+  obj:[
+    ["Distinguish Data vs Information vs Knowledge.","التمييز القاطع بين البيانات والمعلومات والمعرفة."],
+    ["Master the 3 system functions (Input, Processing, Output) and Feedback.","إتقان وظائف النظام الثلاث والتغذية الراجعة."],
+    ["Memorize the 6 components of a Computer-Based Information System (CBIS).","حفظ المكونات الستة لنظام المعلومات المحوسب."],
+    ["Compare Internet, Intranet, and Extranet.","المقارنة الدقيقة بين الإنترنت والإنترانت والإكسترانت."]
+  ],
+  sec:[
+    {t:["Data vs. Information vs. Knowledge","المثلث الذهبي: البيانات والمعلومات والمعرفة"], b:[
+      {k:'tbl', h:[["Concept","المفهوم"],["Definition","التعريف"],["Exam Keyword","الكلمة المفتاحية في الامتحان"]], r:[
+        [["Data","البيانات"],["Raw facts with no context or processing.","حقائق خام أولية غير منظمة وبدون سياق."],["Raw facts"]],
+        [["Information","المعلومات"],["Data processed into a meaningful, structured form of real value to decision makers.","بيانات جرت معالجتها لتصبح ذات معنى وقيمة حقيقية لمتخذ القرار."],["Processed, meaningful value"]],
+        [["Knowledge","المعرفة"],["Awareness and deep understanding of how to apply information to achieve goals.","الوعي والفهم العميق لكيفية استخدام وتطبيق المعلومات."],["Understanding, how to use"]]
+      ]},
+      {k:'tip', x:["Exam Trap: Data is NOT processed; Information IS processed data. The value of information is measured directly by how it helps decision makers achieve organizational goals.","فخ امتحاني: البيانات خام ولم تعالج، بينما المعلومات ناتجة عن المعالجة. قيمة المعلومة تُقاس بمدى مساعدتها لمتخذ القرار في تحقيق أهداف المنظمة."]}
+    ]},
+    {t:["System & Basic Functions","مفهوم النظام ووظائفه الأساسية"], b:[
+      {k:'def', x:["System: A group of interrelated components working together toward a common goal by accepting inputs and producing outputs in an organized transformation process.\n\nالنظام: مجموعة مكونات مترابطة تعمل معًا لتحقيق هدف مشترك من خلال قبول مدخلات وإنتاج مخرجات في عملية تحويلية منظمة."]},
+      {k:'ul', h:[["The 4 Interacting Functions:","الوظائف الأربع المتفاعلة في النظام:"],["الوظائف الأربع:"]], x:[
+        ["1. Input: Gathering and capturing raw data.","1. المدخلات (Input): جمع والتقاط البيانات الخام."],
+        ["2. Processing: Converting raw data into useful outputs.","2. المعالجة (Processing): تحويل البيانات إلى مخرجات مفيدة."],
+        ["3. Output: Producing useful information for users.","3. المخرجات (Output): إنتاج معلومات مفيدة للمستخدمين."],
+        ["4. Feedback: Output information used to make adjustments to input or processing activities (control loop).","4. التغذية الراجعة (Feedback): معلومات عائدة لتعديل المدخلات أو المعالجة لضبط أداء النظام."]]}
+    ]},
+    {t:["The 6 Components of CBIS & Network Types","المكونات الستة لـ CBIS وأنواع الشبكات"], b:[
+      {k:'cards', c:[
+        {t:["1. Hardware & 2. Software","1. العتاد و 2. البرمجيات"], l:[
+          ["Hardware: Equipment used for input, processing, storage, and output.","العتاد: الأجهزة المادية للإدخال والمعالجة والتخزين والإخراج."],
+          ["System Software: Controls basic computer operations (e.g., OS).","برمجيات النظام: تدير العمليات الأساسية مثل نظام التشغيل."],
+          ["Application Software: Programs for specific user tasks (e.g., Word, ERP).","البرمجيات التطبيقية: تنجز مهام المستخدم المحددة."]]},
+        {t:["3. Database & 4. Telecommunications","3. قواعد البيانات و 4. الاتصالات والشبكات"], l:[
+          ["Database: Organized collection of interrelated facts and tables.","قاعدة البيانات: مجموعة منظمة من الحقائق والجداول المترابطة."],
+          ["Telecommunications & Networks: Electronic transmission of signals connecting computers.","الاتصالات والشبكات: النقل الإلكتروني للإشارات وربط الأجهزة."]]},
+        {t:["5. People (Most Important!)","5. الأفراد (العنصر الأكثر أهمية)"], l:[
+          ["People: The most important element in any CBIS. Without users and experts, systems have no value.","الأفراد: العنصر الأهم على الإطلاق في نظام المعلومات؛ فبدون البشر تفقد الأنظمة معناها."]]},
+        {t:["6. Procedures","6. الإجراءات والسياسات"], l:[
+          ["Procedures: Rules, strategies, and policies for operating and maintaining the system.","الإجراءات: الاستراتيجيات والسياسات والقواعد الحاكمة لاستخدام وتشغيل النظام."]]}
+      ]},
+      {k:'tbl', h:[["Network Scope","نطاق الشبكة"],["Definition & Access","التعريف والصلاحية"],["Security Level","مستوى الحماية"]], r:[
+        [["Internet","الإنترنت"],["World's largest network freely connecting millions of networks globally.","أضخم شبكة عالمية تربط ملايين الشبكات العامة."],["Public access"]],
+        [["Intranet","الإنترانت"],["Internal private network strictly limited to organization employees.","شبكة داخلية خاصة مقتصرة تماماً على موظفي المنظمة."],["Private + Secured by Firewall"]],
+        [["Extranet","الإكسترانت"],["Allows authorized external partners, suppliers, and customers access to specific resources.","تتيح لشركاء وموردين وعملاء معتمدين خارجيين الوصول لموارد محددة."],["Authorized external access (VPN)"]]
+      ]}
+    ]}
+  ],
+  take:[
+   ["Data = raw facts; Information = processed with value; Knowledge = understanding how to apply it.","البيانات = حقائق خام؛ المعلومات = بيانات معالجة ذات قيمة؛ المعرفة = فهم كيفية التطبيق."],
+   ["The 3 core system functions are Input, Processing, and Output, controlled by Feedback.","وظائف النظام الثلاث هي الإدخال والمعالجة والإخراج، وتضبطها التغذية الراجعة."],
+   ["CBIS has 6 components: Hardware, Software, Database, Telecommunications, People, and Procedures.","مكونات CBIS الستة: العتاد، البرمجيات، قواعد البيانات، الاتصالات، الأفراد، الإجراءات."],
+   ["People are explicitly recognized as the most important element of any CBIS.","الأفراد هم العنصر الأكثر أهمية وركيزة النجاح في أي نظام معلومات محوسب."],
+   ["Intranet is internal (employees only); Extranet connects trusted external business partners.","الإنترانت داخلي للموظفين فقط؛ الإكسترانت يربط الشركاء الخارجيين الموثوقين."]
+  ],
+  fc:[
+   [["Define Data vs. Information.","ما الفرق بين البيانات والمعلومات؟"],
+    ["Data is raw facts without context. Information is data that has been organized and processed into a meaningful form with real value for decision making.","البيانات هي حقائق خام غير منظمة. المعلومات هي بيانات جرت معالجتها لتصبح ذات معنى وقيمة حقيقية لاتخاذ القرارات."]],
+   [["What are the four interacting functions of an information system?","ما هي الوظائف الأربع المتفاعلة في نظام المعلومات؟"],
+    ["Input (gathering raw data), Processing (converting data), Output (producing useful information), and Feedback (control and adjustments).","المدخلات (جمع البيانات الخام)، المعالجة (تحويل البيانات)، المخرجات (إنتاج معلومات مفيدة)، والتغذية الراجعة (الضبط والتصحيح)."]],
+   [["Name the six components of a Computer-Based Information System (CBIS).","اذكر المكونات الستة لنظام المعلومات المحوسب (CBIS)."],
+    ["Hardware, Software, Databases, Telecommunications/Networks, People, and Procedures.","العتاد (الأجهزة)، البرمجيات، قواعد البيانات، الاتصالات والشبكات، الأفراد، والإجراءات."]],
+   [["Which element is the most important component of a CBIS?","ما هو العنصر الأكثر أهمية في نظام CBIS؟"],
+    ["People (users, managers, and IS professionals) are the most important element.","الأفراد (المستخدمون، المديرون، والمتخصصون) هم العنصر الأكثر أهمية."]],
+   [["What is the difference between an Intranet and an Extranet?","ما الفرق بين الإنترانت (Intranet) والإكسترانت (Extranet)؟"],
+    ["An Intranet is an internal network accessible only to company employees. An Extranet allows selected outside partners and customers to access authorized corporate intranet resources.","الإنترانت شبكة داخلية خاصة بالموظفين فقط. الإكسترانت تمنح الشركاء والعملاء الخارجيين المعتمدين وصولاً لموارد محددة داخل شبكة الشركة."]],
+   [["What are the five areas of the IS Knowledge Framework for business professionals?","ما هي المجالات الخمسة لإطار المعرفة بنظم المعلومات للمتخصصين؟"],
+    ["1. Foundation Concepts, 2. Information Technology, 3. Business Applications, 4. Development Processes, 5. Management Challenges.","1. المفاهيم الأساسية، 2. تقنية المعلومات، 3. تطبيقات الأعمال، 4. عمليات التطوير، 5. التحديات الإدارية."]]
+  ],
+  quiz:[
+   {q:["Which of the following consists of raw, unorganized facts?","أي مما يلي يمثل حقائق خام غير معالجة وغير منظمة؟"],
+    o:[["Information","المعلومات"],["Data","البيانات"],["Knowledge","المعرفة"],["Feedback","التغذية الراجعة"]], a:1},
+   {q:["The most important component in a Computer-Based Information System (CBIS) is:","العنصر الأكثر أهمية في نظام المعلومات المحوسب (CBIS) هو:"],
+    o:[["Hardware","العتاد"],["Database","قاعدة البيانات"],["People","الأفراد (العنصر البشري)"],["Telecommunications","الاتصالات"]], a:2},
+   {q:["Information from the system used to make adjustments to input or processing activities is called:","المعلومات الصادرة من النظام والمستخدمة لإجراء تعديلات على المدخلات أو المعالجة تسمى:"],
+    o:[["Output","المخرجات"],["Feedback","التغذية الراجعة (Feedback)"],["Feedforward","التغذية الأمامية"],["Procedure","الإجراء"]], a:1},
+   {q:["A private network that allows selected outside business partners access to authorized intranet resources is a(n):","شبكة تتيح لشركاء العمل الخارجيين المعتمدين الوصول إلى موارد مصرح بها هي:"],
+    o:[["Internet","الإنترنت"],["Intranet","الإنترانت"],["Extranet","الإكسترانت (Extranet)"],["Local Area Network","شبكة محلية"]], a:2},
+   {q:["How is the business value of information primarily evaluated?","كيف تُقاس القيمة الفعلية للمعلومات في الأعمال؟"],
+    o:[["By the physical size of the database","بحجم قاعدة البيانات الفعلي"],["By how it helps decision makers achieve organizational goals","بمدى مساعدتها لمتخذي القرار في تحقيق أهداف المنظمة"],["By the cost of the computer hardware","بتكلفة شراء الأجهزة والعتاد"],["By how many users can view it","بعدد الأشخاص القادرين على رؤيتها"]], a:1}
+  ]
+});
+
+/* ============================================================
+   LECTURE 2: Business Information Systems, Strategy & SCM/CRM
+   ============================================================ */
+LECTURES.push({ id:'l2', n:2,
+  title:["Business Information Systems & Strategy","نظم معلومات الأعمال، الاستراتيجية وسلاسل الإمداد"],
+  obj:[
+    ["Compare TPS, ERP, MIS, and DSS.","المقارنة الشاملة بين TPS و ERP و MIS و DSS."],
+    ["Understand Specialized Systems: KMS, AI, Expert Systems, and VR.","فهم النظم المتخصصة: KMS و الذكاء الاصطناعي والنظم الخبيرة والواقع الافتراضي."],
+    ["Explain Porter's 5 Competitive Forces and Competitive Advantage Strategies.","شرح قوى بورتر التنافسية الخمس واستراتيجيات الميزة التنافسية."],
+    ["Master SCM, CRM, TAM, ROI, and TCO.","إتقان مفاهيم SCM و CRM ونموذج TAM و ROI و TCO."]
+  ],
+  sec:[
+    {t:["Enterprise Systems Matrix: TPS vs. ERP vs. MIS vs. DSS","مصفوفة النظم المؤسسية: المقارنة التي تتكرر دائماً في الامتحانات"], b:[
+      {k:'tbl', h:[["System Type","نوع النظام"],["Primary Purpose & Role","الهدف والوظيفة الأساسية"],["Users & Nature","المستخدمون وطبيعة العمل"]], r:[
+        [["TPS (Transaction Processing)","نظم معالجة المعاملات"],["Records and processes routine, daily operational business transactions (payroll, billing, sales).","تسجيل وتنفيذ المعاملات اليومية والروتينية للشركة (الرواتب، المبيعات، المدفوعات)."],["Operational staff / Fast, high-volume transactions"]],
+        [["ERP (Enterprise Resource Planning)","تخطيط موارد المؤسسة"],["Integrated suite of software managing vital operations across all sites globally via ONE shared database.","مجموعة برامج متكاملة تدير كافة العمليات الحيوية للشركة عالمياً من قاعدة بيانات موحدة."],["Cross-functional enterprise / Eliminates data silos"]],
+        [["MIS (Management Information)","نظم المعلومات الإدارية"],["Provides routine, structured, periodic summary reports to middle managers.","تقديم تقارير دورية ومجدولة وملخصة للمديرين لمتابعة الأداء."],["Middle management / Routine & structured decisions"]],
+        [["DSS (Decision Support System)","نظم دعم اتخاذ القرار"],["Supports problem-specific, non-routine decision making using database, model base, and dialogue manager.","دعم قرارات نوعية ومحددة وغير روتينية عبر قاعدة نماذج وقاعدة بيانات وواجهة حوار."],["Senior managers & analysts / What-if modeling"]]
+      ]},
+      {k:'tip', x:["Exam Rule: TPS deals with raw daily transactions. MIS produces routine summary reports from TPS data. DSS deals with complex what-if modeling and non-routine problems. ERP integrates all departments into a single shared database.","قاعدة ذهبية للامتحان: TPS للمعاملات اليومية الروتينية. MIS للتقارير الدورية الملخصة. DSS للمحاكاة والقرارات غير الروتينية. ERP يدمج كافة أقسام الشركة في قاعدة بيانات واحدة موحدة."] }
+    ]},
+    {t:["Specialized Systems: AI, KMS, Expert Systems","النظم الذكية والمتخصصة"], b:[
+      {k:'cards', c:[
+        {t:["Knowledge Management Systems (KMS)","نظم إدارة المعرفة (KMS)"], l:[
+          ["Captures, stores, organizes, and shares corporate collective knowledge and employee expertise.","تخزين وتنظيم ومشاركة المعرفة والخبرات المتراكمة لدى موظفي المؤسسة."],
+          ["Prevents loss of expertise when senior staff retire or leave.","حماية المؤسسة من فقدان الخبرات عند تقاعد الموظفين."]]},
+        {t:["Artificial Intelligence (AI)","الذكاء الاصطناعي (AI)"], l:[
+          ["Systems that take on human intelligence characteristics.","أنظمة تكتسب خصائص الذكاء البشري."],
+          ["Branches: Robotics, Vision Systems, Natural Language Processing (NLP), Neural Networks, Learning Systems.","الفروع: الروبوتات، الرؤية الحاسوبية، معالجة اللغات الطبيعية، الشبكات العصبية، التعلم الآلي."]]},
+        {t:["Expert Systems (ES)","النظم الخبيرة (Expert Systems)"], l:[
+          ["Give computers the ability to make suggestions and act like a human expert in a specific field.","منح الحاسوب القدرة على تقديم النصائح والتصرف كخبير بشري في تخصص محدد."],
+          ["Consists of Knowledge Base + Inference Engine.","تتكون من قاعدة معرفة ومحرك استدلال."]]},
+        {t:["Virtual Reality (VR) vs. AR","الواقع الافتراضي والمعزز"], l:[
+          ["Virtual Reality: Fully simulated 3D real or imagined environment.","الواقع الافتراضي: بيئة ثلاثية الأبعاد كاملة محاكاة حاسوبيًا."],
+          ["Augmented Reality (AR): Superimposes digital data over real photos/world.","الواقع المعزز: يدمج عناصر ومعلومات رقمية فوق العالم الحقيقي."]]}
+      ]}
+    ]},
+    {t:["Strategy, Porter's Forces & Performance Metrics","الاستراتيجية، قوى بورتر ومقاييس الأداء"], b:[
+      {k:'ul', h:[["Porter's 5 Competitive Forces:","قوى مايكل بورتر التنافسية الخمس:"],["قوى بورتر الخمس:"]], x:[
+        ["1. Rivalry among existing competitors.","1. حدة المنافسة بين الشركات الحالية في السوق."],
+        ["2. Threat of new entrants into the market.","2. تهديد دخول منافسين جدد إلى السوق."],
+        ["3. Threat of substitute products or services.","3. تهديد المنتجات أو الخدمات البديلة."],
+        ["4. Bargaining power of buyers (customers).","4. القوة التفاوضية للعملاء والمشترين."],
+        ["5. Bargaining power of suppliers.","5. القوة التفاوضية للموردين."]]},
+      {k:'tbl', h:[["Metric / Concept","المقياس / المفهوم"],["Definition & Exam Meaning","التعريف والمعنى الامتحاني"]], r:[
+        [["SCM (Supply Chain Management)","إدارة سلاسل الإمداد"],["Manages raw supplies, processing into finished products, and distribution logistics to customers.","إدارة تدفق المواد الخام والتحويل لمنتجات نهائية والتوزيع للعملاء."]],
+        [["CRM (Customer Relationship Management)","إدارة علاقات العملاء"],["Manages all customer touchpoints: marketing, sales, support, and retention programs.","إدارة جميع نقاط التواصل مع العملاء: التسويق والمبيعات وخدمة العملاء والولاء."]],
+        [["TAM (Technology Acceptance Model)","نموذج قبول التقنية"],["Predicts system usage based on: 1. Perceived Usefulness, and 2. Perceived Ease of Use.","يتنبأ بقبول واستخدام النظام بناءً على: 1. الفائدة المتصورة، 2. سهولة الاستخدام المتصورة."]],
+        [["ROI (Return on Investment)","العائد على الاستثمار"],["Additional profits generated as a percentage of the IS investment.","الأرباح الإضافية الناتجة كنسبة مئوية من تكلفة الاستثمار في النظام."]],
+        [["TCO (Total Cost of Ownership)","التكلفة الإجمالية للملكية"],["The sum of all costs over the entire lifecycle of the system (purchase, maintenance, training, downtime).","مجموع كافة التكاليف طوال دورة حياة النظام (الشراء، الصيانة، التدريب، الدعم)."]]
+      ]}
+    ]}
+  ],
+  take:[
+   ["TPS = daily operational transactions; ERP = unified global enterprise software on one DB.","TPS للمعاملات اليومية؛ ERP نظام موحد يربط كافة أقسام وفروع الشركة بقاعدة بيانات واحدة."],
+   ["MIS = routine periodic reports; DSS = interactive models for specific problem solving.","MIS يقدم تقارير روتينية؛ DSS أدوات تفاعلية ونماذج لحل مشكلات نوعية محددة."],
+   ["Porter's 5 Forces determine industry competitiveness: Rivals, Entrants, Substitutes, Buyers, Suppliers.","قوى بورتر الخمس تحدد جاذبية وتنافسية السوق: المنافسون، الداخلون، البدائل، المشترون، الموردون."],
+   ["TAM states system acceptance hinges on: Perceived Usefulness and Perceived Ease of Use.","نموذج TAM يقر بأن قبول النظام يعتمد على الفائدة وسهولة الاستخدام المتصورتين."],
+   ["TCO includes all lifetime costs (acquisition, deployment, ongoing training, and support).","TCO تعني مجموع كافة التكاليف طوال عمر النظام وليس سعر الشراء المبدئي فقط."]
+  ],
+  fc:[
+   [["What is the main difference between TPS and MIS?","ما الفرق الأساسي بين TPS و MIS؟"],
+    ["TPS captures and records daily business transactions. MIS takes TPS data and generates structured, routine summary reports for managers.","TPS يسجل وينفذ المعاملات اليومية الروتينية. MIS يأخذ بيانات TPS ليولد تقارير دورية ملخصة للمديرين."]],
+   [["What is an Enterprise Resource Planning (ERP) system?","ما هو نظام تخطيط موارد المؤسسة (ERP)؟"],
+    ["An integrated set of software programs that manages vital business operations across an entire organization using a single shared database.","مجموعة متكاملة من البرمجيات تدير العمليات الحيوية للشركة في كافة الفروع من خلال قاعدة بيانات مركزية مشتركة."]],
+   [["Name the two core factors in the Technology Acceptance Model (TAM).","ما هما العاملان الأساسيان في نموذج قبول التقنية (TAM)؟"],
+    ["1. Perceived Usefulness, and 2. Perceived Ease of Use.","1. الفائدة المتصورة (Perceived Usefulness)، 2. سهولة الاستخدام المتصورة (Perceived Ease of Use)."]],
+   [["What are Porter's Five Competitive Forces?","ما هي قوى بورتر التنافسية الخمس؟"],
+    ["1. Rivalry among competitors, 2. Threat of new entrants, 3. Threat of substitutes, 4. Bargaining power of buyers, 5. Bargaining power of suppliers.","1. المنافسة بين الشركات، 2. تهديد الداخلين الجدد، 3. تهديد البدائل، 4. قوة المشترين، 5. قوة الموردين."]],
+   [["Define Total Cost of Ownership (TCO).","ما هو تعريف التكلفة الإجمالية للملكية (TCO)؟"],
+    ["The sum of all direct and indirect costs over the entire lifecycle of an information system (hardware, software, maintenance, training, downtime).","مجموع كافة التكاليف المباشرة وغير المباشرة طوال دورة حياة نظام المعلومات (شراء، صيانة، تدريب، وتوقف)."]],
+   [["What is an Expert System (ES)?","ما هو النظام الخبير (Expert System)؟"],
+    ["A specialized computer system that emulates the decision-making ability and suggestions of a human expert in a specific domain.","نظام محوسب متخصص يحاكي قدرة الخبير البشري على اتخاذ القرارات وتقديم التوصيات في مجال محدد."]]
+  ],
+  quiz:[
+   {q:["Which system processes routine daily exchanges such as employee payroll and customer sales?","أي نظام يختص بتسجيل المعاملات اليومية الروتينية كالرواتب وفواتير المبيعات؟"],
+    o:[["MIS","نظم المعلومات الإدارية"],["DSS","نظم دعم القرار"],["TPS","نظم معالجة المعاملات (TPS)"],["EIS","نظم المعلومات التنفيذية"]], a:2},
+   {q:["A set of integrated programs managing vital business operations across the whole enterprise using one database is:","مجموعة متكاملة من البرامج تدير العمليات الحيوية للشركة كلها عبر قاعدة بيانات واحدة:"],
+    o:[["ERP","تخطيط موارد المؤسسة (ERP)"],["TPS","نظم المعاملات"],["SCM","إدارة سلاسل الإمداد"],["OAS","أتمتة المكاتب"]], a:0},
+   {q:["In the Technology Acceptance Model (TAM), the two primary factors that lead to higher system usage are:","في نموذج TAM، العاملان الرئيسيان اللذان يؤديان لقبول واستخدام النظام هما:"],
+    o:[["Speed and memory size","السرعة وحجم الذاكرة"],["Perceived usefulness and ease of use","الفائدة المتصورة وسهولة الاستخدام"],["Brand name and price","اسم الشركة والسعر"],["Security and encryption","الأمان والتشفير"]], a:1},
+   {q:["Which of Porter's forces is affected when customers can easily switch to buying a different product type?","أي من قوى بورتر تتأثر عندما يتمكن العملاء بسهولة من التحول لشراء منتج بديل؟"],
+    o:[["Bargaining power of suppliers","قوة الموردين"],["Threat of substitute products","تهديد المنتجات البديلة"],["Rivalry among competitors","التنافس القائم"],["Threat of new entrants","تهديد الداخلين الجدد"]], a:1},
+   {q:["What metric measures the sum of ALL costs incurred over the entire life of an information system?","ما هو المقياس الذي يحسب مجموع كافة التكاليف طوال دورة حياة نظام المعلومات؟"],
+    o:[["ROI","العائد على الاستثمار"],["TCO (Total Cost of Ownership)","التكلفة الإجمالية للملكية (TCO)"],["Earnings Growth","نمو الأرباح"],["Market Share","الحصة السوقية"]], a:1}
+  ]
+});
+
+/* ============================================================
+   LECTURE 3: Digital World, Ethics, AIS vs FIS
+   ============================================================ */
+LECTURES.push({ id:'l3', n:3,
+  title:["The Digital World, Ethics & Administrative vs. Functional IS","العالم الرقمي، الأخلاقيات، والنظم الإدارية والوظيفية"],
+  obj:[
+    ["Identify the 6 characteristics of the Digital World.","تحديد الخصائص الست للعالم الرقمي."],
+    ["Classify Administrative (AIS) vs. Functional (FIS) Information Systems.","تصنيف النظم الإدارية (AIS) والنظم الوظيفية (FIS)."],
+    ["Explain Intellectual Property protections: Patents, Copyrights, Trademarks, Trade Secrets.","شرح وسائل حماية الملكية الفكرية: براءات الاختراع، حقوق النشر، العلامات التجارية، والأسرار."],
+    ["Analyze ethical challenges: Privacy, Freedom of speech, and Law vs. Ethics.","تحليل القضايا الأخلاقية: الخصوصية، حرية التعبير، والفرق بين القانوني والأخلاقي."]
+  ],
+  sec:[
+    {t:["The 6 Drivers of the Digital World","الخصائص الست للعالم الرقمي"], b:[
+      {k:'cards', c:[
+        {t:["1. Globalization & 2. Digitization","1. العولمة و 2. رقمنة السلع"], l:[
+          ["Globalization: Interconnected global economies and cross-border digital markets.","العولمة: ترابط الاقتصادات العالمية وفتح أسواق رقمية عابرة للحدود."],
+          ["Digitization of Goods: Turning physical products into digital formats (MP3s, e-books, streaming software).","رقمنة السلع: تحويل المنتجات المادية لمنتجات رقمية فورية كالموسيقى والكتب والبرمجيات."]]},
+        {t:["3. Speed & 4. Product/Service Merger","3. السرعة الفائقة و 4. دمج المنتجات بالخدمات"], l:[
+          ["Speed: Rapid delivery anytime/anywhere; shorter product development cycles.","السرعة: توقع التوفر والتسليم الفوري في أي مكان وزمان ودورات إنتاج أسرع."],
+          ["Merger of Products & Services: Combining physical goods with digital services (e.g. smartphone + cloud + updates).","دمج المنتجات بالخدمات: بيع السلعة مع باقة خدمات سحابية وتحديثات متواصلة."]]},
+        {t:["5. The Role of Ideas & Innovation","5. الدور المحوري للأفكار والابتكار"], l:[
+          ["Ideas & intellectual property drive disruptive models; digital assets require strict legal protection.","الأفكار والملكية الفكرية هي وقود التميز؛ والمنتجات الرقمية تتطلب حماية قانونية صارمة."]]},
+        {t:["6. New Markets & Dynamic Pricing","6. أسواق جديدة ونماذج تسعير ديناميكية"], l:[
+          ["Digital auctions (eBay), aggregators (Expedia), and dynamic subscription pricing models.","ظهور أسواق جديدة ومزادات واشتراكات شهرية وأسعار تتغير حسب الطلب."]]}
+      ]}
+    ]},
+    {t:["Administrative (AIS) vs. Functional (FIS) Systems","مقارنة النظم الإدارية (AIS) والنظم الوظيفية (FIS)"], b:[
+      {k:'tbl', h:[["Classification","التصنيف"],["Included Systems","الأنظمة المندرجة"],["Role & Scope","الدور والنطاق"]], r:[
+        [["Administrative IS (AIS)","النظم الإدارية"],["TPS, OAS (Office Automation), KWS, MIS, DSS, EIS (Executive), IOS.","نظم العمليات، أتمتة المكاتب، نظم المعرفة، MIS، DSS، النظم التنفيذية، ونظم الربط بين الشركات."],["Support general administration, coordination, and managerial decision making across levels."]],
+        [["Functional IS (FIS)","النظم الوظيفية"],["Finance & Accounting, Marketing & Sales, Manufacturing & Operations, Human Resources (HRMS).","نظم المحاسبة والمالية، التسويق والمبيعات، الإنتاج والعمليات، وإدارة الموارد البشرية."],["Specialized to optimize specific business functional areas and operational workflows."]]
+      ]}
+    ]},
+    {t:["Intellectual Property & Digital Ethics","حماية الملكية الفكرية وأخلاقيات العالم الرقمي"], b:[
+      {k:'tbl', h:[["Protection Mechanism","آلية الحماية"],["What it Protects","ما الذي تحميه"],["Duration & Characteristic","المدة والخاصية المميزة"]], r:[
+        [["Patent","براءة الاختراع"],["Inventions, hardware designs, mechanical & technical processes.","الاختراعات والتصميمات والعمليات التقنية الجديدة."],["Grants exclusive commercial rights for ~20 years"]],
+        [["Copyright","حقوق التأليف والنشر"],["Creative expressions, books, music, artistic content, source code.","المصنفات الإبداعية، الكتب، الموسيقى، والأكواد البرمجية."],["Protects the expression of ideas, not the idea itself"]],
+        [["Trademark","العلامة التجارية"],["Logos, brand names, slogans, distinctive symbols.","الشعارات والأسماء التجارية والرموز المميزة."],["Protects brand identity from consumer confusion"]],
+        [["Trade Secret","السر التجاري"],["Proprietary formulas, algorithms, confidential business methods.","الصيغ السرية والخوارزميات (مثل وصفة كوكاكولا أو خوارزمية البحث)."],["Remains protected as long as secrecy is kept"]]
+      ]},
+      {k:'tip', x:["Exam Critical Note: 'Ethical is NOT always the same as Legal'. Laws often lag behind rapid technological advancements. Digital ethics issues center on: Privacy (identity theft), Intellectual Property (piracy), and Free Speech.","تنبيه امتحاني حاسم: 'الأخلاقي ليس دائمًا هو نفسه القانوني'. القوانين غالبًا ما تتأخر عن مواكبة التطور التقني السريع. محاور الأخلاقيات الرقمية: الخصوصية، الملكية الفكرية، وحرية التعبير."] }
+    ]}
+  ],
+  take:[
+   ["Digital World is shaped by 6 drivers: Globalization, Digitization, Speed, Product-Service Merger, Ideas, and New Markets.","العالم الرقمي تقوده 6 محركات: العولمة، الرقمنة، السرعة، دمج السلع بالخدمات، الأفكار، والأسواق الجديدة."],
+   ["Administrative systems (AIS) support management levels; Functional systems (FIS) support specialized business areas.","AIS تدعم المستويات الإدارية؛ بينما FIS تدعم مجالات العمل المتخصصة (تسويق، مالية، إنتاج، موارد بشرية)."],
+   ["Patents protect inventions; Copyrights protect expression (code, music); Trademarks protect brand symbols.","براءات الاختراع تحمي الابتكارات؛ حقوق النشر تحمي التعبير كالكود والموسيقى؛ العلامات تحمي الهوية والشعار."],
+   ["Ethical behavior is NOT always identical to legal compliance due to technology law lags.","السلوك الأخلاقي ليس مطابقاً بالضرورة للالتزام القانوني بسبب تأخر المنظومة القانونية عن التقنية."]
+  ],
+  fc:[
+   [["What is the difference between Patent and Copyright?","ما الفرق بين براءة الاختراع (Patent) وحقوق النشر (Copyright)؟"],
+    ["A Patent protects inventions and technical processes. A Copyright protects creative expressions such as software code, books, and multimedia.","براءة الاختراع تحمي الاختراعات والعمليات التقنية. حقوق التأليف والنشر تحمي التعبير الإبداعي كالكود المصدري والكتب والوسائط."]],
+   [["What is a Knowledge Worker?","من هو عامل المعرفة (Knowledge Worker)؟"],
+    ["A professional who creates, modifies, and applies knowledge using high formal education and mental effort rather than manual physical labor.","شخص ينتج المعرفة أو يعدلها أو يطبقها معتمدًا على التعليم المتقدم والجهد العقلي وليس الجهد البدني."]],
+   [["What is Telecommuting?","ما هو العمل عن بُعد (Telecommuting)؟"],
+    ["Working from home or any remote location using digital telecommunications and computing devices.","العمل من المنزل أو من أي موقع بعيد باستخدام وسائل الاتصال والتقنيات الرقمية."]],
+   [["Distinguish between AIS and FIS.","ما الفرق بين النظم الإدارية (AIS) والنظم الوظيفية (FIS)؟"],
+    ["AIS (Administrative IS) supports general management and cross-level decision making (e.g., MIS, DSS, EIS). FIS (Functional IS) supports specific department functions (Finance, HR, Marketing, Production).","AIS تدعم الإدارة والقرارات عبر المستويات (كـ MIS و DSS). FIS تدعم الوظائف التخصصية للأقسام (المالية، التسويق، الموارد البشرية، الإنتاج)."]],
+   [["Why is 'ethical' not always the same as 'legal' in the digital world?","لماذا لا يُعد 'الأخلاقي' مطابقاً دائماً لـ 'القانوني' في العالم الرقمي؟"],
+    ["Because technology advances faster than the legal system; an action may be legal because no law forbids it yet, but it can still be unethical.","لأن وتيرة التقنية أسرع بكثير من التشريعات؛ قد يكون التصرف قانونياً لعدم وجود نص يجرّمه بعد، لكنه غير أخلاقي."]]
+  ],
+  quiz:[
+   {q:["Which intellectual property protection applies specifically to software source code and written texts?","أي نوع من حماية الملكية الفكرية ينطبق على الكود المصدري للبرمجيات والمؤلفات؟"],
+    o:[["Patent","براءة الاختراع"],["Copyright","حقوق التأليف والنشر (Copyright)"],["Trademark","العلامة التجارية"],["Trade secret","السر التجاري"]], a:1},
+   {q:["Systems designed specifically for a single department such as HR or Marketing are classified as:","الأنظمة المصممة خصيصاً لوظيفة قسم بعينه كالموارد البشرية أو التسويق تصنف كـ:"],
+    o:[["Administrative Information Systems (AIS)","نظم المعلومات الإدارية"],["Functional Information Systems (FIS)","نظم المعلومات الوظيفية (FIS)"],["Executive Information Systems (EIS)","نظم المعلومات التنفيذية"],["Knowledge Work Systems (KWS)","نظم عمل المعرفة"]], a:1},
+   {q:["Combining a physical smartphone with cloud storage and automatic software updates is an example of:","بيع هاتف ذكي مادي مع مساحة تخزين سحابية وتحديثات مستمرة هو مثال على:"],
+    o:[["Merger of products and services","دمج المنتجات مع الخدمات"],["Digitization of goods","رقمنة السلع"],["Globalization","العولمة"],["E-commerce","التجارة الإلكترونية"]], a:0},
+   {q:["Professionals whose primary job is creating, modifying, and synthesizing knowledge are called:","المحترفون الذين ترتكز وظيفتهم الأساسية على ابتكار وتعديل وتوظيف المعرفة يُطلق عليهم:"],
+    o:[["Telecommuters","المتنقلون"],["Knowledge workers","عمال المعرفة (Knowledge workers)"],["System operators","مشغلو النظم"],["Data entry clerks","مدخلو البيانات"]], a:1},
+   {q:["Which statement regarding law and ethics in the digital age is true?","أي العبارات التالية صحيحة بشأن القانون والأخلاق في العصر الرقمي؟"],
+    o:[["Legal and ethical are always identical","القانوني والأخلاقي متطابقان دائمًا"],["Ethics has no role in technology","الأخلاق ليس لها دور في التقنية"],["Ethical is not always the same as legal because laws lag technology","الأخلاقي ليس مطابقًا دائمًا للقانوني لتأخر القوانين عن التقنية"],["Anything legal is universally ethical","كل تصرف قانوني هو بالضرورة أخلاقي"]], a:2}
+  ]
+});
+
+/* ============================================================
+   LECTURE 4: Computer Hardware Technologies
+   ============================================================ */
+LECTURES.push({ id:'l4', n:4,
+  title:["Computer Hardware Technologies","تقنيات عتاد الحاسوب (Hardware)"],
+  obj:[
+    ["Identify historical milestones: Babbage, Ada Byron, Hollerith, ENIAC, PC rise.","معرفة المحطات التاريخية: باباج، أدا بايرون، هوليريث، إينياك، وظهور الـ PC."],
+    ["Master the CPU: Control Unit (CU), ALU, Registers, Bus, and Machine Cycle.","إتقان مكونات المعالج: وحدة التحكم، وحدة الحساب والمنطق، السجلات، ودورة التعليمة."],
+    ["Compare Primary Storage (RAM, ROM, Cache) vs. Secondary Storage (HDD, Tape, Optical).","المقارنة بين الذاكرة الرئيسية والتخزين الثانوي."],
+    ["Differentiate computer types: Supercomputers, Mainframes, Minicomputers, Microcomputers.","التمييز بين فئات الحواسيب من الفائقة إلى الدقيقة."]
+  ],
+  sec:[
+    {t:["Historical Milestones & Rise of the PC","المحطات التاريخية البارزة في تطور الحاسوب"], b:[
+      {k:'tbl', h:[["Pioneer / Computer","الرائد / الحاسوب"],["Significance / Exam Detail","الأهمية التاريخية في الامتحان"]], r:[
+        [["Charles Babbage","تشارلز باباج"],["Designed the Analytical Engine (1820s-1870s) using punched cards.","صمم المحرك التحليلي بالبطاقات المثقوبة، ويُعد أبا الحاسوب."]],
+        [["Lady Ada Byron","ليدي أدا بايرون"],["Wrote programs for Babbage's engine; recognized as the FIRST computer programmer.","كتبت برامج لمحرك باباج؛ وتعتبر أول مبرمجة في تاريخ البشرية."]],
+        [["Herman Hollerith","هيرمان هوليريث"],["Invented punched card tabulating machines for the 1890 US Census (became IBM).","اخترع آلات الجدولة بالبطاقات المثقوبة لإحصاء 1890 (أساس نشأة شركة IBM)."]],
+        [["ENIAC","حاسوب ENIAC"],["Built during WWII; used vacuum tubes (huge power and heat, short lifespan).","بُني إبان الحرب العالمية الثانية؛ استخدم الصمامات المفرغة (Vacuum tubes)."]],
+        [["Transistor -> IC -> Microprocessor","الترانزستور ثم الدوائر المتكاملة ثم المعالج"],["Transistors replaced tubes in 1960s; ICs replaced transistors; microprocessors in 1970s.","الترانزستور حل محل الصمامات، تلته الدوائر المتكاملة، ثم المعالج الدقيق في السبعينات."]],
+        [["Altair 8800 (1974)","ألتاير 8800"],["Recognized as the very first commercial Personal Computer (PC).","يُعد أول حاسوب شخصي (PC) تجاري تم إنتاجه في عام 1974."]],
+        [["Apple Macintosh (1984)","أبل ماكنتوش"],["First mass-market PC with Graphical User Interface (GUI pioneered at Xerox PARC).","أول حاسوب شخصي شعبي بواجهة رسومية (GUI) طورت تقنيتها الأولى في زيروكس بارك."]]
+      ]}
+    ]},
+    {t:["CPU Architecture & Instruction Cycle","بنية المعالج المركزي (CPU) ودورة التعليمة"], b:[
+      {k:'cards', c:[
+        {t:["Control Unit (CU)","وحدة التحكم (CU)"], l:[
+          ["Fetches instructions from primary storage and decodes them.","جلب التعليمات من الذاكرة الرئيسية وفك تشفيرها وتوجيه تدفق البيانات."],
+          ["Directs the overall operation of the computer.","إدارة وتوجيه كافة مكونات الحاسوب الأخرى."]]},
+        {t:["Arithmetic & Logic Unit (ALU)","وحدة الحساب والمنطق (ALU)"], l:[
+          ["Executes arithmetic operations (+, -, *, /) and logical comparisons (=, <, >).","تنفيذ كافة العمليات الحسابية والمقارنات المنطقية."]]},
+        {t:["Registers","السجلات (Registers)"], l:[
+          ["High-speed internal CPU storage locations used as 'scrap paper' for intermediate results.","مواقع تخزين داخلية فائقة السرعة تعمل كـ 'مسودة' للاحتفاظ بالنتائج المرحلية."]]},
+        {t:["Bus & Machine Cycle","الناقل ودورة التعليمة"], l:[
+          ["Bus: Electrical pathway for transferring digital bits between components.","الناقل (Bus): المسار الكهربائي لنقل البيانات الرقمية بين أجزاء الجهاز."],
+          ["Cycle: Fetch (CU) -> Decode (CU) -> Execute (ALU) -> Store (Registers/RAM).","الدورة: جلب -> فك تشفير -> تنفيذ -> تخزين؛ وتتكرر ملايين/مليارات المرات (Hz/MHz/GHz)."],
+          ["Moore's Law: Processor power and transistor density double every ~18 months.","قانون مور: قوة المعالجة وكثافة الترانزستورات تتضاعف كل 18 شهراً تقريباً."]]}
+      ]}
+    ]},
+    {t:["Memory: Primary vs. Secondary Storage","المقارنة الكبرى: الذاكرة الرئيسية مقابل التخزين الثانوي"], b:[
+      {k:'tbl', h:[["Storage Type","نوع الذاكرة"],["Volatility","التطاير عند انقطاع الكهرباء"],["Speed & Cost","السرعة والتكلفة"],["Primary Use","الاستخدام الأساسي"]], r:[
+        [["RAM (Random Access Memory)","ذاكرة الوصول العشوائي"],["Volatile (erased when power off)","متطايرة (تُمحى تماماً بانقطاع الطاقة)"],["Very fast, relatively expensive","سريعة جداً ومكلفة نسبياً"],["Holds active programs and data currently in use."]],
+        [["ROM (Read-Only Memory)","ذاكرة القراءة فقط"],["Non-volatile (permanent)","دائمة وغير متطايرة"],["Fast semiconductor","شريحة شبه موصلة سريعة"],["Holds essential startup boot instructions (BIOS/firmware)."]],
+        [["Cache Memory","الذاكرة المخبئية (كاش)"],["Volatile","متطايرة"],["Ultra high-speed & very expensive","فائقة السرعة ومكلفة جداً"],["Bridges speed gap between CPU and RAM (Internal & External)."]],
+        [["Secondary: HDD / SSD","القرص الصلب"],["Non-volatile (permanent)","غير متطايرة (تخزين دائم)"],["Slower than RAM, low cost per GB","أبطأ بكثير من RAM، ورخيصة لكل جيجا"],["Stores OS, user files, and programs long term."]],
+        [["RAID (Redundant Array)","مصفوفة الأقراص RAID"],["Non-volatile","غير متطايرة"],["High speed & fault tolerant","عالية السرعة ومقاومة للأعطال"],["Combines multiple hard drives for redundancy and reliability."]],
+        [["Optical: CD & DVD","الأقراص الضوئية"],["Non-volatile","غير متطايرة"],["Removable optical media","وسائط ضوئية محمولة"],["CD: ~600-700 MB; DVD: 2 to 17 GB."]]
+      ]}
+    ]},
+    {t:["The 4 Computer Classifications","التصنيفات الأربعة للحواسيب"], b:[
+      {k:'ul', h:[["From Largest to Smallest:","من الأضخم للأصغر:"],["ترتيب الحواسيب:"]], x:[
+        ["1. Supercomputers: Largest, most powerful, built for single massive computational tasks (weather, defense).","1. الحواسيب الفائقة (Supercomputers): الأضخم والأقوى عالمياً، مخصصة لمهمة بحثية ضخمة واحدة."],
+        ["2. Mainframes: Large multi-purpose computers supporting thousands of simultaneous users (banks, airlines).","2. الحواسيب الكبيرة (Mainframes): حواسيب عملاقة متعددة الأغراض تدعم آلاف المستخدمين معاً (بنوك، طيران)."],
+        ["3. Minicomputers: Reduced-size enterprise systems typically serving 2 to 200 users at a time.","3. الحواسيب المتوسطة (Minicomputers): حواسيب بحجم مخفض تخدم من 2 إلى 200 مستخدم في وقت واحد."],
+        ["4. Microcomputers: Personal computers including workstations, desktops, laptops, and handheld PDAs.","4. الحواسيب الدقيقة (Microcomputers): الحواسيب الشخصية وتشمل محطات العمل والمكتبية والمحمولة."]]}
+    ]}
+  ],
+  take:[
+   ["Ada Byron was the first programmer; Herman Hollerith's tabulator founded modern automated computing.","أدا بايرون أول مبرمجة في التاريخ؛ وهوليريث أسس الحوسبة الآلية من خلال إحصاء 1890."],
+   ["CPU contains Control Unit (fetches/decodes) and ALU (executes math/logic), assisted by Registers.","المعالج يتكون من وحدة التحكم (جلب وفك تشفير) ووحدة الحساب والمنطق (تنفيذ)، وتعاونهما السجلات."],
+   ["RAM is volatile (lost on power off); ROM and Secondary storage (HDD/SSD/Optical) are non-volatile.","الـ RAM متطايرة تفقد بياناتها بانقطاع الكهرباء؛ بينما الـ ROM والتخزين الثانوي غير متطايرة."],
+   ["RAID combines multiple drives for redundancy and protection against data loss.","تقنية RAID تجمع عدة أقراص لتوفير الحماية من فقدان البيانات والتكرار الآمن."],
+   ["Computer size hierarchy: Supercomputer > Mainframe > Minicomputer > Microcomputer (PC).","هرم أحجام الحواسيب: الفائقة > الكبيرة (Mainframe) > المتوسطة (Mini) > الدقيقة (Micro/PC)."]
+  ],
+  fc:[
+   [["Who is considered the first computer programmer?","من يُعد أول مبرمج حاسوب في التاريخ؟"],
+    ["Lady Ada Byron, who wrote programs for Charles Babbage's Analytical Engine.","ليدي أدا بايرون، لكتابتها برامج للمحرك التحليلي لتشارلز باباج."]],
+   [["What are the two primary components inside the Central Processing Unit (CPU)?","ما هما المكونان الأساسيان داخل وحدة المعالجة المركزية (CPU)؟"],
+    ["1. Control Unit (CU) - fetches and decodes instructions. 2. Arithmetic and Logic Unit (ALU) - executes calculations and comparisons.","1. وحدة التحكم (CU) لجلب وفك تشفير التعليمات. 2. وحدة الحساب والمنطق (ALU) لتنفيذ العمليات الحسابية والمنطقية."]],
+   [["What is the difference between RAM and ROM?","ما الفرق الأساسي بين RAM و ROM؟"],
+    ["RAM is volatile main memory that loses its contents when power is turned off. ROM is non-volatile permanent memory containing unchangeable boot instructions.","الـ RAM ذاكرة رئيسية متطايرة تفقد محتواها عند إيقاف التشغيل. الـ ROM ذاكرة دائمة غير متطايرة تحتفظ بتعليمات الإقلاع الأساسية."]],
+   [["What is Moore's Law?","ما هو قانون مور (Moore's Law)؟"],
+    ["An observation that the number of transistors and computing power on a chip doubles roughly every 18 to 24 months.","ملاحظة تنص على أن عدد الترانزستورات وقوة المعالجة تتضاعف تقريبًا كل 18 إلى 24 شهرًا."]],
+   [["What is RAID in secondary storage?","ما هي تقنية RAID في وسائط التخزين الثانوية؟"],
+    ["Redundant Array of Inexpensive (Independent) Disks: combines multiple physical hard disks to provide fault tolerance, redundancy, and speed.","مصفوفة الأقراص المترادفة: دمج عدة أقراص صلبة معًا لتوفير موثوقية عالية وسرعة وحماية من تلف البيانات."]],
+   [["Compare Supercomputers with Mainframes.","قارن بين الحواسيب الفائقة (Supercomputers) والحواسيب الكبيرة (Mainframes)."],
+    ["Supercomputers are built for maximum speed on a single massive scientific problem. Mainframes are multi-purpose and designed to handle massive transactions for thousands of users concurrently.","الحواسيب الفائقة مصممة لأقصى سرعة لمعالجة مهمة علمية ضخمة واحدة. الحواسيب الكبيرة مصممة لإدارة آلاف المعاملات والمستخدمين في وقت واحد."]]
+  ],
+  quiz:[
+   {q:["Who is recognized in computer history as the world's very first computer programmer?","من هي المعترف بها تاريخياً كأول مبرمج حاسوب في العالم؟"],
+    o:[["Charles Babbage","تشارلز باباج"],["Lady Ada Byron","ليدي أدا بايرون"],["Herman Hollerith","هيرمان هوليريث"],["Alan Turing","ألان تورينغ"]], a:1},
+   {q:["Which CPU component performs calculations and decision-making comparisons?","أي جزء من المعالج ينفذ العمليات الحسابية ومقارنات المقارنة والمنطق؟"],
+    o:[["Control Unit (CU)","وحدة التحكم"],["Registers","السجلات"],["Arithmetic and Logic Unit (ALU)","وحدة الحساب والمنطق (ALU)"],["Primary Storage","الذاكرة الرئيسية"]], a:2},
+   {q:["Which type of memory is volatile and loses all its contents when the computer is turned off?","أي نوع من الذاكرة يعتبر متطايراً ويفقد كل محتوياته عند انقطاع التيار الكهربائي؟"],
+    o:[["ROM","ذاكرة القراءة فقط (ROM)"],["RAM","ذاكرة الوصول العشوائي (RAM)"],["Hard Disk Drive","القرص الصلب"],["Flash Drive","الذاكرة الوميضية"]], a:1},
+   {q:["What does RAID stand for in secondary storage technology?","إلى ماذا يرمز اختصار RAID في تقنيات التخزين؟"],
+    o:[["Rapid Access Internal Drive","القرص الداخلي فائق السرعة"],["Redundant Array of Inexpensive (Independent) Disks","مصفوفة الأقراص المستقلة المترادفة (RAID)"],["Random Allocation of Internet Data","توزيع البيانات العشوائي"],["Read-Access Integrated Device","جهاز القراءة المتكامل"]], a:1},
+   {q:["Computers designed to handle thousands of simultaneous users and massive transaction volumes in banks and airlines are:","الحواسيب المصممة لخدمة آلاف المستخدمين المتزامنين ومعالجة كميات معاملات هائلة في البنوك هي:"],
+    o:[["Supercomputers","الحواسيب الفائقة"],["Mainframes","الحواسيب الكبيرة (Mainframes)"],["Microcomputers","الحواسيب الدقيقة"],["Workstations","محطات العمل"]], a:1}
+  ]
+});
+
+/* ============================================================
+   LECTURE 5: Software Technologies & Operating Systems
+   ============================================================ */
+LECTURES.push({ id:'l5', n:5,
+  title:["Software Technologies & Operating Systems","تقنيات البرمجيات وأنظمة التشغيل"],
+  obj:[
+    ["Differentiate Systems Software vs. Application Software.","المقارنة بين برمجيات النظام والبرمجيات التطبيقية."],
+    ["Master the 5 core Operating System functions (Booting, File, Memory, Security, UI).","إتقان الوظائف الخمس لنظام التشغيل (الإقلاع، الملفات، الذاكرة، الأمان، الواجهة)."],
+    ["Explain the 4 steps of Custom Software Development (Plan, Design, Write, Test).","شرح الخطوات الأربع لتطوير البرمجيات (تخطيط، تصميم، كتابة، اختبار)."],
+    ["Understand Programming Language generations (1GL to 5GL) and OOP.","فهم أجيال لغات البرمجة من 1GL إلى 5GL والبرمجة كائنية التوجه OOP."]
+  ],
+  sec:[
+    {t:["Software Categories: Systems vs. Application","تصنيف البرمجيات: برمجيات النظام مقابل التطبيقات"], b:[
+      {k:'tbl', h:[["Category","الفئة"],["Definition & Role","التعريف والدور"],["Exam Examples","أمثلة للاختبار"]], r:[
+        [["Systems Software","برمجيات النظام"],["Programs that manage and coordinate computer hardware and provide a platform for application software.","برامج تدير وتنسق العتاد وتوفر منصة تشغيل للبرامج التطبيقية."],["Operating Systems (Windows, Linux), Language Translators, Utility Programs"]],
+        [["Application Software","البرمجيات التطبيقية"],["Programs that enable end users to accomplish specific business or personal tasks.","برامج تمكن المستخدم العادي من إنجاز مهام عملية محددة."],["Word processors, Web browsers, Spreadsheets, ERP, Tax software"]],
+        [["COTS Software","برمجيات COTS"],["Commercial-Off-The-Shelf: Pre-packaged commercial software sold ready-to-use.","برمجيات تجارية جاهزة للشراء والاستخدام الفوري."],["Microsoft Office Suite, QuickBooks"]],
+        [["Custom Software","برمجيات مخصصة"],["Developed specifically by programmers to solve unique business problems.","برمجيات يطورها المبرمجون خصيصاً لتلبية احتياجات فريدة لشركة."],["Custom banking or hospital internal management systems"]],
+        [["Freeware vs. Shareware","المجانية مقابل التجريبية"],["Freeware is 100% free; Shareware is try-before-you-buy (NOT free, requires payment after trial).","البرمجيات المجانية مجانية كلياً؛ والبرمجيات التجريبية تمنحك فترة تجربة وتتطلب دفعاً بعدها وليست مجانية."],["Exam Trap: Shareware is NOT freeware!"]]
+      ]}
+    ]},
+    {t:["The 5 Core Functions of an Operating System (OS)","الوظائف الخمس الأساسية لنظام التشغيل"], b:[
+      {k:'cards', c:[
+        {t:["1. Starting the Computer (Booting)","1. بدء التشغيل (الإقلاع Booting)"], l:[
+          ["Bootstrap loader loads OS kernel from hard drive into primary storage (RAM).","تحميل نواة نظام التشغيل من القرص الصلب إلى الذاكرة الرئيسية RAM."]]},
+        {t:["2. Managing Files & Storage","2. إدارة الملفات والتخزين"], l:[
+          ["Tracks file locations, manages directory tree, and defragments storage space.","تتبع مواقع الملفات وتنظيم المجلدات وإلغاء تجزئة الأقراص (Defragmentation)."]]},
+        {t:["3. Program & Memory Management","3. إدارة البرامج والذاكرة"], l:[
+          ["Multiprogramming & Multitasking: Keeping multiple programs in RAM concurrently.","تعدد البرامج والمهام لتشغيل عدة تطبيقات في وقت واحد."],
+          ["Virtual Memory: Uses hard drive space to extend physical RAM.","الذاكرة الافتراضية: استعارة مساحة من القرص الصلب كامتداد للـ RAM."]]},
+        {t:["4. Security & Audit Trail","4. الأمان وسجلات التدقيق"], l:[
+          ["Access Control (Logins), File Permissions (Read/Write), and Audit Logging.","التحكم بالوصول (كلمات السر)، أذونات الملفات، وسجلات التدقيق (Logging)."]]},
+        {t:["5. Providing User Interface","5. توفير واجهة المستخدم"], l:[
+          ["CLI (Command Line Text Interface), GUI (Graphical User Interface), and Voice.","واجهة الأوامر النصية CLI، الواجهة الرسومية GUI، والأوامر الصوتية."]]}
+      ]}
+    ]},
+    {t:["Software Development, Generations & OOP","تطوير البرمجيات، أجيال اللغات، و OOP"], b:[
+      {k:'ul', h:[["The 4 Steps of Custom Software Development:","الخطوات الأربع لتطوير البرمجيات المخصصة:"],["خطوات التطوير:"]], x:[
+        ["Step 1: Plan! - Determine the exact business and system requirements.","الخطوة 1: التخطيط (Plan) - تحديد دقيق لاحتياجات ومتطلبات العمل."],
+        ["Step 2: Design - Develop architectural specifications and logic diagrams.","الخطوة 2: التصميم (Design) - وضع المواصفات الهيكلية والمخططات المنطقية."],
+        ["Step 3: Write - Code the software using a suitable programming language.","الخطوة 3: الكتابة (Write) - كتابة الكود البرمجي باللغة المختارة."],
+        ["Step 4: Test - Rigorously test for bugs and verify requirements are satisfied.","الخطوة 4: الاختبار (Test) - فحص الأخطاء والتأكد من مطابقة متطلبات العميل."]]},
+      {k:'tbl', h:[["Generation","الجيل"],["Type & Description","النوع والوصف"],["Key Language Exam Example","أمثلة للامتحان"]], r:[
+        [["1GL","الجيل الأول"],["Machine Language: Raw binary 0s and 1s, machine-dependent.","لغة الآلة: أصفار وآحاد خام وتعتمد كلياً على عتاد الجهاز."],["01011001"]],
+        [["2GL","الجيل الثاني"],["Assembly Language: Uses short mnemonic codes; requires Assembler.","لغة التجميع: تستخدم اختصارات رمزية وتحتاج مجمّع."],["ADD, MOV, SUB"]],
+        [["3GL","الجيل الثالث"],["High-Level Procedural: English-like statements; machine-independent.","لغات عالية المستوى إجرائية: قريبة للغة البشر ومستقلة."],["C, C++, COBOL, Pascal"]],
+        [["4GL","الجيل الرابع"],["Non-procedural: Specifies WHAT you want, not HOW to get it.","لغات غير إجرائية: تحدد ماذا تريد وليس كيفية التنفيذ خطوة بخطوة."],["SQL (Database queries)"]],
+        [["5GL","الجيل الخامس"],["Natural and AI languages; problem-solving via constraints.","لغات الذكاء الاصطناعي ومعالجة اللغات الطبيعية."],["PROLOG, LISP"]],
+        [["Markup","لغات التوصيف"],["NOT programming languages; use tags to format display.","ليست لغات برمجة، بل وسوم لتنسيق عرض المستندات على الشاشة."],["HTML, XML"]]
+      ]},
+      {k:'tip', x:["OOP Core Purpose: Reusability. Classes define object templates; Inheritance allows subclasses to inherit parent characteristics automatically, drastically boosting programmer productivity.","الهدف الأساسي للبرمجة كائنية التوجه (OOP) هو إعادة الاستخدام (Reusability). الوراثة (Inheritance) تمكن الفئات الفرعية من وراثة خصائص الفئة الأم تلقائيًا مما يضاعف إنتاجية المبرمجين."] }
+    ]}
+  ],
+  take:[
+   ["Systems software (OS, Utilities) coordinates hardware; Application software solves user tasks.","برمجيات النظام تنسق العتاد؛ البرمجيات التطبيقية تنجز مهام المستخدم."],
+   ["The OS manages booting, file directories, memory/multitasking, security, and the user interface.","نظام التشغيل يدير الإقلاع، الملفات، الذاكرة والتعدد، الأمان، وواجهة المستخدم."],
+   ["Virtual memory borrows secondary storage (HDD) space to simulate additional RAM.","الذاكرة الافتراضية تستعير مساحة من القرص الصلب لمحاكاة ذاكرة RAM إضافية."],
+   ["Software development consists of 4 distinct steps: Plan, Design, Write, and Test.","تطوير البرمجيات يتكون من 4 خطوات: التخطيط، التصميم، الكتابة، والاختبار."],
+   ["4GL languages (like SQL) are non-procedural: you specify what data you want, not how to retrieve it.","لغات الجيل الرابع (مثل SQL) غير إجرائية: تحدد ما تريد الحصول عليه وليس خطوات جلبه."],
+   ["The primary benefit of Object-Oriented Programming (OOP) and Inheritance is Reusability.","الميزة الأبرز للبرمجة كائنية التوجه (OOP) ومفهوم الوراثة هي إعادة الاستخدام (Reusability)."]
+  ],
+  fc:[
+   [["What is the difference between Systems Software and Application Software?","ما الفرق بين برمجيات النظام والبرمجيات التطبيقية؟"],
+    ["Systems software manages computer hardware and platforms (e.g. Windows, utilities). Application software allows users to perform specific end-user tasks (e.g. Word, Excel).","برمجيات النظام تدير العتاد وتوفر بيئة التشغيل (كنظام التشغيل). البرمجيات التطبيقية تمكن المستخدم من إنجاز مهام محددة (كـ Word و Excel)."]],
+   [["What is Virtual Memory in an Operating System?","ما هي الذاكرة الافتراضية (Virtual Memory) في نظام التشغيل؟"],
+    ["A memory management technique that uses a portion of the secondary hard drive to act as simulated additional primary RAM storage.","تقنية لإدارة الذاكرة تستخدم جزءاً من مساحة القرص الصلب ليعمل كامتداد إضافي لذاكرة الوصول العشوائي RAM."]],
+   [["What are the four steps of custom software development?","ما هي الخطوات الأربع لتطوير البرمجيات المخصصة؟"],
+    ["Step 1: Plan (requirements), Step 2: Design, Step 3: Write (coding), Step 4: Test (quality and verification).","الخطوة 1: التخطيط (المتطلبات)، الخطوة 2: التصميم، الخطوة 3: الكتابة (البرمجة)، الخطوة 4: الاختبار (التحقق والأخطاء)."]],
+   [["Why is SQL classified as a Fourth-Generation Language (4GL)?","لماذا تُصنف لغة SQL كلغة من الجيل الرابع (4GL)؟"],
+    ["Because it is non-procedural: users specify WHAT results/data they want rather than writing step-by-step procedures on HOW to fetch it.","لأنها غير إجرائية (Non-procedural)؛ حيث يحدد المستخدم ما هي البيانات المطلوبة وليس الخطوات الإجرائية لكيفية جلبها."]],
+   [["What is the primary benefit of Object-Oriented Programming (OOP)?","ما هي الفائدة والهدف الأساسي من البرمجة كائنية التوجه (OOP)؟"],
+    ["Reusability of components and inheritance, which significantly increases programmer productivity.","إعادة استخدام المكونات البرمجية ومفهوم الوراثة، مما يرفع إنتاجية المبرمجين بشكل كبير."]],
+   [["Is Shareware the same as Freeware? Explain.","هل البرمجيات التجريبية (Shareware) هي نفسها المجانية (Freeware)؟ وضح."],
+    ["No. Freeware is completely free. Shareware is 'try-before-you-buy' software that requires payment for a license after a trial period.","لا. البرمجيات المجانية مجانية تماماً. بينما التجريبية (Shareware) تمنح فترة تجربة فقط وتتطلب شراء رخصة للاستمرار وليست مجانية."]]
+  ],
+  quiz:[
+   {q:["Which type of software manages hardware components and provides a platform for application programs?","أي نوع من البرمجيات يتولى إدارة العتاد ويوفر منصة لتشغيل التطبيقات؟"],
+    o:[["Application software","البرمجيات التطبيقية"],["Systems software","برمجيات النظام (Systems software)"],["Database software","برمجيات قواعد البيانات"],["COTS software","برمجيات COTS"]], a:1},
+   {q:["An operating system capability that uses hard disk space to extend physical primary RAM is called:","خاصية في نظام التشغيل تستخدم جزءاً من القرص الصلب لمحاكاة ذاكرة RAM إضافية هي:"],
+    o:[["Multiprogramming","تعدد البرامج"],["Virtual Memory","الذاكرة الافتراضية (Virtual Memory)"],["Defragmentation","إلغاء التجزئة"],["Cache Memory","الذاكرة المخبئية"]], a:1},
+   {q:["The very first step in the custom software development process is:","الخطوة الأولى على الإطلاق في دورة تطوير البرمجيات المخصصة هي:"],
+    o:[["Write the code","كتابة الكود"],["Test the program","اختبار البرنامج"],["Plan (determine requirements)","التخطيط وتحديد المتطلبات"],["Design the architecture","تصميم الهيكل"]], a:2},
+   {q:["Why is SQL (Structured Query Language) categorized as a Fourth-Generation Language (4GL)?","لماذا تُصنف لغة SQL ضمن لغات الجيل الرابع (4GL)؟"],
+    o:[["It is only written in binary 0s and 1s","لأنها مكتوبة بالأصفار والآحاد"],["It uses English mnemonics like ADD and MOV","تستخدم اختصارات رمزية"],["It is non-procedural (specifies WHAT, not HOW)","لأنها لغة غير إجرائية (تحدد ماذا وليس كيف)"],["It was developed by Ada Byron","طورتها أدا بايرون"]], a:2},
+   {q:["The major advantage of Object-Oriented Programming (OOP) and inheritance is:","الميزة الجوهرية للبرمجة كائنية التوجه (OOP) ومفهوم الوراثة هي:"],
+    o:[["Reusability of components","إعادة استخدام المكونات البرمجية (Reusability)"],["Elimination of operating systems","الاستغناء عن أنظمة التشغيل"],["Replacing database tables","استبدال جداول قواعد البيانات"],["Reducing hardware prices","تخفيض أسعار العتاد"]], a:0}
+  ]
+});
+
+/* ============================================================
+   LECTURE 6: Database Technologies & Data Warehousing
+   ============================================================ */
+LECTURES.push({ id:'l6', n:6,
+  title:["Database Technologies & Data Warehouses","تقنيات قواعد البيانات ومستودعات البيانات"],
+  obj:[
+    ["Master the Data Hierarchy: Field, Record, Table, Database.","إتقان هرمية البيانات: الحقل، السجل، الجدول، قاعدة البيانات."],
+    ["Explain Primary Keys vs. Foreign Keys in the Relational Model.","شرح المفتاح الأساسي والمفتاح الأجنبي في النموذج العلائقي."],
+    ["Identify the 3 File System Anomalies: Insertion, Modification, Deletion.","تحديد شذوذات نظام الملفات التقليدي: الإدخال، التعديل، والحذف."],
+    ["Understand DDL vs. DML, Data Dictionaries (Metadata), and Normalization.","فهم الفرق بين DDL و DML، قاموس البيانات (Metadata)، والتسوية."],
+    ["Master the 4 characteristics of a Data Warehouse and Data Mining.","إتقان الخصائص الأربع لمستودع البيانات والتنقيب عن البيانات."]
+  ],
+  sec:[
+    {t:["Data Hierarchy & Keys","هرمية البيانات والمفاتيح في النموذج العلائقي"], b:[
+      {k:'tbl', h:[["Data Unit","وحدة البيانات"],["Exam Definition","التعريف الامتحاني"],["Concrete Example","مثال تطبيقي"]], r:[
+        [["Field","الحقل"],["Smallest individual piece of data made of bytes/characters.","أصغر جزء من البيانات يتكون من حرف أو أكثر."],["Student Name, Age, Phone"]],
+        [["Record","السجل"],["A logical collection of related fields describing one entity.","مجموعة حقول مرتبطة ببعضها تصف كيانًا أو شخصًا واحدًا."],["All data for Student #105"]],
+        [["Table (File)","الجدول"],["A collection of related records arranged in rows and columns.","مجموعة سجلات مترابطة منظمة في صفوف وأعمدة."],["Students Table"]],
+        [["Database","قاعدة البيانات"],["A set of logically related data tables stored in a shared repository.","مجموعة جداول وبيانات مترابطة منطقياً في مستودع مشترك."],["University Database"]],
+        [["Primary Key (PK)","المفتاح الأساسي"],["A field that uniquely identifies an individual record (cannot be null/duplicate).","حقل أو مجموعة حقول تميز السجل بشكل فريد (لا يتكرر ولا يقبل الفراغ)."],["Student ID Number"]],
+        [["Foreign Key (FK)","المفتاح الأجنبي"],["A field in one table that is the Primary Key of another table, creating the relationship.","حقل في جدول يمثل مفتاحاً أساسياً في جدول آخر لربط الجدولين معاً."],["Department ID inside Employee Table"]]
+      ]},
+      {k:'tip', x:["Exam Secret: The secret to the relational database model is the Foreign Key! It provides controlled redundancy to link separate tables together cleanly without massive duplication.","سر الامتحان: سر قوة النموذج العلائقي (Relational Model) هو المفتاح الأجنبي (Foreign Key)؛ فهو الذي يربط الجداول معاً عبر تكرار منضبط للبيانات."] }
+    ]},
+    {t:["File Systems vs. DBMS & The 3 Anomalies","مشاكل الملفات التقليدية وشذوذات التكرار الثلاث"], b:[
+      {k:'cards', c:[
+        {t:["Traditional File Systems","نظام الملفات التقليدي"], l:[
+          ["Stores records in isolated application-specific files.","تخزين الملفات بشكل مستقل لكل تطبيق."],
+          ["Drawbacks: Data duplication (redundancy), inability to share, security gaps, and inconsistency.","عيوبه: تكرار البيانات، صعوبة المشاركة، ضعف الأمان، وعدم الاتساق."]]},
+        {t:["1. Insertion Anomaly","1. شذوذ الإدخال"], l:[
+          ["Data must be entered multiple times across separate files; unable to add a child entity without a parent.","الحاجة لإدخال نفس المعلومة أكثر من مرة في ملفات مختلفة؛ وصعوبة إضافة سجل دون وجود سجل آخر."]]},
+        {t:["2. Modification Anomaly","2. شذوذ التعديل"], l:[
+          ["Modifying data in one file leaves outdated redundant copies in other files, creating conflicting records.","تعديل البيانات في ملف وإهمال الملفات الأخرى فتصبح البيانات متضاربة وغير موثوقة."]]},
+        {t:["3. Deletion Anomaly","3. شذوذ الحذف"], l:[
+          ["Deleting a record unintentionally deletes other essential data stored with it, or leaves orphaned copies.","حذف سجل يؤدي بالخطأ لحذف بيانات أخرى هامة مدمجة معه دون قصد."]]}
+      ]}
+    ]},
+    {t:["DBMS Functions, SQL & Development Steps","وظائف DBMS، لغة SQL ومراحل التطوير"], b:[
+      {k:'tbl', h:[["Component / Function","المكون / الوظيفة"],["Description & Meaning","الشرح والمعنى الامتحاني"]], r:[
+        [["Concurrency Control","التحكم في التزامن"],["Prevents data conflicts when multiple users access/update the same record simultaneously (e.g., ticket booking).","منع تعارض البيانات وتحديثات المستخدمين في نفس اللحظة (مثل حجز التذاكر)."]],
+        [["Data Dictionary & Metadata","قاموس البيانات والميتاداتا"],["Contains Metadata (data about data): field types, sizes, descriptions, constraints, and relationships.","يحتوي على 'بيانات عن البيانات' (أنواع الحقول، أطوالها، القيود، والجداول)."]],
+        [["DDL (Data Definition Language)","لغة تعريف البيانات"],["SQL subset used to define, alter, and delete database structures and tables (CREATE, ALTER, DROP).","أوامر SQL لإنشاء وتعديل وحذف هياكل الجداول (CREATE, ALTER, DROP)."]],
+        [["DML (Data Manipulation Language)","لغة معالجة البيانات"],["SQL subset used to insert, retrieve, update, and delete rows/data (SELECT, INSERT, UPDATE, DELETE).","أوامر SQL لإضافة واسترجاع وتعديل وحذف البيانات الفعلية (SELECT, INSERT, UPDATE)."]],
+        [["Normalization","التسوية (Normalization)"],["Process applied during physical modeling to eliminate redundant data and eliminate anomalies.","عملية رياضية أثناء التصميم المادي لتقليل التكرار ومنع الشذوذات تماماً."]]
+      ]},
+      {k:'ul', h:[["The 5 Steps of Database Development:","خطوات تطوير قواعد البيانات الخمس:"],["خطوات تطوير DB:"]], x:[
+        ["1. Analysis: Understand organizational workflows and data needs.","1. التحليل (Analysis): فهم طبيعة العمل والبيانات المطلوبة في المنظمة."],
+        ["2. Conceptual Model: Create Entity-Relationship Diagrams (ERDs) - cheapest to fix here!","2. النموذج المفاهيمي: رسم مخطط الكيانات والعلاقات (ERD) - أرخص مرحلة لتصحيح الأخطاء."],
+        ["3. Physical Model: Define exact fields, data types, and apply Normalization.","3. النموذج المادي: تحديد تفاصيل الحقول والجداول وتطبيق التسوية (Normalization)."],
+        ["4. Implementation: Install DBMS software, build tables, load data, and test.","4. التنفيذ: تثبيت برمجية DBMS، بناء الجداول واختبارها."],
+        ["5. Administration: Performance tuning, backup & recovery, security permissions.","5. الإدارة المستمرة: الصيانة، النسخ الاحتياطي، وإدارة أذونات المستخدمين."]]}
+    ]},
+    {t:["Data Warehouses vs. Data Mining","مستودعات البيانات والتنقيب عن البيانات"], b:[
+      {k:'cards', c:[
+        {t:["Data Warehouse: 4 Golden Attributes","مستودع البيانات: الخصائص الذهبية الأربع"], l:[
+          ["1. Subject-Oriented: Organized around major subjects (e.g., customers, sales, products).","1. موجهة بالموضوع: منظمة حول مواضيع كبرى (المبيعات، العملاء)."],
+          ["2. Integrated: Consolidates ALL data from disparate company operational sources.","2. متكاملة: تدمج كافة بيانات المنظمة من كل المصادر في مكان واحد."],
+          ["3. Time-Variant: Stores multi-year historical data snapshots across long time periods.","3. متغيرة زمنياً: تحتفظ ببيانات تاريخية عبر فترات زمنية طويلة لمقارنة السنوات."],
+          ["4. Non-Volatile: Data is NEVER modified or deleted; optimized solely for querying and reporting.","4. غير متطايرة: لا تعدل ولا تحذف، مخصصة فقط للاستعلام وصنع القرارات الاستراتيجية."]]},
+        {t:["Data Mining (تنقيب البيانات)","التنقيب عن البيانات"], l:[
+          ["Applies statistical algorithms and analytical tools to uncover hidden patterns and trends in big data.","استخدام خوارزميات إحصائية وتحليلية لاكتشاف أنماط وعلاقات خفية في البيانات الضخمة."],
+          ["Example: Retailers discovering purchasing habits to optimize shelf layouts and promotions.","مثال: المتاجر تكتشف سلوكيات الشراء لتحسين توزيع البضائع على الرفوف."]]}
+      ]}
+    ]}
+  ],
+  take:[
+   ["Data Hierarchy: Field (smallest) -> Record -> Table -> Database (largest repository).","هرمية البيانات: حقل (الأصغر) -> سجل -> جدول -> قاعدة بيانات (المستودع الأكبر)."],
+   ["Foreign Keys link tables together in the Relational Model via controlled redundancy.","المفاتيح الأجنبية تربط الجداول ببعضها في النموذج العلائقي عبر تكرار منضبط للبيانات."],
+   ["File systems suffer from 3 anomalies: Insertion, Modification, and Deletion anomalies.","أنظمة الملفات تعاني من 3 شذوذات خطيرة: شذوذ الإدخال، التعديل، والحذف."],
+   ["DDL builds/modifies table structures (CREATE/ALTER); DML manipulates actual data (SELECT/INSERT).","DDL تنشئ وتعدل هياكل الجداول؛ DML تسترجع وتعدل البيانات."],
+   ["A Data Warehouse is Subject-oriented, Integrated, Time-variant, and Non-volatile.","مستودع البيانات موجه بالموضوع، متكامل، متغير زمنياً، وغير متطاير (مخصص للتقارير فقط)."]
+  ],
+  fc:[
+   [["What is the difference between a Primary Key and a Foreign Key?","ما الفرق بين المفتاح الأساسي والمفتاح الأجنبي؟"],
+    ["A Primary Key uniquely identifies a record in its own table. A Foreign Key is a field in one table that references the Primary Key of another table to establish a link.","المفتاح الأساسي يميز السجل فريدًا في جدوله. المفتاح الأجنبي هو حقل في جدول يمثل المفتاح الأساسي لجدول آخر لربطهما معًا."]],
+   [["Name the three anomalies caused by data redundancy in traditional file systems.","اذكر الشذوذات الثلاث الناتجة عن تكرار البيانات في أنظمة الملفات التقليدية."],
+    ["1. Insertion anomaly, 2. Modification anomaly, and 3. Deletion anomaly.","1. شذوذ الإدخال، 2. شذوذ التعديل، 3. شذوذ الحذف."]],
+   [["What is the difference between DDL and DML in SQL?","ما الفرق بين DDL و DML في لغة SQL؟"],
+    ["DDL (Data Definition Language) defines and modifies the structure of tables (CREATE, DROP). DML (Data Manipulation Language) queries and updates the actual data (SELECT, INSERT, UPDATE, DELETE).","DDL تعرف وتعدل هياكل الجداول (CREATE, DROP). DML تسترجع وتتعامل مع البيانات الفعلية (SELECT, INSERT, UPDATE)."]],
+   [["What is Metadata and where is it stored?","ما هي الميتاداتا (Metadata) وأين يتم تخزينها؟"],
+    ["Metadata is 'data about data' (field definitions, data types, constraints). It is stored in the DBMS Data Dictionary.","الميتاداتا هي 'بيانات عن البيانات' (أنواع الحقول، القيود، العلاقات). وتخزن في قاموس البيانات (Data Dictionary)."]],
+   [["What are the four defining characteristics of a Data Warehouse?","ما هي الخصائص الأربع التي تميز مستودع البيانات (Data Warehouse)؟"],
+    ["1. Subject-oriented, 2. Integrated, 3. Time-variant, 4. Non-volatile.","1. موجه بالموضوع (Subject-oriented)، 2. متكامل (Integrated)، 3. متغير زمنيًا (Time-variant)، 4. غير متطاير (Non-volatile)."]],
+   [["What is Data Mining?","ما هو التنقيب عن البيانات (Data Mining)؟"],
+    ["The process of applying statistical and analytical tools to find hidden patterns, trends, and predictive insights in vast amounts of data.","عملية تطبيق أدوات إحصائية وتحليلية متقدمة لاكتشاف أنماط وعلاقات وتوجهات خفية في كميات البيانات الضخمة."]]
+  ],
+  quiz:[
+   {q:["In a relational database, the field that uniquely identifies each individual record is the:","في قاعدة البيانات العلائقية، الحقل الذي يميز كل سجل بشكل فريد لا يتكرر هو:"],
+    o:[["Foreign Key","المفتاح الأجنبي"],["Primary Key","المفتاح الأساسي (Primary Key)"],["Composite Field","الحقل المركب"],["Secondary Index","الفهرس الثانوي"]], a:1},
+   {q:["Which anomaly occurs when redundant data in separate files becomes inconsistent after an update?","أي شذوذ يحدث عندما تصبح البيانات المكررة في ملفات مختلفة غير متطابقة بعد عملية تعديل؟"],
+    o:[["Insertion anomaly","شذوذ الإدخال"],["Deletion anomaly","شذوذ الحذف"],["Modification anomaly","شذوذ التعديل (Modification anomaly)"],["Security anomaly","شذوذ أمني"]], a:2},
+   {q:["The SQL subset used to create, alter, and delete database tables and structures is:","أوامر SQL المخصصة لإنشاء وتعديل وحذف هياكل الجداول وقواعد البيانات هي:"],
+    o:[["DML (Data Manipulation Language)","لغة معالجة البيانات"],["DDL (Data Definition Language)","لغة تعريف البيانات (DDL)"],["HTML","لغة توصيف الويب"],["DCL","لغة التحكم"]], a:1},
+   {q:["A data dictionary stores 'data about data', which is technically termed:","يحتوي قاموس البيانات على 'بيانات تصف البيانات'، وتسمى علمياً:"],
+    o:[["Master Data","البيانات الرئيسية"],["Metadata","الميتاداتا (Metadata)"],["Raw Data","البيانات الخام"],["Transactional Data","بيانات المعاملات"]], a:1},
+   {q:["Which of the following is NOT one of the four characteristics of a Data Warehouse?","أي مما يلي لا يُعد من الخصائص الأربع لمستودع البيانات (Data Warehouse)؟"],
+    o:[["Subject-oriented","موجه بالموضوع"],["Integrated","متكامل"],["Volatile and frequently modified","متطاير ويُعدل باستمرار"],["Time-variant","متغير زمنياً"]], a:2}
+  ]
+});
+
+/* ============================================================
+   LECTURE 7: Internet and World Wide Web Technologies
+   ============================================================ */
+LECTURES.push({ id:'l7', n:7,
+  title:["Internet and World Wide Web Technologies","تقنيات الإنترنت والشبكة العنكبوتية (WWW)"],
+  obj:[
+    ["Understand Internet Architecture: ISPs, NAPs, and Fiber Backbones.","فهم بنية الإنترنت: مزودو الخدمة، نقاط الوصول NAP، والعمود الفقري."],
+    ["Explain TCP/IP: Packet Switching, TCP (ordering) vs. IP (addressing).","شرح بروتوكول TCP/IP: تبديل الحزم، دور TCP ودور IP وعناوينه."],
+    ["Master the Domain Name System (DNS) and Internet applications (VoIP, FTP, P2P).","إتقان نظام أسماء النطاقات DNS وتطبيقات الإنترنت كـ VoIP و FTP و P2P."],
+    ["Compare HTML, HTTP, and XML.","المقارنة بين HTML و HTTP و XML."],
+    ["Identify Internet Governance bodies: IETF, IESG, IAB, and W3C.","معرفة هيئات حوكمة ومعايير الإنترنت: IETF و IESG و IAB و W3C."]
+  ],
+  sec:[
+    {t:["Internet Architecture & The TCP/IP Protocol Suite","بنية الإنترنت وحزمة بروتوكولات TCP/IP"], b:[
+      {k:'cards', c:[
+        {t:["Internet Infrastructure Components","مكونات البنية التحتية للإنترنت"], l:[
+          ["ISPs (Internet Service Providers): Provide individual and corporate internet access (Dialup, DSL, Cable, Fiber).","مزودو الخدمة (ISPs): يقدمون اشتراكات الوصول للإنترنت للمستخدمين."],
+          ["NAPs (Network Access Points): High-speed routers connecting ISPs to the internet backbone.","نقاط الوصول للشبكة (NAPs): موجهات عملاقة تربط مزودي الخدمة بالعمود الفقري."],
+          ["Backbone: High-speed fiber-optic trunks operated by major telecom giants.","العمود الفقري (Backbone): كابلات ألياف ضوئية فائقة السرعة تديرها شركات الاتصالات الكبرى."]]},
+        {t:["Packet Switching Technology","تقنية تبديل الحزم (Packet Switching)"], l:[
+          ["No dedicated end-to-end circuit is required.","لا تتطلب اتصالاً سلكياً مخصصاً ثابتاً من البداية للنهاية."],
+          ["Messages are broken into small packets that take different paths and reassemble at destination.","الرسائل تُقسم إلى حزم صغيرة تسلك مسارات مختلفة وتتجمع عند الوصول."]]},
+        {t:["TCP (Transmission Control Protocol)","بروتوكول التحكم في الإرسال (TCP)"], l:[
+          ["Breaks message into packets at the sender.","تقسيم الرسالة لحزم رقمية عند المصدر."],
+          ["Numbers packets sequentially and reassembles them in order at destination.","ترقيم الحزم وإعادة تجميعها بالترتيب عند المستلم والتأكد من عدم ضياع أي حزمة."]]},
+        {t:["IP (Internet Protocol) & DNS","بروتوكول الإنترنت (IP) ونظام DNS"], l:[
+          ["IP: Routes individual packets to destination IP address (format: xxx.xxx.xxx.xxx, 0 to 255).","IP: مسؤول عن توجيه الحزم للعنوان المطلوب (عناوين IP من 0 إلى 255)."],
+          ["DNS (Domain Name System): Distributed database that converts human text names (e.g. google.com) into IP addresses.","DNS: قاعدة بيانات تحول الأسماء النصية المفهومة للبشر إلى عناوين IP رقمية."]]}
+      ]}
+    ]},
+    {t:["Internet Applications: E-mail, FTP, P2P & VoIP","تطبيقات الإنترنت الرئيسية"], b:[
+      {k:'tbl', h:[["Application","التطبيق"],["Protocol & Definition","البروتوكول والتعريف"],["Exam Highlighting Detail","تفاصيل هامة للامتحان"]], r:[
+        [["E-mail","البريد الإلكتروني"],["Most popular and widely used internet application.","التطبيق الأكثر استخداماً وشعبية على الإنترنت."],["Spam: Unsolicited junk e-mail costing billions; attachments can carry viruses."]],
+        [["FTP","نقل الملفات (FTP)"],["File Transfer Protocol: Client-server transmission of files over the internet.","بروتوكول لنقل الملفات بين خادم الويب وحاسوب المستخدم."],["Standard for uploading websites and downloading large documents."]],
+        [["P2P (Peer-to-Peer)","مشاركة النظير للنظير"],["Decentralized file sharing where every user computer acts as both client and server (e.g. BitTorrent).","مشاركة لا مركزية حيث يعمل كل جهاز كخادم وعميل في آن واحد."],["Eliminates central server bottlenecks; used in distributed sharing."]],
+        [["VoIP (Voice over IP)","الصوت عبر بروتوكول الإنترنت"],["Transmits voice telephone conversations as digital data packets over the internet.","نقل المكالمات الصوتية الهاتفية كحزم بيانات عبر شبكة الإنترنت."],["Drastically eliminates long-distance telephone toll charges."]]
+      ]}
+    ]},
+    {t:["WWW Standards, Static vs. Dynamic & Governance","معايير الويب، الصفحات الثابتة والتفاعلية وهيئات الحوكمة"], b:[
+      {k:'tbl', h:[["Standard / Body","المعيار / الهيئة"],["Role & Function in the Exam","الدور والوظيفة في الامتحان"]], r:[
+        [["HTML","لغة HTML"],["Hypertext Markup Language: Standard tags instructing browsers how to format and display web pages.","لغة توصيف توضح للمتصفح كيفية عرض وتنسيق محتويات الصفحة."],["Display & format content (client side)"]],
+        [["HTTP","بروتوكول HTTP"],["Hypertext Transfer Protocol: Communications protocol establishing connection between client browser and web server.","بروتوكول الاتصال الذي ينظم طلبات واستجابات المتصفح وخادم الويب."],["Transport web documents"]],
+        [["XML","لغة XML"],["Extensible Markup Language: Meta-markup language describing the MEANING of the data enclosed within tags.","لغة توصيف لوصف معنى وطبيعة البيانات وتبادلها بين الأنظمة المختلفة."],["Data exchange & meaning"]],
+        [["Static vs. Dynamic Pages","الصفحات الثابتة مقابل التفاعلية"],["Static pages display fixed HTML with no interactivity. Dynamic pages process data using scripts (JavaScript, Java, CGI, PHP).","الصفحات الثابتة لا تفاعل فيها، بينما الديناميكية تعالج البيانات عبر سكريبتات."],["Interactivity & database connectivity"]],
+        [["IETF","هيئة IETF"],["Internet Engineering Task Force: Working groups developing internet standards and protocol specifications.","مجموعات عمل متخصصة في تطوير معايير وبروتوكولات الإنترنت التقنية."],["Develops standards"]],
+        [["IESG & IAB","هيئة IESG و IAB"],["IESG approves standards; IAB provides overall technical oversight of the internet.","IESG تعتمد المعايير؛ و IAB الهيئة العليا المشرفة على المعايير."],["Approval & oversight"]],
+        [["W3C (World Wide Web Consortium)","منظمة W3C"],["Promotes the World Wide Web and develops new web technologies and specifications (HTML, CSS).","المنظمة العالمية المسؤولة عن تطوير معايير الويب والشبكة العنكبوتية."],["Web standards (HTML/CSS)"]]
+      ]}
+    ]}
+  ],
+  take:[
+   ["The Internet backbone consists of high-speed fiber lines connected to ISPs via NAPs.","العمود الفقري للإنترنت كابلات ألياف فائقة السرعة ترتبط بمزودي الخدمة عبر NAPs."],
+   ["TCP breaks, numbers, and orders packets; IP handles addressing and routing.","TCP يقسم الحزم ويرقمها ويرتبها؛ IP يوجه الحزم للعناوين الرقمية الصحيحة."],
+   ["DNS converts human-friendly domain names (e.g., google.com) into numerical IP addresses.","نظام DNS يحول أسماء النطاقات النصية المفهومة إلى عناوين IP رقمية."],
+   ["VoIP converts voice calls into digital data packets, bypassing traditional phone tolls.","VoIP يحول المكالمات الصوتية لحزم بيانات عبر الإنترنت موفراً تكاليف الاتصال التقليدية."],
+   ["HTML dictates display; XML describes data meaning; HTTP transports web pages.","HTML لتنسيق العرض؛ XML لوصف معنى البيانات؛ HTTP لنقل صفحات الويب."],
+   ["W3C develops World Wide Web standards; IETF develops Internet network protocols.","W3C تطور معايير الويب؛ و IETF تطور بروتوكولات شبكة الإنترنت."]
+  ],
+  fc:[
+   [["What is the difference between TCP and IP?","ما الفرق بين دور بروتوكول TCP ودور بروتوكول IP؟"],
+    ["TCP breaks messages into numbered packets and reassembles them in order at the destination. IP is responsible for routing individual packets to the correct IP address.","TCP يفكك الرسائل لحزم مرقمة ويعيد تجميعها بالترتيب عند المستلم. IP مسؤول عن توجيه الحزم للعنوان الرقمي الصحيح."]],
+   [["What is the function of the Domain Name System (DNS)?","ما هي وظيفة نظام أسماء النطاقات (DNS)؟"],
+    ["It acts as an Internet directory that translates human-readable domain names (like microsoft.com) into numerical IP addresses (like 207.46.245.222).","يعمل كدليل إنترنت يحول أسماء النطاقات النصية (مثل microsoft.com) إلى عناوين IP رقمية تفهمها الشبكة."]],
+   [["What is Network Access Point (NAP)?","ما هي نقطة الوصول للشبكة (NAP)؟"],
+    ["High-speed routers that route traffic between Internet Service Providers (ISPs) and the Internet backbone.","موجهات فائقة السرعة توجه حركة البيانات بين مزودي خدمة الإنترنت (ISPs) والعمود الفقري للإنترنت."]],
+   [["What is the fundamental difference between HTML and XML?","ما الفرق الجوهري بين HTML و XML؟"],
+    ["HTML instructs the browser how to format and display web pages. XML gives meaning to data and structure for exchanging information between systems.","HTML تخبر المتصفح بكيفية تنسيق وعرض الصفحة على الشاشة. XML تصف معنى وطبيعة البيانات لتسهيل تبادلها بين الأنظمة."]],
+   [["What is Voice-over IP (VoIP)?","ما هو بروتوكول الصوت عبر الإنترنت (VoIP)؟"],
+    ["A technology that transmits voice telephone conversations as digital data packets over the Internet, eliminating traditional telephone toll charges.","تقنية لنقل المكالمات الصوتية كحزم بيانات عبر الإنترنت لتوفير تكاليف المكالمات الهاتفية التقليدية."]],
+   [["Which organization is primarily responsible for developing World Wide Web standards?","ما هي المنظمة المسؤولة بشكل رئيسي عن تطوير معايير الويب (WWW)؟"],
+    ["The World Wide Web Consortium (W3C).","منظمة اتحاد شبكة الويب العالمية (W3C)."]]
+  ],
+  quiz:[
+   {q:["Which protocol is responsible for breaking messages into packets and reordering them at the destination?","أي بروتوكول مسؤول عن تقسيم الرسائل إلى حزم مرقمة وإعادة ترتيبها عند المستلم؟"],
+    o:[["IP (Internet Protocol)","بروتوكول الإنترنت IP"],["TCP (Transmission Control Protocol)","بروتوكول TCP"],["HTTP","بروتوكول HTTP"],["DNS","نظام DNS"]], a:1},
+   {q:["The system that converts human-readable domain names into numerical IP addresses is the:","النظام المسؤول عن تحويل أسماء النطاقات النصية المفهومة إلى عناوين IP رقمية هو:"],
+    o:[["FTP","بروتوكول FTP"],["DNS (Domain Name System)","نظام أسماء النطاقات (DNS)"],["VoIP","تقنية VoIP"],["NAP","نقطة وصول الشبكة"]], a:1},
+   {q:["A technology that allows people to use the Internet like a telephone to eliminate toll charges is:","تقنية تتيح استخدام الإنترنت كالهاتف للتخلص من تكاليف المكالمات التقليدية هي:"],
+    o:[["VoIP (Voice-over IP)","الصوت عبر الإنترنت (VoIP)"],["FTP","نقل الملفات"],["P2P","مشاركة النظير للنظير"],["Usenet","مجموعات الأخبار"]], a:0},
+   {q:["What is the primary purpose of XML compared to HTML?","ما هو الهدف الأساسي من لغة XML مقارنة بلغة HTML؟"],
+    o:[["XML makes web pages faster","XML تجعل الصفحات أسرع"],["XML gives meaning to data and facilitates data exchange","XML تصف معنى البيانات وتسهل تبادلها بين الأنظمة"],["XML replaces the TCP protocol","XML تحل محل بروتوكول TCP"],["XML is an operating system","XML نظام تشغيل"]], a:1},
+   {q:["Which international body promotes the World Wide Web and develops new web technologies and standards?","أي هيئة دولية مسؤولة عن تطوير ونشر معايير وتقنيات شبكة الويب العالمية؟"],
+    o:[["IETF","هيئة IETF"],["W3C (World Wide Web Consortium)","منظمة W3C"],["IEEE","معهد مهندسي الكهرباء"],["ISOC","جمعية الإنترنت"]], a:1}
+  ]
+});
+
+/* ============================================================
+   EXAM GLOSSARY: ALL KEY ACRONYMS & DEFINITIONS
+   ============================================================ */
+const GLOSSARY = [
+  ["AI (Artificial Intelligence)","الذكاء الاصطناعي: محاكاة قدرات الذكاء البشري بواسطة الحواسيب."],
+  ["AIS (Administrative IS)","نظم المعلومات الإدارية: تدعم الإدارة والتنسيق على مختلف المستويات."],
+  ["ALU (Arithmetic Logic Unit)","وحدة الحساب والمنطق في المعالج: تنفذ العمليات الرياضية والمقارنات."],
+  ["AR (Augmented Reality)","الواقع المعزز: تركيب بيانات رقمية فوق العالم الحقيقي."],
+  ["ASCII","ترميز الحروف القياسي لتمثيل النصوص بالبتات."],
+  ["Backbone","العمود الفقري للإنترنت: كابلات ألياف ضوئية فائقة السرعة تربط شبكات العالم."],
+  ["Bit (Binary Digit)","أصغر وحدة بيانات رقمية (0 أو 1)."],
+  ["Byte","وحدة تخزين تتكون من 8 بتات وتمثل حرفاً واحداً."],
+  ["Cache Memory","ذاكرة مخبئية فائقة السرعة تسد فجوة السرعة بين المعالج والـ RAM."],
+  ["CBIS","نظام المعلومات المعتمد على الحاسوب بمكوناته الستة."],
+  ["CD-ROM / DVD","أقراص ضوئية للتخزين الثانوي غير المتطاير."],
+  ["COTS Software","البرمجيات التجارية الجاهزة للاستخدام الفوري من السوق."],
+  ["CPU","وحدة المعالجة المركزية (دماغ الحاسوب)."],
+  ["CRM (Customer Relationship Management)","إدارة علاقات العملاء عبر جميع نقاط الاتصال والخدمة."],
+  ["CU (Control Unit)","وحدة التحكم في المعالج: جلب وفك تشفير التعليمات وتوجيه العمليات."],
+  ["Data","البيانات: حقائق خام غير منظمة وبدون سياق."],
+  ["Data Dictionary","قاموس البيانات: مستودع يحتوي على بيانات وصفية (Metadata) عن الجداول."],
+  ["Data Mining","تنقيب البيانات: خوارزميات إحصائية لاكتشاف الأنماط والاتجاهات الخفية."],
+  ["Data Warehouse","مستودع البيانات: قاعدة بيانات تاريخية متكاملة غير متطايرة لصنع القرارات."],
+  ["DBMS","نظام إدارة قواعد البيانات: برمجيات إنشاء ومعالجة وحماية البيانات."],
+  ["DDL (Data Definition Language)","لغة تعريف هياكل وجداول البيانات في SQL."],
+  ["DML (Data Manipulation Language)","لغة معالجة واسترجاع وتعديل البيانات في SQL."],
+  ["DNS (Domain Name System)","نظام أسماء النطاقات: تحويل الأسماء النصية لعناوين IP رقمية."],
+  ["DSS (Decision Support System)","نظم دعم القرار: مساعدة المديرين في القرارات النوعية ونمذجة الحلول."],
+  ["E-Commerce vs E-Business","التجارة الإلكترونية (معاملات بيع وشراء) مقابل الأعمال الإلكترونية (المظلة الأشمل لكافة الأنشطة)."],
+  ["ERP (Enterprise Resource Planning)","تخطيط موارد المؤسسة: برمجيات متكاملة تدير كافة الأقسام من قاعدة بيانات موحدة."],
+  ["Expert System (ES)","النظام الخبير: حاسوب يقدم توصيات كخبير بشري في تخصص محدد."],
+  ["Extranet","شبكة خاصة تتيح لشركاء العمل الخارجيين الوصول لموارد محددة."],
+  ["FIS (Functional IS)","نظم المعلومات الوظيفية: متخصصة في دعم أقسام محددة (تسويق، مالية، إنتاج، موارد بشرية)."],
+  ["Foreign Key (FK)","المفتاح الأجنبي: حقل يمثل مفتاحاً أساسياً في جدول آخر لربطهما."],
+  ["FTP (File Transfer Protocol)","بروتوكول نقل الملفات بين العميل والخادم."],
+  ["GUI (Graphical User Interface)","الواجهة الرسومية: نوافذ وأيقونات بدأت ثورتها مع ماكنتوش."],
+  ["HTML","لغة توصيف النص الفائق لتنسيق وعرض صفحات الويب."],
+  ["HTTP","بروتوكول نقل صفحات الويب بين المتصفح والخادم."],
+  ["Information","المعلومات: بيانات معالجة ذات معنى وقيمة لاتخاذ القرارات."],
+  ["Intranet","شبكة داخلية خاصة بالمنظمة وموظفيها ومؤمنة بجدار ناري."],
+  ["IP (Internet Protocol)","بروتوكول توجيه حزم البيانات وعنونتها على الشبكة."],
+  ["IS (Information System)","نظام جمع ومعالجة وتخزين ونشر البيانات وتقديم التغذية الراجعة."],
+  ["ISP (Internet Service Provider)","مزود خدمة الإنترنت للمستخدمين والشركات."],
+  ["KMS (Knowledge Management System)","نظم إدارة ومشاركة الخبرات والمعارف التراكمية في المنظمة."],
+  ["Knowledge","المعرفة: الوعي والفهم العميق لكيفية تطبيق المعلومات."],
+  ["Metadata","بيانات تصف البيانات (النوع، الطول، الشروط، الجداول)."],
+  ["MIS (Management Information System)","نظم تقدم تقارير دورية روتينية للمديرين الإداريين."],
+  ["Moore's Law","قانون مور: تضاعف كثافة الترانزستورات وقوة المعالجة كل 18-24 شهراً."],
+  ["NAP (Network Access Point)","نقاط وصول تربط مزودي الخدمة بالعمود الفقري للإنترنت."],
+  ["Normalization","التسوية: عملية هندسية لتقليل التكرار وإلغاء الشذوذات في قواعد البيانات."],
+  ["OOP (Object-Oriented Programming)","البرمجة كائنية التوجه: قائمة على الفئات والوراثة لإعادة الاستخدام."],
+  ["Packet Switching","تقنية تقسيم الرسائل لحزم تسلك مسارات متعددة بدون مسار سلكي ثابت."],
+  ["Primary Key (PK)","المفتاح الأساسي: حقل فريد يميّز السجل ولا يقبل التكرار أو الفراغ."],
+  ["RAID","مصفوفة الأقراص المترادفة: دمج أقراص لحماية البيانات وتحسين السرعة."],
+  ["RAM (Random Access Memory)","ذاكرة رئيسية متطايرة سريعة لتشغيل البرامج الحالية."],
+  ["ROI (Return on Investment)","العائد على الاستثمار: نسبة الأرباح الإضافية لتكلفة النظام."],
+  ["ROM (Read-Only Memory)","ذاكرة دائمة غير متطايرة لتعليمات بدء التشغيل الأساسية."],
+  ["SCM (Supply Chain Management)","إدارة تدفق المواد من الموردين وحتى وصول المنتجات للعملاء."],
+  ["SQL (Structured Query Language)","لغة الاستعلام البنيوية القياسية للتعامل مع قواعد البيانات العلائقية."],
+  ["System","مجموعة مكونات مترابطة تعمل معًا لتحقيق هدف بمدخلات وعمليات ومخرجات."],
+  ["TAM (Technology Acceptance Model)","نموذج قبول التقنية: يتنبأ بالاستخدام بناء على الفائدة وسهولة الاستخدام."],
+  ["TCO (Total Cost of Ownership)","التكلفة الإجمالية للملكية طوال دورة حياة النظام."],
+  ["TCP (Transmission Control Protocol)","بروتوكول تفكيك الحزم وترقيمها وإعادة ترتيبها وضمان وصولها."],
+  ["TPS (Transaction Processing System)","نظام معالجة وتسجيل المعاملات والعمليات اليومية الروتينية."],
+  ["Virtual Memory","الذاكرة الافتراضية: استعارة مساحة من القرص الصلب لتوسيع الـ RAM."],
+  ["VoIP (Voice over IP)","إجراء المكالمات الهاتفية عبر حزم بروتوكول الإنترنت لتوفير التكاليف."],
+  ["VR (Virtual Reality)","الواقع الافتراضي: بيئة ثلاثية الأبعاد كاملة محاكاة حاسوبياً."],
+  ["W3C","اتحاد شبكة الويب العالمية: المنظمة العالمية لتطوير معايير الويب (HTML/CSS)."],
+  ["XML","لغة توصيف بيانات تصف معنى وهيكل البيانات لتسهيل تبادلها."]
+].sort((a,b)=>a[0].localeCompare(b[0]));
+
+/* ============================================================
+   SUBJECT DEFINITION & THEME
+   ============================================================ */
+const THEMES = {
+  blue:['59 130 246','37 99 235'],
+  orange:['249 115 22','234 88 12']
+};
+
+const SUBJECT = {
+  id:'is2short',
+  color:'orange',
+  ready:true,
+  icon:'⚡',
+  name:["Information Systems (Exam Fast Revision)","نظم المعلومات (مراجعة الامتحان المكثفة السريعة)"],
+  lectures:LECTURES,
+  glossary:GLOSSARY
+};
+
+const SUBJECTS = [SUBJECT];
+
+/* ============================================================
+   STATE & PERSISTENCE
+   ============================================================ */
+const KEY = 'is2ShortV1';
+const store = (()=>{ try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ return {}; } })();
+const state = { 
+  lang: store.lang || 'ar', // Default to Arabic for user friendliness
+  subject: SUBJECT.id, 
+  page: 'home', 
+  sidebar: window.innerWidth >= 1024, 
+  data: store.data || {}, 
+  decks: {}, 
+  qz: {}, 
+  exam: null 
+};
+
+function save(){
+  try{
+    const cur = JSON.parse(localStorage.getItem(KEY)||'{}');
+    cur.data = cur.data || {};
+    cur.lang = state.lang;
+    const d = sd(SUBJECT.id);
+    d.mastery = mastery(SUBJECT);
+    d.n = SUBJECT.lectures.length;
+    cur.data[SUBJECT.id] = d;
+    localStorage.setItem(KEY, JSON.stringify(cur));
+  }catch(e){}
+}
+
+const subj = () => SUBJECT;
+const LECT = () => SUBJECT.lectures;
+function sd(id){ id = id || state.subject; return state.data[id] || (state.data[id] = {seen:{}, best:{}, exam:0}); }
+
+function mastery(s){
+  if(!s.ready) return 0;
+  const d = sd(s.id);
+  let sum = 0;
+  s.lectures.forEach(l => { sum += (d.best[l.id] || 0) / 100; });
+  sum += (d.exam || 0) / 100;
+  return Math.round(sum / (s.lectures.length + 1) * 100);
+}
+
+/* ============================================================
+   HELPERS & LOCALIZATION
+   ============================================================ */
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const li = () => state.lang === 'ar' ? 1 : 0;
+const tx = a => Array.isArray(a) ? (a[li()] != null ? a[li()] : a[0]) : a;
+const u = k => (UI[k] ? UI[k][li()] : k);
+const $ = id => document.getElementById(id);
+
+function shuf(a){
+  const b = a.slice();
+  for(let i = b.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [b[i], b[j]] = [b[j], b[i]];
+  }
+  return b;
+}
+
+function mixQ(q){
+  const idx = [0,1,2,3].filter(i => i < q.o.length);
+  const s = shuf(idx);
+  return { q: q.q, o: s.map(i => q.o[i]), a: s.indexOf(q.a) };
+}
+
+function applyTheme(){
+  const t = THEMES[SUBJECT.color || 'orange'];
+  document.documentElement.style.setProperty('--b5', t[0]);
+  document.documentElement.style.setProperty('--b6', t[1]);
+}
+
+/* ============================================================
+   BLOCK RENDERERS
+   ============================================================ */
+const labelColors = {
+  def:['border-brand-500 bg-brand-500/10','text-brand-500'],
+  ex:['border-amber-400 bg-amber-400/10','text-amber-400'],
+  tip:['border-red-500 bg-red-500/10','text-red-400']
+};
+
+function renderBlock(b){
+  if(b.k==='p') return `<p class="leading-relaxed text-dark-text/90 my-3">${tx(b.x)}</p>`;
+  if(labelColors[b.k]){
+    const c=labelColors[b.k];
+    return `<div class="border-s-4 ${c[0]} rounded-e-xl p-4 my-3"><div class="text-xs font-bold uppercase tracking-wide ${c[1]} mb-1">${u(b.k)}</div><div class="leading-relaxed whitespace-pre-line">${tx(b.x)}</div></div>`;
+  }
+  if(b.k==='ul') return `<div class="my-3">${b.h?`<div class="font-semibold text-brand-500 mb-1">${tx(b.h)}</div>`:''}<ul class="space-y-1.5">${b.x.map(i=>`<li class="flex gap-2 leading-relaxed"><span class="text-brand-500 mt-1.5 shrink-0">●</span><span>${tx(i)}</span></li>`).join('')}</ul></div>`;
+  if(b.k==='cards') return `<div class="grid gap-3 sm:grid-cols-2 my-3">${b.c.map(c=>`<div class="bg-dark-surface border border-dark-border rounded-xl p-4"><div class="font-bold text-brand-500 mb-2">${tx(c.t)}</div><ul class="space-y-1 text-sm leading-relaxed">${c.l.map(i=>`<li class="flex gap-2"><span class="text-dark-muted shrink-0">▪</span><span>${tx(i)}</span></li>`).join('')}</ul></div>`).join('')}</div>`;
+  if(b.k==='tbl') return `<div class="overflow-x-auto my-3 rounded-xl border border-dark-border"><table class="w-full text-sm"><thead class="bg-brand-600 text-white"><tr>${b.h.map(h=>`<th class="p-3 text-start font-semibold">${tx(h)}</th>`).join('')}</tr></thead><tbody>${b.r.map((r,i)=>`<tr class="${i%2?'bg-dark-surface':'bg-dark-elevated'}">${r.map((c,j)=>`<td class="p-3 border-t border-dark-border ${j===0?'font-semibold':''}">${tx(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  return '';
+}
+
+/* ============================================================
+   QUIZ ENGINE
+   ============================================================ */
+function optHTML(o,i){
+  return `<button class="opt w-full text-start p-3 rounded-lg border border-dark-border bg-dark-surface hover:border-brand-500 transition flex gap-3 items-start" data-i="${i}"><span class="mono text-dark-muted shrink-0">${'ABCD'[i]}.</span><span>${tx(o)}</span></button>`;
+}
+
+function qHTML(q,idx,total){
+  return `<div class="qbox bg-dark-elevated border border-dark-border rounded-xl p-4 mb-4" data-a="${q.a}">
+    <div class="font-semibold mb-3"><span class="mono text-brand-500">${idx}/${total}</span> ${tx(q.q)}</div>
+    <div class="space-y-2">${q.o.map(optHTML).join('')}</div>
+    <div class="fb mt-3 text-sm font-semibold hidden"></div></div>`;
+}
+
+function getQz(L){ return state.qz[L.id] || (state.qz[L.id]=L.quiz.map(mixQ)); }
+
+function quizInner(L){
+  const qs=getQz(L), best=sd().best[L.id];
+  return `<div class="flex justify-between items-center mb-3"><h2 class="font-bold text-lg">📝 ${u('quiz')} <span class="mono text-sm text-dark-muted">(${qs.length})</span></h2>${best!=null?`<span class="mono text-xs text-dark-muted">${u('best')}: ${best}%</span>`:''}</div>
+    ${qs.map((q,i)=>qHTML(q,i+1,qs.length)).join('')}
+    <div class="qscore hidden mt-2 p-3 rounded-lg bg-dark-surface border border-brand-500 flex flex-wrap items-center justify-between gap-2"><b class="qs-text"></b><button data-act="retryQuiz" data-id="${L.id}" class="px-4 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm">${u('retry')}</button></div>`;
+}
+
+/* ============================================================
+   FLASHCARD DECKS
+   ============================================================ */
+function getDeck(id,kind,list){
+  if(!state.decks[id]) state.decks[id]={kind,list:list.slice(),i:0,flip:false};
+  return state.decks[id];
+}
+
+function redrawDeck(id){ const el=$('deck-'+id); if(el) el.innerHTML=deckHTML(id); }
+
+function deckHTML(id){
+  const d=state.decks[id], c=d.list[d.i], l=li();
+  let front, back;
+  if(d.kind==='g'){
+    front=`<div class="mono text-xl sm:text-2xl text-brand-500 font-bold" dir="ltr">${esc(c[0])}</div>`;
+    back=`<div class="text-xl sm:text-2xl font-bold text-white px-2" dir="rtl" style="font-family:Cairo">${esc(c[1])}</div>`;
+  } else {
+    front=`<div class="text-xs mono text-dark-muted mb-2">${u('question')}</div><div class="text-lg font-bold">${esc(c[0][l])}</div>`;
+    back=`<div class="text-base font-semibold text-white leading-relaxed">${esc(c[1][l])}</div><div class="text-xs text-white/70 mt-3 leading-relaxed" dir="${l?'ltr':'rtl'}">${esc(c[1][1-l])}</div>`;
+  }
+  return `<p class="text-dark-muted mb-3 text-sm">${u('flip')} • <span class="mono">${d.i+1}/${d.list.length}</span></p>
+    <div class="flip ${d.flip?'on':''} cursor-pointer mb-3" data-act="dk-flip" data-deck="${id}"><div class="flip-inner">
+      <div class="face bg-dark-elevated border border-brand-500">${front}</div>
+      <div class="face back bg-brand-600">${back}</div></div></div>
+    <div class="flex justify-between gap-2">
+      <button data-act="dk-prev" data-deck="${id}" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500">${u('prev')}</button>
+      <button data-act="dk-shuf" data-deck="${id}" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500">🔀 ${u('shuffle')}</button>
+      <button data-act="dk-next" data-deck="${id}" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white">${u('next')}</button>
+    </div>`;
+}
+
+/* ============================================================
+   VIEWS & PAGES
+   ============================================================ */
+function renderHome(){
+  const s=subj(), d=sd(), m=mastery(s), n=s.lectures.length;
+  const steps = [
+    ["Read the concise chapter summaries and note the highlighted exam warning boxes.","اقرأ الخلاصات المكثفة لكل فصل وركّز على صناديق التنبيهات الامتحانية."],
+    ["Flip through the chapter flashcards until you can recall definitions immediately.","راجع بطاقات الاستذكار السريع حتى تستحضر التعريفات والمقارنات فوراً."],
+    ["Solve every chapter quiz with a 100% target to test question traps.","حل اختبار كل فصل واستهدف الحصول على 100% لفهم صيغ الأسئلة والأفخاخ."],
+    ["Take the comprehensive Final Mock Exam to ensure top exam performance.","خض الاختبار النهائي الشامل لقياس جاهزيتك التامة وحصد الدرجة الكاملة."]
+  ];
+  return `<div class="fade">
+    <div class="bg-dark-surface border border-dark-border rounded-2xl p-6 mb-6">
+      <div class="flex items-center gap-3 mb-2">
+        <span class="text-4xl">⚡</span>
+        <div>
+          <h1 class="text-2xl font-extrabold text-brand-500">${tx(s.name)}</h1>
+          <p class="text-dark-muted text-sm">${tx(["Ultra-condensed, exam-focused study guide covering all lectures, definitions, comparisons, and past exam patterns.","دليل المراجعة السريعة والمكثفة للاختبارات: يغطي كافة المحاضرات، المقارنات، التعريفات، وأسئلة الامتحانات المتكررة."])}</p>
+        </div>
+      </div>
+      <div class="mt-4 flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-dark-border">
+        <div><div class="text-xs text-dark-muted">${u('mastery')}</div><div class="text-2xl font-bold mono text-brand-500">${m}%</div></div>
+        <div class="flex gap-2">
+          <button data-go="l1" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-semibold text-sm">🚀 ${tx(["Start Chapter 1","ابدأ الفصل الأول"])}</button>
+          <button data-go="exam" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500 font-semibold text-sm">🏆 ${u('exam')}</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-dark-surface border border-dark-border rounded-2xl p-6 mb-6">
+      <h2 class="font-bold text-lg mb-3">🎯 ${u('plan')}</h2>
+      <ol class="space-y-2 list-decimal ps-5 text-sm">${steps.map(x=>`<li class="leading-relaxed">${tx(x)}</li>`).join('')}</ol>
+      <p class="text-xs text-dark-muted mt-4">${u('masteryHow')}</p>
+    </div>
+
+    <div class="grid gap-3 sm:grid-cols-2">
+      ${s.lectures.map(l=>{
+        const best = d.best[l.id];
+        return `<div data-go="${l.id}" class="bg-dark-surface hover:bg-dark-elevated border border-dark-border hover:border-brand-500 rounded-xl p-4 cursor-pointer transition flex justify-between items-center">
+          <div class="min-w-0 me-3">
+            <div class="text-xs mono text-dark-muted">${u('lecture')} ${l.n}</div>
+            <div class="font-bold truncate text-brand-500">${tx(l.title)}</div>
+          </div>
+          <span class="mono text-xs px-2 py-1 rounded bg-dark-base border border-dark-border text-dark-muted shrink-0">${best!=null?best+'%':'--'}</span>
+        </div>`;
+      }).join('')}
+    </div>
+
+    <button data-act="reset" class="mt-8 text-xs text-dark-muted underline">${u('reset')}</button>
+  </div>`;
+}
+
+function renderLecture(L, idx){
+  const s=subj(), d=sd(); d.seen[L.id]=true; save();
+  const deck = getDeck('fc-'+L.id, 'l', L.fc);
+  return `<div class="fade space-y-6">
+    <div class="flex items-center justify-between">
+      <span class="mono text-sm text-brand-500">${u('lecture')} ${L.n}/${s.lectures.length}</span>
+      <span class="mono text-xs text-dark-muted">${u('best')}: ${d.best[L.id]!=null?d.best[L.id]+'%':'--'}</span>
+    </div>
+    <h1 class="text-2xl sm:text-3xl font-extrabold">${tx(L.title)}</h1>
+
+    <div class="bg-dark-surface border border-dark-border rounded-2xl p-4">
+      <h3 class="font-bold text-sm text-brand-500 uppercase tracking-wide mb-2">🎯 ${u('objectives')}</h3>
+      <ul class="space-y-1 text-sm">${L.obj.map(o=>`<li class="flex gap-2"><span>✔</span><span>${tx(o)}</span></li>`).join('')}</ul>
+    </div>
+
+    ${L.sec.map(sec=>`
+      <div class="bg-dark-surface border border-dark-border rounded-2xl p-5">
+        <h2 class="font-bold text-xl mb-4 text-brand-500">${tx(sec.t)}</h2>
+        ${sec.b.map(renderBlock).join('')}
+      </div>
+    `).join('')}
+
+    <div class="bg-dark-surface border border-dark-border rounded-2xl p-5">
+      <h2 class="font-bold text-lg mb-3">💡 ${u('take')}</h2>
+      <ul class="space-y-2 text-sm">${L.take.map(t=>`<li class="flex gap-2"><span class="text-brand-500 font-bold">▪</span><span class="leading-relaxed">${tx(t)}</span></li>`).join('')}</ul>
+    </div>
+
+    <div class="bg-dark-surface border border-dark-border rounded-2xl p-5">
+      <h2 class="font-bold text-lg mb-2">🃏 ${u('flash')} <span class="mono text-sm text-dark-muted">(${L.fc.length})</span></h2>
+      <div id="deck-fc-${L.id}">${deckHTML('fc-'+L.id)}</div>
+    </div>
+
+    <div id="quiz-${L.id}" data-quiz="${L.id}" class="bg-dark-surface border border-dark-border rounded-2xl p-5">
+      ${quizInner(L)}
+    </div>
+
+    <div class="flex justify-between items-center pt-4">
+      ${idx>0?`<button data-go="${s.lectures[idx-1].id}" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500 text-sm font-semibold">${u('prev')}</button>`:'<span></span>'}
+      ${idx<s.lectures.length-1?`<button data-go="${s.lectures[idx+1].id}" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold">${u('next')}</button>`:`<button data-go="exam" class="px-4 py-2 rounded-lg bg-green-600 hover:bg-green-500 text-white text-sm font-semibold">🏆 ${u('exam')}</button>`}
+    </div>
+  </div>`;
+}
+
+function gItems(list){
+  if(!list.length) return `<div class="p-6 text-center text-dark-muted">${tx(["No matching terms found.","لم يتم العثور على مصطلحات مطابقة."])}</div>`;
+  return list.map(g=>`<div class="p-3 rounded-xl bg-dark-elevated border border-dark-border flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+    <div class="mono font-bold text-brand-500" dir="ltr">${esc(g[0])}</div>
+    <div class="text-sm text-dark-text/90 sm:text-end" dir="rtl">${esc(g[1])}</div>
+  </div>`).join('');
+}
+
+function renderGlossary(){
+  const G=subj().glossary;
+  const deck=getDeck('glossDeck','g',G);
+  return `<div class="fade space-y-6">
+    <h1 class="text-2xl sm:text-3xl font-extrabold">📖 ${tx(["Exam Glossary & Acronyms","قاموس المصطلحات والاختصارات الشاملة"])}</h1>
+    <p class="text-dark-muted text-sm">${tx(["Master all 45+ essential acronyms and core definitions tested in midterm and final exams.","احفظ واستحضر أكثر من 45 مصطلحاً واختصاراً تتكرر بصورة دورية في امتحانات نظم المعلومات."])}</p>
+
+    <div class="bg-dark-surface border border-dark-border rounded-2xl p-5">
+      <h2 class="font-bold text-lg mb-2">🃏 ${u('glossFlash')} <span class="mono text-sm text-dark-muted">(${G.length})</span></h2>
+      <div id="deck-glossDeck">${deckHTML('glossDeck')}</div>
+    </div>
+
+    <div class="bg-dark-surface border border-dark-border rounded-2xl p-5 space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="font-bold text-lg">📑 ${u('glossList')} <span class="mono text-sm text-dark-muted">(${G.length})</span></h2>
+      </div>
+      <input id="gSearch" type="text" placeholder="${u('search')}" class="w-full p-3 rounded-xl bg-dark-base border border-dark-border focus:border-brand-500 outline-none text-sm">
+      <div id="gList" class="space-y-2 max-h-[600px] overflow-y-auto">${gItems(G)}</div>
+    </div>
+  </div>`;
+}
+
+function newExam(sz){
+  const allQs=[];
+  subj().lectures.forEach(l=>{ l.quiz.forEach(q=>allQs.push(q)); });
+  const pool=shuf(allQs).map(mixQ);
+  const n = (sz && sz>0 && sz<=pool.length) ? sz : pool.length;
+  state.exam = { qs: pool.slice(0, n), i: 0, score: 0, wrong: [], finished: false };
+}
+
+function renderExam(){
+  const ex = state.exam, d=sd();
+  if(!ex){
+    const totalQs = subj().lectures.reduce((s,l)=>s+l.quiz.length,0);
+    return `<div class="fade max-w-xl mx-auto bg-dark-surface border border-dark-border rounded-2xl p-6 text-center space-y-4">
+      <div class="text-5xl">🏆</div>
+      <h1 class="text-2xl font-bold">${u('exam')}</h1>
+      <p class="text-dark-muted text-sm">${tx(["Comprehensive mock test pulling questions across all 7 lectures to test your exam mastery.","اختبار شامل يحاكي الامتحان النهائي يجمع الأسئلة من كافة الفصول لقياس مدى جاهزيتك وتفوقك."])}</p>
+      <div class="mono text-xs text-brand-500 pt-2">${u('best')}: ${d.exam||0}%</div>
+      <div class="pt-2">
+        <div class="text-sm font-semibold mb-2">${u('chooseSize')}:</div>
+        <div class="flex flex-wrap justify-center gap-2">
+          <button data-size="10" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500 text-sm font-bold">10 ${u('questions')}</button>
+          <button data-size="20" class="px-4 py-2 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500 text-sm font-bold">20 ${u('questions')}</button>
+          <button data-size="${totalQs}" class="px-4 py-2 rounded-lg bg-brand-600 hover:bg-brand-500 text-white text-sm font-bold">${u('all')} (${totalQs})</button>
+        </div>
+      </div>
+    </div>`;
+  }
+  if(ex.finished){
+    const pct = Math.round(ex.score/ex.qs.length*100);
+    return `<div class="fade max-w-xl mx-auto bg-dark-surface border border-dark-border rounded-2xl p-6 text-center space-y-4">
+      <div class="text-5xl">${pct>=85?'🎉':pct>=60?'👍':'📚'}</div>
+      <h2 class="text-2xl font-bold">${u('score')}: ${ex.score}/${ex.qs.length} (${pct}%)</h2>
+      <div class="mono text-sm text-dark-muted">${u('best')}: ${d.exam||0}%</div>
+      ${ex.wrong.length?`
+        <div class="text-start mt-4 pt-4 border-t border-dark-border space-y-3">
+          <div class="font-bold text-red-400">${u('mistakes')}:</div>
+          ${ex.wrong.map((w,i)=>`<div class="p-3 rounded-lg bg-dark-elevated border border-dark-border text-sm">
+            <div class="font-semibold mb-1">${i+1}. ${tx(w.q)}</div>
+            <div class="text-green-400 font-semibold text-xs">✔ ${u('yourAns')}: ${tx(w.c)}</div>
+          </div>`).join('')}
+        </div>
+      `:''}
+      <div class="flex justify-center gap-3 pt-4">
+        <button data-act="examAgain" class="px-6 py-2.5 rounded-lg bg-brand-600 hover:bg-brand-500 text-white font-bold text-sm">🔁 ${u('retry')}</button>
+        <button data-go="home" class="px-6 py-2.5 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500 font-bold text-sm">🏠 ${u('home')}</button>
+      </div>
+    </div>`;
+  }
+  const q = ex.qs[ex.i];
+  return `<div class="fade max-w-2xl mx-auto" data-exam="1">
+    <div class="flex justify-between items-center mb-4">
+      <span class="mono text-sm text-brand-500">${u('question')} ${ex.i+1}/${ex.qs.length}</span>
+      <span class="mono text-xs text-dark-muted">${u('score')}: ${ex.score}</span>
+    </div>
+    ${qHTML(q, ex.i+1, ex.qs.length)}
+    <button id="examNext" class="hidden w-full mt-4 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-sm">${ex.i<ex.qs.length-1?u('next'):u('finish')}</button>
+  </div>`;
+}
+
+function renderNav(){
+  const s=subj(), d=sd();
+  const items = [
+    {id:'home', icon:'🏠', label:u('home')},
+    {id:'exam', icon:'🏆', label:u('exam'), badge:d.exam?d.exam+'%':null},
+    {id:'glossary', icon:'📖', label:tx(["Glossary & Acronyms","المصطلحات والاختصارات"])}
+  ];
+  let h = `<div class="mb-4">
+    <div class="text-xs uppercase text-dark-muted font-bold px-3 mb-2">${u('tools')}</div>
+    ${items.map(it=>`
+      <button data-go="${it.id}" class="w-full text-start p-2.5 rounded-lg text-sm flex items-center justify-between ${state.page===it.id?'bg-brand-600 text-white font-bold':'hover:bg-dark-elevated text-dark-text/90'}">
+        <span class="flex items-center gap-2"><span>${it.icon}</span><span>${it.label}</span></span>
+        ${it.badge?`<span class="mono text-xs px-1.5 py-0.5 rounded bg-dark-base">${it.badge}</span>`:''}
+      </button>
+    `).join('')}
+  </div>
+  <div>
+    <div class="text-xs uppercase text-dark-muted font-bold px-3 mb-2">${u('lectures')}</div>
+    ${s.lectures.map(l=>{
+      const best = d.best[l.id];
+      const active = state.page === l.id;
+      return `<button data-go="${l.id}" class="w-full text-start p-2.5 rounded-lg text-sm flex items-center justify-between ${active?'bg-brand-600 text-white font-bold':'hover:bg-dark-elevated text-dark-text/90'}">
+        <span class="truncate flex items-center gap-2"><span class="mono text-xs opacity-75">${l.n}.</span><span class="truncate">${tx(l.title)}</span></span>
+        ${best!=null?`<span class="mono text-xs px-1.5 py-0.5 rounded bg-dark-base shrink-0">${best}%</span>`:''}
+      </button>`;
+    }).join('')}
+  </div>`;
+  $('nav').innerHTML = h;
+}
+
+function applyLayout(){
+  const sb=$('sidebar'), main=$('main'), bd=$('backdrop');
+  sb.classList.toggle('ltr:-translate-x-full',!state.sidebar);
+  sb.classList.toggle('rtl:translate-x-full',!state.sidebar);
+  main.classList.toggle('lg:ps-72',state.sidebar);
+  bd.classList.toggle('hidden',!(state.sidebar && window.innerWidth<1024));
+}
+
+function updateTop(){
+  const m = mastery(subj());
+  $('topProgWrap').classList.remove('hidden');
+  $('topProgWrap').classList.add('sm:flex');
+  $('topBar').style.width = m + '%';
+  $('topPct').textContent = m + '%';
+}
+
+function render(){
+  document.documentElement.lang = state.lang;
+  document.documentElement.dir = state.lang==='ar' ? 'rtl' : 'ltr';
+  $('langBtn').textContent = state.lang==='ar' ? 'English' : 'العربية';
+  applyTheme();
+
+  const lects = LECT();
+  const idx = lects.findIndex(l => l.id === state.page);
+  let html = '', title = '';
+
+  if(state.page==='home'){ 
+    html = renderHome(); 
+    title = tx(subj().name); 
+  } else if(idx>=0){ 
+    html = renderLecture(lects[idx], idx); 
+    title = `${u('lecture')} ${lects[idx].n}: ${tx(lects[idx].title)}`; 
+  } else if(state.page==='exam'){ 
+    html = renderExam(); 
+    title = u('exam'); 
+  } else if(state.page==='glossary'){ 
+    html = renderGlossary(); 
+    title = tx(["Glossary & Acronyms","قاموس المصطلحات والاختصارات"]); 
+  }
+
+  $('app').innerHTML = html;
+  $('topTitle').textContent = title;
+  updateTop();
+  renderNav();
+  applyLayout();
+}
+
+function go(p){
+  state.page = p;
+  state.qz = {};
+  state.decks = {};
+  if(p !== 'exam') state.exam = null;
+  if(window.innerWidth < 1024) state.sidebar = false;
+  render();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ============================================================
+   EVENT LISTENERS
+   ============================================================ */
+document.addEventListener('click', e => {
+  const g = e.target.closest('[data-go]');
+  if(g){ go(g.dataset.go); return; }
+
+  const sz = e.target.closest('[data-size]');
+  if(sz){ newExam(+sz.dataset.size); render(); window.scrollTo({top:0}); return; }
+
+  const opt = e.target.closest('.opt');
+  if(opt){
+    const box = opt.closest('.qbox');
+    if(box.dataset.done) return;
+    box.dataset.done = '1';
+    const a = +box.dataset.a, i = +opt.dataset.i, ok = (i === a);
+    if(ok) box.dataset.ok = '1';
+    box.querySelectorAll('.opt').forEach(b => {
+      b.disabled = true;
+      b.classList.remove('hover:border-brand-500');
+      b.classList.add('cursor-not-allowed');
+      if(+b.dataset.i === a) b.classList.add('!bg-green-600/30', '!border-green-500');
+    });
+    if(!ok) opt.classList.add('!bg-red-600/30', '!border-red-500');
+    const fb = box.querySelector('.fb');
+    fb.classList.remove('hidden');
+    fb.className = 'fb mt-3 text-sm font-semibold ' + (ok ? 'text-green-400' : 'text-red-400');
+    fb.textContent = ok ? u('correct') : u('wrong');
+
+    const exam = box.closest('[data-exam]');
+    if(exam){
+      const ex = state.exam, q = ex.qs[ex.i];
+      if(ok) ex.score++; else ex.wrong.push({q: q.q, c: q.o[q.a]});
+      $('examNext').classList.remove('hidden');
+      return;
+    }
+
+    const qz = box.closest('[data-quiz]');
+    if(qz){
+      const boxes = [...qz.querySelectorAll('.qbox')];
+      if(boxes.every(b => b.dataset.done)){
+        const sc = boxes.filter(b => b.dataset.ok).length, pct = Math.round(sc / boxes.length * 100);
+        const sEl = qz.querySelector('.qscore');
+        sEl.classList.remove('hidden');
+        qz.querySelector('.qs-text').textContent = `${u('score')}: ${sc}/${boxes.length} (${pct}%)`;
+        const d = sd(), id = qz.dataset.quiz;
+        if(d.best[id] == null || pct > d.best[id]){ d.best[id] = pct; save(); }
+        updateTop();
+        renderNav();
+      }
+    }
+    return;
+  }
+
+  const a = e.target.closest('[data-act]');
+  if(!a) return;
+  const act = a.dataset.act;
+
+  if(act.startsWith('dk-')){
+    const id = a.dataset.deck, d = state.decks[id];
+    if(!d) return;
+    if(act === 'dk-flip'){
+      d.flip = !d.flip;
+      const f = document.querySelector(`#deck-${id} .flip`);
+      if(f) f.classList.toggle('on', d.flip);
+      return;
+    }
+    if(act === 'dk-next') d.i = (d.i + 1) % d.list.length;
+    if(act === 'dk-prev') d.i = (d.i - 1 + d.list.length) % d.list.length;
+    if(act === 'dk-shuf'){ d.list = shuf(d.list); d.i = 0; }
+    d.flip = false;
+    redrawDeck(id);
+    return;
+  }
+
+  if(act === 'retryQuiz'){
+    const L = LECT().find(l => l.id === a.dataset.id);
+    delete state.qz[L.id];
+    $('quiz-' + L.id).innerHTML = quizInner(L);
+    $('quiz-' + L.id).scrollIntoView({behavior:'smooth', block:'start'});
+    return;
+  }
+
+  if(act === 'examAgain'){
+    state.exam = null;
+    render();
+    return;
+  }
+
+  if(act === 'reset'){
+    state.data[state.subject] = {seen:{}, best:{}, exam:0};
+    save();
+    render();
+    return;
+  }
+});
+
+document.addEventListener('click', e => {
+  if(e.target.id === 'examNext'){
+    const ex = state.exam;
+    if(ex.i < ex.qs.length - 1){
+      ex.i++;
+    } else {
+      ex.finished = true;
+      const p = Math.round(ex.score / ex.qs.length * 100), d = sd();
+      if(p > (d.exam || 0)){ d.exam = p; save(); }
+    }
+    render();
+    window.scrollTo({top:0});
+  }
+});
+
+document.addEventListener('input', e => {
+  if(e.target.id === 'gSearch'){
+    const q = e.target.value.toLowerCase();
+    $('gList').innerHTML = gItems(subj().glossary.filter(g => (g[0] + ' ' + g[1]).toLowerCase().includes(q)));
+  }
+});
+
+$('menuBtn').onclick = () => { state.sidebar = !state.sidebar; applyLayout(); };
+$('backdrop').onclick = () => { state.sidebar = false; applyLayout(); };
+$('langBtn').onclick = () => { state.lang = state.lang === 'ar' ? 'en' : 'ar'; save(); render(); };
+window.addEventListener('resize', applyLayout);
+
+// Initial boot
+render();
+</script>
+</body>
+</html>
