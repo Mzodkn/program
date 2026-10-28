@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visual Studio Code - C++ Live Lab</title>
+    <!-- Firebase App (Compat) SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #1e1e1e; color: #cccccc; padding-bottom: 40px; }
+        
+        /* Authentic VS Code Dark+ Header & Tabs */
+        .vscode-header { background: #323233; color: #969696; padding: 8px 15px; font-size: 12px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #252526; }
+        .vscode-tabs { background: #2d2d2d; padding: 0; font-size: 13px; color: #ffffff; border-bottom: 1px solid #252526; display: flex; align-items: center; }
+        .tab { padding: 8px 16px; background: #1e1e1e; border-top: 2px solid #007acc; border-right: 1px solid #252526; display: flex; align-items: center; gap: 6px; }
+        
+        /* Container layout */
+        .container { max-width: 900px; margin: 15px auto; padding: 0 15px; display: flex; flex-direction: column; gap: 15px; }
+        
+        /* Editor Wrapper with Line Numbers */
+        .editor-container { display: flex; background: #1e1e1e; border: 1px solid #454545; border-radius: 2px; overflow: hidden; }
+        .line-numbers { background: #1e1e1e; color: #858585; padding: 12px 8px; font-family: 'Consolas', 'Courier New', Courier, monospace; font-size: 13px; line-height: 1.5; text-align: right; user-select: none; border-right: 1px solid #333333; min-width: 40px; }
+        
+        /* Code Editor Textarea - Dynamic Height */
+        textarea { flex: 1; background: #1e1e1e; color: #9cdcfe; font-family: 'Consolas', 'Courier New', Courier, monospace; font-size: 13px; padding: 12px; border: none; resize: none; outline: none; tab-size: 4; line-height: 1.5; overflow: hidden; min-height: 120px; }
+        
+        /* Distinct Sections */
+        .section-box { background: #252526; border: 1px solid #3c3c3c; border-radius: 2px; padding: 12px; }
+        .section-title { font-size: 11px; font-weight: 600; color: #969696; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        input { width: 100%; padding: 8px 10px; background: #3c3c3c; color: #ffffff; border: 1px solid #3c3c3c; border-radius: 2px; font-family: monospace; font-size: 13px; outline: none; }
+        input:focus { border-color: #007acc; }
+
+        pre { background: #1e1e1e; color: #d4d4d4; padding: 12px; border-radius: 2px; border: 1px solid #333333; min-height: 80px; max-height: 250px; white-space: pre-wrap; overflow-y: auto; font-family: 'Consolas', monospace; font-size: 13px; }
+        
+        /* Professional VS Code Blue Run Button */
+        .run-btn { background: #0e639c; color: white; border: none; padding: 9px 16px; font-size: 13px; font-weight: 600; border-radius: 2px; cursor: pointer; text-align: center; width: 100%; transition: background 0.1s; }
+        .run-btn:hover { background: #1177bb; }
+    </style>
+</head>
+<body>
+
+    <!-- VS Code Top Bar -->
+    <div class="vscode-header">
+        <span>C++ Workspace - Collaborative Lab</span>
+        <span id="connectionStatus" style="color: #b5cea8; font-size: 11px;">Local Mode</span>
+    </div>
+    
+    <div class="vscode-tabs">
+        <div class="tab">📄 main.cpp</div>
+    </div>
+
+    <div class="container">
+        <!-- Editor Section with Line Numbers -->
+        <div>
+            <div class="section-title">Source Code (main.cpp)</div>
+            <div class="editor-container">
+                <div id="lineNumbers" class="line-numbers">1</div>
+                <textarea id="labCode" placeholder="Write your C++ code here...">#include <iostream>
+using namespace std;
+
+int main() {
+    string name;
+    cout << "Enter your name: ";
+    cin >> name;
+    cout << "Hello, " << name << "!" << endl;
+    return 0;
+}</textarea>
+            </div>
+        </div>
+
+        <!-- Input Section -->
+        <div class="section-box">
+            <div class="section-title">Standard Input (Stdin)</div>
+            <input type="text" id="stdinInput" placeholder="Enter text here if program uses cin...">
+        </div>
+
+        <!-- Action Button -->
+        <button class="run-btn" onclick="runCppCode()">Run Code (F5)</button>
+
+        <!-- Output Section -->
+        <div class="section-box" style="border-color: #007acc;">
+            <div class="section-title" style="color: #4ec9b0;">Terminal Output</div>
+            <pre id="outputResult">Click 'Run Code' to see execution results...</pre>
+        </div>
+    </div>
+
+    <script>
+        const labCode = document.getElementById('labCode');
+        const lineNumbers = document.getElementById('lineNumbers');
+        const connectionStatus = document.getElementById('connectionStatus');
+
+        function updateEditorUI() {
+            labCode.style.height = 'auto';
+            labCode.style.height = (labCode.scrollHeight) + 'px';
+
+            const lines = labCode.value.split('\n').length;
+            let numbersString = '';
+            for (let i = 1; i <= lines; i++) {
+                numbersString += i + '<br>';
+            }
+            lineNumbers.innerHTML = numbersString;
+        }
+
+        labCode.addEventListener('input', updateEditorUI);
+        window.addEventListener('load', updateEditorUI);
+
+const firebaseConfig = {
+            apiKey: "AIzaSyASbHBHJtfwkTrRDWG7KZMaSoWuQFEITJc",
+            authDomain: "code-block-70c03.firebaseapp.com",
+            databaseURL: "https://code-block-70c03-default-rtdb.firebaseio.com",
+            projectId: "code-block-70c03",
+            storageBucket: "code-block-70c03.firebasestorage.app",
+            messagingSenderId: "10644871862",
+            appId: "1:10644871862:web:f3b017a389d1db12c82417",
+            measurementId: "G-EBQM9QQN7Y"
+        };
+
+        let dbRef = null;
+        let isRemoteUpdate = false;
+
+        if (firebaseConfig.databaseURL) {
+            firebase.initializeApp(firebaseConfig);
+            dbRef = firebase.database().ref('shared_cpp_code');
+            
+            connectionStatus.textContent = "Live Connected";
+            connectionStatus.style.color = "#4ec9b0";
+
+            dbRef.on('value', (snapshot) => {
+                const val = snapshot.val();
+                if (val !== null && val !== labCode.value) {
+                    isRemoteUpdate = true;
+                    let cursorPosition = labCode.selectionStart;
+                    labCode.value = val;
+                    updateEditorUI();
+                    labCode.setSelectionRange(cursorPosition, cursorPosition);
+                    isRemoteUpdate = false;
+                }
+            });
+
+            labCode.addEventListener('input', () => {
+                if (!isRemoteUpdate) {
+                    dbRef.set(labCode.value);
+                }
+            });
+        } else {
+            const channel = new BroadcastChannel('cpp_live_lab');
+            labCode.addEventListener('input', () => {
+                channel.postMessage(labCode.value);
+            });
+            channel.onmessage = (event) => {
+                if (labCode.value !== event.data) {
+                    labCode.value = event.data;
+                    updateEditorUI();
+                }
+            };
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.target.id === 'labCode' && e.key === 'Tab') {
+                e.preventDefault();
+                const start = e.target.selectionStart;
+                const end = e.target.selectionEnd;
+                e.target.value = e.target.value.substring(0, start) + "    " + e.target.value.substring(end);
+                e.target.selectionStart = e.target.selectionEnd = start + 4;
+                updateEditorUI();
+                if (dbRef) dbRef.set(e.target.value);
+            }
+        });
+
+        async function runCppCode() {
+            const code = labCode.value;
+            const stdin = document.getElementById('stdinInput').value;
+            const outputResult = document.getElementById('outputResult');
+            
+            outputResult.textContent = "Running...";
+            const ctl = new AbortController();
+
+            const body = {
+                language: "cpp",
+                stdin: stdin,
+                files: [
+                    {
+                        name: "main.cpp",
+                        content: code
+                    }
+                ]
+            };
+
+            try {
+                const r = await fetch('https://onecompiler-apis.p.rapidapi.com/api/v1/run', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'x-rapidapi-host': 'onecompiler-apis.p.rapidapi.com',
+                        'x-rapidapi-key': '54d151aef0msh242f35536f160aap10053djsn7cb07123571d'
+                    },
+                    body: JSON.stringify(body),
+                    signal: ctl.signal
+                });
+
+                const result = await r.json();
+                
+                if (result.stdout !== undefined && result.stdout !== null) {
+                    outputResult.textContent = result.stdout;
+                } else if (result.stderr) {
+                    outputResult.textContent = "Compilation Error:\n" + result.stderr;
+                } else {
+                    outputResult.textContent = JSON.stringify(result, null, 2);
+                }
+            } catch (error) {
+                outputResult.textContent = "Connection error: " + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
