@@ -2137,6 +2137,742 @@ int main() {
   ]
 });
 
+LECTURES.push({ id:'l11', n:11,
+  title:["Recursion","الاستدعاء الذاتي (Recursion)"],
+  obj:[
+    ["Define recursion and explain how a recursive function solves a problem by reducing it to smaller instances.","تعريف الاستدعاء الذاتي (Recursion) وشرح كيف تحل الدالة العودية المسألة بتقليصها إلى نسخ أصغر."],
+    ["Identify the base case and recursive case in a recursive algorithm.","تحديد الحالة الأساسية (Base case) والحالة العودية (Recursive case) في الخوارزمية."],
+    ["Trace recursive calls and understand how the call stack stores function activation records.","تتبّع الاستدعاءات العودية وفهم كيف يخزّن مكدس الاستدعاءات (Call stack) سجلات تنشيط الدوال."],
+    ["Write complete C++ programs using recursion for numerical, string, and searching problems.","كتابة برامج C++ كاملة تستخدم الاستدعاء الذاتي لمسائل عددية ونصية ومسائل بحث."],
+    ["Compare recursive and iterative approaches and discuss their time and space costs.","المقارنة بين الأسلوب العودي والتكراري ومناقشة كلفتهما الزمنية والمكانية."],
+    ["Recognize common recursion errors such as missing base cases, incorrect progress, and excessive depth.","التعرف على الأخطاء الشائعة مثل غياب الحالة الأساسية وعدم التقدم نحوها والعمق الزائد."]
+  ],
+  sec:[
+   {t:["What Is Recursion?","ما هو الاستدعاء الذاتي؟"], b:[
+     {k:'def', x:["Recursion is a technique in which a function calls itself, directly or indirectly, to solve a problem by reducing it to a smaller version of the same problem.","الاستدعاء الذاتي (Recursion) أسلوب تستدعي فيه الدالة نفسها، مباشرة أو بشكل غير مباشر، لحل مسألة بتقليصها إلى نسخة أصغر من المسألة نفسها."]},
+     {k:'ul', x:[
+       ["Every correct recursive solution needs a stopping condition called the base case.","كل حل عودي صحيح يحتاج شرط توقف يسمى الحالة الأساسية (Base case)."],
+       ["The recursive case must make progress toward the base case; otherwise the calls may continue indefinitely.","يجب أن تتقدم الحالة العودية نحو الحالة الأساسية، وإلا قد تستمر الاستدعاءات إلى ما لا نهاية."],
+       ["It is especially useful for trees, divide-and-conquer algorithms and mathematical definitions.","مفيد خصوصًا للأشجار وخوارزميات فرّق تسد (Divide and conquer) والتعريفات الرياضية."]]}
+   ]},
+   {t:["The Two Essential Parts","الجزءان الأساسيان"], b:[
+     {k:'cards', c:[
+       {t:["1. Base Case","1. الحالة الأساسية (Base Case)"], l:[
+         ["The condition that stops further recursive calls.","الشرط الذي يوقف الاستدعاءات العودية."],
+         ["Gives a direct answer for the smallest or simplest input.","يعطي إجابة مباشرة لأصغر أو أبسط مدخل."],
+         ["Without it, recursion continues until the program runs out of stack space.","بدونه يستمر الاستدعاء حتى تنفد مساحة المكدس."]]},
+       {t:["2. Recursive Case","2. الحالة العودية (Recursive Case)"], l:[
+         ["The part of the function that calls itself.","الجزء الذي تستدعي فيه الدالة نفسها."],
+         ["The call must work on a smaller or simpler input.","يجب أن يعمل الاستدعاء على مدخل أصغر أو أبسط."],
+         ["It must move closer to the base case at every step.","يجب أن يقترب من الحالة الأساسية في كل خطوة."]]}
+     ]}
+   ]},
+   {t:["General Structure of a Recursive Function","البنية العامة للدالة العودية"], b:[
+     {k:'code', x:`returnType function(parameters)
+{
+    if (base_case_condition)
+    {
+        return base_value;
+    }
+
+    // Reduce the problem
+    // and move toward the base case
+    return function(smaller_input);
+}`},
+     {k:'ul', x:[
+       ["Test whether the problem has reached its simplest form; if so, return the answer immediately.","اختبر هل وصلت المسألة إلى أبسط صورها؛ فإن كان كذلك فأرجع الإجابة فورًا."],
+       ["Otherwise, call the function again with an input closer to the base case.","وإلا فاستدعِ الدالة بمدخل أقرب إلى الحالة الأساسية."],
+       ["Use the returned result to build the answer to the original problem.","استخدم النتيجة المُرجعة لبناء إجابة المسألة الأصلية."]]}
+   ]},
+   {t:["Example 1: Factorial","مثال 1: المضروب (Factorial)"], b:[
+     {k:'p', x:["n! = n × (n−1)! for n > 0, with 0! = 1. So the base case is n == 0 and the recursive case is n * factorial(n - 1).","n! = n × (n−1)! عندما n > 0، مع 0! = 1. إذن الحالة الأساسية n == 0 والحالة العودية n * factorial(n - 1)."]},
+     {k:'code', run:1, x:`#include <iostream>
+using namespace std;
+
+long long factorial(int n)
+{
+    if (n == 0)              // Base case
+        return 1;
+
+    return n * factorial(n - 1);  // Recursive case
+}
+
+int main()
+{
+    int n;
+    cout << "Enter a non-negative integer: ";
+    cin >> n;
+
+    cout << "Factorial = " << factorial(n) << endl;
+    return 0;
+}`},
+     {k:'ul', h:["Sample run (input 5)","مثال تشغيل (المدخل 5)"], x:[["Factorial = 120","Factorial = 120"]]}
+   ]},
+   {t:["Tracing factorial(4) and the Call Stack","تتبّع factorial(4) ومكدس الاستدعاءات"], b:[
+     {k:'code', x:`factorial(4)
+    = 4 * factorial(3)
+    = 4 * 3 * factorial(2)
+    = 4 * 3 * 2 * factorial(1)
+    = 4 * 3 * 2 * 1 * factorial(0)
+    = 4 * 3 * 2 * 1 * 1
+    = 24`},
+     {k:'ul', x:[
+       ["Calls move down to the base case factorial(0); then the suspended calls resume in reverse order and results return upward.","تنزل الاستدعاءات إلى الحالة الأساسية factorial(0)، ثم تستأنف الاستدعاءات المعلّقة بترتيب عكسي وتعود النتائج صعودًا."],
+       ["Each call creates a stack frame holding its parameters, local variables and return information.","كل استدعاء ينشئ إطار مكدس (Stack frame) يحمل معاملاته ومتغيراته المحلية ومعلومات العودة."],
+       ["Frames are removed in last-in, first-out (LIFO) order: the stack grows to factorial(0), then shrinks.","تُزال الأطر بترتيب آخر من دخل أول من يخرج (LIFO): ينمو المكدس حتى factorial(0) ثم يتقلص."],
+       ["Deep recursion can use a lot of stack memory, even when each call is small.","الاستدعاء العميق قد يستهلك ذاكرة مكدس كبيرة حتى لو كان كل استدعاء صغيرًا."]]}
+   ]},
+   {t:["Examples 2 and 3: Sum and Power","مثالان 2 و3: المجموع والأُس"], b:[
+     {k:'p', x:["sum(n) = n + sum(n−1), with base case n <= 1. Each call decreases n by one, so it reaches the base case.","sum(n) = n + sum(n−1) والحالة الأساسية n <= 1. كل استدعاء ينقص n بواحد فتصل الدالة إلى الحالة الأساسية."]},
+     {k:'code', run:1, x:`#include <iostream>
+using namespace std;
+
+int sum(int n)
+{
+    if (n <= 1)
+        return n;
+
+    return n + sum(n - 1);
+}
+
+int main()
+{
+    int n;
+    cout << "Enter n: ";
+    cin >> n;
+
+    cout << "Sum = " << sum(n) << endl;
+    return 0;
+}`},
+     {k:'p', x:["x^n = x × x^(n−1), with base case x^0 = 1. The recursive case multiplies x by power(x, n−1).","x^n = x × x^(n−1) والحالة الأساسية x^0 = 1. الحالة العودية تضرب x في power(x, n−1)."]},
+     {k:'code', run:1, x:`#include <iostream>
+using namespace std;
+
+long long power(int x, int n)
+{
+    if (n == 0)
+        return 1;
+
+    return x * power(x, n - 1);
+}
+
+int main()
+{
+    int x, n;
+    cout << "Enter base and exponent: ";
+    cin >> x >> n;
+
+    cout << x << "^" << n << " = " << power(x, n) << endl;
+    return 0;
+}`}
+   ]},
+   {t:["Example 4: Fibonacci Sequence","مثال 4: متتالية فيبوناتشي (Fibonacci)"], b:[
+     {k:'ul', x:[
+       ["F(0) = 0, F(1) = 1, and F(n) = F(n−1) + F(n−2): each value depends on two smaller values.","F(0) = 0 وF(1) = 1 وF(n) = F(n−1) + F(n−2): كل قيمة تعتمد على قيمتين أصغر."],
+       ["Each call makes two more calls and the same values are calculated again and again, so the time grows exponentially: O(2^n).","كل استدعاء ينشئ استدعاءين آخرين وتُحسب القيم نفسها مرارًا، فينمو الزمن أُسّيًا: O(2^n)."],
+       ["Later, memoization or dynamic programming can reduce the repeated work.","لاحقًا، يمكن للتخزين المؤقت للنتائج (Memoization) أو البرمجة الديناميكية تقليل العمل المتكرر."]]},
+     {k:'code', run:1, x:`#include <iostream>
+using namespace std;
+
+long long fibonacci(int n)
+{
+    if (n <= 1)
+        return n;
+
+    return fibonacci(n - 1) + fibonacci(n - 2);
+}
+
+int main()
+{
+    int n;
+    cout << "Enter n: ";
+    cin >> n;
+
+    cout << "F(" << n << ") = " << fibonacci(n) << endl;
+    return 0;
+}`},
+     {k:'tip', x:["A recursive solution can be elegant but still inefficient: naive Fibonacci is O(2^n).","الحل العودي قد يكون أنيقًا لكنه غير فعّال: فيبوناتشي العودية البسيطة O(2^n)."]}
+   ]},
+   {t:["Example 5: Greatest Common Divisor (GCD)","مثال 5: القاسم المشترك الأكبر (GCD)"], b:[
+     {k:'ul', x:[
+       ["Euclid's algorithm: gcd(a, b) = gcd(b, a mod b). The base case is b == 0, where a is the GCD.","خوارزمية إقليدس: gcd(a, b) = gcd(b, a mod b). الحالة الأساسية b == 0 وعندها يكون a هو القاسم المشترك الأكبر."],
+       ["Each step shrinks the problem quickly, so this is efficient recursion.","كل خطوة تقلص المسألة كثيرًا، فهذا استدعاء ذاتي فعّال."]]},
+     {k:'code', run:1, x:`#include <iostream>
+using namespace std;
+
+int gcd(int a, int b)
+{
+    if (b == 0)
+        return a;
+
+    return gcd(b, a % b);
+}
+
+int main()
+{
+    int a, b;
+    cout << "Enter two positive integers: ";
+    cin >> a >> b;
+
+    cout << "GCD = " << gcd(a, b) << endl;
+    return 0;
+}`},
+     {k:'ex', x:["Worked trace: gcd(48, 18)","تتبّع محلول: gcd(48, 18)"]},
+     {k:'code', x:`gcd(48, 18)
+    -> gcd(18, 48 % 18)
+    -> gcd(18, 12)
+    -> gcd(12, 18 % 12)
+    -> gcd(12, 6)
+    -> gcd(6, 12 % 6)
+    -> gcd(6, 0)
+    -> 6`}
+   ]},
+   {t:["Example 6: Reverse a String","مثال 6: عكس نص بشكل عودي"], b:[
+     {k:'p', x:["Use two indexes and recursively move them toward the center, swapping the characters at each step.","نستخدم فهرسين ونحرّكهما عوديًا نحو المنتصف مع تبديل الحرفين في كل خطوة."]},
+     {k:'code', run:1, x:`#include <iostream>
+#include <string>
+using namespace std;
+
+void reverseString(string& s, int left, int right)
+{
+    if (left >= right)
+        return;
+
+    swap(s[left], s[right]);
+    reverseString(s, left + 1, right - 1);
+}
+
+int main()
+{
+    string text;
+    cout << "Enter a string: ";
+    getline(cin, text);
+
+    reverseString(text, 0, text.length() - 1);
+
+    cout << "Reversed: " << text << endl;
+    return 0;
+}`},
+     {k:'tip', x:["Base case: left >= right (the indexes met or crossed). The string is passed by reference (string&), so the original string is changed.","الحالة الأساسية: left >= right (التقى الفهرسان أو تجاوز أحدهما الآخر). النص يُمرَّر بالمرجع (string&) فيتغير النص الأصلي."]}
+   ]},
+   {t:["Example 7: Recursive Binary Search","مثال 7: البحث الثنائي (Binary Search) العودي"], b:[
+     {k:'ul', x:[
+       ["Works on a sorted array: compare the target with the middle element.","يعمل على مصفوفة مرتّبة: نقارن القيمة المطلوبة بالعنصر الأوسط."],
+       ["If the target is smaller, search only the left half; if larger, only the right half.","إذا كانت أصغر نبحث في النصف الأيسر فقط، وإذا كانت أكبر ففي النصف الأيمن فقط."],
+       ["The size is halved after every call, so the time complexity is O(log n).","يقل الحجم إلى النصف بعد كل استدعاء، لذلك التعقيد الزمني O(log n)."]]},
+     {k:'code', run:1, x:`#include <iostream>
+using namespace std;
+
+int binarySearch(const int a[], int left, int right, int target)
+{
+    if (left > right)
+        return -1;
+
+    int mid = left + (right - left) / 2;
+
+    if (a[mid] == target)
+        return mid;
+
+    if (target < a[mid])
+        return binarySearch(a, left, mid - 1, target);
+
+    return binarySearch(a, mid + 1, right, target);
+}
+
+int main()
+{
+    int a[] = {2, 5, 8, 12, 16, 21, 27, 35};
+    int n = sizeof(a) / sizeof(a[0]);
+    int target;
+
+    cout << "Enter value to search: ";
+    cin >> target;
+
+    int index = binarySearch(a, 0, n - 1, target);
+
+    if (index == -1)
+        cout << "Value not found." << endl;
+    else
+        cout << "Value found at index " << index << endl;
+
+    return 0;
+}`},
+     {k:'ul', h:["Sample runs","أمثلة تشغيل"], x:[
+       ["Input 21: Value found at index 5","المدخل 21: Value found at index 5"],
+       ["Input 9: Value not found.","المدخل 9: Value not found."]]}
+   ]},
+   {t:["Recursion vs. Iteration","الاستدعاء الذاتي مقابل التكرار"], b:[
+     {k:'cards', c:[
+       {t:["Recursion","الاستدعاء الذاتي (Recursion)"], l:[
+         ["Often matches the mathematical or structural definition of the problem closely.","غالبًا يطابق التعريف الرياضي أو البنيوي للمسألة عن قرب."],
+         ["Makes tree traversal and divide-and-conquer easier to express.","يسهّل التعبير عن اجتياز الأشجار وفرّق تسد."],
+         ["Uses the call stack: extra memory, and a risk of stack overflow when very deep.","يستخدم مكدس الاستدعاءات: ذاكرة إضافية وخطر فيض المكدس (Stack overflow) عند العمق الكبير."]]},
+       {t:["Iteration","التكرار (Iteration)"], l:[
+         ["Uses loops such as for, while and do-while.","يستخدم حلقات مثل for وwhile وdo-while."],
+         ["Usually lower function-call overhead and predictable memory usage.","عادةً كلفة استدعاء أقل واستخدام ذاكرة متوقع."],
+         ["Often preferable when the problem is naturally sequential.","كثيرًا ما يكون أفضل عندما تكون المسألة تتابعية بطبيعتها."]]}
+     ]}
+   ]},
+   {t:["Time and Space Complexity","التعقيد الزمني والمكاني"], b:[
+     {k:'ul', x:[
+       ["Time complexity: how the work grows as the input grows. Space complexity: the additional memory required.","التعقيد الزمني (Time complexity): كيف يزداد العمل مع حجم المدخل. التعقيد المكاني (Space complexity): الذاكرة الإضافية المطلوبة."],
+       ["One smaller call per step (like factorial): O(n) time and O(n) call-stack space.","استدعاء أصغر واحد في كل خطوة (مثل المضروب): O(n) زمنًا وO(n) مساحة مكدس."],
+       ["Binary search halves the problem: O(log n) time and O(log n) stack space.","البحث الثنائي يقسم المسألة نصفين: O(log n) زمنًا وO(log n) مساحة مكدس."],
+       ["Naive Fibonacci creates many overlapping calls: exponential time.","فيبوناتشي العودية البسيطة تنشئ استدعاءات متداخلة كثيرة: زمن أُسّي."],
+       ["Consider both the number of calls and the work done in each call.","انظر إلى عدد الاستدعاءات وإلى العمل المنفَّذ في كل استدعاء معًا."]]}
+   ]},
+   {t:["Common Errors and Debugging","الأخطاء الشائعة وتصحيحها"], b:[
+     {k:'ul', x:[
+       ["Missing base case: nothing stops the recursive calls.","غياب الحالة الأساسية: لا شيء يوقف الاستدعاءات."],
+       ["No progress toward the base case: the call receives the same or an invalid input.","عدم التقدم نحو الحالة الأساسية: يستقبل الاستدعاء المدخل نفسه أو مدخلًا غير صالح."],
+       ["Incorrect base case: stops too early or returns a wrong value.","حالة أساسية خاطئة: تتوقف مبكرًا أو تُرجع قيمة خاطئة."],
+       ["Incorrect combination of results: the returned values are used wrongly.","دمج خاطئ للنتائج: تُستخدم القيم المُرجعة بشكل خاطئ."],
+       ["Excessive depth: even a correct function can overflow the stack for very large inputs.","عمق زائد: حتى الدالة الصحيحة قد تسبب فيض المكدس مع مدخلات كبيرة جدًا."]]},
+     {k:'code', x:`// Incorrect: no progress toward the base case
+int badSum(int n)
+{
+    if (n == 0)
+        return 0;
+
+    return n + badSum(n);     // n never changes
+}`},
+     {k:'tip', x:["The recursive call sends the same n again, so the base case is never reached for a positive n. Correct version: return n + badSum(n - 1); Rule: trace a small input by hand before running.","الاستدعاء العودي يرسل n نفسها مرة أخرى، فلا تتحقق الحالة الأساسية أبدًا عندما n موجبة. النسخة الصحيحة: return n + badSum(n - 1); القاعدة: تتبّع مدخلًا صغيرًا يدويًا قبل التشغيل."]}
+   ]},
+   {t:["Where Is Recursion Used?","أين يُستخدم الاستدعاء الذاتي؟"], b:[
+     {k:'ul', x:[
+       ["Trees and graphs: file systems, expression trees.","الأشجار والرسوم البيانية: أنظمة الملفات وأشجار التعبيرات."],
+       ["Divide and conquer: binary search, merge sort, quicksort.","فرّق تسد: البحث الثنائي والترتيب بالدمج والترتيب السريع."],
+       ["Backtracking: mazes, permutations, combinations, N-Queens.","التراجع (Backtracking): المتاهات والتباديل والتوافيق ومسألة N-Queens."],
+       ["Mathematical algorithms (factorial, Fibonacci, GCD, exponentiation) and parsing nested expressions.","الخوارزميات الرياضية (المضروب وفيبوناتشي وGCD والأُس) وتحليل التعبيرات المتداخلة."]]}
+   ]},
+   {t:["Practice Exercises","تمارين تطبيقية"], b:[
+     {k:'ul', x:[
+       ["Write a recursive function for the product of the integers from 1 to n.","اكتب دالة عودية لحاصل ضرب الأعداد من 1 إلى n."],
+       ["Write a recursive function that counts the digits of a positive integer.","اكتب دالة عودية تحسب عدد أرقام عدد صحيح موجب."],
+       ["Write a recursive function that sums the digits of an integer.","اكتب دالة عودية تجمع أرقام عدد صحيح."],
+       ["Write a recursive function that checks whether a string is a palindrome.","اكتب دالة عودية تتحقق هل النص متماثل (Palindrome)."],
+       ["Modify binary search so it returns the position using 1-based numbering.","عدّل البحث الثنائي ليُرجع الموضع بترقيم يبدأ من 1."],
+       ["For each solution, identify the base case, recursive case, input reduction and expected complexity.","لكل حل حدّد الحالة الأساسية والحالة العودية وتقليص المدخل والتعقيد المتوقع."]]},
+     {k:'tip', x:["Write your solutions in the C++ Lab and test them with small inputs.","اكتب حلولك في مختبر C++ واختبرها بمدخلات صغيرة."]}
+   ]}
+  ],
+  take:[
+   ["Recursion: a function calls itself on a smaller version of the same problem. It needs a base case (stop) and a recursive case (progress toward it).","الاستدعاء الذاتي: دالة تستدعي نفسها على نسخة أصغر من المسألة. تحتاج حالة أساسية (توقف) وحالة عودية (تقدم نحوها)."],
+   ["factorial: base case n == 0 returns 1; recursive case n * factorial(n - 1). Calls go down to the base case, then results return up.","المضروب: الحالة الأساسية n == 0 تُرجع 1؛ والعودية n * factorial(n - 1). تنزل الاستدعاءات للحالة الأساسية ثم تعود النتائج صعودًا."],
+   ["Each call gets a stack frame (LIFO). Naive Fibonacci is O(2^n); binary search is O(log n).","كل استدعاء يحصل على إطار في المكدس (LIFO). فيبوناتشي البسيطة O(2^n) والبحث الثنائي O(log n)."],
+   ["Common errors: missing base case, no progress toward it, wrong base value. Trace a small input by hand first.","أخطاء شائعة: غياب الحالة الأساسية أو عدم التقدم نحوها أو قيمة أساسية خاطئة. تتبّع مدخلًا صغيرًا يدويًا أولًا."]
+  ],
+  fc:[
+   [["What is the purpose of the base case?","ما غرض الحالة الأساسية؟"],["It stops the recursion by giving a direct answer for the smallest or simplest input.","توقف الاستدعاء بإعطاء إجابة مباشرة لأصغر أو أبسط مدخل."]],
+   [["What happens if a recursive call makes no progress toward the base case?","ماذا يحدث إذا لم يتقدم الاستدعاء العودي نحو الحالة الأساسية؟"],["The base case is never reached; calls continue until the stack runs out of space (stack overflow).","لا تتحقق الحالة الأساسية أبدًا وتستمر الاستدعاءات حتى تنفد مساحة المكدس (فيض المكدس)."]],
+   [["For factorial(4), how many recursive calls happen before factorial(0) is reached?","في factorial(4) كم استدعاءً عوديًا يحدث قبل الوصول إلى factorial(0)؟"],["Three: factorial(3), (2) and (1). Then factorial(1) calls factorial(0), the base case (5 calls in total with factorial(4)).","ثلاثة: factorial(3) و(2) و(1). ثم تستدعي factorial(1) الدالة factorial(0) وهي الحالة الأساسية (5 استدعاءات بالمجموع مع factorial(4))."]],
+   [["Why is binary search suitable for recursion?","لماذا يناسب البحث الثنائي الحل العودي؟"],["Each comparison leaves the same problem on one half of a sorted range, so the size is halved every call: O(log n).","كل مقارنة تترك المسألة نفسها على نصف المدى المرتّب، فينقسم الحجم في كل استدعاء: O(log n)."]],
+   [["Why is naive recursive Fibonacci inefficient?","لماذا فيبوناتشي العودية البسيطة غير فعّالة؟"],["Each call makes two more calls and the same values are recalculated many times: exponential time, O(2^n).","كل استدعاء ينشئ استدعاءين وتُعاد حسابات القيم نفسها مرارًا: زمن أُسّي O(2^n)."]],
+   [["When might iteration be preferable to recursion?","متى يكون التكرار أفضل من الاستدعاء الذاتي؟"],["When the problem is naturally sequential, and you want lower call overhead and predictable memory.","عندما تكون المسألة تتابعية بطبيعتها وتريد كلفة استدعاء أقل واستخدام ذاكرة متوقعًا."]],
+   [["What does each call store on the call stack?","ماذا يخزّن كل استدعاء في مكدس الاستدعاءات؟"],["A stack frame: parameters, local variables and return information. Frames are removed in LIFO order.","إطار مكدس: المعاملات والمتغيرات المحلية ومعلومات العودة. وتُزال الأطر بترتيب LIFO."]],
+   [["Base case and recursive case of factorial?","ما الحالة الأساسية والحالة العودية للمضروب؟"],["Base case: n == 0 returns 1. Recursive case: n * factorial(n - 1).","الأساسية: n == 0 تُرجع 1. العودية: n * factorial(n - 1)."]],
+   [["Euclid's rule for GCD and its base case?","قاعدة إقليدس للقاسم المشترك الأكبر وحالتها الأساسية؟"],["gcd(a, b) = gcd(b, a % b); base case: b == 0, return a.","gcd(a, b) = gcd(b, a % b)؛ الحالة الأساسية: b == 0 فنُرجع a."]],
+   [["What is wrong with: return n + badSum(n);?","ما الخطأ في: return n + badSum(n);؟"],["n never changes, so the base case is never reached. Fix: badSum(n - 1).","n لا تتغير فلا تتحقق الحالة الأساسية أبدًا. الحل: badSum(n - 1)."]]
+  ],
+  quiz:[
+   {q:["Recursion is a technique in which a function:","الاستدعاء الذاتي أسلوب تقوم فيه الدالة بـ:"], o:[["Calls itself, directly or indirectly","استدعاء نفسها مباشرة أو بشكل غير مباشر"],["Calls only library functions","استدعاء دوال المكتبة فقط"],["Runs only inside a loop","العمل داخل حلقة فقط"],["Never returns a value","عدم إرجاع أي قيمة"]], a:0},
+   {q:["The base case of a recursive function is:","الحالة الأساسية في الدالة العودية هي:"], o:[["The part that calls itself","الجزء الذي يستدعي نفسه"],["The first line of main","أول سطر في main"],["The condition that stops further recursive calls","الشرط الذي يوقف الاستدعاءات العودية"],["The largest possible input","أكبر مدخل ممكن"]], a:2},
+   {q:["In the factorial function, the base case is:","في دالة المضروب، الحالة الأساسية هي:"], o:[["n * factorial(n - 1)","n * factorial(n - 1)"],["n == 0","n == 0"],["n == 10","n == 10"],["factorial(n) == n","factorial(n) == n"]], a:1},
+   {q:["What does factorial(4) return?","ماذا تُرجع factorial(4)؟"], o:[["10","10"],["16","16"],["24","24"],["120","120"]], a:2},
+   {q:["Stack frames of recursive calls are removed in which order?","بأي ترتيب تُزال أطر المكدس للاستدعاءات العودية؟"], o:[["Last-in, first-out (LIFO)","آخر من دخل أول من يخرج (LIFO)"],["First-in, first-out (FIFO)","أول من دخل أول من يخرج (FIFO)"],["Random order","ترتيب عشوائي"],["Alphabetical order","ترتيب أبجدي"]], a:0},
+   {q:["The time complexity of naive recursive Fibonacci is:","التعقيد الزمني لفيبوناتشي العودية البسيطة هو:"], o:[["O(n)","O(n)"],["O(log n)","O(log n)"],["O(1)","O(1)"],["O(2^n)","O(2^n)"]], a:3},
+   {q:["What does gcd(48, 18) return?","ماذا تُرجع gcd(48, 18)؟"], o:[["3","3"],["12","12"],["18","18"],["6","6"]], a:3},
+   {q:["Recursive binary search requires the array to be:","البحث الثنائي العودي يتطلب أن تكون المصفوفة:"], o:[["Empty","فارغة"],["Sorted","مرتّبة"],["Strings only","نصوصًا فقط"],["Of size 10","بحجم 10"]], a:1},
+   {q:["int badSum(int n) { if (n == 0) return 0; return n + badSum(n); }  What is wrong?","int badSum(int n) { if (n == 0) return 0; return n + badSum(n); }  ما الخطأ؟"], o:[["n never changes, so the base case is never reached","n لا تتغير فلا تتحقق الحالة الأساسية أبدًا"],["It is missing a return type","ينقصها نوع الإرجاع"],["It must use a loop","يجب أن تستخدم حلقة"],["n + ... is not allowed in C++","العملية n + ... غير مسموحة في C++"]], a:0},
+   {q:["Iteration may be preferable to recursion when:","قد يكون التكرار أفضل من الاستدعاء الذاتي عندما:"], o:[["The problem is a tree","تكون المسألة شجرة"],["No loops are available","لا تتوفر حلقات"],["You want a deeper stack","تريد مكدسًا أعمق"],["The problem is naturally sequential","تكون المسألة تتابعية بطبيعتها"]], a:3}
+  ]
+});
+
+LECTURES.push({ id:'l12', n:12,
+  title:["Strings in C++","السلاسل النصية في C++ (Strings)"],
+  obj:[
+    ["Understand what a string is and how text is represented in C++.","فهم ما هي السلسلة النصية (String) وكيف يُمثَّل النص في C++."],
+    ["Distinguish between a character, a character array (C-string), and std::string.","التمييز بين الحرف (char) ومصفوفة الأحرف (C-string) والصنف std::string."],
+    ["Declare, initialize, input, output, and modify strings.","تعريف السلاسل وتهيئتها وإدخالها وإخراجها وتعديلها."],
+    ["Use common string operations: length, concatenation, comparison, searching, and substring extraction.","استخدام عمليات السلاسل الشائعة: الطول والدمج والمقارنة والبحث واستخراج نص جزئي."],
+    ["Write complete C++ programs that process strings.","كتابة برامج C++ كاملة تعالج السلاسل النصية."],
+    ["Recognize common string-related errors and choose the appropriate string technique.","التعرف على الأخطاء الشائعة في السلاسل واختيار الأسلوب المناسب."]
+  ],
+  sec:[
+   {t:["What Is a String? Character vs. String","ما هي السلسلة النصية؟ الحرف مقابل السلسلة"], b:[
+     {k:'def', x:["A string is a sequence of characters used to represent text, such as \"Hello\", \"Sudan\" or \"Programming\". Each character occupies a position in the string.","السلسلة النصية (String) هي تسلسل من الأحرف يُستخدم لتمثيل النص، مثل \"Hello\" و\"Sudan\" و\"Programming\". كل حرف يشغل موضعًا في السلسلة."]},
+     {k:'ul', x:[
+       ["Strings are used for names, messages, passwords, addresses, sentences and other text.","تُستخدم السلاسل للأسماء والرسائل وكلمات المرور والعناوين والجمل وغيرها من النصوص."],
+       ["In C++, strings can be handled using character arrays or the std::string class.","في C++ يمكن التعامل مع السلاسل بمصفوفات الأحرف أو بالصنف std::string."]]},
+     {k:'tbl', h:[["Type","النوع"],["Quotes","علامات الاقتباس"],["Example","مثال"],["Stores","يخزّن"]],
+      r:[[["char","char"],["Single: 'A'","مفردة: 'A'"],["char grade = 'A';","char grade = 'A';"],["One character","حرفًا واحدًا"]],
+         [["string","string"],["Double: \"ABC\"","مزدوجة: \"ABC\""],["string name = \"Ahmed\";","string name = \"Ahmed\";"],["Many characters","عدة أحرف"]]]}
+   ]},
+   {t:["C-Strings: Character Arrays","سلاسل C: مصفوفات الأحرف"], b:[
+     {k:'ul', x:[
+       ["A traditional C-string is stored in an array of characters and ends with the special null character '\\0'.","تُخزَّن سلسلة C التقليدية في مصفوفة أحرف وتنتهي بالحرف الفارغ الخاص '\\0' (Null character)."],
+       ["The null character tells C++ where the string ends.","الحرف الفارغ يخبر C++ أين تنتهي السلسلة."],
+       ["Example: char name[6] = \"Ayat\"; the array has room for A, y, a, t and '\\0'.","مثال: char name[6] = \"Ayat\"; تتسع المصفوفة للأحرف A وy وa وt ثم '\\0'."],
+       ["C-strings are still important because many older C/C++ functions use them.","ما زالت سلاسل C مهمة لأن كثيرًا من دوال C/C++ القديمة تستخدمها."]]},
+     {k:'code', x:`char word[6] = "Hello";`},
+     {k:'tbl', h:[["Position","الموضع"],["0","0"],["1","1"],["2","2"],["3","3"],["4","4"],["5","5"]],
+      r:[[["Character","الحرف"],["H","H"],["e","e"],["l","l"],["l","l"],["o","o"],["\\0","\\0"]]]},
+     {k:'tip', x:["The visible text \"Hello\" has 5 characters, but the array needs 6 elements (one more for '\\0').","النص الظاهر \"Hello\" فيه 5 أحرف لكن المصفوفة تحتاج 6 عناصر (عنصر إضافي لـ '\\0')."]}
+   ]},
+   {t:["Declaring and Initializing C-Strings","تعريف سلاسل C وتهيئتها"], b:[
+     {k:'code', x:`char name[10] = "Ali";
+char city[] = "Khartoum";
+char word[6] = {'H','e','l','l','o','\\0'};`},
+     {k:'ul', x:[
+       ["Character arrays can be initialized when they are declared.","يمكن تهيئة مصفوفات الأحرف عند تعريفها."],
+       ["The size must be large enough for all characters plus the null character.","يجب أن يكفي الحجم لكل الأحرف مع الحرف الفارغ."],
+       ["You may omit the size and let the compiler determine it, as in char city[].","يمكن حذف الحجم وترك المترجم يحدده كما في char city[]."]]},
+     {k:'tip', x:["After the declaration, ordinary assignment with = is not allowed for a character array (name = \"Omar\"; is an error).","بعد التعريف لا يُسمح بالإسناد العادي بالعامل = لمصفوفة أحرف (name = \"Omar\"; خطأ)."]}
+   ]},
+   {t:["Input and Output of Strings","إدخال السلاسل وإخراجها"], b:[
+     {k:'ul', x:[
+       ["cout can display a C-string or std::string.","يستطيع cout عرض سلسلة C أو std::string."],
+       ["cin >> reads one word and stops at whitespace such as a space.","cin >> يقرأ كلمة واحدة ويتوقف عند الفراغ مثل المسافة."],
+       ["getline() reads a complete line, including spaces, until Enter is pressed.","getline() يقرأ سطرًا كاملًا بما فيه المسافات حتى يُضغط Enter."],
+       ["For sentences or full names, getline() is usually more appropriate than cin >>.","للجمل والأسماء الكاملة يكون getline() عادةً أنسب من cin >>."]]},
+     {k:'code', x:`string name;
+cout << "Enter your name: ";
+cin >> name;          // reads one word
+
+string fullName;
+cout << "Enter full name: ";
+getline(cin, fullName);  // reads the whole line`},
+     {k:'tip', x:["Extra: if you call getline() after cin >> in the same program, write cin.ignore(); in between so the leftover Enter is skipped. (This part is an addition, not in the slides.)","إضافة: إذا استدعيت getline() بعد cin >> في البرنامج نفسه فاكتب cin.ignore(); بينهما لتجاوز Enter المتبقي. (هذا الجزء إضافة وليس في الشرائح.)"]}
+   ]},
+   {t:["The std::string Class","الصنف std::string"], b:[
+     {k:'ul', x:[
+       ["Modern C++ programs normally use std::string for everyday string processing; include the <string> header.","برامج C++ الحديثة تستخدم std::string عادةً لمعالجة النصوص؛ ويجب تضمين الملف <string>."],
+       ["It manages memory automatically and is easier and safer than raw character arrays.","يدير الذاكرة تلقائيًا وهو أسهل وأكثر أمانًا من مصفوفات الأحرف الخام."],
+       ["Strings can grow or shrink as needed.","يمكن أن تكبر السلسلة أو تصغر حسب الحاجة."],
+       ["Common operations: length(), +, +=, compare(), find(), substr() and more.","العمليات الشائعة: length() و+ و+= وcompare() وfind() وsubstr() وغيرها."]]},
+     {k:'code', run:1, x:`#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string name = "Ahmed";
+    cout << name << endl;
+    return 0;
+}`}
+   ]},
+   {t:["String Length and Accessing Characters","طول السلسلة والوصول إلى الأحرف"], b:[
+     {k:'ul', x:[
+       ["length() and size() return the number of characters (the null character is not counted).","length() وsize() تُرجعان عدد الأحرف (الحرف الفارغ غير محسوب)."],
+       ["Use the subscript operator [] with an index: the first character is at index 0, the last at length()-1.","استخدم العامل [] مع الفهرس: الحرف الأول عند الفهرس 0 والأخير عند length()-1."],
+       ["You can change an individual character when the string is not const.","يمكن تغيير حرف منفرد عندما لا تكون السلسلة const."]]},
+     {k:'code', x:`string word = "Computer";
+cout << word.length() << endl; // 8
+cout << word.size() << endl;   // 8
+
+string hello = "Hello";
+cout << hello[0] << endl; // H
+cout << hello[4] << endl; // o
+
+hello[0] = 'J';
+cout << hello << endl;    // Jello`},
+     {k:'ex', x:["Visit every character with a loop (index 0 to length()-1):","المرور على كل حرف بحلقة (من الفهرس 0 إلى length()-1):"]},
+     {k:'code', x:`string text = "Programming";
+
+for (int i = 0; i < text.length(); i++) {
+    cout << i << " : " << text[i] << endl;
+}`}
+   ]},
+   {t:["Concatenating and Comparing Strings","دمج السلاسل ومقارنتها"], b:[
+     {k:'ul', x:[
+       ["Concatenation joins strings: + creates a new combined string, += appends to an existing one.","الدمج (Concatenation) يضم السلاسل: + ينشئ سلسلة جديدة، و+= يضيف إلى سلسلة موجودة."],
+       ["Compare with ==, !=, <, >, <= and >=. The == operator checks for the same sequence of characters.","تُقارن بالعوامل ==, !=, <, >, <=, >=. والعامل == يتحقق من تطابق تسلسل الأحرف."]]},
+     {k:'code', x:`string first = "Hello";
+string second = "World";
+
+string message = first + " " + second;
+cout << message << endl;   // Hello World
+
+message += "!";
+cout << message << endl;   // Hello World!
+
+string a = "cat";
+string b = "cat";
+string c = "Cat";
+
+cout << (a == b) << endl;  // 1
+cout << (a == c) << endl;  // 0`},
+     {k:'tip', x:["String comparison is case-sensitive: \"Apple\" and \"apple\" are different.","مقارنة السلاسل حساسة لحالة الأحرف: \"Apple\" و\"apple\" مختلفتان."]}
+   ]},
+   {t:["Finding and Extracting: find() and substr()","البحث والاستخراج: find() وsubstr()"], b:[
+     {k:'ul', x:[
+       ["find() searches for a character or substring and returns the position of the first match.","find() تبحث عن حرف أو نص جزئي وتُرجع موضع أول تطابق."],
+       ["If there is no match it returns string::npos; always check for it before using the position.","إذا لم يوجد تطابق تُرجع string::npos؛ تحقق منها دائمًا قبل استخدام الموضع."]]},
+     {k:'code', x:`string text = "I love programming";
+
+size_t pos = text.find("program");
+
+if (pos != string::npos)
+    cout << "Found at index " << pos << endl;
+else
+    cout << "Not found" << endl;`},
+     {k:'ul', x:[
+       ["substr(start, length) extracts part of a string: start is where extraction begins, length is how many characters.","substr(start, length) تستخرج جزءًا من السلسلة: start هو بداية الاستخراج وlength عدد الأحرف."],
+       ["If length is omitted, the substring continues to the end.","إذا حُذف length يستمر النص الجزئي حتى النهاية."]]},
+     {k:'code', x:`string text = "Computer Science";
+
+string a = text.substr(0, 8);
+string b = text.substr(9);
+
+cout << a << endl; // Computer
+cout << b << endl; // Science`},
+     {k:'tip', x:["find() returning 0 is NOT \"not found\": 0 is a valid position. Not found is string::npos.","إذا أرجعت find() القيمة 0 فهذا لا يعني \"غير موجود\": 0 موضع صالح. أما غير الموجود فهو string::npos."]}
+   ]},
+   {t:["Modifying: insert(), erase(), replace()","التعديل: insert() وerase() وreplace()"], b:[
+     {k:'ul', x:[
+       ["insert(pos, text) places text at a position; the original text after it shifts to the right.","insert(pos, text) تضع نصًا عند موضع معين ويُزاح النص الأصلي بعدها إلى اليمين."],
+       ["erase(pos, count) removes characters, so the length of the string changes.","erase(pos, count) تحذف أحرفًا فيتغير طول السلسلة."],
+       ["replace(pos, count, text) replaces a selected section with new text.","replace(pos, count, text) تستبدل جزءًا محددًا بنص جديد."]]},
+     {k:'code', x:`string text = "I study C++.";
+text.insert(2, "Programming ");
+cout << text << endl;   // I Programming study C++.
+
+string a = "Hello World";
+a.erase(5, 6);
+cout << a << endl;      // Hello
+
+string b = "I like Java.";
+b.replace(7, 4, "C++");
+cout << b << endl;      // I like C++.`}
+   ]},
+   {t:["Useful String Functions","دوال السلاسل المفيدة"], b:[
+     {k:'tbl', h:[["Function","الدالة"],["What it does","ماذا تفعل"]],
+      r:[[["length() / size()","length() / size()"],["Return the number of characters","تُرجع عدد الأحرف"]],
+         [["find()","find()"],["Searches for a character or substring","تبحث عن حرف أو نص جزئي"]],
+         [["substr()","substr()"],["Extracts part of a string","تستخرج جزءًا من السلسلة"]],
+         [["insert()","insert()"],["Inserts text","تُدرج نصًا"]],
+         [["erase()","erase()"],["Removes text","تحذف نصًا"]],
+         [["replace()","replace()"],["Replaces part of a string","تستبدل جزءًا من السلسلة"]],
+         [["empty()","empty()"],["Checks whether the string has no characters","تتحقق هل السلسلة بلا أحرف"]],
+         [["clear()","clear()"],["Removes all characters","تحذف كل الأحرف"]]]}
+   ]},
+   {t:["Extra: The Functions in One Program","إضافة: الدوال في برنامج واحد"], b:[
+     {k:'p', x:["Press Try it to run the slide examples together. (This program is assembled from the slide examples; it is an addition, not in the slides.)","اضغط جرّبه لتشغيل أمثلة الشرائح معًا. (هذا البرنامج مُجمَّع من أمثلة الشرائح وهو إضافة وليس في الشرائح.)"]},
+     {k:'code', run:1, x:`#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string word = "Computer";
+    cout << "length = " << word.length() << endl;
+
+    string hello = "Hello";
+    hello[0] = 'J';
+    cout << hello << endl;
+
+    string first = "Hello", second = "World";
+    string message = first + " " + second;
+    message += "!";
+    cout << message << endl;
+
+    string a = "cat", c = "Cat";
+    cout << (a == c) << endl;
+
+    string text = "I love programming";
+    size_t pos = text.find("program");
+    if (pos != string::npos)
+        cout << "Found at index " << pos << endl;
+
+    string s = "Computer Science";
+    cout << s.substr(0, 8) << " | " << s.substr(9) << endl;
+
+    string t = "I study C++.";
+    t.insert(2, "Programming ");
+    cout << t << endl;
+
+    string u = "Hello World";
+    u.erase(5, 6);
+    cout << u << endl;
+
+    string v = "I like Java.";
+    v.replace(7, 4, "C++");
+    cout << v << endl;
+    return 0;
+}`}
+   ]},
+   {t:["Program 1: Count Characters","برنامج 1: عدّ الأحرف"], b:[
+     {k:'p', x:["Read a sentence and count its characters. Use getline() so spaces are included; length() gives the number of characters.","اقرأ جملة وعدّ أحرفها. استخدم getline() لتشمل المسافات؛ والدالة length() تعطي عدد الأحرف."]},
+     {k:'code', run:1, x:`#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string text;
+    cout << "Enter a sentence: ";
+    getline(cin, text);
+
+    cout << "Number of characters: "
+         << text.length() << endl;
+    return 0;
+}`},
+     {k:'ul', h:["Sample run (input: I love programming)","مثال تشغيل (المدخل: I love programming)"], x:[["Number of characters: 18","Number of characters: 18"]]}
+   ]},
+   {t:["Program 2: Count Vowels","برنامج 2: عدّ أحرف العلة"], b:[
+     {k:'p', x:["Read a sentence and count the vowels a, e, i, o and u. Use a loop over every character, and tolower() so uppercase and lowercase are handled together.","اقرأ جملة وعدّ أحرف العلة a وe وi وo وu. استخدم حلقة على كل حرف، واستخدم tolower() ليُعامَل الحرف الكبير والصغير معًا."]},
+     {k:'code', run:1, x:`#include <iostream>
+#include <string>
+#include <cctype>
+using namespace std;
+
+int main() {
+    string text;
+    int count = 0;
+
+    cout << "Enter text: ";
+    getline(cin, text);
+
+    for (char ch : text) {
+        ch = tolower(ch);
+        if (ch=='a' || ch=='e' || ch=='i' ||
+            ch=='o' || ch=='u')
+            count++;
+    }
+
+    cout << "Vowels = " << count << endl;
+    return 0;
+}`},
+     {k:'ul', h:["Sample run (input: Hello World)","مثال تشغيل (المدخل: Hello World)"], x:[["Vowels = 3","Vowels = 3"]]}
+   ]},
+   {t:["Program 3: Reverse a String","برنامج 3: عكس سلسلة"], b:[
+     {k:'p', x:["Start from the last character and move toward index 0. This reinforces indexing and loops.","ابدأ من الحرف الأخير وتحرّك نحو الفهرس 0. يعزز هذا التمرين الفهرسة والحلقات."]},
+     {k:'code', run:1, x:`#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string text;
+    cout << "Enter text: ";
+    getline(cin, text);
+
+    for (int i = (int)text.length() - 1; i >= 0; i--)
+        cout << text[i];
+
+    cout << endl;
+    return 0;
+}`},
+     {k:'ul', h:["Sample run (input: Hello)","مثال تشغيل (المدخل: Hello)"], x:[["olleH","olleH"]]}
+   ]},
+   {t:["Program 4: Count a Specific Character","برنامج 4: عدّ حرف محدد"], b:[
+     {k:'p', x:["Read a sentence and a target character, then compare each character with the target. This is a simple example of string traversal.","اقرأ جملة وحرفًا مطلوبًا ثم قارن كل حرف بالحرف المطلوب. هذا مثال بسيط على اجتياز السلسلة (Traversal)."]},
+     {k:'code', run:1, x:`#include <iostream>
+#include <string>
+using namespace std;
+
+int main() {
+    string text;
+    char target;
+    int count = 0;
+
+    cout << "Enter a sentence: ";
+    getline(cin, text);
+
+    cout << "Enter character: ";
+    cin >> target;
+
+    for (char ch : text)
+        if (ch == target)
+            count++;
+
+    cout << "Occurrences = " << count << endl;
+    return 0;
+}`},
+     {k:'ul', h:["Sample run (input: banana, then a)","مثال تشغيل (المدخلان: banana ثم a)"], x:[["Occurrences = 3","Occurrences = 3"]]}
+   ]},
+   {t:["C-String Functions: <cstring>","دوال سلاسل C: <cstring>"], b:[
+     {k:'tbl', h:[["Function","الدالة"],["What it does","ماذا تفعل"]],
+      r:[[["strlen()","strlen()"],["Finds the length of a C-string","تجد طول سلسلة C"]],
+         [["strcpy()","strcpy()"],["Copies one C-string to another","تنسخ سلسلة C إلى أخرى"]],
+         [["strcat()","strcat()"],["Concatenates C-strings","تدمج سلاسل C"]],
+         [["strcmp()","strcmp()"],["Compares two C-strings","تقارن سلسلتي C"]]]},
+     {k:'code', run:1, x:`#include <iostream>
+#include <cstring>
+using namespace std;
+
+int main() {
+    char a[20] = "Hello";
+    char b[] = "World";
+
+    cout << strlen(a) << endl;   // 5
+
+    strcat(a, b);                // HelloWorld
+    cout << a << endl;
+    return 0;
+}`},
+     {k:'tip', x:["These functions need careful attention to the array size and the null character. (The slide code is wrapped here in a complete program.)","هذه الدوال تتطلب الانتباه إلى حجم المصفوفة والحرف الفارغ. (كود الشريحة هنا مُغلَّف في برنامج كامل.)"]}
+   ]},
+   {t:["C-String vs. std::string","سلسلة C مقابل std::string"], b:[
+     {k:'tbl', h:[["Feature","الميزة"],["C-string","سلسلة C"],["std::string","std::string"]],
+      r:[[["Type","النوع"],["Character array terminated by '\\0'","مصفوفة أحرف تنتهي بـ '\\0'"],["C++ class designed for easier string handling","صنف في C++ لتسهيل التعامل مع السلاسل"]],
+         [["Memory","الذاكرة"],["Array capacity needs manual attention","سعة المصفوفة تحتاج انتباهًا يدويًا"],["Automatic memory management","إدارة تلقائية للذاكرة"]],
+         [["Functions","الدوال"],["<cstring> functions (strlen, strcpy...)","دوال <cstring> (مثل strlen وstrcpy)"],["Convenient member functions","دوال عضوة مريحة"]]]},
+     {k:'tip', x:["For most modern C++ applications, std::string is the preferred choice.","في معظم تطبيقات C++ الحديثة يكون std::string هو الخيار المفضل."]}
+   ]},
+   {t:["Common Mistakes","الأخطاء الشائعة"], b:[
+     {k:'ul', x:[
+       ["Using single quotes for a string: 'Hello' is incorrect; use \"Hello\".","استخدام علامات اقتباس مفردة لسلسلة: 'Hello' خطأ؛ استخدم \"Hello\"."],
+       ["Forgetting #include <string> when using std::string.","نسيان #include <string> عند استخدام std::string."],
+       ["Using cin >> when the input contains spaces.","استخدام cin >> عندما يحتوي المدخل على مسافات."],
+       ["Accessing an invalid index outside the string.","الوصول إلى فهرس غير صالح خارج السلسلة."],
+       ["Confusing find() returning 0 with \"not found\"; not found is string::npos.","الخلط بين إرجاع find() للقيمة 0 و\"غير موجود\"؛ غير الموجود هو string::npos."],
+       ["Using C-string functions without enough array space.","استخدام دوال سلاسل C بدون مساحة كافية في المصفوفة."]]}
+   ]},
+   {t:["Practice Exercises","تمارين تطبيقية"], b:[
+     {k:'ul', h:["1. Student Name","1. اسم الطالب"], x:[
+       ["Read a student's full name with getline(); display the name and its length.","اقرأ اسم الطالب الكامل بـ getline()؛ واعرض الاسم وطوله."],
+       ["Display the first character and the last character.","اعرض الحرف الأول والحرف الأخير."]]},
+     {k:'ul', h:["2. Word Search","2. البحث عن كلمة"], x:[
+       ["Read a sentence and a word to search for; use find().","اقرأ جملة وكلمة للبحث عنها؛ واستخدم find()."],
+       ["If found, display its starting position; if not, display an appropriate message.","إذا وُجدت اعرض موضع بدايتها؛ وإلا اعرض رسالة مناسبة."]]},
+     {k:'ul', h:["3. Simple Text Analyzer","3. محلل نصوص بسيط"], x:[
+       ["Read a sentence; count and display the characters, the vowels and the spaces.","اقرأ جملة؛ وعدّ واعرض عدد الأحرف وأحرف العلة والمسافات."],
+       ["Challenge: also count the number of words.","تحدٍّ: عدّ أيضًا عدد الكلمات."]]},
+     {k:'tip', x:["Write your solutions in the C++ Lab and test them with different inputs.","اكتب حلولك في مختبر C++ واختبرها بمدخلات مختلفة."]}
+   ]}
+  ],
+  take:[
+   ["A string is a sequence of characters. A char uses single quotes ('A'); a string uses double quotes (\"ABC\").","السلسلة تسلسل من الأحرف. الحرف char يُكتب بعلامات اقتباس مفردة ('A') والسلسلة بمزدوجة (\"ABC\")."],
+   ["A C-string is a char array ending with '\\0' (size = characters + 1). std::string (header <string>) is preferred: it manages memory and has length(), +, find(), substr(), insert(), erase(), replace().","سلسلة C مصفوفة أحرف تنتهي بـ '\\0' (الحجم = الأحرف + 1). و std::string (الملف <string>) هو المفضل: يدير الذاكرة ويوفر length() و+ وfind() وsubstr() وinsert() وerase() وreplace()."],
+   ["cin >> reads one word; getline(cin, s) reads the full line. Indexes run from 0 to length()-1, and == is case-sensitive.","cin >> يقرأ كلمة واحدة؛ وgetline(cin, s) يقرأ السطر كاملًا. الفهارس من 0 إلى length()-1 والعامل == حساس لحالة الأحرف."],
+   ["find() returns string::npos when nothing is found (0 is a valid position). Check it before using the position.","find() تُرجع string::npos عند عدم الوجود (و0 موضع صالح). تحقق منها قبل استخدام الموضع."]
+  ],
+  fc:[
+   [["What is the difference between char and string?","ما الفرق بين char وstring؟"],["A char holds one character, written with single quotes ('A'); a string holds a sequence of characters, written with double quotes (\"ABC\").","الـ char يحمل حرفًا واحدًا بعلامات اقتباس مفردة ('A')؛ والـ string يحمل تسلسلًا من الأحرف بعلامات مزدوجة (\"ABC\")."]],
+   [["Why does a C-string need the null character '\\0'?","لماذا تحتاج سلسلة C إلى الحرف الفارغ '\\0'؟"],["It tells C++ where the string ends, so the array needs one extra element.","يخبر C++ أين تنتهي السلسلة، لذلك تحتاج المصفوفة عنصرًا إضافيًا."]],
+   [["What is the difference between cin >> text and getline(cin, text)?","ما الفرق بين cin >> text وgetline(cin, text)؟"],["cin >> reads one word and stops at whitespace; getline() reads the complete line, including spaces, until Enter.","cin >> يقرأ كلمة ويتوقف عند الفراغ؛ وgetline() يقرأ السطر كاملًا بما فيه المسافات حتى Enter."]],
+   [["What does string::npos mean?","ماذا تعني string::npos؟"],["The value find() returns when no match is found.","القيمة التي تُرجعها find() عندما لا يوجد تطابق."]],
+   [["What is the difference between find() and substr()?","ما الفرق بين find() وsubstr()؟"],["find() searches and returns a position; substr(start, length) extracts part of the string.","find() تبحث وتُرجع موضعًا؛ وsubstr(start, length) تستخرج جزءًا من السلسلة."]],
+   [["How can you access the last character of a string?","كيف تصل إلى الحرف الأخير في سلسلة؟"],["text[text.length() - 1]","text[text.length() - 1]"]],
+   [["When would you prefer std::string over a C-string?","متى تفضّل std::string على سلسلة C؟"],["In most modern C++ programs: automatic memory management and convenient member functions.","في معظم برامج C++ الحديثة: إدارة تلقائية للذاكرة ودوال مريحة."]],
+   [["How many elements does char word[6] = \"Hello\"; use for text?","كم عنصرًا تستخدم char word[6] = \"Hello\"; للنص؟"],["6: five letters plus the null character '\\0'.","6: خمسة أحرف مع الحرف الفارغ '\\0'."]],
+   [["What does \"Hello World\" become after erase(5, 6)?","ماذا يصبح \"Hello World\" بعد erase(5, 6)؟"],["\"Hello\"","\"Hello\""]],
+   [["What does text.substr(9) give for \"Computer Science\"?","ماذا تعطي text.substr(9) للسلسلة \"Computer Science\"؟"],["\"Science\" (from index 9 to the end).","\"Science\" (من الفهرس 9 حتى النهاية)."]],
+   [["Are \"Apple\" and \"apple\" equal when compared with ==?","هل \"Apple\" و\"apple\" متساويتان عند المقارنة بـ ==؟"],["No. String comparison is case-sensitive.","لا. مقارنة السلاسل حساسة لحالة الأحرف."]],
+   [["Name the four C-string functions in <cstring>.","اذكر دوال سلاسل C الأربع في <cstring>."],["strlen(), strcpy(), strcat() and strcmp().","strlen() وstrcpy() وstrcat() وstrcmp()."]]
+  ],
+  quiz:[
+   {q:["A character is written with ___ quotes and a string with ___ quotes.","يُكتب الحرف بعلامات اقتباس ___ والسلسلة بعلامات ___."], o:[["single, double","مفردة، مزدوجة"],["double, single","مزدوجة، مفردة"],["single, single","مفردة، مفردة"],["double, double","مزدوجة، مزدوجة"]], a:0},
+   {q:["How many array elements does char word[] = \"Hello\"; need?","كم عنصرًا تحتاج المصفوفة char word[] = \"Hello\"؟"], o:[["4","4"],["5","5"],["6","6"],["7","7"]], a:2},
+   {q:["A C-string ends with the character:","تنتهي سلسلة C بالحرف:"], o:[["'\\n'","'\\n'"],["'\\0'","'\\0'"],["' '","' '"],["';'","';'"]], a:1},
+   {q:["Which statement reads a full line, including spaces?","أي عبارة تقرأ سطرًا كاملًا بما فيه المسافات؟"], o:[["cin >> text;","cin >> text;"],["cout << text;","cout << text;"],["text.length();","text.length();"],["getline(cin, text);","getline(cin, text);"]], a:3},
+   {q:["string word = \"Computer\"; word.length() returns:","string word = \"Computer\"; تُرجع word.length():"], o:[["7","7"],["8","8"],["9","9"],["0","0"]], a:1},
+   {q:["string word = \"Hello\"; word[0] = 'J'; cout << word;  prints:","string word = \"Hello\"; word[0] = 'J'; cout << word;  تطبع:"], o:[["Hello","Hello"],["J","J"],["Jello","Jello"],["Error","خطأ"]], a:2},
+   {q:["string a = \"cat\", c = \"Cat\"; cout << (a == c);  prints:","string a = \"cat\", c = \"Cat\"; cout << (a == c);  تطبع:"], o:[["1","1"],["0","0"],["cat","cat"],["Error","خطأ"]], a:1},
+   {q:["What does find() return when the substring is NOT found?","ماذا تُرجع find() عندما لا يوجد النص الجزئي؟"], o:[["0","0"],["The string length","طول السلسلة"],["An error message","رسالة خطأ"],["string::npos","string::npos"]], a:3},
+   {q:["string text = \"Computer Science\"; text.substr(9) gives:","string text = \"Computer Science\"; تعطي text.substr(9):"], o:[["Computer","Computer"],["Science","Science"],["Computer Science","Computer Science"],["Sci","Sci"]], a:1},
+   {q:["string t = \"Hello World\"; t.erase(5, 6); then t is:","string t = \"Hello World\"; t.erase(5, 6); فتصبح t:"], o:[["Hello World","Hello World"],["World","World"],["HelloWorld","HelloWorld"],["Hello","Hello"]], a:3},
+   {q:["Which header is needed to use std::string?","أي ملف رأس مطلوب لاستخدام std::string؟"], o:[["<string>","<string>"],["<cmath>","<cmath>"],["<array>","<array>"],["<iomanip>","<iomanip>"]], a:0},
+   {q:["Which is a common string mistake?","أي مما يلي خطأ شائع في السلاسل؟"], o:[["Using cin >> to read a sentence that contains spaces","استخدام cin >> لقراءة جملة فيها مسافات"],["Using getline() for a full name","استخدام getline() لاسم كامل"],["Including <string>","تضمين <string>"],["Using double quotes for a string","استخدام علامات اقتباس مزدوجة لسلسلة"]], a:0}
+  ]
+});
 
 
 const GLOSSARY = [
@@ -2159,7 +2895,11 @@ const GLOSSARY = [
 /* Lecture 9 */
 ["Array","مصفوفة"],["Array declaration","تعريف المصفوفة"],["Array size","حجم المصفوفة"],["Element","عنصر"],["Subscript","فهرس (أقواس الفهرسة)"],["Index","دليل (رقم الموضع)"],["Subscripting","الفهرسة"],["1-dimensional array","مصفوفة أحادية البعد"],["3-dimensional array","مصفوفة ثلاثية الأبعاد"],["Multidimensional array","مصفوفة متعددة الأبعاد"],["Out of range","خارج النطاق"],["Uninitialized","غير مهيأ"],["Maximum","القيمة العظمى"],["Minimum","القيمة الصغرى"],["Shifting elements","إزاحة العناصر"],["Copying arrays","نسخ المصفوفات"],["Total","المجموع الكلي"],["Largest element","أكبر عنصر"],["Alphabetical order","ترتيب أبجدي"],["Constant expression","تعبير ثابت"],
 /* Lecture 10 */
-["Pointer","مؤشر"],["Memory address","عنوان الذاكرة"],["Address operator (&)","عامل العنوان"],["Dereference operator (*)","عامل فك الإشارة"],["Pointer arithmetic","حساب المؤشرات"],["Pass by address","التمرير بالعنوان"],["Null pointer","مؤشر فارغ"],["nullptr","قيمة المؤشر الفارغ"],["Uninitialized pointer","مؤشر غير مهيأ"],["Reference","مرجع"],["Alias","اسم بديل"],["Dynamic memory allocation","تخصيص الذاكرة الديناميكي"],["Data structure","هيكل بيانات"],["Original variable","المتغير الأصلي"],["Hexadecimal","النظام السداسي عشر"],["First element","العنصر الأول"]
+["Pointer","مؤشر"],["Memory address","عنوان الذاكرة"],["Address operator (&)","عامل العنوان"],["Dereference operator (*)","عامل فك الإشارة"],["Pointer arithmetic","حساب المؤشرات"],["Pass by address","التمرير بالعنوان"],["Null pointer","مؤشر فارغ"],["nullptr","قيمة المؤشر الفارغ"],["Uninitialized pointer","مؤشر غير مهيأ"],["Reference","مرجع"],["Alias","اسم بديل"],["Dynamic memory allocation","تخصيص الذاكرة الديناميكي"],["Data structure","هيكل بيانات"],["Original variable","المتغير الأصلي"],["Hexadecimal","النظام السداسي عشر"],["First element","العنصر الأول"],
+/* Lecture 11 */
+["Recursion","الاستدعاء الذاتي (العودية)"],["Recursive function","دالة عودية"],["Recursive call","استدعاء عودي"],["Base case","الحالة الأساسية"],["Recursive case","الحالة العودية"],["Stopping condition","شرط التوقف"],["Call stack","مكدس الاستدعاءات"],["Stack frame","إطار المكدس"],["Activation record","سجل التنشيط"],["Stack overflow","فيض المكدس"],["LIFO (last-in, first-out)","آخر من دخل أول من يخرج"],["Recursion depth","عمق الاستدعاء"],["Factorial","المضروب"],["Fibonacci sequence","متتالية فيبوناتشي"],["Greatest common divisor (GCD)","القاسم المشترك الأكبر"],["Euclid's algorithm","خوارزمية إقليدس"],["Binary search","البحث الثنائي"],["Divide and conquer","فرّق تسد"],["Backtracking","التراجع"],["Memoization","التخزين المؤقت للنتائج"],["Dynamic programming","البرمجة الديناميكية"],["Time complexity","التعقيد الزمني"],["Space complexity","التعقيد المكاني"],["Exponential growth","نمو أُسّي"],["Iterative approach","الأسلوب التكراري"],["Palindrome","نص متماثل (يُقرأ بالاتجاهين)"],
+/* Lecture 12 */
+["C-string","سلسلة C (مصفوفة أحرف)"],["Character array","مصفوفة أحرف"],["Null character ('\\0')","الحرف الفارغ (نهاية السلسلة)"],["std::string","الصنف std::string"],["Concatenation","الدمج (ضم السلاسل)"],["Substring","نص جزئي"],["string::npos","قيمة تعني (غير موجود)"],["getline()","قراءة سطر كامل"],["Whitespace","الفراغ (مسافة أو سطر جديد)"],["Traversal","اجتياز السلسلة"],["Insert","إدراج"],["Erase","حذف"],["Replace","استبدال"],["Vowel","حرف علة"],["Length","الطول"],["Empty string","سلسلة فارغة"],["tolower()","تحويل إلى حرف صغير"],["Subscript operator []","عامل الفهرسة []"]
 ].sort((a,b)=>a[0].localeCompare(b[0]));
 
 /* ============================================================
@@ -2320,6 +3060,16 @@ function redrawDeck(id){ const el=$('deck-'+id); if(el) el.innerHTML=deckHTML(id
 /* ============================================================
    PAGES
    ============================================================ */
+/* ⚠️ ARABIC WARNING - shown on the Home page and the Downloads page.
+   To remove it later: delete this function and the two ${recursionWarning()} calls. */
+function recursionWarning(){
+  return `<div dir="rtl" class="font-arabic border-s-4 border-amber-400 bg-amber-400/10 rounded-e-xl p-5 mb-6">
+    <div class="font-bold text-amber-400 text-lg mb-2">⚠️ تنبيه</div>
+    <p class="leading-relaxed font-semibold">الدرس الخامس recursion كان غير موجود في الموقع الليله اضفته اليوم للموقع (يعني اذا نزت الشيت من قسم download بتلقاه مافيش)</p>
+    <p class="leading-relaxed mt-2">هو زاته برمجه بتقراها امشي طبق في التلفون ولا اللابتوب افضل 🙂</p>
+    <button data-go="l11" class="mt-3 px-4 py-2 rounded-lg bg-amber-400 hover:bg-amber-300 text-black text-sm font-bold transition">📖 افتح درس Recursion</button>
+  </div>`;
+}
 function renderHome(){
   const s=subj(), d=sd(), m=mastery(s), n=s.lectures.length;
   const steps = [
@@ -2342,6 +3092,7 @@ function renderHome(){
       <p class="text-xs text-dark-muted mt-2">${u('masteryHow')}</p>
 
     </div>
+     ${recursionWarning()}
      <div class="bg-dark-elevated border border-dark-border rounded-2xl p-5 mb-6">
       <div class="flex justify-between mb-2 font-semibold"><b>تنبيه بسيط</b></div>
       <p class="text-dark font-semibold text-xx mt-2">عشان دروس البرمجة مترابطه الصفحه دي فيها شيتات السمسترين (الاول و التاني)</p>
@@ -2521,6 +3272,7 @@ function renderDownloads(){
       <h1 class="text-3xl font-extrabold mb-1">${u('dl')}</h1>
       <p class="text-white/80 max-w-xl mx-auto">${u('dlIntro')}</p>
     </div>
+    <div class="max-w-md mx-auto">${recursionWarning()}</div>
     <div class="grid gap-4 max-w-md mx-auto">
       <div class="dl-card bg-dark-elevated border border-dark-border rounded-2xl p-5 flex flex-col" style="--d:120ms">
         <div class="dl-card-ico text-4xl mb-3">${it.icon}</div>
