@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="it-logo.svg">
+<title>IT Study Hub | مركز تقنية معلومات</title>
+<meta name="description" content="IT Study Hub — منصة لمتابعة المهام والواجبات والمجموعات الدراسية لطلاب تقنية المعلومات.">
+
+<!-- Tailwind through the CDN (Phase 8 decides whether to add a build step) -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      brand: { 500: 'rgb(var(--b5) / <alpha-value>)', 600: 'rgb(var(--b6) / <alpha-value>)' },
+      dark: { base: '#060911', surface: '#0c101d', elevated: '#151c2c', border: '#30384b', text: '#f3f4f6', muted: '#94a3b8' }
+    },
+    fontFamily: { sans: ['Inter', 'sans-serif'], arabic: ['Cairo', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
+  } }
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --b5: 249 115 22;
+    --b6: 234 88 12;
+  }
+  html[lang="en"] body { font-family: 'Inter', sans-serif; }
+  html[lang="ar"] body { font-family: 'Cairo', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  body {
+    background-color: #060911;
+    background-image:
+      linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+    background-size: 36px 36px;
+    animation: gridPan 50s linear infinite;
+  }
+  @keyframes gridPan {
+    /* Animate the background position, never the body transform:
+       a transformed body would move the whole page and break fixed elements. */
+    from { background-position: 0 0; }
+    to   { background-position: 360px 360px; }
+  }
+
+  .bg-glow { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+  .bg-glow span { position: absolute; border-radius: 50%; filter: blur(90px); will-change: transform; }
+  .bg-glow .orb1 { width: 420px; height: 420px; top: -12%; left: -8%; background: rgb(var(--b5) / .35); animation: drift1 24s ease-in-out infinite; }
+  .bg-glow .orb2 { width: 360px; height: 360px; bottom: -14%; right: -8%; background: rgba(56,189,248,.28); animation: drift2 30s ease-in-out infinite; }
+  .bg-glow .orb3 { width: 300px; height: 300px; top: 45%; left: 60%; background: rgba(168,85,247,.18); animation: drift3 36s ease-in-out infinite; }
+  @keyframes drift1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(110px,70px) scale(1.15); } }
+  @keyframes drift2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-90px,-60px) scale(1.1); } }
+  @keyframes drift3 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-70px,50px) scale(1.2); } }
+
+  #netCanvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  header, main { position: relative; z-index: 1; }
+
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #060911; }
+  ::-webkit-scrollbar-thumb { background: #30384b; border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgb(var(--b6)); }
+
+  .no-scrollbar { scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+
+  .fade { animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+  .terminal-cursor { animation: blink 0.8s infinite; }
+
+  .nav-link {
+    padding: 0.4rem 0.6rem;
+    border-radius: 0.5rem;
+    color: #94a3b8;
+    font-size: 0.8rem;
+    font-weight: 600;
+    white-space: nowrap;
+    border: 1px solid transparent;
+    transition: color .2s, background .2s, border-color .2s;
+  }
+  .nav-link:hover { color: #f3f4f6; background: rgba(255,255,255,.06); }
+  .nav-link.active {
+    color: rgb(var(--b5));
+    background: rgb(var(--b5) / .1);
+    border-color: rgb(var(--b5) / .35);
+  }
+</style>
+</head>
+<body class="bg-dark-base text-dark-text min-h-screen">
+
+<canvas id="netCanvas"></canvas>
+<div class="bg-glow" aria-hidden="true"><span class="orb1"></span><span class="orb2"></span><span class="orb3"></span></div>
+
+<header class="fixed top-0 inset-x-0 z-40 h-14 bg-dark-surface/95 backdrop-blur border-b border-dark-border">
+  <div class="w-full max-w-screen-2xl mx-auto h-full px-3 sm:px-6 flex items-center justify-between gap-2 sm:gap-4">
+    <a href="#/dashboard" class="font-bold text-brand-500 inline-flex items-center gap-2 mono text-sm sm:text-base shrink-0">
+      <img src="it-logo.svg" alt="IT Logo" class="w-7 h-7 sm:w-8 sm:h-8 object-contain">
+      <span>IT <span class="text-brand-500">&gt;_</span></span>
+    </a>
+
+    <nav id="mainNav" class="flex items-center gap-0.5 sm:gap-1 overflow-x-auto no-scrollbar" style="display:none" aria-label="Main">
+      <a class="nav-link" data-route="dashboard" data-i18n="dashboard" href="#/dashboard">لوحة التحكم</a>
+      <a class="nav-link" data-route="calendar" data-i18n="calendar" href="#/calendar">التقويم</a>
+      <a class="nav-link" data-route="groups" data-i18n="groups" href="#/groups">المجموعات</a>
+      <a class="nav-link" data-route="settings" data-i18n="settings" href="#/settings">الملف الشخصي</a>
+      <a id="adminNavLink" class="nav-link" data-route="admin" data-i18n="admin" href="#/admin" style="display:none">الإدارة</a>
+    </nav>
+
+    <div class="flex items-center gap-1.5 sm:gap-2 shrink-0">
+      <a id="userChip" href="#/settings"
+        class="max-w-[9rem] truncate text-xs sm:text-sm mono text-dark-muted hover:text-brand-500 transition"
+        style="display:none" dir="ltr"></a>
+      <button id="langBtn" type="button" aria-label="English"
+        class="px-3 py-1.5 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500 text-white text-xs sm:text-sm font-semibold mono transition">
+        English
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="pt-14">
+  <div id="app" class="w-full max-w-screen-2xl mx-auto p-4 sm:p-6 pb-24"></div>
+</main>
+
+<!-- App shell: auth, profile setup and routing -->
+<script type="module" src="js/app.js?v=20261030-7"></script>
+
+<!-- Network background (same style as the original site) -->
+<script>
+(function networkBackground(){
+  const canvas = document.getElementById('netCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const colors = ['249,115,22', '56,189,248'];
+  let w, h, particles = [], rafId = null;
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+
+  function initParticles() {
+    const density = reduceMotion ? 0 : Math.min(60, Math.round((w * h) / 24000));
+    particles = Array.from({ length: density }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: (Math.random() - 0.5) * 0.3,
+    }));
+  }
+
+  function step() {
+    ctx.clearRect(0, 0, w, h);
+    for (const p of particles) {
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0 || p.x > w) p.vx *= -1;
+      if (p.y < 0 || p.y > h) p.vy *= -1;
+    }
+    for (let i = 0; i < particles.length; i++) {
+      const a = particles[i];
+      ctx.beginPath();
+      ctx.arc(a.x, a.y, 1.5, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(148,163,184,.55)';
+      ctx.fill();
+      for (let j = i + 1; j < particles.length; j++) {
+        const b = particles[j];
+        const dx = a.x - b.x, dy = a.y - b.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 130) {
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.strokeStyle = `rgba(${colors[(i + j) % 2]},${0.16 * (1 - dist / 130)})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      }
+    }
+  }
+
+  function loop() { step(); rafId = requestAnimationFrame(loop); }
+  function start() { if (!rafId && !reduceMotion) rafId = requestAnimationFrame(loop); }
+  function stop() { if (rafId) { cancelAnimationFrame(rafId); rafId = null; } }
+
+  window.addEventListener('resize', () => { resize(); initParticles(); });
+  document.addEventListener('visibilitychange', () => { document.hidden ? stop() : start(); });
+
+  resize();
+  initParticles();
+  if (reduceMotion) { step(); } else { start(); }
+})();
+</script>
+
+</body>
+</html>

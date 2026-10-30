@@ -1,7 +1,5 @@
-// Supabase initialization for IT Study Hub
+// Supabase client. Loaded from Phase 2 onwards, when config.js holds real values.
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
 
-export const supabase = createClient(
-  window.SUPABASE_PROJECT_URL,
-  window.SUPABASE_ANON_KEY
-);
+export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
