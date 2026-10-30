@@ -124,8 +124,24 @@ function getGroupState({ group, item, members, myMembership, myRequest, now = Da
   return { kind: 'can-request' };
 }
 
-function stateActionHtml(state, group) {
+function stateActionHtml(state, group, isGuest = false) {
   const groupId = escapeHTML(group.id);
+  const returnTo = '#/groups/' + group.id;
+
+  if (isGuest) {
+    if (state.kind === 'past') {
+      return `<span class="inline-flex items-center rounded-md border border-slate-500/40 bg-slate-500/15 px-2 py-0.5 text-[10px] font-bold mono text-slate-300">${escapeHTML(t('deadlinePassed'))}</span>`;
+    }
+    if (state.kind === 'closed') {
+      return `<span class="inline-flex items-center rounded-md border border-slate-500/40 bg-slate-500/15 px-2 py-0.5 text-[10px] font-bold mono text-slate-300">${escapeHTML(t('groupClosed'))}</span>`;
+    }
+    if (state.kind === 'full') {
+      return `<span class="inline-flex items-center rounded-md border border-red-500/40 bg-red-500/15 px-2 py-0.5 text-[10px] font-bold mono text-red-300">${escapeHTML(t('groupFull'))}</span>`;
+    }
+    return `<a href="#/signin" data-return-to="${escapeHTML(returnTo)}" class="${primaryActionClass}">
+      <span aria-hidden="true">🔒</span>${escapeHTML(t('signInToJoin'))}
+    </a>`;
+  }
 
   switch (state.kind) {
     case 'member':
@@ -165,7 +181,7 @@ function requestFormHtml(group) {
   </form>`;
 }
 
-function groupCard({ group, item, members, owner, myMembership, myRequest }) {
+function groupCard({ group, item, members, owner, myMembership, myRequest, isGuest = false }) {
   const groupId = escapeHTML(group.id);
   const itemId = escapeHTML(item?.id || group.item_id);
   const state = getGroupState({ group, item, members, myMembership, myRequest });
@@ -213,7 +229,7 @@ function groupCard({ group, item, members, owner, myMembership, myRequest }) {
       </div>
 
       <div class="mt-4 flex flex-wrap items-center gap-2">
-        ${stateActionHtml(state, group)}
+        ${stateActionHtml(state, group, isGuest)}
       </div>
       <div data-request-slot></div>
     </div>
@@ -383,7 +399,7 @@ function createGroupUnavailablePanel(model) {
 }
 
 
-function cardFor(model, group) {
+function cardFor(model, group, isGuest = false) {
   return groupCard({
     group,
     item: model.itemMap.get(group.item_id),
@@ -391,6 +407,7 @@ function cardFor(model, group) {
     owner: model.profileMap.get(group.owner_id),
     myMembership: model.membershipByItem.get(group.item_id),
     myRequest: model.requestByGroup.get(group.id),
+    isGuest,
   });
 }
 
@@ -419,9 +436,11 @@ function filterGroups(model, ui) {
   });
 }
 
-function groupsPageHtml(model, ui) {
+function groupsPageHtml(model, ui, isGuest = false) {
   const eligibility = groupCreateEligibility(model);
-  const createAction = `<button type="button" data-action="toggle-create-group" class="${primaryActionClass}"><span aria-hidden="true">＋</span>${escapeHTML(t('createGroup'))}</button>`;
+  const createAction = isGuest
+    ? `<a href="#/signin" data-return-to="#/groups" class="${primaryActionClass}"><span aria-hidden="true">🔒</span>${escapeHTML(t('signInToCreateGroup'))}</a>`
+    : `<button type="button" data-action="toggle-create-group" class="${primaryActionClass}"><span aria-hidden="true">＋</span>${escapeHTML(t('createGroup'))}</button>`;
   const itemsWithGroups = [...new Set(model.groups.map((group) => group.item_id))]
     .map((id) => model.itemMap.get(id))
     .filter(Boolean)
@@ -471,16 +490,20 @@ function groupsPageHtml(model, ui) {
           <button type="button" data-action="clear-filters" class="text-xs font-bold text-brand-500 hover:text-amber-400 transition ms-auto">${escapeHTML(t('clearFilters'))}</button>
         </div>
       </div>
-      ${eligibility.eligible.length
-        ? ''
-        : `<div data-create-notice class="mt-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3">
-            <p class="text-xs sm:text-sm font-bold text-amber-100">${escapeHTML(t('createGroupUnavailable'))}</p>
-            <p class="mt-1 text-[11px] sm:text-xs text-amber-100/80 leading-relaxed">${escapeHTML(eligibility.total ? t('createGroupUnavailableHint') : t('noItemsYet'))}</p>
-            ${eligibility.total ? eligibilitySummaryHtml(eligibility) : ''}
-          </div>`}
+      ${isGuest
+        ? `<div class="mt-3 rounded-xl border border-brand-500/30 bg-brand-500/10 p-3 text-xs sm:text-sm text-white/85 leading-relaxed">
+            ${escapeHTML(t('guestGroupHint'))}
+          </div>`
+        : (eligibility.eligible.length
+          ? ''
+          : `<div data-create-notice class="mt-3 rounded-xl border border-amber-500/30 bg-amber-500/10 p-3">
+              <p class="text-xs sm:text-sm font-bold text-amber-100">${escapeHTML(t('createGroupUnavailable'))}</p>
+              <p class="mt-1 text-[11px] sm:text-xs text-amber-100/80 leading-relaxed">${escapeHTML(eligibility.total ? t('createGroupUnavailableHint') : t('noItemsYet'))}</p>
+              ${eligibility.total ? eligibilitySummaryHtml(eligibility) : ''}
+            </div>`)}
     </section>
 
-    <div data-create-group-slot></div>
+    ${isGuest ? '' : '<div data-create-group-slot></div>'}
 
     <section>
       ${sectionHeader(t('groups'), { count: model.groups.length, icon: '👥' })}
@@ -494,19 +517,19 @@ function mountPage(root, id) {
   return root.querySelector('#' + id);
 }
 
-function renderList(page, model, ui) {
+function renderList(page, model, ui, isGuest = false) {
   const list = page.querySelector('#groupsList');
   if (!list || !model) return;
 
   const filtered = filterGroups(model, ui);
   list.innerHTML = filtered.length
-    ? filtered.map((group) => cardFor(model, group)).join('')
+    ? filtered.map((group) => cardFor(model, group, isGuest)).join('')
     : emptyPanel('👥', t('noGroupsText'));
 }
 
 export async function renderGroups(root, ctx = {}) {
-  const me = ctx.profile;
-  if (!me) return;
+  const me = ctx.profile || null;
+  const isGuest = !me;
 
   const page = mountPage(root, 'groupsPage');
   const ui = { q: '', type: '', item: '', free: false };
@@ -519,27 +542,37 @@ export async function renderGroups(root, ctx = {}) {
     page.innerHTML = loadingPanel();
 
     try {
-      const [groups, items, memberships, requests] = await Promise.all([
+      const [groups, items] = await Promise.all([
         fetchAllGroups(),
         fetchItems({ force }),
-        fetchMyMemberships(me.id),
-        fetchMyRequests(me.id),
       ]);
       if (isStale() || current !== generation) return;
+
+      let memberships = [];
+      let requests = [];
+      if (me) {
+        [memberships, requests] = await Promise.all([
+          fetchMyMemberships(me.id),
+          fetchMyRequests(me.id),
+        ]);
+        if (isStale() || current !== generation) return;
+      }
 
       const members = await fetchMembersForGroups(groups.map((group) => group.id));
       if (isStale() || current !== generation) return;
 
-      const profiles = await fetchProfilesByIds([
+      const profileIds = [
         ...groups.map((group) => group.owner_id),
         ...members.map((member) => member.user_id),
-        me.id,
-      ]);
+      ];
+      if (me) profileIds.push(me.id);
+
+      const profiles = await fetchProfilesByIds(profileIds);
       if (isStale() || current !== generation) return;
 
       model = buildModel({ groups, items, members, profiles, memberships, requests });
-      page.innerHTML = groupsPageHtml(model, ui);
-      renderList(page, model, ui);
+      page.innerHTML = groupsPageHtml(model, ui, isGuest);
+      renderList(page, model, ui, isGuest);
     } catch (error) {
       if (isStale() || current !== generation) return;
       page.innerHTML = errorPanel({ message: rpcErrorMessage(error, getLang()), code: error?.code || '' }, 'groupsRetry');
@@ -567,13 +600,17 @@ export async function renderGroups(root, ctx = {}) {
       ui.item = '';
       ui.free = false;
       if (model) {
-        page.innerHTML = groupsPageHtml(model, ui);
-        renderList(page, model, ui);
+        page.innerHTML = groupsPageHtml(model, ui, isGuest);
+        renderList(page, model, ui, isGuest);
       }
       return;
     }
 
     if (action === 'toggle-create-group') {
+      if (!me) {
+        window.location.hash = '#/signin';
+        return;
+      }
       const slot = page.querySelector('[data-create-group-slot]');
       if (!slot) return;
       const notice = page.querySelector('[data-create-notice]');
@@ -643,7 +680,7 @@ export async function renderGroups(root, ctx = {}) {
   page.addEventListener('input', (event) => {
     if (event.target.id === 'groupSearch') {
       ui.q = event.target.value;
-      renderList(page, model, ui);
+      renderList(page, model, ui, isGuest);
     }
   });
 
@@ -656,10 +693,14 @@ export async function renderGroups(root, ctx = {}) {
     else if (event.target.id === 'groupItemFilter') ui.item = event.target.value;
     else if (event.target.id === 'groupFreeOnly') ui.free = event.target.checked;
     else return;
-    renderList(page, model, ui);
+    renderList(page, model, ui, isGuest);
   });
 
   page.addEventListener('submit', async (event) => {
+    if (!me) {
+      event.preventDefault();
+      return;
+    }
     const createGroupFormEl = event.target.closest('#groupsCreateForm');
     if (createGroupFormEl) {
       event.preventDefault();
@@ -783,7 +824,18 @@ function pendingRequestPanel(state) {
   </div>`;
 }
 
-function joinPanel(state, group) {
+function joinPanel(state, group, isGuest = false) {
+  if (isGuest) {
+    return `<section>${sectionHeader(t('joinGroup'), { icon: '📨' })}
+      <div class="rounded-2xl border border-brand-500/30 bg-brand-500/10 p-4 sm:p-5">
+        <p class="text-xs sm:text-sm text-white/85 leading-relaxed mb-3">${escapeHTML(t('guestGroupHint'))}</p>
+        <a href="#/signin" data-return-to="#/groups/${escapeHTML(group.id)}" class="${primaryActionClass}">
+          <span aria-hidden="true">🔒</span>${escapeHTML(t('signInToJoin'))}
+        </a>
+      </div>
+    </section>`;
+  }
+
   if (state.kind === 'member') return '';
 
   if (state.kind === 'pending') {
@@ -888,14 +940,15 @@ function requestsPanel(bundle) {
 
 function membersPanel(bundle, me) {
   const { group, members, profileMap } = bundle;
-  const isOwner = group.owner_id === me.id;
+  const meId = me?.id || '';
+  const isOwner = !!me && group.owner_id === meId;
 
   return `<section>${sectionHeader(t('members'), { count: members.length, icon: '👥' })}
     <div class="grid sm:grid-cols-2 gap-2 sm:gap-3">
       ${members.map((member) => {
         const profile = profileMap.get(member.user_id);
         const isGroupOwner = member.user_id === group.owner_id;
-        const isMe = member.user_id === me.id;
+        const isMe = !!me && member.user_id === meId;
         return `<div class="rounded-xl border border-dark-border bg-dark-base/40 p-3 flex items-center gap-3">
           ${profileUrl(profile)
             ? `<a href="${escapeHTML(profileUrl(profile))}" class="shrink-0 rounded-full hover:opacity-80 transition">${avatarHtml(profile, 'md')}</a>`
@@ -1015,10 +1068,19 @@ function reportPanel() {
   </section>`;
 }
 
-function groupPageHtml(bundle, me) {
+function guestReportPanel(groupId) {
+  return `<section class="rounded-2xl border border-dark-border bg-dark-surface/90 p-4 sm:p-5">
+    <p class="text-xs text-dark-muted mb-3">${escapeHTML(t('reportGroupHint'))}</p>
+    <a href="#/signin" data-return-to="#/groups/${escapeHTML(groupId)}" class="${secondaryActionClass}">
+      <span aria-hidden="true">⚑</span>${escapeHTML(t('signInToReport'))}
+    </a>
+  </section>`;
+}
+
+function groupPageHtml(bundle, me, isGuest = false) {
   const { group, item, members, secret, requests, profileMap, myMembership, myRequest } = bundle;
-  const isOwner = group.owner_id === me.id;
-  const isMember = members.some((member) => member.user_id === me.id);
+  const isOwner = !!me && group.owner_id === me.id;
+  const isMember = !!me && members.some((member) => member.user_id === me.id);
   const state = getGroupState({ group, item, members, myMembership, myRequest });
   const owner = profileMap.get(group.owner_id);
   const description = String(group.description || '').trim();
@@ -1053,19 +1115,19 @@ function groupPageHtml(bundle, me) {
       ${description ? `<p class="mt-3 text-sm text-dark-muted leading-relaxed whitespace-pre-line break-words">${escapeHTML(description)}</p>` : ''}
     </section>
 
-    ${joinPanel(state, group)}
+    ${joinPanel(state, group, isGuest)}
     ${isMember ? whatsappPanel(secret) : ''}
     ${isOwner ? requestsPanel({ group, requests, members, profileMap }) : ''}
     ${membersPanel({ group, members, profileMap }, me)}
-    ${leavePanel(group, members, me)}
+    ${me ? leavePanel(group, members, me) : ''}
     ${isOwner ? managePanel(bundle) : ''}
-    ${reportPanel()}
+    ${isGuest ? guestReportPanel(group.id) : reportPanel()}
   </div>`;
 }
 
 export async function renderGroupPage(root, ctx = {}) {
-  const me = ctx.profile;
-  if (!me) return;
+  const me = ctx.profile || null;
+  const isGuest = !me;
 
   const groupId = String(ctx.route?.params?.id || '');
   const page = mountPage(root, 'groupDetail');
@@ -1096,7 +1158,7 @@ export async function renderGroupPage(root, ctx = {}) {
     page.innerHTML = loadingPanel();
 
     try {
-      const data = await fetchGroupBundle(groupId, me.id);
+      const data = await fetchGroupBundle(groupId, me?.id || null);
       if (isStale() || current !== generation) return;
       if (!data) {
         notFound();
@@ -1104,7 +1166,7 @@ export async function renderGroupPage(root, ctx = {}) {
       }
       bundle = data;
       document.title = `${data.group.name} | IT Study Hub`;
-      page.innerHTML = groupPageHtml(data, me);
+      page.innerHTML = groupPageHtml(data, me, isGuest);
     } catch (error) {
       if (isStale() || current !== generation) return;
       if (error?.code === '22P02') {
@@ -1116,6 +1178,10 @@ export async function renderGroupPage(root, ctx = {}) {
   }
 
   async function runAction(button, action) {
+    if (!me) {
+      window.location.hash = '#/signin';
+      return;
+    }
     if (button?.disabled) return;
     if (button) button.disabled = true;
     try {
@@ -1232,6 +1298,10 @@ export async function renderGroupPage(root, ctx = {}) {
   });
 
   page.addEventListener('submit', async (event) => {
+    if (!me) {
+      event.preventDefault();
+      return;
+    }
     if (!bundle) return;
     const { group, item, secret, members } = bundle;
 
@@ -1430,10 +1500,13 @@ function createGroupForm(item) {
   </form>`;
 }
 
-function itemGroupsHtml(item, model, myMembership) {
+function itemGroupsHtml(item, model, myMembership, isGuest = false) {
   const pastDue = new Date(item.due_at).getTime() <= Date.now();
   const groupCount = model.groups.length;
-  const canCreate = !pastDue && !myMembership;
+  const canCreate = !pastDue && !myMembership && !isGuest;
+  const guestCreate = isGuest && !pastDue && !myMembership
+    ? `<a href="#/signin" data-return-to="#/items/${escapeHTML(item.id)}" class="${primaryActionClass}"><span aria-hidden="true">🔒</span>${escapeHTML(t('signInToCreateGroup'))}</a>`
+    : '';
 
   return `<section class="rounded-2xl border border-dark-border bg-dark-surface/60 p-4 sm:p-5">
     <div class="flex flex-wrap items-center justify-between gap-3 mb-3">
@@ -1444,8 +1517,12 @@ function itemGroupsHtml(item, model, myMembership) {
       </h2>
       ${canCreate
         ? `<button type="button" data-action="toggle-create" class="${primaryActionClass}">${escapeHTML(t('createGroup'))}</button>`
-        : ''}
+        : guestCreate}
     </div>
+
+    ${isGuest
+      ? `<p class="mb-3 text-[11px] sm:text-xs text-dark-muted leading-relaxed">${escapeHTML(t('guestGroupHint'))}</p>`
+      : ''}
 
     ${myMembership
       ? `<a href="#/groups/${escapeHTML(myMembership.group_id)}" class="mb-3 flex items-center gap-2 rounded-xl border border-brand-500/35 bg-brand-500/10 p-3 text-sm font-bold text-brand-500 hover:bg-brand-500/15 transition">
@@ -1465,6 +1542,7 @@ function itemGroupsHtml(item, model, myMembership) {
             owner: model.profileMap.get(group.owner_id),
             myMembership: model.membershipByItem.get(group.item_id),
             myRequest: model.requestByGroup.get(group.id),
+            isGuest,
           })).join('')
         : emptyPanel('👥', t('noGroupsForItem'))}
     </div>
@@ -1478,8 +1556,9 @@ function itemGroupsHtml(item, model, myMembership) {
 }
 
 export async function renderItemGroups(root, item, ctx = {}) {
-  const me = ctx.profile;
-  if (!root || !me || !item) return;
+  const me = ctx.profile || null;
+  const isGuest = !me;
+  if (!root || !item) return;
 
   if (Number(item.max_group_size) === 1) {
     root.innerHTML = `<section class="rounded-2xl border border-dark-border bg-dark-surface/60 p-4 sm:p-5">
@@ -1502,21 +1581,31 @@ export async function renderItemGroups(root, item, ctx = {}) {
     page.innerHTML = loadingPanel();
 
     try {
-      const [groups, memberships, requests] = await Promise.all([
+      const [groups] = await Promise.all([
         fetchGroupsForItem(item.id),
-        fetchMyMemberships(me.id),
-        fetchMyRequests(me.id),
       ]);
       if (isStale() || current !== generation) return;
+
+      let memberships = [];
+      let requests = [];
+      if (me) {
+        [memberships, requests] = await Promise.all([
+          fetchMyMemberships(me.id),
+          fetchMyRequests(me.id),
+        ]);
+        if (isStale() || current !== generation) return;
+      }
 
       const members = await fetchMembersForGroups(groups.map((group) => group.id));
       if (isStale() || current !== generation) return;
 
-      const profiles = await fetchProfilesByIds([
+      const profileIds = [
         ...groups.map((group) => group.owner_id),
         ...members.map((member) => member.user_id),
-        me.id,
-      ]);
+      ];
+      if (me) profileIds.push(me.id);
+
+      const profiles = await fetchProfilesByIds(profileIds);
       if (isStale() || current !== generation) return;
 
       model = buildModel({ groups, items: [item], members, profiles, memberships, requests });
@@ -1527,7 +1616,7 @@ export async function renderItemGroups(root, item, ctx = {}) {
         && groups.some((group) => group.id === membership.group_id)
         ? membership
         : null;
-      page.innerHTML = itemGroupsHtml(item, model, myMembership);
+      page.innerHTML = itemGroupsHtml(item, model, myMembership, isGuest);
     } catch (error) {
       if (isStale() || current !== generation) return;
       page.innerHTML = errorPanel({ message: rpcErrorMessage(error, getLang()), code: error?.code || '' }, 'itemGroupsRetry');
@@ -1542,6 +1631,7 @@ export async function renderItemGroups(root, item, ctx = {}) {
 
     const actionEl = event.target.closest('[data-action]');
     if (!actionEl) return;
+    if (!me) return;
     const action = actionEl.dataset.action;
 
     if (action === 'toggle-create') {
@@ -1600,6 +1690,10 @@ export async function renderItemGroups(root, item, ctx = {}) {
   });
 
   page.addEventListener('submit', async (event) => {
+    if (!me) {
+      event.preventDefault();
+      return;
+    }
     const createForm = event.target.closest('#createGroupForm');
     if (createForm) {
       event.preventDefault();

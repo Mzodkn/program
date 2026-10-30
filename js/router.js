@@ -1,6 +1,7 @@
 // Hash router. Routes:
 // #/dashboard, #/calendar, #/groups, #/groups/:id, #/items/:id,
-// #/u/:username, #/settings, #/admin
+// #/users, #/u/:username, #/settings, #/admin,
+// #/signin, #/signup, #/reset
 // The site works on any static host without server rewrites.
 
 const ROUTES = [
@@ -10,9 +11,13 @@ const ROUTES = [
   { name: 'groups', re: /^groups$/ },
   { name: 'group', re: /^groups\/([^/]+)$/, params: ['id'] },
   { name: 'item', re: /^items\/([^/]+)$/, params: ['id'] },
+  { name: 'users', re: /^users$/ },
   { name: 'user', re: /^u\/([^/]+)$/, params: ['username'] },
   { name: 'settings', re: /^settings$/ },
   { name: 'admin', re: /^admin$/ },
+  { name: 'signin', re: /^signin$/ },
+  { name: 'signup', re: /^signup$/ },
+  { name: 'reset', re: /^reset$/ },
 ];
 
 function safeDecode(value) {

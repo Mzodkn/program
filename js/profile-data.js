@@ -4,6 +4,9 @@ import { supabase } from './supabase.js';
 const PROFILE_FIELDS =
   'id,username,display_name,bio,avatar_path,banner_path,banner_poster_path,banner_is_animated,preferred_lang,created_at';
 
+const DIRECTORY_FIELDS =
+  'id,username,display_name,bio,avatar_path,banner_path,banner_poster_path,banner_is_animated,created_at';
+
 const CONTACT_FIELDS = 'user_id,whatsapp_e164,show_whatsapp';
 
 export function normalizeUsername(value) {
@@ -33,6 +36,41 @@ export async function fetchProfileByUsername(username) {
     .maybeSingle();
   if (error) throw error;
   return data || null;
+}
+
+// Public student directory. Two simple queries keep search text out of the
+// PostgREST filter grammar; results are merged by profile id.
+export async function searchProfiles(query = '', { limit = 30 } = {}) {
+  const text = String(query || '').trim();
+  const max = Number.isFinite(limit) ? Math.max(1, Math.min(60, Number(limit))) : 30;
+
+  if (!text) {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select(DIRECTORY_FIELDS)
+      .order('created_at', { ascending: false })
+      .limit(max);
+    if (error) throw error;
+    return Array.isArray(data) ? data : [];
+  }
+
+  const pattern = `%${text}%`;
+  const [byUsername, byName] = await Promise.all([
+    supabase.from('profiles').select(DIRECTORY_FIELDS).ilike('username', pattern).limit(max),
+    supabase.from('profiles').select(DIRECTORY_FIELDS).ilike('display_name', pattern).limit(max),
+  ]);
+
+  if (byUsername.error) throw byUsername.error;
+  if (byName.error) throw byName.error;
+
+  const merged = new Map();
+  [...(byUsername.data || []), ...(byName.data || [])].forEach((profile) => {
+    merged.set(profile.id, profile);
+  });
+
+  return [...merged.values()]
+    .sort((a, b) => String(a.display_name || a.username || '').localeCompare(String(b.display_name || b.username || '')))
+    .slice(0, max);
 }
 
 export async function fetchContact(userId) {

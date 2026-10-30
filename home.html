@@ -109,7 +109,8 @@ tailwind.config = {
       <a class="nav-link" data-route="dashboard" data-i18n="dashboard" href="#/dashboard">لوحة التحكم</a>
       <a class="nav-link" data-route="calendar" data-i18n="calendar" href="#/calendar">التقويم</a>
       <a class="nav-link" data-route="groups" data-i18n="groups" href="#/groups">المجموعات</a>
-      <a class="nav-link" data-route="settings" data-i18n="settings" href="#/settings">الملف الشخصي</a>
+      <a class="nav-link" data-route="users" data-i18n="users" href="#/users">الطلاب</a>
+      <a id="settingsNavLink" class="nav-link" data-route="settings" data-i18n="settings" href="#/settings">الملف الشخصي</a>
       <a id="adminNavLink" class="nav-link" data-route="admin" data-i18n="admin" href="#/admin" style="display:none">الإدارة</a>
     </nav>
 
@@ -117,6 +118,9 @@ tailwind.config = {
       <a id="userChip" href="#/settings"
         class="max-w-[9rem] truncate text-xs sm:text-sm mono text-dark-muted hover:text-brand-500 transition"
         style="display:none" dir="ltr"></a>
+      <a id="signInChip" href="#/signin" data-i18n="signIn"
+        class="px-3 py-1.5 rounded-lg bg-brand-500/15 border border-brand-500/40 hover:bg-brand-500/25 text-brand-500 text-xs sm:text-sm font-bold transition whitespace-nowrap"
+        style="display:none">تسجيل الدخول</a>
       <button id="langBtn" type="button" aria-label="English"
         class="px-3 py-1.5 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500 text-white text-xs sm:text-sm font-semibold mono transition">
         English
@@ -126,11 +130,18 @@ tailwind.config = {
 </header>
 
 <main class="pt-14">
+  <div id="guestBanner" class="w-full max-w-screen-2xl mx-auto px-4 sm:px-6 pt-4" style="display:none">
+    <div class="flex flex-wrap items-center gap-3 rounded-xl border border-brand-500/35 bg-brand-500/10 px-4 py-3">
+      <span class="min-w-0 flex-1 text-xs sm:text-sm text-white/90 leading-relaxed" data-i18n="guestBanner">أنت تتصفح كزائر. سجّل الدخول لإنشاء المجموعات والانضمام إليها وإدارة ملفك.</span>
+      <a id="guestSignIn" href="#/signin" data-i18n="signIn"
+        class="shrink-0 px-3 py-1.5 rounded-lg bg-brand-500 hover:bg-brand-600 text-dark-base font-bold text-xs sm:text-sm transition">تسجيل الدخول</a>
+    </div>
+  </div>
   <div id="app" class="w-full max-w-screen-2xl mx-auto p-4 sm:p-6 pb-24"></div>
 </main>
 
-<!-- App shell: auth, profile setup and routing -->
-<script type="module" src="js/app.js?v=20261030-7"></script>
+<!-- App shell: guest browsing, auth, profile setup and routing -->
+<script type="module" src="js/app.js?v=20261030-8"></script>
 
 <!-- Network background (same style as the original site) -->
 <script>

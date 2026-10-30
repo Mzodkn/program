@@ -1,5 +1,5 @@
-// App shell: auth gating, profile setup, routing and page rendering.
-// Signed out        -> sign in / sign up / reset password screens
+// App shell: guest browsing, auth gating, profile setup and routing.
+// Signed out        -> public pages render read-only; account pages ask to sign in
 // Signed in, no row -> profile setup form (username + display name)
 // Signed in + row   -> the routed app pages
 import { supabase } from './supabase.js';
@@ -13,6 +13,7 @@ import { renderItemPage } from './item-page.js';
 import { renderGroups, renderGroupPage } from './groups.js';
 import { renderSettings } from './settings.js';
 import { renderProfilePage } from './profile-page.js';
+import { renderUsersPage } from './users.js';
 import { renderAdmin } from './admin.js';
 import { checkIsAdmin } from './admin-data.js';
 import {
@@ -31,7 +32,9 @@ import {
 const app = document.getElementById('app');
 const nav = document.getElementById('mainNav');
 const userChip = document.getElementById('userChip');
+const signInChip = document.getElementById('signInChip');
 const langBtn = document.getElementById('langBtn');
+const guestBanner = document.getElementById('guestBanner');
 
 // Pages with a renderer below are real. The remaining entries are placeholders
 // until their build phase.
@@ -41,11 +44,19 @@ const pageMeta = {
   groups:    { titleKey: 'groups',    phase: null, icon: '👥', nav: 'groups' },
   group:     { titleKey: 'group',     phase: null, icon: '👥', nav: 'groups' },
   item:      { titleKey: 'item',      phase: null, icon: '📌', nav: 'dashboard' },
+  users:     { titleKey: 'users',     phase: null, icon: '🔎', nav: 'users' },
   user:      { titleKey: 'profile',   phase: null, icon: '🙂', nav: null },
   settings:  { titleKey: 'settings',  phase: null, icon: '⚙️', nav: 'settings' },
   admin:     { titleKey: 'admin',     phase: null, icon: '🛡️', nav: 'admin' },
+  signin:    { titleKey: 'signIn',    phase: null, icon: '🔐', nav: null },
+  signup:    { titleKey: 'signUp',    phase: null, icon: '✨', nav: null },
+  reset:     { titleKey: 'resetPassword', phase: null, icon: '🔑', nav: null },
   notFound:  { titleKey: 'notFound',  phase: null, icon: '❓', nav: null },
 };
+
+// Pages that need an account. Guests see the sign-in form instead.
+const AUTH_REQUIRED_ROUTES = new Set(['settings', 'admin']);
+const AUTH_ROUTES = new Set(['signin', 'signup', 'reset']);
 
 let viewSerial = 0;
 
@@ -55,8 +66,9 @@ const state = {
   profile: null,
   isAdmin: false,
   recoveryMode: false,
-  authView: 'signin', // signin | signup | reset
   notice: null,       // checkEmail | resetSent
+  returnTo: null,     // hash to open after a successful sign-in
+  authReason: null,   // shown above the sign-in form
   currentRoute: { name: 'dashboard', params: {}, path: '' },
 };
 
@@ -155,20 +167,45 @@ function setBusy(form, busy) {
 
 function setHeaderVisibility() {
   const signedIn = !!(state.session && state.profile);
-  const showNav = signedIn && !state.recoveryMode;
+  const guest = !state.session;
+  const authPage = AUTH_ROUTES.has(state.currentRoute.name);
+  const gatePage = !state.session && AUTH_REQUIRED_ROUTES.has(state.currentRoute.name);
+  const showGuestChrome = guest && state.booted && !state.recoveryMode && !authPage && !gatePage;
+  const showNav = state.booted && !state.recoveryMode && (signedIn || guest);
 
   nav.style.display = showNav ? 'flex' : 'none';
   userChip.style.display = signedIn ? 'inline-flex' : 'none';
+  if (signInChip) signInChip.style.display = showGuestChrome ? 'inline-flex' : 'none';
   if (langBtn) langBtn.style.display = signedIn ? 'none' : 'inline-block';
+  if (guestBanner) guestBanner.style.display = showGuestChrome ? '' : 'none';
 
   if (signedIn) {
     userChip.textContent = '@' + state.profile.username;
     userChip.title = state.profile.display_name || '';
   }
 
+  const settingsLink = document.getElementById('settingsNavLink');
+  if (settingsLink) settingsLink.style.display = signedIn ? '' : 'none';
+
   const adminLink = document.getElementById('adminNavLink');
   if (adminLink) {
     adminLink.style.display = signedIn && state.isAdmin ? '' : 'none';
+  }
+}
+
+function safeReturnTo() {
+  const target = String(state.returnTo || '');
+  if (!target || !target.startsWith('#/')) return '#/dashboard';
+  if (/#\/(signin|signup|reset)\/?$/.test(target)) return '#/dashboard';
+  return target;
+}
+
+function goTo(hash) {
+  const target = String(hash || '#/dashboard');
+  if (window.location.hash === target) {
+    window.dispatchEvent(new Event('hashchange'));
+  } else {
+    window.location.hash = target;
   }
 }
 
@@ -185,8 +222,25 @@ function render() {
     return;
   }
 
+  const routeName = state.currentRoute.name;
+
   if (!state.session) {
-    renderAuth();
+    if (AUTH_REQUIRED_ROUTES.has(routeName)) {
+      state.authReason = 'signInToContinue';
+      state.returnTo = '#/' + (state.currentRoute.path || routeName);
+      renderAuth();
+      return;
+    }
+
+    if (AUTH_ROUTES.has(routeName)) {
+      state.authReason = null;
+      renderAuth();
+      return;
+    }
+
+    // Guests can browse public pages; page renderers hide write actions.
+    state.authReason = null;
+    renderRoute();
     return;
   }
 
@@ -195,24 +249,42 @@ function render() {
     return;
   }
 
+  if (AUTH_ROUTES.has(routeName)) {
+    goTo(safeReturnTo());
+    return;
+  }
+
+  state.authReason = null;
   renderRoute();
 }
 
 // ---------- Signed out: sign in / sign up / reset ----------
 
 function renderAuth() {
+  const meta = pageMeta[state.currentRoute.name] || pageMeta.signin;
+  document.title = `${t(meta.titleKey)} | IT Study Hub`;
+  updateNav({ nav: null });
+
   if (state.notice === 'checkEmail') return renderNotice('checkEmail');
   if (state.notice === 'resetSent') return renderNotice('resetSent');
-  if (state.authView === 'signup') return renderSignUp();
-  if (state.authView === 'reset') return renderReset();
+
+  const routeName = state.currentRoute.name;
+  if (routeName === 'signup') return renderSignUp();
+  if (routeName === 'reset') return renderReset();
   return renderSignIn();
 }
 
 function renderSignIn() {
+  const reasonHtml = state.authReason
+    ? `<div class="mb-5 rounded-xl border border-amber-500/35 bg-amber-500/10 px-4 py-3 text-xs sm:text-sm font-bold text-amber-100 text-center">
+        ${escapeHTML(t(state.authReason))}
+      </div>`
+    : '';
+
   app.innerHTML = cardShell(
     t('signIn'),
     '🔐',
-    `${googleButtonHtml()}
+    `${reasonHtml}${googleButtonHtml()}
     ${authDividerHtml()}
     <form id="signInForm" novalidate>
       ${field(t('email'),
@@ -224,7 +296,8 @@ function renderSignIn() {
     <div class="flex items-center justify-between mt-5">
       <button id="goSignUp" type="button" class="${linkBtnClass}">${t('signUp')}</button>
       <button id="goReset" type="button" class="${linkBtnClass}">${t('forgotPassword')}</button>
-    </div>`
+    </div>
+    <button id="goGuest" type="button" class="${linkBtnClass} mt-5 block mx-auto">${t('browseAsGuest')}</button>`
   );
 
   const form = document.getElementById('signInForm');
@@ -248,14 +321,16 @@ function renderSignIn() {
   });
 
   document.getElementById('goSignUp').addEventListener('click', () => {
-    state.authView = 'signup';
     state.notice = null;
-    render();
+    goTo('#/signup');
   });
   document.getElementById('goReset').addEventListener('click', () => {
-    state.authView = 'reset';
     state.notice = null;
-    render();
+    goTo('#/reset');
+  });
+  document.getElementById('goGuest').addEventListener('click', () => {
+    state.returnTo = null;
+    goTo('#/dashboard');
   });
 
   wireGoogleButton();
@@ -292,7 +367,6 @@ function renderSignUp() {
       const data = await signUp(email, password);
       if (!data?.session) {
         // Email confirmation is on: no session until the link is opened.
-        state.authView = 'signin';
         state.notice = 'checkEmail';
         render();
       }
@@ -305,9 +379,8 @@ function renderSignUp() {
   });
 
   document.getElementById('goSignIn').addEventListener('click', () => {
-    state.authView = 'signin';
     state.notice = null;
-    render();
+    goTo('#/signin');
   });
 
   wireGoogleButton();
@@ -346,9 +419,8 @@ function renderReset() {
   });
 
   document.getElementById('goSignIn').addEventListener('click', () => {
-    state.authView = 'signin';
     state.notice = null;
-    render();
+    goTo('#/signin');
   });
 }
 
@@ -362,9 +434,8 @@ function renderNotice(kind) {
   );
 
   document.getElementById('backToSignIn').addEventListener('click', () => {
-    state.authView = 'signin';
     state.notice = null;
-    render();
+    goTo('#/signin');
   });
 }
 
@@ -520,6 +591,10 @@ function renderRoute() {
     runPage(renderGroups, ctx);
     return;
   }
+  if (state.currentRoute.name === 'users') {
+    runPage(renderUsersPage, ctx);
+    return;
+  }
   if (state.currentRoute.name === 'group') {
     runPage(renderGroupPage, ctx);
     return;
@@ -658,9 +733,16 @@ async function boot() {
         state.session = null;
         state.profile = null;
         state.isAdmin = false;
-        state.authView = 'signin';
         state.notice = null;
+        state.authReason = null;
+        state.returnTo = null;
         state.booted = true;
+        // Leave protected pages for the public dashboard, but keep the guest
+        // on whatever public page they were reading.
+        if (AUTH_REQUIRED_ROUTES.has(state.currentRoute.name)) {
+          state.currentRoute = { name: 'dashboard', params: {}, path: '' };
+          history.replaceState(null, '', '#/dashboard');
+        }
         render();
         return;
       }
@@ -690,18 +772,39 @@ async function boot() {
       }
 
       state.booted = true;
-      render();
+
+      if (AUTH_ROUTES.has(state.currentRoute.name)) {
+        const target = safeReturnTo();
+        state.returnTo = null;
+        goTo(target);
+      } else {
+        render();
+      }
     }, 0);
   });
 }
 
 // ---------- Global wiring ----------
 
-// Signed-out users still need a language switch on the auth screens.
-// Signed-in users change the language from #/settings.
+// Guests still need a language switch. Signed-in users change the language
+// from #/settings.
 langBtn.addEventListener('click', () => {
   const next = getLang() === 'ar' ? 'en' : 'ar';
   setLang(next);
+});
+
+// Remember where a guest was before opening sign-in, so they return there.
+document.addEventListener('click', (event) => {
+  const link = event.target.closest('a[data-return-to], #signInChip, #guestSignIn');
+  if (!link) return;
+
+  if (link.dataset.returnTo) {
+    state.returnTo = link.dataset.returnTo;
+    return;
+  }
+  if (!AUTH_ROUTES.has(state.currentRoute.name)) {
+    state.returnTo = window.location.hash || '#/dashboard';
+  }
 });
 
 window.addEventListener('languagechange', () => {

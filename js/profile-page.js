@@ -63,6 +63,14 @@ function reportPanel() {
   </section>`;
 }
 
+function guestReportPanel(username) {
+  return `<section class="rounded-2xl border border-dark-border bg-dark-surface/90 p-4 sm:p-5">
+    <a href="#/signin" data-return-to="#/u/${escapeHTML(username)}" class="${secondaryActionClass}">
+      <span aria-hidden="true">⚑</span>${escapeHTML(t('signInToReport'))}
+    </a>
+  </section>`;
+}
+
 function profilePageHtml(profile, contact, me) {
   const displayName = String(profile?.display_name || profile?.username || t('unknownUser'));
   const username = String(profile?.username || '');
@@ -101,6 +109,7 @@ function profilePageHtml(profile, contact, me) {
             ? `<a href="#/settings" class="${primaryActionClass}">${escapeHTML(t('editMyProfile'))}</a>`
             : ''}
           ${isMe ? `<span class="text-[11px] mono text-brand-500">${escapeHTML(t('thisIsYou'))}</span>` : ''}
+          ${!me ? `<span class="text-[11px] text-dark-muted">${escapeHTML(t('guestProfileHint'))}</span>` : ''}
         </div>
       </div>
     </section>
@@ -124,7 +133,7 @@ function profilePageHtml(profile, contact, me) {
               <p class="${HINT_CLASS}">${escapeHTML(t('whatsappShowHint'))}</p>
             </section>`
           : ''}
-        ${isMe ? '' : reportPanel()}
+        ${isMe ? '' : (me ? reportPanel() : guestReportPanel(username))}
       </div>
     </div>
   </div>`;
