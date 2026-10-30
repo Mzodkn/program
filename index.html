@@ -26,7 +26,7 @@ tailwind.config = {
 </script>
 <style>
   :root { 
-    --b5: 249 115 22; /* برتقالي ساطع */
+    --b5: 249 115 22; 
     --b6: 234 88 12; 
   }
   html[lang="en"] body { font-family: 'Inter', sans-serif; }
@@ -87,15 +87,16 @@ tailwind.config = {
 <main class="pt-14"><div id="app" class="max-w-4xl mx-auto p-4 sm:p-6 pb-24"></div></main>
 
 <script>
+// تم إضافة تاريخ الامتحان (examDate) لكل مادة ليعمل العد التنازلي والترتيب التلقائي
 const SUBJECTS = [
-  {id:'prg', file:'Programming.html',        type:'orange', ready:true,  icon:'⚡', header:'Programming.h',   lecCount:'10', name:["Programming","البرمجة المتقدمة"]},
-  {id:'it',  file:'IT.html',                 type:'orange', ready:true,  icon:'🌐', header:'Networking.h',    lecCount:'10', name:["Introduction to IT","مقدمة في تقنية المعلومات"]},
-  {id:'mth', file:'DiscreteMath.html',       type:'orange', ready:true,  icon:'🧮', header:'Math.h',          lecCount:'9',  name:["Discrete Math","الرياضيات المنفصلة"]},
-  {id:'is',  file:'InformationSystems.html',  type:'orange', ready:true,  icon:'🗄️', header:'Systems.h',       lecCount:'7',  name:["Information Systems","نظم المعلومات (IS)"]},
-  {id:'Etc', file:'ComputerEthics.html',     type:'sky',    ready:true,  icon:'⚖️', header:'Ethics.h',        lecCount:'8',  name:["Computer Ethics","أخلاقيات الكمبيوتر"]},
-  {id:'eng', file:'TechnicalEnglish.html',   type:'sky',    ready:true,  icon:'📜', header:'English.h',       lecCount:'7',  name:["Technical English II","اللغة الإنجليزية التقنية 2"]},
-  {id:'biz', file:'Business.html',           type:'sky',    ready:true,  icon:'💼', header:'Business.h',      lecCount:'8',  name:["Business Fundamentals","أساسيات الأعمال"]},
-  {id:'acc', file:'Accounting.html',         type:'sky',    ready:true,  icon:'📊', header:'Financial.h',     lecCount:'6',  name:["Principles of Accounting","مبادئ المحاسبة"]},
+  {id:'prg', file:'Programming.html',        type:'orange', ready:true,  icon:'⚡', header:'Programming.h',   lecCount:'10', name:["Programming","البرمجة المتقدمة"], examDate: '2026-06-15T09:00:00'},
+  {id:'it',  file:'IT.html',                 type:'orange', ready:true,  icon:'🌐', header:'Networking.h',    lecCount:'10', name:["Introduction to IT","مقدمة في تقنية المعلومات"], examDate: '2026-06-10T09:00:00'},
+  {id:'mth', file:'DiscreteMath.html',       type:'orange', ready:true,  icon:'🧮', header:'Math.h',          lecCount:'9',  name:["Discrete Math","الرياضيات المنفصلة"], examDate: '2026-11-08T09:00:00'},
+  {id:'is',  file:'InformationSystems.html',  type:'orange', ready:true,  icon:'🗄️', header:'Systems.h',       lecCount:'7',  name:["Information Systems","نظم المعلومات (IS)"], examDate: '2026-11-10T09:00:00'}, // منتهية كمثال
+  {id:'Etc', file:'ComputerEthics.html',     type:'sky',    ready:true,  icon:'⚖️', header:'Ethics.h',        lecCount:'8',  name:["Computer Ethics","أخلاقيات الكمبيوتر"], examDate: '2026-11-03T09:00:00'},
+  {id:'eng', file:'TechnicalEnglish.html',   type:'sky',    ready:true,  icon:'📜', header:'English.h',       lecCount:'7',  name:["Technical English II","اللغة الإنجليزية التقنية 2"], examDate: '2026-06-18T09:00:00'},
+  {id:'biz', file:'Business.html',           type:'sky',    ready:true,  icon:'💼', header:'Business.h',      lecCount:'8',  name:["Business Fundamentals","أساسيات الأعمال"], examDate: '2026-11-01T09:00:00'}, // منتهية كمثال
+  {id:'acc', file:'Accounting.html',         type:'sky',    ready:true,  icon:'📊', header:'Financial.h',     lecCount:'6',  name:["Principles of Accounting","مبادئ المحاسبة"], examDate: '2026-11-05T10:00:00'},
 ];
 
 const THEMES = {
@@ -119,18 +120,70 @@ function load(){ try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch
 let lang = load().lang||'en';
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
+// دالة لحساب الوقت المتبقي وتحديد إذا ما انتهى الامتحان أم لا
+function getExamStatus(examDateStr, ar) {
+  const now = new Date().getTime();
+  const examTime = new Date(examDateStr).getTime();
+  const diff = examTime - now;
+
+  if (diff <= 0) {
+    return { isExpired: true, text: ar ? '⚠️ انتهى الوقت - احترس لا تقترب' : '⚠️ Time Ended - Beware, Do Not Approach' };
+  }
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+  const timeStr = ar 
+    ? `⏳ متبقي: ${days}ي ${hours}س ${minutes}د ${seconds}ث`
+    : `⏳ Left: ${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+  return { isExpired: false, text: timeStr, diff: diff };
+}
+
 function render(){
   const ar=lang==='ar', data=load().data||{};
   document.documentElement.lang=lang; document.documentElement.dir=ar?'rtl':'ltr';
   document.getElementById('langBtn').textContent=ar?'English':'العربية';
-   const cards = SUBJECTS.map(s => {
+
+  // فرز المواد: المواد غير المنتهية أولاً (الأقرب وقتاً في الصدارة)، والمواد المنتهية في الأسفل
+  const sortedSubjects = [...SUBJECTS].sort((a, b) => {
+    const now = new Date().getTime();
+    const timeA = new Date(a.examDate).getTime() - now;
+    const timeB = new Date(b.examDate).getTime() - now;
+    
+    const expiredA = timeA <= 0 ? 1 : 0;
+    const expiredB = timeB <= 0 ? 1 : 0;
+
+    if (expiredA !== expiredB) {
+      return expiredA - expiredB; // المنتهية تذهب للأسفل
+    }
+    return timeA - timeB; // الأقرب فالأبعد للأعلى
+  });
+
+  const cards = sortedSubjects.map(s => {
     const t = THEMES[s.type] || THEMES.orange;
     const d = data[s.id] || {}, m = s.ready ? (d.mastery || 0) : 0;
+    const examStatus = getExamStatus(s.examDate, ar);
+    
+    // إذا انتهى الوقت، نغير لون الحدود والشفافية ونضيف شريط التحذير
+    const expiredStyle = examStatus.isExpired ? 'opacity-50 border-red-500/60 bg-red-950/20' : '';
     const tag = s.ready ? 'a href="' + esc(s.file) + '"' : 'div';
     const close = s.ready ? 'a' : 'div';
 
-    return `<${tag} class="block text-start rounded-2xl p-5 border border-dark-border bg-dark-surface/95 hover:bg-dark-elevated transition ${t.glow} ${s.ready ? 'hover:-translate-y-0.5 hover:shadow-xl' : 'opacity-70 cursor-not-allowed'}" style="border-top: 4px solid ${t.borderColor}">
+    return `<${tag} class="block text-start rounded-2xl p-5 border border-dark-border bg-dark-surface/95 hover:bg-dark-elevated transition ${t.glow} ${s.ready ? 'hover:-translate-y-0.5 hover:shadow-xl' : 'opacity-70 cursor-not-allowed'} ${expiredStyle}" style="border-top: 4px solid ${examStatus.isExpired ? '#ef4444' : t.borderColor}">
       
+      ${examStatus.isExpired ? `
+        <div class="mb-3 px-3 py-1 bg-red-600/20 border border-red-500 text-red-400 text-xs font-bold rounded-lg text-center mono animate-pulse">
+          ${examStatus.text}
+        </div>
+      ` : `
+        <div class="mb-2 text-xs mono font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-md inline-block border border-amber-500/20 countdown-timer" data-date="${s.examDate}">
+          ${examStatus.text}
+        </div>
+      `}
+
       <div class="flex items-center justify-between mb-2">
         <span class="text-3xl">${s.icon}</span>
         <span class="text-xs mono px-2.5 py-1 rounded-md font-bold" style="background: ${t.badgeBg}; color: ${t.badgeText}">
@@ -149,7 +202,6 @@ function render(){
       ` : ''}
     </${close}>`;
   }).join('');
-
 
   document.getElementById('app').innerHTML=`<div class="fade">
     
@@ -186,22 +238,20 @@ function render(){
       </div>
     </div>
 
-    <!-- خانة اختيار السمستر (Dropdown / Select) -->
+    <!-- خانة اختيار السمستر -->
     <div class="flex items-center gap-3 rounded-2xl p-4 mb-6 border border-brand-500/40 bg-dark-surface/95 shadow-lg">
       <span class="text-2xl">🎓</span>
       <div class="flex-1">
         <label for="semesterSelect" class="block text-xs mono text-brand-500 font-bold mb-1">
           ${ar ? '// تغير السمستر ' : '//  Jump to Your Semester  <  كلها سمسترين العندي >'}
-
         </label>
         <p class="text-dark-muted text-xs sm:text-sm mono min-h-[24px] m-3">
             <span id="typed-semester"></span><span class="text-brand-500 terminal-cursor">_</span>
-          </p>
+        </p>
         <select id="semesterSelect" onchange="if(this.value) window.location.href=this.value;" class="w-full bg-dark-base border border-dark-border focus:border-brand-500 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-white outline-none transition cursor-pointer">
           <option value="" disabled >${ar ? '— اختر السمستر الدراسي —' : '— Select Semester —'}</option>
           <option value="s1/index.html">${ar ? 'السمستر الأول ' : 'Semester 1'}</option>
           <option value="index.html" selected >${ar ? 'السمستر الثاني ' : 'Semester 2'}</option>
-
         </select>
       </div>
     </div>
@@ -213,10 +263,25 @@ function render(){
   startTypewriter(ar);
 }
 
+// تحديث العدادات التنازلية كل ثانية بسلاسة
+setInterval(() => {
+  const ar = lang === 'ar';
+  document.querySelectorAll('.countdown-timer').forEach(el => {
+    const examDateStr = el.getAttribute('data-date');
+    const status = getExamStatus(examDateStr, ar);
+    if (status.isExpired) {
+      // إذا انتهى الوقت أثناء تواجد المستخدم في الصفحة يتم إعادة الترتيب والرسم
+      render();
+    } else {
+      el.textContent = status.text;
+    }
+  });
+}, 1000);
+
 let typingInterval;
 function startTypewriter(isAr) {
   const el = document.getElementById('typed-text');
-    const els = document.getElementById('typed-semester');
+  const els = document.getElementById('typed-semester');
 
   if(!el) return;
   
@@ -229,8 +294,8 @@ function startTypewriter(isAr) {
     '// one Piece your uncle',
     '// Prepare for final exams and قوم أقري'
   ];
-const texts_s = isAr ? [
-    '// السمستر الافتراضي:2 الثاني',
+  const texts_s = isAr ? [
+    '// السمستر الافتراضي: الثاني',
     '// الخطة الدراسية نشطة',
     '// اختر السمستر للمتابعة'
   ] : [
@@ -238,7 +303,6 @@ const texts_s = isAr ? [
     '// Study plan active',
     '// Select semester to proceed'
   ];
-
 
   let textIdx = 0, charIdx = 0, isDeleting = false;
 
@@ -266,7 +330,6 @@ const texts_s = isAr ? [
     }
   }, 60);
 }
-
 
 document.getElementById('langBtn').onclick=()=>{
   lang=lang==='ar'?'en':'ar';
