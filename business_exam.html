@@ -1,214 +1,91 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en" dir="ltr">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>امتحان Introduction to Business</title>
+<link rel="icon" type="image/svg+xml" href="it-logo.svg">
+<title>Business Exam | مركز تقنية معلومات</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      brand: { 500: 'rgb(var(--b5) / <alpha-value>)', 600: 'rgb(var(--b6) / <alpha-value>)' },
+      dark: { base: '#060911', surface: '#0c101d', elevated: '#151c2c', border: '#30384b', text: '#f3f4f6', muted: '#94a3b8' }
+    },
+    fontFamily: { sans: ['Inter', 'sans-serif'], arabic: ['Cairo', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
+  } }
+}
+</script>
 <style>
-:root{--paper:#EDF0F6;--sheet:#FFFFFF;--ink:#16233F;--ink2:#51607C;--line:#D2D9E6;--pencil:#2F4FA2;--pencil-soft:#E4EAF9;--ok:#1B7A4B;--ok-soft:#E0F4E8;--bad:#B42318;--bad-soft:#FCE6E3;--mark:#FFE766;--margin:#E3A8A1;
---ui:"IBM Plex Sans Arabic",Tahoma,"Segoe UI",system-ui,sans-serif;--serif:"Source Serif 4",Georgia,"Times New Roman",serif}
-*{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--ui);font-size:16px;line-height:1.65}
-.wrap{max-width:800px;margin:0 auto;padding:22px 16px 80px}
-h1,h2,h3,h4,p{margin:0}
-button,select,input{font:inherit;color:inherit}
-:focus-visible{outline:2.5px solid var(--pencil);outline-offset:2px}
-.en{font-family:var(--serif);unicode-bidi:isolate}
-.muted{color:var(--ink2);font-size:15px}
+  :root { --b5: 56 189 248; --b6: 14 165 233; }
+  html[lang="en"] body { font-family: 'Inter', sans-serif; }
+  html[lang="ar"] body { font-family: 'Cairo', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  body {
+    background-color: #060911;
+    background-image:
+      linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+  .bg-glow { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+  .bg-glow span { position: absolute; border-radius: 50%; filter: blur(90px); will-change: transform; }
+  .bg-glow .orb1 { width: 420px; height: 420px; top: -12%; left: -8%; background: rgb(var(--b5) / .30); animation: drift1 24s ease-in-out infinite; }
+  .bg-glow .orb2 { width: 360px; height: 360px; bottom: -14%; right: -8%; background: rgba(59,130,246,.28); animation: drift2 30s ease-in-out infinite; }
+  .bg-glow .orb3 { width: 300px; height: 300px; top: 45%; left: 60%; background: rgba(168,85,247,.18); animation: drift3 36s ease-in-out infinite; }
+  @keyframes drift1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(110px,70px) scale(1.15); } }
+  @keyframes drift2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-90px,-60px) scale(1.1); } }
+  @keyframes drift3 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-70px,50px) scale(1.2); } }
+  #netCanvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  main, header { position: relative; z-index: 1; }
+  header.fixed { position: fixed; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #060911; }
+  ::-webkit-scrollbar-thumb { background: #30384b; border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgb(var(--b6)); }
+  .fade { animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+  .terminal-cursor { animation: blink 0.8s infinite; }
 
-/* hero */
-.hero{padding:18px 2px 14px}
-.hero h1{font-size:clamp(26px,5.4vw,38px);line-height:1.3;font-weight:700;letter-spacing:0}
-.hero h1 .en{font-weight:600;white-space:nowrap}
-.hero p{margin-top:8px;color:var(--ink2);max-width:560px}
-
-/* panels */
-.panel{background:var(--sheet);border:1px solid var(--line);border-radius:14px;padding:18px;margin:0 0 14px}
-.panel h2{font-size:19px;font-weight:700;line-height:1.4}
-.ph{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
-.panel>h2{margin-bottom:6px}
-.demo .muted{margin-bottom:14px}
-.demo .q{margin-bottom:0}
-.link{background:none;border:0;padding:6px 8px;color:var(--pencil);cursor:pointer;font-weight:600;border-radius:8px}
-.link:hover{background:var(--pencil-soft)}
-.presets{display:flex;gap:2px}
-
-/* mode */
-.modes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-.mode{position:relative;cursor:pointer}
-.mode input{position:absolute;opacity:0;inset:0}
-.mc{display:block;border:1.8px solid var(--line);border-radius:12px;padding:14px;height:100%}
-.mc b{display:block;font-size:17px}
-.mc span{display:block;color:var(--ink2);font-size:14.5px;line-height:1.55;margin-top:2px}
-.mode input:checked+.mc{border-color:var(--pencil);background:var(--pencil-soft)}
-.mode input:focus-visible+.mc{outline:2.5px solid var(--pencil);outline-offset:2px}
-.timer{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
-.timer[hidden]{display:none}
-.chk{display:flex;gap:8px;align-items:center;cursor:pointer}
-.chk input{width:18px;height:18px;accent-color:var(--pencil)}
-.mins{display:flex;gap:8px;align-items:center}
-.mins input{width:78px;padding:6px 8px;border:1.5px solid var(--line);border-radius:8px;background:#fff;text-align:center}
-
-/* chips */
-.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
-.chip{display:flex;flex-direction:column;align-items:flex-start;text-align:start;gap:0;padding:9px 12px;border:1.8px solid var(--line);background:#fff;border-radius:11px;cursor:pointer;line-height:1.4}
-.chip .cl{font-weight:700;font-size:14.5px}
-.chip .ce{font-size:13.5px;color:var(--ink2);font-family:var(--serif);text-align:left}
-.chip.on{border-color:var(--pencil);background:var(--pencil-soft)}
-.chip:hover{border-color:var(--pencil)}
-
-/* counters */
-.row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0;border-top:1px solid var(--line)}
-.row:first-child{border-top:0}
-.rl .ar{font-weight:700}
-.rl .en{font-size:14.5px;color:var(--ink2);line-height:1.35}
-.rl .hint{font-size:13.5px;color:var(--ink2);margin-top:2px}
-.step{display:flex;align-items:center;flex:none}
-.step button{width:40px;height:40px;border:1.8px solid var(--line);background:#fff;font-size:20px;cursor:pointer;line-height:1}
-.step button:first-child{border-radius:10px 0 0 10px;border-right:0}
-.step button:last-child{border-radius:0 10px 10px 0;border-left:0}
-.step button:hover:not(:disabled){background:var(--pencil-soft)}
-.step button:disabled{opacity:.35;cursor:default}
-.step input{width:58px;height:40px;text-align:center;border:1.8px solid var(--line);background:#fff;border-radius:0;-moz-appearance:textfield}
-.step input::-webkit-outer-spin-button,.step input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-.total{margin-top:6px;padding-top:12px;border-top:1px solid var(--line);font-size:17px}
-.total b{font-size:20px}
-.startbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-
-/* buttons */
-.btn{border:0;border-radius:11px;padding:11px 20px;font-weight:700;cursor:pointer;font-size:16px;line-height:1.3}
-.btn.primary{background:var(--pencil);color:#fff}
-.btn.primary:hover:not(:disabled){background:#243F87}
-.btn.ghost{background:#fff;color:var(--ink);border:1.8px solid var(--line)}
-.btn.ghost:hover{border-color:var(--pencil)}
-.btn.big{padding:13px 34px;font-size:18px}
-.btn.sm{padding:8px 14px;font-size:15px}
-.btn:disabled{opacity:.4;cursor:default}
-.acts{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 14px}
-
-/* question card (the exam paper) */
-.q{display:grid;grid-template-columns:58px minmax(0,1fr);direction:ltr;background:var(--sheet);border:1px solid var(--line);border-radius:10px;margin:0 0 14px;overflow:hidden;text-align:left}
-.q .no{border-right:1.5px solid var(--margin);padding:16px 2px;text-align:center;font-family:var(--serif);font-weight:600;color:var(--ink2);background:#F8FAFD;font-size:15px;line-height:1.3}
-.q .body{padding:16px 18px 16px}
-.stem{font-family:var(--serif);font-size:19.5px;line-height:1.5;margin-bottom:14px}
-.stem b{font-weight:700}
-.opts{display:grid;gap:6px}
-.opts.tf{display:flex;gap:26px;flex-wrap:wrap}
-.opt{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;background:none;border:0;border-radius:10px;padding:7px 8px;cursor:pointer;font-family:var(--ui);font-size:16px;line-height:1.5}
-.opts.tf .opt{width:auto;font-size:18px;align-items:center}
-.opt:hover:not(:disabled){background:var(--pencil-soft)}
-.opt:disabled{cursor:default}
-.bub{flex:none;width:28px;height:28px;border-radius:50%;border:1.8px solid var(--ink2);display:grid;place-items:center;font-size:12.5px;font-weight:700;color:var(--ink2);margin-top:1px;font-family:var(--ui)}
-.otxt{position:relative;display:inline-block;padding:2px 12px;margin:0 4px}
-.opt.sel .bub{background:var(--pencil);border-color:var(--pencil);color:#fff}
-.opt.sel{color:var(--pencil)}
-.opt.ok{background:var(--ok-soft)}
-.opt.ok .bub{background:var(--ok);border-color:var(--ok);color:#fff}
-.opt.bad{background:var(--bad-soft)}
-.opt.bad .bub{background:var(--bad);border-color:var(--bad);color:#fff}
-.opt:disabled{color:inherit}
-.ring{position:absolute;left:-8px;top:-5px;width:calc(100% + 16px);height:calc(100% + 10px);overflow:visible;pointer-events:none;animation:draw .38s ease-out both}
-.ring path{fill:none;stroke:var(--pencil);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
-.opt.ok .ring path{stroke:var(--ok)}
-.opt.bad .ring path{stroke:var(--bad)}
-@keyframes draw{from{clip-path:inset(-10px 100% -10px -10px)}to{clip-path:inset(-10px -10px -10px -10px)}}
-
-/* feedback */
-.fb{margin-top:12px;border-radius:10px;font-size:15.5px;direction:rtl;text-align:right;line-height:1.7}
-.fb:empty{display:none}
-.fb.ok,.fb.bad{padding:10px 14px}
-.fb.ok{background:var(--ok-soft);color:#0E4D2E}
-.fb.bad{background:var(--bad-soft);color:#7A1A12}
-.fb .en{font-size:16.5px;text-align:left}
-.fb .corr{margin-top:2px}
-.fb .exp{margin-top:6px;direction:ltr;text-align:left}
-.fb mark{background:var(--mark);color:var(--ink);padding:1px 5px;border-radius:3px;display:inline}
-
-/* word bank + fills */
-.bank{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 12px;border:1.8px dashed var(--ink2);border-radius:10px;margin-bottom:14px;background:#FBFCFE}
-.bank .bt{font-weight:700;font-size:14px;color:var(--ink2);margin-right:4px;font-family:var(--ui)}
-.bank .w{padding:3px 11px;border-radius:999px;background:var(--pencil-soft);font-family:var(--serif);font-size:16.5px}
-.fills{margin:0;padding-left:26px;display:grid;gap:12px;font-family:var(--serif);font-size:18px;line-height:2}
-.blank{font-family:var(--ui);font-size:15.5px;min-width:130px;max-width:100%;padding:5px 8px;margin:0 4px;border:1.8px solid var(--ink2);border-radius:8px;background:#fff;color:var(--ink)}
-.blank.ok{border-color:var(--ok);background:var(--ok-soft)}
-.blank.bad{border-color:var(--bad);background:var(--bad-soft)}
-.fix{font-family:var(--ui);font-size:14.5px;color:var(--bad);margin-left:4px;direction:rtl;display:inline-block}
-.fix b{font-family:var(--serif);font-size:16px}
-
-/* matching */
-.match{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.match h4{font-family:var(--ui);font-size:14px;color:var(--ink2);margin-bottom:8px;border-bottom:1.5px solid var(--line);padding-bottom:4px}
-.mrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px;font-family:var(--serif);font-size:17px;line-height:1.4}
-.mn{flex:none;width:24px;font-weight:600;color:var(--ink2)}
-.mt{flex:1 1 120px}
-.mrow .blank{min-width:64px;margin:0}
-.brow{display:flex;gap:10px;margin-bottom:10px;font-family:var(--serif);font-size:17px;line-height:1.4}
-.bl{flex:none;width:24px;font-weight:700;color:var(--pencil);font-family:var(--ui)}
-
-/* section headings */
-.sechead{margin:22px 0 12px}
-.sechead h2{font-family:var(--serif);font-size:22px;font-weight:700}
-.sechead .en{margin-top:2px;color:var(--ink2);font-size:16.5px}
-.sechead .ar{font-size:14.5px;color:var(--ink2);margin-top:2px}
-.sechead .rng{white-space:nowrap}
-.paperhead{border-bottom:2px solid var(--ink);padding-bottom:8px;margin-top:6px}
-.paperhead h1{font-family:var(--serif);font-size:28px}
-.paperhead p{font-family:var(--serif);color:var(--ink2)}
-
-/* practice + exam chrome */
-.ptop{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px;font-size:15px}
-.ptxt{color:var(--ink2)}
-.prog{height:8px;background:#DCE2EE;border-radius:99px;overflow:hidden}
-.prog span{display:block;height:100%;background:var(--pencil);border-radius:99px;transition:width .3s}
-.prog.low span{background:var(--bad)}
-.exambar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(237,240,246,.96);backdrop-filter:blur(6px);padding:10px 2px;margin:0 0 6px;border-bottom:1px solid var(--line)}
-.ec{display:flex;gap:14px;flex-wrap:wrap;font-size:15px;font-weight:600}
-.etime{font-variant-numeric:tabular-nums}
-.etime.low{color:var(--bad)}
-.exambar .btn{flex:none}
-
-/* results */
-.rhero{text-align:center;padding:14px 0 8px}
-.rhero h1{font-size:24px}
-.grade{position:relative;display:inline-block;margin:20px 22px 10px;padding:4px 26px}
-.gnum{font-family:var(--serif);font-size:62px;font-weight:600;line-height:1.2;color:var(--bad)}
-.gnum small{font-size:30px;color:var(--ink2);font-weight:400}
-.grade .ring{left:0;top:-4px;width:100%;height:calc(100% + 8px);animation-duration:.7s;animation-delay:.2s}
-.grade .ring path{stroke:var(--bad);stroke-width:3.2}
-.pct{font-size:20px;font-weight:700;margin-bottom:4px}
-.brw{margin:12px 0}
-.bt2{display:flex;justify-content:space-between;gap:12px;font-size:15px;margin-bottom:5px}
-.review{margin-top:22px}
-.seg{display:flex;border:1.8px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
-.seg button{border:0;background:none;padding:7px 14px;cursor:pointer;font-weight:600}
-.seg button.on{background:var(--pencil);color:#fff}
-
-@media (max-width:640px){
- .modes{grid-template-columns:1fr}
- .match{grid-template-columns:1fr}
- .q{grid-template-columns:44px minmax(0,1fr)}
- .q .body{padding:14px 12px}
- .stem{font-size:18px}
- .row{align-items:flex-start;flex-direction:column;gap:8px}
- .exambar .btn{font-size:14px;padding:8px 12px}
- .fills{padding-left:20px;font-size:17px}
- .blank{min-width:110px}
-}
-@media (prefers-reduced-motion:reduce){
- .ring{animation:none}
- .prog span{transition:none}
-}
-
-.stem[hidden]{display:none}
-
+  /* hand-drawn circle around the chosen answer */
+  .ring { position:absolute; left:-6px; top:-4px; width:calc(100% + 12px); height:calc(100% + 8px); overflow:visible; pointer-events:none; animation: draw .38s ease-out both; }
+  .ring path { fill:none; stroke:rgb(var(--b5)); stroke-width:2.4; stroke-linecap:round; stroke-linejoin:round; vector-effect:non-scaling-stroke; }
+  .opt.ok .ring path { stroke:#34d399; }
+  .opt.bad .ring path { stroke:#f87171; }
+  .grade-ring { left:0; top:-4px; width:100%; height:calc(100% + 8px); animation-duration:.7s; animation-delay:.2s; }
+  .grade-ring path { stroke:#ef4444; stroke-width:3.2; }
+  @keyframes draw { from { clip-path: inset(-10px 100% -10px -10px); } to { clip-path: inset(-10px -10px -10px -10px); } }
+  select option { background:#0c101d; color:#f3f4f6; }
+  .stem[hidden], [hidden] { display:none !important; }
+  input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
+  input[type=number] { -moz-appearance:textfield; }
+  @media (prefers-reduced-motion: reduce) { .ring, .fade, .bg-glow span { animation:none; } }
 </style>
 </head>
-<body>
-<main class="wrap" id="app"></main>
+<body class="bg-dark-base text-dark-text min-h-screen">
+
+<canvas id="netCanvas"></canvas>
+<div class="bg-glow" aria-hidden="true"><span class="orb1"></span><span class="orb2"></span><span class="orb3"></span></div>
+
+<header class="fixed top-0 inset-x-0 z-40 h-14 bg-dark-surface/95 backdrop-blur border-b border-dark-border flex items-center justify-between px-4">
+  <a href="index.html" class="font-bold text-brand-500 inline-flex items-center gap-2 mono text-base" dir="ltr">
+    <img src="it-logo.svg" alt="IT Logo" class="w-8 h-8 inline-block object-contain" onerror="this.style.display='none'">
+    <span>IT <span class="text-brand-500">&gt;_</span></span>
+    <span class="text-dark-muted text-xs font-semibold">/ Business</span>
+  </a>
+  <div class="flex items-center gap-2">
+    <a href="index.html" class="px-3.5 py-1.5 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500 text-white text-xs sm:text-sm font-semibold mono transition"><span id="backLbl">Hub</span></a>
+    <button id="langBtn" class="px-3.5 py-1.5 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500 text-white text-xs sm:text-sm font-semibold mono transition"></button>
+  </div>
+</header>
+
+<main class="pt-14"><div id="app" class="max-w-4xl mx-auto p-4 sm:p-6 pb-24"></div></main>
+
 <script>
 const LEC=[null,
  {ar:"المحاضرة 1",en:"Introduction to Business"},
@@ -630,14 +507,19 @@ const MATCH=[
 ];
 
 "use strict";
+const KEY='studyHubV2';
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return{}}}
+let lang=load().lang||'en';
+const T=(ar,en)=>lang==='ar'?ar:en;
 const TYPES=[
- {k:"tf",ar:"صح أو خطأ",en:"True or False",unit:"سؤال",size:1,sec:"True or False",secAr:"صح أو خطأ",ins:"Choose True or False for each statement."},
- {k:"mcq",ar:"ضع دائرة حول الإجابة الصحيحة",en:"Circle the correct answer",unit:"سؤال",size:1,sec:"Circle the Correct Answer",secAr:"ضع دائرة حول الإجابة الصحيحة",ins:"Circle the one correct answer."},
- {k:"def",ar:"تعريفات",en:"Definitions",unit:"سؤال",size:1,sec:"Definitions",secAr:"تعريفات",ins:"Circle the correct definition of the given term."},
- {k:"fill",ar:"ضع الكلمة في مكانها الصحيح",en:"Word bank",unit:"مجموعة (5 جمل)",size:5,sec:"Put the Word in its Correct Place",secAr:"ضع الكلمة في مكانها الصحيح",ins:"Complete each sentence using a word from the word bank."},
- {k:"match",ar:"القائمة A والقائمة B",en:"Match List A with List B",unit:"مجموعة (5 عناصر)",size:5,sec:"Match List A with List B",secAr:"القائمة A والقائمة B",ins:"Choose the letter from List B that matches each item in List A."}
+ {k:"tf",ar:"صح أو خطأ",en:"True or False",unit:["سؤال","questions"],size:1,sec:"True or False",secAr:"صح أو خطأ",ins:"Choose True or False for each statement."},
+ {k:"mcq",ar:"ضع دائرة حول الإجابة الصحيحة",en:"Circle the correct answer",unit:["سؤال","questions"],size:1,sec:"Circle the Correct Answer",secAr:"ضع دائرة حول الإجابة الصحيحة",ins:"Circle the one correct answer."},
+ {k:"def",ar:"تعريفات",en:"Definitions",unit:["سؤال","questions"],size:1,sec:"Definitions",secAr:"تعريفات",ins:"Circle the correct definition of the given term."},
+ {k:"fill",ar:"ضع الكلمة في مكانها الصحيح",en:"Word bank",unit:["مجموعة (5 جمل)","sets (5 sentences)"],size:5,sec:"Put the Word in its Correct Place",secAr:"ضع الكلمة في مكانها الصحيح",ins:"Complete each sentence using a word from the word bank."},
+ {k:"match",ar:"القائمة A والقائمة B",en:"Match List A with List B",unit:["مجموعة (5 عناصر)","sets (5 items)"],size:5,sec:"Match List A with List B",secAr:"القائمة A والقائمة B",ins:"Choose the letter from List B that matches each item in List A."}
 ];
 const TMAP=Object.fromEntries(TYPES.map(t=>[t.k,t]));
+const tname=t=>T(t.ar,t.en);
 const app=document.getElementById("app");
 const LET="abcdefgh";
 const rnd=n=>Math.floor(Math.random()*n);
@@ -645,71 +527,66 @@ function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[
 const norm=s=>(s==null?"":String(s)).trim().toLowerCase();
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function el(tag,cls,html){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e}
-let timerId=null;
+let timerId=null,typingId=null,view={rerender:null};
 function clearTimer(){if(timerId){clearInterval(timerId);timerId=null}}
-function mount(node){clearTimer();app.replaceChildren(node);window.scrollTo(0,0)}
+function mount(node){clearTimer();clearInterval(typingId);app.replaceChildren(node);window.scrollTo(0,0)}
+const lecName=l=>T(LEC[l].ar,"Lecture "+l);
 
 const RING='<svg class="ring" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true"><path d="M9 7 C 30 2, 72 2, 92 6 C 99 8, 99 31, 93 34 C 72 39, 28 39, 8 35 C 1 32, 1 11, 7 5 C 9 3, 14 3, 21 3"/></svg>';
+const PANEL="rounded-2xl bg-dark-surface/95 backdrop-blur border border-dark-border p-5 mb-4";
+const LABEL="text-xs mono font-bold text-brand-500 mb-3";
+const BTN_P="px-5 py-2.5 rounded-xl bg-brand-500 hover:bg-brand-600 text-dark-base font-bold transition disabled:opacity-40 disabled:cursor-not-allowed";
+const BTN_G="px-4 py-2.5 rounded-xl bg-dark-elevated border border-dark-border hover:border-brand-500 text-white font-semibold transition";
+const LINKB="px-2.5 py-1 rounded-lg text-xs mono font-semibold text-brand-500 hover:bg-dark-elevated transition";
 
-/* ---------- state for setup ---------- */
+/* ---------- setup state ---------- */
 const cfg={mode:"practice",lecs:new Set([1,2,3,4,5,6,7,8]),n:{tf:10,mcq:10,def:5,fill:2,match:2},timer:true,minutes:30,minTouched:false};
-function inL(x){return cfg.lecs.has(x[0])}
+const inL=x=>cfg.lecs.has(x[0]);
 function uniqFill(L){return new Set(FILL.filter(x=>L.has(x[0])).map(x=>norm(x[2]))).size}
 function setsFor(n){return n>=5?Math.floor(n/5):(n>=3?1:0)}
 function avail(k){
- const f=inL;
- if(k==="tf")return TF.filter(f).length;
- if(k==="mcq")return MCQ.filter(f).length;
- if(k==="def")return DEF.filter(f).length;
+ if(k==="tf")return TF.filter(inL).length;
+ if(k==="mcq")return MCQ.filter(inL).length;
+ if(k==="def")return DEF.filter(inL).length;
  if(k==="fill")return setsFor(uniqFill(cfg.lecs));
- if(k==="match")return setsFor(MATCH.filter(f).length);
+ if(k==="match")return setsFor(MATCH.filter(inL).length);
  return 0;
 }
 
-/* ---------- deck building ---------- */
+/* ---------- deck ---------- */
 function buildDeck(c){
- const cards=[];
- const L=c.lecs, f=x=>L.has(x[0]);
- /* true/false: keep a balanced mix */
- const tfAll=TF.filter(f), fal=shuffle(tfAll.filter(x=>!x[2])), tru=shuffle(tfAll.filter(x=>x[2]));
- const wantF=Math.min(fal.length,Math.round(c.n.tf*0.45)), wantT=Math.min(tru.length,c.n.tf-wantF);
+ const cards=[],L=c.lecs,f=x=>L.has(x[0]);
+ const tfAll=TF.filter(f),fal=shuffle(tfAll.filter(x=>!x[2])),tru=shuffle(tfAll.filter(x=>x[2]));
+ const wantF=Math.min(fal.length,Math.round(c.n.tf*0.45)),wantT=Math.min(tru.length,c.n.tf-wantF);
  let tfPick=fal.slice(0,wantF).concat(tru.slice(0,wantT));
- if(tfPick.length<c.n.tf){tfPick=tfPick.concat(fal.slice(wantF,wantF+(c.n.tf-tfPick.length)))}
+ if(tfPick.length<c.n.tf)tfPick=tfPick.concat(fal.slice(wantF,wantF+(c.n.tf-tfPick.length)));
  shuffle(tfPick).forEach(x=>cards.push({type:"tf",lec:x[0],q:x[1],ans:x[2],exp:x[3]||"",user:null,done:false}));
- /* circle */
  shuffle(MCQ.filter(f)).slice(0,c.n.mcq).forEach(x=>{
   const opts=shuffle([{t:x[2],c:1},{t:x[3]},{t:x[4]},{t:x[5]}]);
   cards.push({type:"mcq",lec:x[0],q:x[1],opts,correct:opts.findIndex(o=>o.c),exp:x[6]||"",user:null,done:false});
  });
- /* definitions */
  shuffle(DEF.filter(f)).slice(0,c.n.def).forEach(x=>{
   const others=shuffle(DEF.filter(d=>d!==x));
-  const same=others.filter(d=>d[0]===x[0]), rest=others.filter(d=>d[0]!==x[0]);
+  const same=others.filter(d=>d[0]===x[0]),rest=others.filter(d=>d[0]!==x[0]);
   const wrong=same.slice(0,2).concat(rest).slice(0,3);
   const opts=shuffle([{t:x[2],c:1}].concat(wrong.map(w=>({t:w[2]}))));
   cards.push({type:"def",lec:x[0],term:x[1],opts,correct:opts.findIndex(o=>o.c),user:null,done:false});
  });
- /* fill in the blank */
- const seen=new Set(), picked=[];
+ const seen=new Set(),picked=[];
  shuffle(FILL.filter(f)).forEach(x=>{const k=norm(x[2]);if(!seen.has(k)){seen.add(k);picked.push(x)}});
  for(let s=0;s<c.n.fill;s++){
-  const grp=picked.slice(s*5,s*5+5); if(grp.length<3)break;
-  const gl=new Set(grp.map(g=>g[0]));
-  const used=new Set(grp.map(g=>norm(g[2])));
-  let extras=shuffle(FILL.filter(x=>!used.has(norm(x[2]))));
-  const diff=extras.filter(x=>!gl.has(x[0]));
+  const grp=picked.slice(s*5,s*5+5);if(grp.length<3)break;
+  const gl=new Set(grp.map(g=>g[0])),used=new Set(grp.map(g=>norm(g[2])));
+  const extras=shuffle(FILL.filter(x=>!used.has(norm(x[2])))),diff=extras.filter(x=>!gl.has(x[0]));
   const extra=(diff[0]||extras[0]||[0,0,"—"])[2];
-  const bank=shuffle(grp.map(g=>g[2]).concat(extra));
-  cards.push({type:"fill",lec:grp[0][0],items:grp.map(g=>({s:g[1],a:g[2],lec:g[0]})),bank,user:grp.map(()=>""),done:false});
+  cards.push({type:"fill",lec:grp[0][0],items:grp.map(g=>({s:g[1],a:g[2],lec:g[0]})),bank:shuffle(grp.map(g=>g[2]).concat(extra)),user:grp.map(()=>""),done:false});
  }
- /* matching */
  const rem={};
  MATCH.filter(f).forEach(x=>{(rem[x[0]]=rem[x[0]]||[]).push(x)});
  Object.keys(rem).forEach(k=>rem[k]=shuffle(rem[k]));
  for(let s=0;s<c.n.match;s++){
-  const keys=Object.keys(rem).filter(k=>rem[k].length>0); if(!keys.length)break;
-  const k=keys[s%keys.length];
-  let grp=rem[k].splice(0,5);
+  const keys=Object.keys(rem).filter(k=>rem[k].length>0);if(!keys.length)break;
+  let grp=rem[keys[s%keys.length]].splice(0,5);
   if(grp.length<5){for(const k2 of Object.keys(rem)){while(grp.length<5&&rem[k2].length)grp.push(rem[k2].pop())}}
   if(grp.length<3)break;
   const pool=shuffle(MATCH.filter(x=>!grp.includes(x)&&!grp.some(g=>g[2]===x[2])));
@@ -721,7 +598,7 @@ function buildDeck(c){
  }
  return numberDeck(cards);
 }
-function ptsOf(c){return c.type==="fill"?c.items.length:c.type==="match"?c.left.length:1}
+const ptsOf=c=>c.type==="fill"?c.items.length:c.type==="match"?c.left.length:1;
 function numberDeck(cards){let n=1;cards.forEach(c=>{c.pts=ptsOf(c);c.no=n;n+=c.pts});return cards}
 function itemsOf(c){
  switch(c.type){
@@ -740,375 +617,421 @@ function answeredOf(c){
  }
 }
 
-/* ---------- card rendering ---------- */
+/* ---------- card ---------- */
+const OPT_BASE="opt w-full flex items-start gap-3 text-start rounded-xl px-3 py-2.5 border border-transparent transition";
+const OPT_ST={"":"hover:bg-dark-elevated cursor-pointer",sel:"border-brand-500/60 bg-brand-500/10",ok:"border-emerald-500/60 bg-emerald-500/10",bad:"border-red-500/60 bg-red-500/10"};
+const BUB_BASE="w-7 h-7 shrink-0 rounded-full border grid place-items-center text-xs mono font-bold mt-0.5";
+const BUB_ST={"":"border-dark-border text-dark-muted",sel:"bg-brand-500 border-brand-500 text-dark-base",ok:"bg-emerald-500 border-emerald-500 text-dark-base",bad:"bg-red-500 border-red-500 text-white"};
+const SELECT="blank bg-dark-base border border-dark-border focus:border-brand-500 rounded-lg px-2 py-1 text-sm text-white outline-none transition";
+
 function renderCard(c,opt){
  opt=opt||{};
- const art=el("article","q q-"+c.type);
- const no=el("div","no",c.pts>1?c.no+"–"+(c.no+c.pts-1):String(c.no));
- const body=el("div","body");
- const stem=el("p","stem");
+ const art=el("article","q rounded-2xl bg-dark-surface/95 backdrop-blur border border-dark-border mb-4 overflow-hidden grid grid-cols-[3.25rem_minmax(0,1fr)] sm:grid-cols-[4rem_minmax(0,1fr)]");
+ art.dir="ltr";
+ const no=el("div","border-r border-dark-border bg-dark-base/60 mono text-xs font-bold text-brand-500 text-center pt-5 px-1 leading-tight",c.pts>1?"Q"+c.no+"–"+(c.no+c.pts-1):"Q"+c.no);
+ const body=el("div","p-4 sm:p-5 min-w-0 text-left");
+ const stem=el("p","text-base sm:text-lg font-semibold mb-4 leading-relaxed");
  const zone=el("div","zone");
  const fb=el("div","fb");
- body.append(stem,zone,fb); art.append(no,body);
+ body.append(stem,zone,fb);art.append(no,body);
  const changed=()=>{opt.onChange&&opt.onChange(c)};
 
- function optBtn(label,text,state,onclick,cls){
-  const b=el("button","opt"+(state?" "+state:"")+(cls?" "+cls:""));
-  b.type="button";
-  b.setAttribute("role","radio");
-  b.setAttribute("aria-checked",state==="sel"||state==="ok"||state==="bad"?"true":"false");
-  b.innerHTML='<span class="bub">'+label+'</span><span class="otxt">'+esc(text)+(state&&state!=="sel"?"":"")+(state?RING:"")+"</span>";
-  b.onclick=onclick; if(c.done)b.disabled=true;
+ function optBtn(label,text,state,onclick){
+  const b=el("button",OPT_BASE+" "+(c.done&&!state?"opacity-60":OPT_ST[state])+(state?" "+state:""));
+  b.type="button";b.setAttribute("role","radio");b.setAttribute("aria-checked",state==="sel"||state==="ok"||state==="bad");
+  b.innerHTML='<span class="'+BUB_BASE+" "+BUB_ST[state]+'">'+label+'</span><span class="otxt relative inline-block px-3 py-0.5 mx-1">'+esc(text)+(state?RING:"")+"</span>";
+  b.onclick=onclick;if(c.done)b.disabled=true;
   return b;
  }
  function drawChoice(){
   zone.innerHTML="";
   if(c.type==="tf"){
-   zone.className="zone opts tf";
+   zone.className="zone flex flex-wrap gap-4";
    [[true,"True","T"],[false,"False","F"]].forEach(([v,t,l])=>{
-    let st="";
-    if(c.done){if(v===c.ans)st="ok";else if(c.user===v)st="bad"}
-    else if(c.user===v)st="sel";
-    zone.append(optBtn(l,t,st,()=>{if(c.done)return;c.user=v;drawChoice();changed()}));
+    let st="";if(c.done){if(v===c.ans)st="ok";else if(c.user===v)st="bad"}else if(c.user===v)st="sel";
+    const b=optBtn(l,t,st,()=>{if(c.done)return;c.user=v;drawChoice();changed()});
+    b.classList.replace("w-full","w-auto");b.classList.add("items-center","pe-4");zone.append(b);
    });
   }else{
-   zone.className="zone opts";
+   zone.className="zone grid gap-1.5";
    c.opts.forEach((o,i)=>{
-    let st="";
-    if(c.done){if(i===c.correct)st="ok";else if(c.user===i)st="bad"}
-    else if(c.user===i)st="sel";
+    let st="";if(c.done){if(i===c.correct)st="ok";else if(c.user===i)st="bad"}else if(c.user===i)st="sel";
     zone.append(optBtn(LET[i].toUpperCase(),o.t,st,()=>{if(c.done)return;c.user=i;drawChoice();changed()}));
    });
   }
  }
  function drawFill(){
   zone.innerHTML="";zone.className="zone";
-  const bank=el("div","bank");bank.innerHTML='<span class="bt">Word bank</span>'+c.bank.map(w=>'<span class="w">'+esc(w)+"</span>").join("");
-  const ol=el("ol","fills");
+  const bank=el("div","flex flex-wrap items-center gap-2 p-3 rounded-xl border border-dashed border-brand-500/50 bg-dark-base/60 mb-4");
+  bank.innerHTML='<span class="mono text-xs font-bold text-brand-500 me-1">// word_bank</span>'+c.bank.map(w=>'<span class="px-3 py-1 rounded-full bg-dark-elevated border border-dark-border text-sm mono">'+esc(w)+"</span>").join("");
+  const ol=el("ol","list-decimal ps-6 space-y-3 leading-loose marker:text-brand-500 marker:mono");
   c.items.forEach((it,i)=>{
    const li=el("li");const parts=it.s.split("____");
    li.append(document.createTextNode(parts[0]));
-   const sel=el("select","blank");
+   const sel=el("select",SELECT+" min-w-[8.5rem] mx-1");
    sel.innerHTML='<option value="">…</option>'+c.bank.map(w=>'<option value="'+esc(w)+'">'+esc(w)+"</option>").join("");
    sel.value=c.user[i];sel.disabled=c.done;sel.setAttribute("aria-label","Blank "+(i+1));
    sel.onchange=()=>{c.user[i]=sel.value;changed()};
    li.append(sel,document.createTextNode(parts.slice(1).join("____")));
-   if(c.done){const ok=norm(c.user[i])===norm(it.a);sel.classList.add(ok?"ok":"bad");if(!ok){li.append(" ",el("span","fix","الصحيح: <b dir=\"ltr\">"+esc(it.a)+"</b>"))}}
+   if(c.done){const ok=norm(c.user[i])===norm(it.a);sel.classList.add(...(ok?["border-emerald-500","bg-emerald-500/10"]:["border-red-500","bg-red-500/10"]));
+    if(!ok)li.append(" ",el("span","inline-block text-xs text-red-300 mono ms-1",T("الصحيح","answer")+': <b class="text-emerald-300" dir="ltr">'+esc(it.a)+"</b>"))}
    ol.append(li);
   });
   zone.append(bank,ol);
  }
  function drawMatch(){
   zone.innerHTML="";zone.className="zone";
-  const wrap=el("div","match");
-  const A=el("div","la");A.append(el("h4","","List A"));
+  const wrap=el("div","grid sm:grid-cols-2 gap-5");
+  const A=el("div");A.append(el("h4","mono text-xs font-bold text-brand-500 pb-1.5 mb-3 border-b border-dark-border","// List A"));
   c.left.forEach((l,i)=>{
-   const row=el("div","mrow");
-   row.append(el("span","mn",String(i+1)),el("span","mt",esc(l.t)));
-   const sel=el("select","blank");
+   const row=el("div","flex flex-wrap items-center gap-2 mb-3");
+   row.append(el("span","mono text-xs font-bold text-dark-muted w-5",String(i+1)),el("span","flex-1 min-w-[7rem]",esc(l.t)));
+   const sel=el("select",SELECT+" min-w-[4rem]");
    sel.innerHTML='<option value="-1">—</option>'+c.right.map((_,j)=>'<option value="'+j+'">'+LET[j]+"</option>").join("");
-   sel.value=String(c.user[i]);sel.disabled=c.done;sel.setAttribute("aria-label","Match for item "+(i+1));
+   sel.value=String(c.user[i]);sel.disabled=c.done;sel.setAttribute("aria-label","Match "+(i+1));
    sel.onchange=()=>{c.user[i]=parseInt(sel.value,10);changed()};
    row.append(sel);
-   if(c.done){const ok=c.user[i]===l.ri;sel.classList.add(ok?"ok":"bad");if(!ok)row.append(el("span","fix","الصحيح: <b>"+LET[l.ri]+"</b>"))}
+   if(c.done){const ok=c.user[i]===l.ri;sel.classList.add(...(ok?["border-emerald-500","bg-emerald-500/10"]:["border-red-500","bg-red-500/10"]));
+    if(!ok)row.append(el("span","text-xs text-red-300 mono",T("الصحيح","answer")+': <b class="text-emerald-300">'+LET[l.ri]+"</b>"))}
    A.append(row);
   });
-  const B=el("div","lb");B.append(el("h4","","List B"));
-  c.right.forEach((t,j)=>{const r=el("div","brow");r.append(el("span","bl",LET[j]),el("span","",esc(t)));B.append(r)});
+  const B=el("div");B.append(el("h4","mono text-xs font-bold text-brand-500 pb-1.5 mb-3 border-b border-dark-border","// List B"));
+  c.right.forEach((t,j)=>{const r=el("div","flex gap-3 mb-3");r.append(el("span","mono text-sm font-bold text-brand-500 w-5",LET[j]),el("span","",esc(t)));B.append(r)});
   wrap.append(A,B);zone.append(wrap);
  }
  function drawFb(){
   fb.className="fb";fb.innerHTML="";
   if(!c.done)return;
+  fb.dir=lang==="ar"?"rtl":"ltr";
   const sc=scoreOf(c),full=sc===c.pts;
-  fb.classList.add(full?"ok":"bad");
+  fb.className="fb mt-4 rounded-xl px-4 py-3 text-sm leading-relaxed border "+(full?"bg-emerald-500/10 border-emerald-500/40 text-emerald-300":"bg-red-500/10 border-red-500/40 text-red-300");
   let h="";
   if(c.pts===1){
-   h+="<b>"+(full?"إجابة صحيحة":(answeredOf(c)?"إجابة غير صحيحة":"لم تُجب عن هذا السؤال"))+"</b>";
+   h+="<b>"+(full?T("إجابة صحيحة","Correct"):(answeredOf(c)?T("إجابة غير صحيحة","Incorrect"):T("لم تُجب عن هذا السؤال","Not answered")))+"</b>";
    if(!full){
-    if(c.type==="tf")h+=' <span>الإجابة الصحيحة: <span class="en" dir="ltr">'+(c.ans?"True":"False")+"</span></span>";
-    else h+='<div class="corr">الإجابة الصحيحة: <span class="en" dir="ltr">'+esc(c.opts[c.correct].t)+"</span></div>";
+    const ans=c.type==="tf"?(c.ans?"True":"False"):c.opts[c.correct].t;
+    h+='<div class="mt-1">'+T("الإجابة الصحيحة","Correct answer")+': <span dir="ltr" class="inline-block text-start font-semibold text-emerald-300">'+esc(ans)+"</span></div>";
    }
-   if(c.exp)h+='<div class="exp"><mark class="en" dir="ltr">'+esc(c.exp)+"</mark></div>";
+   if(c.exp)h+='<div class="mt-2" dir="ltr" style="text-align:left"><span class="mono text-xs px-2 py-1 rounded-md bg-amber-500/15 text-amber-300 border border-amber-500/30 inline-block leading-relaxed">'+esc(c.exp)+"</span></div>";
   }else{
-   h+="<b>"+(full?"كل الإجابات صحيحة":"حصلت على "+sc+" من "+c.pts)+"</b>";
+   h+="<b>"+(full?T("كل الإجابات صحيحة","All correct"):T("حصلت على "+sc+" من "+c.pts,"You scored "+sc+" of "+c.pts))+"</b>";
   }
   fb.innerHTML=h;
  }
  function draw(){
-  if(c.type==="tf"){stem.innerHTML=esc(c.q);drawChoice()}
-  else if(c.type==="mcq"){stem.innerHTML=esc(c.q);drawChoice()}
-  else if(c.type==="def"){stem.innerHTML="Choose the correct definition of: <b>"+esc(c.term)+"</b>";drawChoice()}
+  if(c.type==="tf"||c.type==="mcq"){stem.hidden=false;stem.innerHTML=esc(c.q);drawChoice()}
+  else if(c.type==="def"){stem.hidden=false;stem.innerHTML='<span class="text-dark-muted font-normal">Choose the correct definition of:</span> <span class="text-brand-500">'+esc(c.term)+"</span>";drawChoice()}
   else if(c.type==="fill"){stem.hidden=true;drawFill()}
   else if(c.type==="match"){stem.hidden=true;drawMatch()}
   drawFb();
-  if(c.done)art.classList.add("done");
  }
  art.reveal=()=>{c.done=true;draw()};
  draw();
  return art;
 }
 
-/* ---------- setup screen ---------- */
+/* ---------- setup ---------- */
 function renderSetup(){
- const root=el("div");
+ const ar=lang==="ar";
+ const root=el("div","fade");
  root.innerHTML=`
- <header class="hero">
-  <h1>تدرّب على امتحان <span class="en" dir="ltr">Introduction to Business</span></h1>
-  <p>بنك أسئلة من محاضرات الترم الثاني الثمانية. اختر طريقة الحل والمحاضرات وعدد الأسئلة، ثم ابدأ.</p>
- </header>
- <section class="panel demo">
-  <h2>جرّب أولًا</h2>
-  <p class="muted">اضغط على الإجابة التي تراها صحيحة لتضع عليها دائرة، كما في ورقة الامتحان.</p>
-  <div id="demo"></div>
- </section>
- <section class="panel">
-  <h2>طريقة الحل</h2>
-  <div class="modes" role="radiogroup">
-   <label class="mode"><input type="radio" name="mode" value="practice"><span class="mc"><b>وضع التدريب</b><span>بعد كل سؤال تحلّه تظهر الإجابة الصحيحة والشرح مباشرة.</span></span></label>
-   <label class="mode"><input type="radio" name="mode" value="exam"><span class="mc"><b>وضع الامتحان</b><span>تحلّ كل الأسئلة أولًا، ثم تظهر النتيجة والإجابات في النهاية.</span></span></label>
+ <div class="rounded-2xl bg-dark-surface/95 backdrop-blur p-6 sm:p-8 mb-5 border-2 border-brand-500/40 shadow-2xl relative overflow-hidden">
+  <div class="absolute top-3 start-4 flex items-center gap-1.5 opacity-70" dir="ltr">
+   <span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span><span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span><span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span>
+   <span class="text-[11px] mono text-dark-muted ms-2">business_exam.cpp</span>
   </div>
-  <div class="timer" id="timerBox">
-   <label class="chk"><input type="checkbox" id="timerOn"> <span>مؤقت للامتحان</span></label>
-   <label class="mins">المدة بالدقائق <input type="number" id="mins" min="1" max="300" inputmode="numeric"></label>
+  <div class="absolute -end-10 -top-10 w-48 h-48 bg-brand-500/15 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-start relative z-10 mt-5 sm:mt-3">
+   <div class="shrink-0 w-28 h-28 grid place-items-center text-6xl bg-dark-base/95 rounded-2xl border border-brand-500/30 shadow-inner">💼</div>
+   <div class="w-full">
+    <div class="text-xs sm:text-sm mono text-brand-500 mb-1 font-bold" dir="ltr">&gt; ./run business_exam --mock</div>
+    <h1 class="text-2xl sm:text-4xl font-extrabold mb-2 tracking-wide"><span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-blue-500">${ar?"امتحان أساسيات الأعمال":"Business Fundamentals Exam"}</span></h1>
+    <p class="text-dark-muted text-xs sm:text-sm mono min-h-[24px]"><span id="typed"></span><span class="text-brand-500 terminal-cursor">_</span></p>
+   </div>
   </div>
- </section>
- <section class="panel">
-  <div class="ph"><h2>المحاضرات</h2><button type="button" class="link" id="allL">تحديد الكل</button></div>
-  <div class="chips" id="chips"></div>
- </section>
- <section class="panel">
-  <div class="ph"><h2>عدد الأسئلة</h2>
-   <div class="presets"><button type="button" class="link" data-p="s">سريع</button><button type="button" class="link" data-p="m">متوسط</button><button type="button" class="link" data-p="a">كل الأسئلة</button></div>
-  </div>
-  <div id="rows"></div>
-  <p class="total">إجمالي الدرجات: <b id="total">0</b></p>
- </section>
- <div class="startbar"><button type="button" class="btn primary big" id="start">ابدأ</button><p class="muted" id="warn"></p></div>`;
- mount(root);
+ </div>
 
- /* demo question */
+ <div class="${PANEL}">
+  <div class="${LABEL}">${ar?"// جرّب أولًا: اضغط على الإجابة لتضع عليها دائرة":"// try it: tap an answer to circle it"}</div>
+  <div id="demo"></div>
+ </div>
+
+ <div class="${PANEL}">
+  <div class="${LABEL}">${ar?"// طريقة الحل":"// mode"}</div>
+  <div class="grid sm:grid-cols-2 gap-3">
+   ${[["practice","🎯",ar?"وضع التدريب":"Practice mode",ar?"بعد كل سؤال تحلّه تظهر الإجابة الصحيحة والشرح مباشرة.":"See the correct answer and explanation right after each question."],
+      ["exam","📝",ar?"وضع الامتحان":"Exam mode",ar?"تحلّ كل الأسئلة أولًا، ثم تظهر النتيجة والإجابات في النهاية.":"Answer everything first, then get your score and answers at the end."]].map(m=>`
+   <label class="relative cursor-pointer block"><input type="radio" name="mode" value="${m[0]}" class="peer sr-only">
+    <div class="h-full rounded-xl p-4 border border-dark-border bg-dark-base/60 hover:border-brand-500/60 transition peer-checked:border-brand-500 peer-checked:bg-brand-500/10 peer-focus-visible:ring-2 peer-focus-visible:ring-brand-500">
+     <div class="font-bold mb-1"><span class="me-2">${m[1]}</span>${m[2]}</div><div class="text-xs text-dark-muted leading-relaxed">${m[3]}</div></div></label>`).join("")}
+  </div>
+  <div id="timerBox" class="flex flex-wrap items-center gap-x-5 gap-y-3 mt-4 pt-4 border-t border-dark-border">
+   <label class="flex items-center gap-2 cursor-pointer text-sm"><input type="checkbox" id="timerOn" class="w-4 h-4 accent-sky-400"> ${ar?"مؤقت للامتحان":"Exam timer"}</label>
+   <label class="flex items-center gap-2 text-sm">${ar?"المدة بالدقائق":"Minutes"} <input type="number" id="mins" min="1" max="300" inputmode="numeric" class="w-20 bg-dark-base border border-dark-border focus:border-brand-500 rounded-lg px-2 py-1 text-center mono outline-none disabled:opacity-40"></label>
+  </div>
+ </div>
+
+ <div class="${PANEL}">
+  <div class="flex items-center justify-between mb-3"><div class="text-xs mono font-bold text-brand-500">${ar?"// المحاضرات":"// lectures"}</div><button type="button" id="allL" class="${LINKB}">${ar?"تحديد الكل":"toggle all"}</button></div>
+  <div class="grid gap-2 sm:grid-cols-2" id="chips"></div>
+ </div>
+
+ <div class="${PANEL}">
+  <div class="flex flex-wrap items-center justify-between gap-2 mb-2"><div class="text-xs mono font-bold text-brand-500">${ar?"// عدد الأسئلة":"// questions"}</div>
+   <div class="flex gap-1"><button type="button" class="${LINKB}" data-p="s">${ar?"سريع":"quick"}</button><button type="button" class="${LINKB}" data-p="m">${ar?"متوسط":"medium"}</button><button type="button" class="${LINKB}" data-p="a">${ar?"كل الأسئلة":"all"}</button></div></div>
+  <div id="rows"></div>
+  <div class="mt-3 pt-4 border-t border-dark-border flex items-center justify-between mono text-sm"><span class="text-dark-muted">${ar?"إجمالي الدرجات":"total marks"}</span><b id="total" class="text-xl text-brand-500">0</b></div>
+ </div>
+
+ <div class="flex flex-wrap items-center gap-4">
+  <button type="button" id="start" class="${BTN_P} text-lg px-9 py-3">${ar?"ابدأ":"Start"}</button>
+  <p class="text-sm text-amber-400 mono" id="warn"></p>
+ </div>`;
+ mount(root);
+ view.rerender=renderSetup;
+
+ /* typed text */
+ const texts=ar?["// صح وخطأ، دايرة، تعريفات، ومطابقة","// اختر المحاضرات وعدد الأسئلة","// حلّ ثم راجع أخطاءك"]:["// true/false, circle, definitions, match","// pick lectures and question count","// solve, then review your mistakes"];
+ let ti=0,ci=0,del=false;const tEl=root.querySelector("#typed");
+ typingId=setInterval(()=>{const s=texts[ti];
+  if(!del){tEl.textContent=s.slice(0,++ci);if(ci===s.length){del=true;ci=s.length+25}}
+  else{ci--;tEl.textContent=s.slice(0,Math.max(0,Math.min(ci,s.length)));if(ci<=0){del=false;ti=(ti+1)%texts.length;ci=0}}
+ },60);
+
  const demo={type:"mcq",lec:1,q:"Profit = Revenue − ____",opts:shuffle([{t:"Expenses",c:1},{t:"Assets"},{t:"Liabilities"},{t:"Equity"}]),user:null,done:false,no:1,pts:1};
  demo.correct=demo.opts.findIndex(o=>o.c);
  root.querySelector("#demo").append(renderCard(demo));
 
- /* mode */
  const timerBox=root.querySelector("#timerBox"),timerOn=root.querySelector("#timerOn"),mins=root.querySelector("#mins");
- root.querySelectorAll('input[name=mode]').forEach(r=>{r.checked=r.value===cfg.mode;r.onchange=()=>{cfg.mode=r.value;syncMode()}});
- function syncMode(){timerBox.hidden=cfg.mode!=="exam"}
+ root.querySelectorAll("input[name=mode]").forEach(r=>{r.checked=r.value===cfg.mode;r.onchange=()=>{cfg.mode=r.value;syncMode()}});
+ function syncMode(){timerBox.hidden=cfg.mode!=="exam";timerBox.classList.toggle("flex",cfg.mode==="exam")}
  timerOn.checked=cfg.timer;timerOn.onchange=()=>{cfg.timer=timerOn.checked;mins.disabled=!cfg.timer};
  mins.value=cfg.minutes;mins.disabled=!cfg.timer;
  mins.onchange=()=>{const v=Math.max(1,Math.min(300,parseInt(mins.value,10)||cfg.minutes));cfg.minutes=v;cfg.minTouched=true;mins.value=v};
  syncMode();
 
- /* lectures */
  const chips=root.querySelector("#chips");
  for(let i=1;i<=8;i++){
-  const b=el("button","chip");b.type="button";b.dataset.l=i;
-  b.innerHTML='<span class="cl">'+LEC[i].ar+'</span><span class="ce" dir="ltr">'+esc(LEC[i].en)+"</span>";
+  const b=el("button","chip text-start rounded-xl px-3.5 py-2.5 border transition");b.type="button";b.dataset.l=i;
+  b.innerHTML='<span class="block mono text-[11px] font-bold text-brand-500">'+(ar?"// المحاضرة ":"// lecture ")+i+'</span><span class="block text-sm font-semibold" dir="ltr" style="text-align:start">'+esc(LEC[i].en)+"</span>";
   b.onclick=()=>{cfg.lecs.has(i)?cfg.lecs.delete(i):cfg.lecs.add(i);update()};
   chips.append(b);
  }
  root.querySelector("#allL").onclick=()=>{const all=cfg.lecs.size===8;cfg.lecs=new Set(all?[]:[1,2,3,4,5,6,7,8]);update()};
 
- /* steppers */
  const rows=root.querySelector("#rows");
  TYPES.forEach(t=>{
-  const r=el("div","row");r.dataset.k=t.k;
-  r.innerHTML=`<div class="rl"><div class="ar">${t.ar}</div><div class="en" dir="ltr">${t.en}</div><div class="hint">المتاح: <b data-av>0</b> ${t.unit}</div></div>
-  <div class="step" dir="ltr"><button type="button" data-d="-1" aria-label="أقل">−</button><input type="number" min="0" inputmode="numeric" aria-label="${t.ar}"><button type="button" data-d="1" aria-label="أكثر">+</button></div>`;
+  const r=el("div","flex items-center justify-between gap-4 py-3 border-t border-dark-border first:border-0");r.dataset.k=t.k;
+  r.innerHTML=`<div><div class="font-bold text-sm">${tname(t)}</div><div class="text-[11px] mono text-dark-muted mt-0.5">${ar?"المتاح":"available"}: <b data-av>0</b> ${T(t.unit[0],t.unit[1])}</div></div>
+  <div class="flex items-center shrink-0" dir="ltr"><button type="button" data-d="-1" class="w-10 h-10 rounded-s-lg bg-dark-elevated border border-dark-border hover:border-brand-500 text-lg disabled:opacity-30" aria-label="-">−</button><input type="number" min="0" inputmode="numeric" class="w-14 h-10 text-center bg-dark-base border-y border-dark-border mono outline-none focus:border-brand-500" aria-label="${tname(t)}"><button type="button" data-d="1" class="w-10 h-10 rounded-e-lg bg-dark-elevated border border-dark-border hover:border-brand-500 text-lg disabled:opacity-30" aria-label="+">+</button></div>`;
   const inp=r.querySelector("input");
-  const set=v=>{const a=avail(t.k);cfg.n[t.k]=Math.max(0,Math.min(a,v));update()};
-  r.querySelectorAll("button").forEach(b=>b.onclick=()=>set(cfg.n[t.k]+parseInt(b.dataset.d,10)*(t.size>1?1:1)));
+  const set=v=>{cfg.n[t.k]=Math.max(0,Math.min(avail(t.k),v));update()};
+  r.querySelectorAll("button").forEach(b=>b.onclick=()=>set(cfg.n[t.k]+parseInt(b.dataset.d,10)));
   inp.onchange=()=>set(parseInt(inp.value,10)||0);
   rows.append(r);
  });
  const PRE={s:{tf:6,mcq:6,def:3,fill:1,match:1},m:{tf:10,mcq:10,def:5,fill:2,match:2}};
  root.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{
-  const p=b.dataset.p;
-  TYPES.forEach(t=>{cfg.n[t.k]=p==="a"?avail(t.k):Math.min(avail(t.k),PRE[p][t.k])});
-  update();
+  const p=b.dataset.p;TYPES.forEach(t=>{cfg.n[t.k]=p==="a"?avail(t.k):Math.min(avail(t.k),PRE[p][t.k])});update();
  });
 
  const totalEl=root.querySelector("#total"),startBtn=root.querySelector("#start"),warn=root.querySelector("#warn");
  function update(){
-  chips.querySelectorAll(".chip").forEach(b=>{const on=cfg.lecs.has(+b.dataset.l);b.classList.toggle("on",on);b.setAttribute("aria-pressed",on)});
+  chips.querySelectorAll(".chip").forEach(b=>{
+   const on=cfg.lecs.has(+b.dataset.l);b.setAttribute("aria-pressed",on);
+   b.className="chip text-start rounded-xl px-3.5 py-2.5 border transition "+(on?"border-brand-500/60 bg-brand-500/10":"border-dark-border bg-dark-base/60 opacity-70 hover:opacity-100");
+  });
   let total=0;
   TYPES.forEach(t=>{
    const a=avail(t.k);cfg.n[t.k]=Math.min(cfg.n[t.k],a);
-   const r=rows.querySelector('[data-k="'+t.k+'"]');
-   const inp=r.querySelector("input");inp.max=a;inp.value=cfg.n[t.k];
-   r.querySelector("[data-av]").textContent=a;
-   r.querySelector('[data-d="-1"]').disabled=cfg.n[t.k]<=0;
-   r.querySelector('[data-d="1"]').disabled=cfg.n[t.k]>=a;
+   const r=rows.querySelector('[data-k="'+t.k+'"]'),inp=r.querySelector("input");
+   inp.max=a;inp.value=cfg.n[t.k];r.querySelector("[data-av]").textContent=a;
+   r.querySelector('[data-d="-1"]').disabled=cfg.n[t.k]<=0;r.querySelector('[data-d="1"]').disabled=cfg.n[t.k]>=a;
    total+=cfg.n[t.k]*t.size;
   });
-  totalEl.textContent=total;
-  startBtn.disabled=total===0;
-  warn.textContent=cfg.lecs.size===0?"اختر محاضرة واحدة على الأقل.":(total===0?"حدّد عدد الأسئلة لتبدأ.":"");
+  totalEl.textContent=total;startBtn.disabled=total===0;
+  warn.textContent=cfg.lecs.size===0?T("// اختر محاضرة واحدة على الأقل","// select at least one lecture"):(total===0?T("// حدّد عدد الأسئلة لتبدأ","// set a question count to start"):"");
   if(!cfg.minTouched){cfg.minutes=Math.max(5,Math.round(total*0.75));mins.value=cfg.minutes}
  }
  update();
  startBtn.onclick=()=>{
-  const cards=buildDeck(cfg);
-  if(!cards.length)return;
-  if(cfg.mode==="practice")runPractice(cards);
-  else runExam(cards,cfg.timer?cfg.minutes*60:0);
+  const cards=buildDeck(cfg);if(!cards.length)return;
+  if(cfg.mode==="practice")runPractice(cards);else runExam(cards,cfg.timer?cfg.minutes*60:0);
  };
 }
 
-/* ---------- practice mode ---------- */
+/* ---------- practice ---------- */
 function runPractice(cards){
- let i=0;
- const root=el("div");
- const totalPts=cards.reduce((s,c)=>s+c.pts,0);
+ let i=0;const root=el("div","fade");mount(root);
  function show(){
   root.innerHTML="";
-  const c=cards[i];
-  const doneCards=cards.slice(0,i);
-  const got=doneCards.reduce((s,x)=>s+scoreOf(x),0),outOf=doneCards.reduce((s,x)=>s+x.pts,0);
-  const top=el("div","ptop");
-  top.innerHTML='<button type="button" class="link" id="back">العودة للإعدادات</button><span class="ptxt">السؤال '+(i+1)+" من "+cards.length+'</span><span class="ptxt">الدرجة حتى الآن: <b>'+got+"</b> من "+outOf+"</span>";
-  const prog=el("div","prog");prog.innerHTML='<span style="width:'+Math.round(i/cards.length*100)+'%"></span>';
+  const c=cards[i],dc=cards.slice(0,i);
+  const got=dc.reduce((s,x)=>s+scoreOf(x),0),outOf=dc.reduce((s,x)=>s+x.pts,0);
+  const top=el("div","flex items-center justify-between gap-2 flex-wrap mb-2 text-xs mono");
+  top.innerHTML='<button type="button" id="back" class="'+LINKB+'">'+T("// العودة للإعدادات","// back to setup")+'</button><span class="text-dark-muted">'+T("السؤال ","question ")+(i+1)+"/"+cards.length+'</span><span class="text-dark-muted">'+T("الدرجة: ","score: ")+'<b class="text-brand-500">'+got+"</b>/"+outOf+"</span>";
+  const prog=el("div","h-2 bg-dark-base rounded-full overflow-hidden mb-5");
+  prog.innerHTML='<div class="h-full bg-gradient-to-r from-sky-400 to-blue-500 rounded-full transition-all duration-500" style="width:'+Math.round(i/cards.length*100)+'%"></div>';
   const sec=TMAP[c.type];
-  const head=el("div","sechead");head.dir="ltr";head.innerHTML="<h2>"+esc(sec.sec)+'</h2><p class="en">'+esc(sec.ins)+"</p>";
-  const acts=el("div","acts");
-  const check=el("button","btn primary","تحقق من الإجابة");check.type="button";check.disabled=true;
-  const giveUp=el("button","btn ghost","لا أعرف، اعرض الإجابة");giveUp.type="button";
-  const next=el("button","btn primary",i===cards.length-1?"إنهاء وعرض النتيجة":"السؤال التالي");next.type="button";
+  const head=el("div","mb-3");head.dir="ltr";head.innerHTML='<div class="mono text-xs font-bold text-brand-500">// '+esc(sec.sec)+'</div><div class="text-sm text-dark-muted mt-0.5">'+esc(sec.ins)+"</div>";
+  const acts=el("div","flex flex-wrap gap-3 mb-6");
+  const mk=(cls,txt,fn)=>{const b=el("button",cls,txt);b.type="button";b.onclick=fn;return b};
+  const next=mk(BTN_P,i===cards.length-1?T("إنهاء وعرض النتيجة","Finish and see results"):T("السؤال التالي","Next question"),()=>{if(i<cards.length-1){i++;show();window.scrollTo(0,0)}else showResults(cards,"practice")});
+  const check=mk(BTN_P,T("تحقق من الإجابة","Check answer"),()=>{card.reveal();acts.replaceChildren(next);next.focus()});
+  const giveUp=mk(BTN_G,T("لا أعرف، اعرض الإجابة","I don't know, show answer"),()=>{card.reveal();acts.replaceChildren(next);next.focus()});
+  check.disabled=answeredOf(c)===0;
   const card=renderCard(c,{onChange:()=>{check.disabled=answeredOf(c)===0}});
-  check.onclick=()=>{card.reveal();acts.replaceChildren(next);next.focus()};
-  giveUp.onclick=()=>{card.reveal();acts.replaceChildren(next);next.focus()};
-  next.onclick=()=>{if(i<cards.length-1){i++;show();window.scrollTo(0,0)}else showResults(cards,"practice")};
-  acts.append(check,giveUp);
+  if(c.done)acts.append(next);else acts.append(check,giveUp);
   root.append(top,prog,head,card,acts);
   root.querySelector("#back").onclick=renderSetup;
  }
- show();mount(root);
+ view.rerender=show;show();
 }
 
-/* ---------- exam mode ---------- */
+/* ---------- exam ---------- */
 function runExam(cards,seconds){
- const root=el("div");
  const total=cards.reduce((s,c)=>s+c.pts,0);
- const bar=el("div","exambar");
- bar.innerHTML='<div class="ec"><span class="eans"></span><span class="etime" hidden></span></div><button type="button" class="btn primary sm" id="submit">تسليم الامتحان</button>';
- const eans=bar.querySelector(".eans"),etime=bar.querySelector(".etime"),submit=bar.querySelector("#submit");
- root.append(bar);
- const paper=el("div","paper");paper.dir="ltr";
- const head=el("div","paperhead");
- head.innerHTML="<h1>Introduction to Business</h1><p>Total marks: "+total+"</p>";
- paper.append(head);
- let letter=0;
- TYPES.forEach(t=>{
-  const list=cards.filter(c=>c.type===t.k);if(!list.length)return;
-  const first=list[0].no,last=list[list.length-1].no+list[list.length-1].pts-1;
-  const sh=el("div","sechead");
-  sh.innerHTML="<h2>Section "+String.fromCharCode(65+letter++)+": "+esc(t.sec)+'</h2><p class="en">'+esc(t.ins)+' <span class="rng">(Questions '+first+" to "+last+')</span></p><p class="ar" dir="rtl">'+t.secAr+"</p>";
-  paper.append(sh);
-  list.forEach(c=>paper.append(renderCard(c,{onChange:upd})));
- });
- root.append(paper);
- const bottom=el("div","acts");
- const submit2=el("button","btn primary big","تسليم الامتحان");submit2.type="button";bottom.append(submit2);
- root.append(bottom);
- let armed=false;
- function upd(){
-  const a=cards.reduce((s,c)=>s+answeredOf(c),0);
-  eans.textContent="أجبت عن "+a+" من "+total;
-  if(armed&&a===total){armed=false;submit.textContent="تسليم الامتحان";submit2.textContent="تسليم الامتحان"}
- }
+ let left=seconds,armed=false;
+ const root=el("div","fade");mount(root);
+ const answered=()=>cards.reduce((s,c)=>s+answeredOf(c),0);
  function finish(){clearTimer();cards.forEach(c=>c.done=true);showResults(cards,"exam")}
+ function tick(){
+  const t=root.querySelector(".etime");if(!t)return;
+  const m=Math.floor(left/60),s=left%60;
+  t.textContent="⏳ "+String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+  t.classList.toggle("text-red-400",left<=60);t.classList.toggle("animate-pulse",left<=60);
+  if(left<=0)finish();
+ }
+ function upd(){
+  const a=answered(),e=root.querySelector(".eans");if(e)e.textContent=T("أجبت عن ","answered ")+a+(lang==="ar"?" من ":"/")+total;
+  if(armed&&a===total){armed=false;root.querySelectorAll(".sub").forEach(b=>b.textContent=T("تسليم الامتحان","Submit exam"))}
+ }
  function trySubmit(){
-  const a=cards.reduce((s,c)=>s+answeredOf(c),0);
-  if(a<total&&!armed){armed=true;const m="بقي "+(total-a)+" بدون إجابة. اضغط مرة أخرى للتسليم";submit.textContent=m;submit2.textContent=m;return}
+  const a=answered();
+  if(a<total&&!armed){armed=true;const m=T("بقي "+(total-a)+" بدون إجابة. اضغط مرة أخرى للتسليم",(total-a)+" unanswered. Tap again to submit");root.querySelectorAll(".sub").forEach(b=>b.textContent=m);return}
   finish();
  }
- submit.onclick=trySubmit;submit2.onclick=trySubmit;
- upd();mount(root);
- if(seconds>0){
-  let left=seconds;etime.hidden=false;
-  const tick=()=>{
-   const m=Math.floor(left/60),s=left%60;
-   etime.textContent="الوقت المتبقي "+String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
-   etime.classList.toggle("low",left<=60);
-   if(left<=0){finish();return}
-   left--;
-  };
-  tick();timerId=setInterval(tick,1000);
+ function draw(){
+  root.innerHTML="";
+  const bar=el("div","sticky top-16 z-30 bg-dark-surface/95 backdrop-blur border border-dark-border rounded-xl px-3 py-2 flex items-center justify-between gap-3 mb-4");
+  bar.innerHTML='<div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs mono font-bold"><span class="eans text-brand-500"></span>'+(seconds>0?'<span class="etime text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-md"></span>':"")+'</div><button type="button" class="sub '+BTN_P+' !py-1.5 !px-3 text-sm">'+T("تسليم الامتحان","Submit exam")+"</button>";
+  const paper=el("div");paper.dir="ltr";
+  const head=el("div","mb-2 pb-3 border-b border-dark-border");
+  head.innerHTML='<div class="mono text-xs font-bold text-brand-500">#include &lt;Business.h&gt;</div><h1 class="text-2xl font-extrabold">Introduction to Business</h1><div class="text-sm text-dark-muted mono">Total marks: '+total+"</div>";
+  paper.append(head);
+  let letter=0;
+  TYPES.forEach(t=>{
+   const list=cards.filter(c=>c.type===t.k);if(!list.length)return;
+   const last=list[list.length-1],sh=el("div","mt-6 mb-3");
+   sh.innerHTML='<h2 class="mono text-sm font-bold text-brand-500">// Section '+String.fromCharCode(65+letter++)+": "+esc(t.sec)+'</h2><p class="text-sm text-dark-muted mt-0.5">'+esc(t.ins)+' <span class="mono text-xs whitespace-nowrap">(Q'+list[0].no+"–"+(last.no+last.pts-1)+')</span></p><p class="text-xs text-dark-muted mt-0.5" dir="rtl" style="text-align:left">'+t.secAr+"</p>";
+   paper.append(sh);
+   list.forEach(c=>paper.append(renderCard(c,{onChange:upd})));
+  });
+  const bottom=el("div","mt-6");
+  bottom.innerHTML='<button type="button" class="sub '+BTN_P+' text-lg px-9 py-3">'+T("تسليم الامتحان","Submit exam")+"</button>";
+  root.append(bar,paper,bottom);
+  root.querySelectorAll(".sub").forEach(b=>b.onclick=trySubmit);
+  upd();if(seconds>0)tick();
  }
+ view.rerender=draw;draw();
+ if(seconds>0){timerId=setInterval(()=>{left--;tick()},1000)}
 }
 
 /* ---------- results ---------- */
+function barRow(label,g,n,isHtml){
+ const p=Math.round(g/n*100);
+ const r=el("div","mb-3");
+ r.innerHTML='<div class="flex justify-between gap-3 text-sm mb-1.5"><span>'+(isHtml?label:esc(label))+'</span><b class="mono text-xs" dir="ltr">'+g+"/"+n+'</b></div><div class="h-2 bg-dark-base rounded-full overflow-hidden"><div class="h-full rounded-full bg-gradient-to-r '+(p<60?"from-red-500 to-orange-400":"from-sky-400 to-blue-500")+'" style="width:'+p+'%"></div></div>';
+ return r;
+}
 function showResults(cards,mode){
- clearTimer();
- cards.forEach(c=>c.done=true);
+ clearTimer();cards.forEach(c=>c.done=true);
  const all=cards.flatMap(c=>itemsOf(c).map(i=>Object.assign({type:c.type},i)));
  const total=all.length,got=all.filter(i=>i.ok).length,pct=total?Math.round(got/total*100):0;
- const root=el("div");
- const msg=pct>=85?"ممتاز. مستواك ممتاز في هذا الجزء.":pct>=70?"جيد جدًا. راجع الأخطاء القليلة.":pct>=50?"جيد. راجع الأجزاء الضعيفة قبل الامتحان.":"تحتاج إلى مراجعة أكثر. ابدأ بالمحاضرات الأضعف أدناه.";
- const hero=el("header","rhero");
- hero.innerHTML='<h1>النتيجة</h1><div class="grade"><span class="gnum" dir="ltr">'+got+'<small>/'+total+"</small></span>"+RING+'</div><p class="pct">'+pct+"%</p><p>"+msg+"</p>";
+ const msg=pct>=85?T("ممتاز. مستواك ممتاز في هذا الجزء.","Excellent. You're well prepared for this part."):pct>=70?T("جيد جدًا. راجع الأخطاء القليلة.","Very good. Review the few mistakes."):pct>=50?T("جيد. راجع الأجزاء الضعيفة قبل الامتحان.","Good. Review the weak parts before the exam."):T("تحتاج إلى مراجعة أكثر. ابدأ بالمحاضرات الأضعف أدناه.","More revision needed. Start with the weakest lectures below.");
+ const root=el("div","fade");
+ const hero=el("div","rounded-2xl bg-dark-surface/95 backdrop-blur border-2 border-brand-500/40 shadow-2xl p-6 mb-5 text-center");
+ hero.innerHTML='<div class="mono text-xs font-bold text-brand-500 mb-2" dir="ltr">&gt; exit code: '+(pct>=50?0:1)+'</div><div class="relative inline-block my-5 px-8 py-1"><span class="mono text-6xl font-extrabold text-red-400" dir="ltr">'+got+'<small class="text-3xl text-dark-muted font-normal">/'+total+"</small></span>"+RING.replace('class="ring"','class="ring grade-ring"')+'</div><div class="text-xl font-extrabold mono">'+pct+'%</div><p class="text-sm text-dark-muted mt-1">'+msg+"</p>";
  root.append(hero);
 
- const byType=el("section","panel");byType.innerHTML="<h2>حسب نوع السؤال</h2>";
- TYPES.forEach(t=>{
-  const it=all.filter(i=>i.type===t.k);if(!it.length)return;
-  const g=it.filter(i=>i.ok).length;byType.append(barRow(t.ar,g,it.length));
- });
+ const byType=el("div",PANEL);byType.innerHTML='<div class="'+LABEL+'">'+T("// حسب نوع السؤال","// by question type")+"</div>";
+ TYPES.forEach(t=>{const it=all.filter(i=>i.type===t.k);if(!it.length)return;byType.append(barRow(tname(t),it.filter(i=>i.ok).length,it.length))});
  root.append(byType);
 
- const byLec=el("section","panel");byLec.innerHTML="<h2>حسب المحاضرة</h2>";
+ const byLec=el("div",PANEL);byLec.innerHTML='<div class="'+LABEL+'">'+T("// حسب المحاضرة","// by lecture")+"</div>";
  const rows=[];
  for(let l=1;l<=8;l++){
   const it=all.filter(i=>i.lec===l);if(!it.length)continue;
-  const g=it.filter(i=>i.ok).length;rows.push({l,g,n:it.length,p:g/it.length});
-  byLec.append(barRow(LEC[l].ar+': <span class="en" dir="ltr">'+esc(LEC[l].en)+"</span>",g,it.length,true));
+  const g=it.filter(i=>i.ok).length;rows.push({l,p:g/it.length,n:it.length});
+  byLec.append(barRow(lecName(l)+': <span dir="ltr" class="text-dark-muted">'+esc(LEC[l].en)+"</span>",g,it.length,true));
  }
  const weak=rows.filter(r=>r.n>=2&&r.p<1).sort((a,b)=>a.p-b.p)[0];
- if(weak)byLec.append(el("p","muted","أضعف محاضرة في هذه المحاولة: "+LEC[weak.l].ar+"."));
+ if(weak)byLec.append(el("p","mono text-xs text-amber-400 mt-2",T("// أضعف محاضرة في هذه المحاولة: ","// weakest lecture this run: ")+lecName(weak.l)));
  root.append(byLec);
 
- const wrongCards=cards.filter(c=>scoreOf(c)<c.pts);
- const acts=el("div","acts");
- if(wrongCards.length){
-  const r=el("button","btn primary","أعد حل الأسئلة التي أخطأت فيها ("+wrongCards.length+")");r.type="button";
+ const wrong=cards.filter(c=>scoreOf(c)<c.pts);
+ const acts=el("div","flex flex-wrap gap-3 mb-6");
+ if(wrong.length){
+  const r=el("button",BTN_P,T("أعد حل الأسئلة التي أخطأت فيها ("+wrong.length+")","Retry my mistakes ("+wrong.length+")"));r.type="button";
   r.onclick=()=>{
-   const copy=JSON.parse(JSON.stringify(wrongCards)).map(c=>{c.done=false;c.user=c.type==="fill"?c.items.map(()=>""):c.type==="match"?c.left.map(()=>-1):null;return c});
+   const copy=JSON.parse(JSON.stringify(wrong)).map(c=>{c.done=false;c.user=c.type==="fill"?c.items.map(()=>""):c.type==="match"?c.left.map(()=>-1):null;return c});
    runPractice(numberDeck(copy));
   };
   acts.append(r);
  }
- const again=el("button","btn ghost","امتحان جديد");again.type="button";again.onclick=renderSetup;
- acts.append(again);
+ const again=el("button",BTN_G,T("امتحان جديد","New exam"));again.type="button";again.onclick=renderSetup;acts.append(again);
  root.append(acts);
 
- const rev=el("section","review");
- const rh=el("div","ph");rh.innerHTML="<h2>مراجعة الإجابات</h2>";
- const tog=el("div","seg");
- const bAll=el("button","on","كل الأسئلة"),bWr=el("button","","الأخطاء فقط");bAll.type="button";bWr.type="button";
- tog.append(bAll,bWr);rh.append(tog);
- const list=el("div","rlist");list.dir="ltr";
+ const rh=el("div","flex flex-wrap items-center justify-between gap-2 mb-3");
+ rh.innerHTML='<div class="mono text-xs font-bold text-brand-500">'+T("// مراجعة الإجابات","// answer review")+"</div>";
+ const seg=el("div","flex rounded-lg overflow-hidden border border-dark-border text-xs mono font-semibold");
+ const bAll=el("button","px-3 py-1.5",T("كل الأسئلة","all")),bWr=el("button","px-3 py-1.5",T("الأخطاء فقط","mistakes"));bAll.type=bWr.type="button";
+ seg.append(bAll,bWr);rh.append(seg);
+ const list=el("div");list.dir="ltr";
  function drawList(onlyWrong){
+  bAll.className="px-3 py-1.5 "+(!onlyWrong?"bg-brand-500 text-dark-base":"bg-dark-elevated");
+  bWr.className="px-3 py-1.5 "+(onlyWrong?"bg-brand-500 text-dark-base":"bg-dark-elevated");
   list.innerHTML="";
-  const src=onlyWrong?wrongCards:cards;
-  if(!src.length){list.append(el("p","muted","لا توجد أخطاء. أحسنت.")); list.firstChild.dir="rtl";return}
+  const src=onlyWrong?wrong:cards;
+  if(!src.length){list.append(el("p","text-sm text-emerald-300 mono",T("// لا توجد أخطاء. أحسنت.","// no mistakes. well done.")));return}
   src.forEach(c=>list.append(renderCard(c)));
  }
- bAll.onclick=()=>{bAll.className="on";bWr.className="";drawList(false)};
- bWr.onclick=()=>{bWr.className="on";bAll.className="";drawList(true)};
- drawList(false);
- rev.append(rh,list);root.append(rev);
- mount(root);
+ bAll.onclick=()=>drawList(false);bWr.onclick=()=>drawList(true);drawList(false);
+ root.append(rh,list);
+ mount(root);view.rerender=()=>showResults(cards,mode);
 }
-function barRow(label,g,n,isHtml){
- const p=Math.round(g/n*100);
- const r=el("div","brw");
- r.innerHTML='<div class="bt2"><span>'+(isHtml?label:esc(label))+'</span><b dir="ltr">'+g+"/"+n+'</b></div><div class="prog '+(p<60?"low":"")+'"><span style="width:'+p+'%"></span></div>';
- return r;
-}
-renderSetup();
 
-</script>
-</body>
-</html>
+/* ---------- language + shell ---------- */
+function applyLang(){
+ document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr";
+ document.getElementById("langBtn").textContent=lang==="ar"?"English":"العربية";
+ document.getElementById("backLbl").textContent=lang==="ar"?"المركز":"Hub";
+}
+document.getElementById("langBtn").onclick=()=>{
+ lang=lang==="ar"?"en":"ar";
+ try{const c=load();c.lang=lang;localStorage.setItem(KEY,JSON.stringify(c))}catch(e){}
+ applyLang();view.rerender&&view.rerender();
+};
+applyLang();renderSetup();
+
+(function networkBackground(){
+ const canvas=document.getElementById("netCanvas");if(!canvas)return;
+ const ctx=canvas.getContext("2d"),reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+ const colors=["56,189,248","59,130,246"];let w,h,ps=[],raf=null;
+ function resize(){w=canvas.width=innerWidth;h=canvas.height=innerHeight}
+ function init(){const d=reduce?0:Math.min(60,Math.round(w*h/24000));ps=Array.from({length:d},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3}))}
+ function step(){
+  ctx.clearRect(0,0,w,h);
+  for(const p of ps){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1}
+  for(let i=0;i<ps.length;i++){
+   const a=ps[i];ctx.beginPath();ctx.arc(a.x,a.y,1.5,0,Math.PI*2);ctx.fillStyle="rgba(148,163,184,.55)";ctx.fill();
+   for(let j=i+1;j<ps.length;j++){const b=ps[j],dx=a.x-b.x,dy=a.y-b.y,d=Math.sqrt(dx*dx+dy*dy);
+    if(d<130){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle="rgba("+colors[(i+j)%2]+","+(0.16*(1-d/130))+")";ctx.lineWidth=1;ctx.stroke()}}
+  }
+ }
+ const loop=()=>{step();raf=requestAnimationFrame(loop)};
+ const start=()=>{if(!raf&&!reduce)raf=requestAnimationFrame(loop)},stop=()=>{if(raf){cancelAnimationFrame(raf);raf=null}};
+ addEventListener("resize",()=>{resize();init()});
+ document.addEventListener("visibilitychange",()=>{document.hidden?stop():start()});
+ resize();init();reduce?step():start();
+})();
+</script></body></html>
