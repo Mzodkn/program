@@ -34,6 +34,7 @@ const nav = document.getElementById('mainNav');
 const userChip = document.getElementById('userChip');
 const signInChip = document.getElementById('signInChip');
 const langBtn = document.getElementById('langBtn');
+const menuBtn = document.getElementById('menuBtn');
 const guestBanner = document.getElementById('guestBanner');
 
 // Pages with a renderer below are real. The remaining entries are placeholders
@@ -165,6 +166,25 @@ function setBusy(form, busy) {
   form.querySelectorAll('input').forEach((input) => { input.disabled = busy; });
 }
 
+function closeMobileMenu({ restoreFocus = false } = {}) {
+  if (!nav || !nav.classList.contains('open')) return;
+  nav.classList.remove('open');
+  if (menuBtn) menuBtn.setAttribute('aria-expanded', 'false');
+  if (restoreFocus && menuBtn) menuBtn.focus();
+}
+
+function toggleMobileMenu({ focusFirst = false } = {}) {
+  if (!nav || nav.hidden) return;
+  const open = !nav.classList.contains('open');
+  nav.classList.toggle('open', open);
+  if (menuBtn) menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+
+  if (open && focusFirst) {
+    const firstLink = [...nav.querySelectorAll('a')].find((link) => getComputedStyle(link).display !== 'none');
+    if (firstLink) firstLink.focus({ preventScroll: true });
+  }
+}
+
 function setHeaderVisibility() {
   const signedIn = !!(state.session && state.profile);
   const guest = !state.session;
@@ -173,7 +193,14 @@ function setHeaderVisibility() {
   const showGuestChrome = guest && state.booted && !state.recoveryMode && !authPage && !gatePage;
   const showNav = state.booted && !state.recoveryMode && (signedIn || guest);
 
-  nav.style.display = showNav ? 'flex' : 'none';
+  nav.hidden = !showNav;
+  if (!showNav) closeMobileMenu();
+  if (menuBtn) {
+    menuBtn.style.display = showNav ? 'inline-flex' : 'none';
+    menuBtn.setAttribute('aria-label', t('menu'));
+    menuBtn.title = t('menu');
+  }
+
   userChip.style.display = signedIn ? 'inline-flex' : 'none';
   if (signInChip) signInChip.style.display = showGuestChrome ? 'inline-flex' : 'none';
   if (langBtn) langBtn.style.display = signedIn ? 'none' : 'inline-block';
@@ -791,6 +818,34 @@ async function boot() {
 langBtn.addEventListener('click', () => {
   const next = getLang() === 'ar' ? 'en' : 'ar';
   setLang(next);
+});
+
+// Mobile hamburger menu.
+menuBtn?.addEventListener('click', (event) => {
+  event.stopPropagation();
+  toggleMobileMenu({ focusFirst: event.detail === 0 });
+});
+
+nav?.addEventListener('click', (event) => {
+  if (event.target.closest('a')) closeMobileMenu();
+});
+
+document.addEventListener('click', (event) => {
+  if (!nav?.classList.contains('open')) return;
+  if (nav.contains(event.target) || menuBtn?.contains(event.target)) return;
+  closeMobileMenu();
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape') closeMobileMenu({ restoreFocus: true });
+});
+
+window.addEventListener('resize', () => {
+  if (window.innerWidth >= 640) closeMobileMenu();
+});
+
+window.addEventListener('hashchange', () => {
+  closeMobileMenu();
 });
 
 // Remember where a guest was before opening sign-in, so they return there.

@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>امتحان Introduction to Business</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#EDF0F6;--sheet:#FFFFFF;--ink:#16233F;--ink2:#51607C;--line:#D2D9E6;--pencil:#2F4FA2;--pencil-soft:#E4EAF9;--ok:#1B7A4B;--ok-soft:#E0F4E8;--bad:#B42318;--bad-soft:#FCE6E3;--mark:#FFE766;--margin:#E3A8A1;
+--ui:"IBM Plex Sans Arabic",Tahoma,"Segoe UI",system-ui,sans-serif;--serif:"Source Serif 4",Georgia,"Times New Roman",serif}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--ui);font-size:16px;line-height:1.65}
+.wrap{max-width:800px;margin:0 auto;padding:22px 16px 80px}
+h1,h2,h3,h4,p{margin:0}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:2.5px solid var(--pencil);outline-offset:2px}
+.en{font-family:var(--serif);unicode-bidi:isolate}
+.muted{color:var(--ink2);font-size:15px}
+
+/* hero */
+.hero{padding:18px 2px 14px}
+.hero h1{font-size:clamp(26px,5.4vw,38px);line-height:1.3;font-weight:700;letter-spacing:0}
+.hero h1 .en{font-weight:600;white-space:nowrap}
+.hero p{margin-top:8px;color:var(--ink2);max-width:560px}
+
+/* panels */
+.panel{background:var(--sheet);border:1px solid var(--line);border-radius:14px;padding:18px;margin:0 0 14px}
+.panel h2{font-size:19px;font-weight:700;line-height:1.4}
+.ph{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.panel>h2{margin-bottom:6px}
+.demo .muted{margin-bottom:14px}
+.demo .q{margin-bottom:0}
+.link{background:none;border:0;padding:6px 8px;color:var(--pencil);cursor:pointer;font-weight:600;border-radius:8px}
+.link:hover{background:var(--pencil-soft)}
+.presets{display:flex;gap:2px}
+
+/* mode */
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.mode{position:relative;cursor:pointer}
+.mode input{position:absolute;opacity:0;inset:0}
+.mc{display:block;border:1.8px solid var(--line);border-radius:12px;padding:14px;height:100%}
+.mc b{display:block;font-size:17px}
+.mc span{display:block;color:var(--ink2);font-size:14.5px;line-height:1.55;margin-top:2px}
+.mode input:checked+.mc{border-color:var(--pencil);background:var(--pencil-soft)}
+.mode input:focus-visible+.mc{outline:2.5px solid var(--pencil);outline-offset:2px}
+.timer{display:flex;gap:18px;align-items:center;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line)}
+.timer[hidden]{display:none}
+.chk{display:flex;gap:8px;align-items:center;cursor:pointer}
+.chk input{width:18px;height:18px;accent-color:var(--pencil)}
+.mins{display:flex;gap:8px;align-items:center}
+.mins input{width:78px;padding:6px 8px;border:1.5px solid var(--line);border-radius:8px;background:#fff;text-align:center}
+
+/* chips */
+.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.chip{display:flex;flex-direction:column;align-items:flex-start;text-align:start;gap:0;padding:9px 12px;border:1.8px solid var(--line);background:#fff;border-radius:11px;cursor:pointer;line-height:1.4}
+.chip .cl{font-weight:700;font-size:14.5px}
+.chip .ce{font-size:13.5px;color:var(--ink2);font-family:var(--serif);text-align:left}
+.chip.on{border-color:var(--pencil);background:var(--pencil-soft)}
+.chip:hover{border-color:var(--pencil)}
+
+/* counters */
+.row{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.rl .ar{font-weight:700}
+.rl .en{font-size:14.5px;color:var(--ink2);line-height:1.35}
+.rl .hint{font-size:13.5px;color:var(--ink2);margin-top:2px}
+.step{display:flex;align-items:center;flex:none}
+.step button{width:40px;height:40px;border:1.8px solid var(--line);background:#fff;font-size:20px;cursor:pointer;line-height:1}
+.step button:first-child{border-radius:10px 0 0 10px;border-right:0}
+.step button:last-child{border-radius:0 10px 10px 0;border-left:0}
+.step button:hover:not(:disabled){background:var(--pencil-soft)}
+.step button:disabled{opacity:.35;cursor:default}
+.step input{width:58px;height:40px;text-align:center;border:1.8px solid var(--line);background:#fff;border-radius:0;-moz-appearance:textfield}
+.step input::-webkit-outer-spin-button,.step input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.total{margin-top:6px;padding-top:12px;border-top:1px solid var(--line);font-size:17px}
+.total b{font-size:20px}
+.startbar{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+
+/* buttons */
+.btn{border:0;border-radius:11px;padding:11px 20px;font-weight:700;cursor:pointer;font-size:16px;line-height:1.3}
+.btn.primary{background:var(--pencil);color:#fff}
+.btn.primary:hover:not(:disabled){background:#243F87}
+.btn.ghost{background:#fff;color:var(--ink);border:1.8px solid var(--line)}
+.btn.ghost:hover{border-color:var(--pencil)}
+.btn.big{padding:13px 34px;font-size:18px}
+.btn.sm{padding:8px 14px;font-size:15px}
+.btn:disabled{opacity:.4;cursor:default}
+.acts{display:flex;gap:10px;flex-wrap:wrap;margin:6px 0 14px}
+
+/* question card (the exam paper) */
+.q{display:grid;grid-template-columns:58px minmax(0,1fr);direction:ltr;background:var(--sheet);border:1px solid var(--line);border-radius:10px;margin:0 0 14px;overflow:hidden;text-align:left}
+.q .no{border-right:1.5px solid var(--margin);padding:16px 2px;text-align:center;font-family:var(--serif);font-weight:600;color:var(--ink2);background:#F8FAFD;font-size:15px;line-height:1.3}
+.q .body{padding:16px 18px 16px}
+.stem{font-family:var(--serif);font-size:19.5px;line-height:1.5;margin-bottom:14px}
+.stem b{font-weight:700}
+.opts{display:grid;gap:6px}
+.opts.tf{display:flex;gap:26px;flex-wrap:wrap}
+.opt{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;background:none;border:0;border-radius:10px;padding:7px 8px;cursor:pointer;font-family:var(--ui);font-size:16px;line-height:1.5}
+.opts.tf .opt{width:auto;font-size:18px;align-items:center}
+.opt:hover:not(:disabled){background:var(--pencil-soft)}
+.opt:disabled{cursor:default}
+.bub{flex:none;width:28px;height:28px;border-radius:50%;border:1.8px solid var(--ink2);display:grid;place-items:center;font-size:12.5px;font-weight:700;color:var(--ink2);margin-top:1px;font-family:var(--ui)}
+.otxt{position:relative;display:inline-block;padding:2px 12px;margin:0 4px}
+.opt.sel .bub{background:var(--pencil);border-color:var(--pencil);color:#fff}
+.opt.sel{color:var(--pencil)}
+.opt.ok{background:var(--ok-soft)}
+.opt.ok .bub{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.bad{background:var(--bad-soft)}
+.opt.bad .bub{background:var(--bad);border-color:var(--bad);color:#fff}
+.opt:disabled{color:inherit}
+.ring{position:absolute;left:-8px;top:-5px;width:calc(100% + 16px);height:calc(100% + 10px);overflow:visible;pointer-events:none;animation:draw .38s ease-out both}
+.ring path{fill:none;stroke:var(--pencil);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.opt.ok .ring path{stroke:var(--ok)}
+.opt.bad .ring path{stroke:var(--bad)}
+@keyframes draw{from{clip-path:inset(-10px 100% -10px -10px)}to{clip-path:inset(-10px -10px -10px -10px)}}
+
+/* feedback */
+.fb{margin-top:12px;border-radius:10px;font-size:15.5px;direction:rtl;text-align:right;line-height:1.7}
+.fb:empty{display:none}
+.fb.ok,.fb.bad{padding:10px 14px}
+.fb.ok{background:var(--ok-soft);color:#0E4D2E}
+.fb.bad{background:var(--bad-soft);color:#7A1A12}
+.fb .en{font-size:16.5px;text-align:left}
+.fb .corr{margin-top:2px}
+.fb .exp{margin-top:6px;direction:ltr;text-align:left}
+.fb mark{background:var(--mark);color:var(--ink);padding:1px 5px;border-radius:3px;display:inline}
+
+/* word bank + fills */
+.bank{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 12px;border:1.8px dashed var(--ink2);border-radius:10px;margin-bottom:14px;background:#FBFCFE}
+.bank .bt{font-weight:700;font-size:14px;color:var(--ink2);margin-right:4px;font-family:var(--ui)}
+.bank .w{padding:3px 11px;border-radius:999px;background:var(--pencil-soft);font-family:var(--serif);font-size:16.5px}
+.fills{margin:0;padding-left:26px;display:grid;gap:12px;font-family:var(--serif);font-size:18px;line-height:2}
+.blank{font-family:var(--ui);font-size:15.5px;min-width:130px;max-width:100%;padding:5px 8px;margin:0 4px;border:1.8px solid var(--ink2);border-radius:8px;background:#fff;color:var(--ink)}
+.blank.ok{border-color:var(--ok);background:var(--ok-soft)}
+.blank.bad{border-color:var(--bad);background:var(--bad-soft)}
+.fix{font-family:var(--ui);font-size:14.5px;color:var(--bad);margin-left:4px;direction:rtl;display:inline-block}
+.fix b{font-family:var(--serif);font-size:16px}
+
+/* matching */
+.match{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.match h4{font-family:var(--ui);font-size:14px;color:var(--ink2);margin-bottom:8px;border-bottom:1.5px solid var(--line);padding-bottom:4px}
+.mrow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:10px;font-family:var(--serif);font-size:17px;line-height:1.4}
+.mn{flex:none;width:24px;font-weight:600;color:var(--ink2)}
+.mt{flex:1 1 120px}
+.mrow .blank{min-width:64px;margin:0}
+.brow{display:flex;gap:10px;margin-bottom:10px;font-family:var(--serif);font-size:17px;line-height:1.4}
+.bl{flex:none;width:24px;font-weight:700;color:var(--pencil);font-family:var(--ui)}
+
+/* section headings */
+.sechead{margin:22px 0 12px}
+.sechead h2{font-family:var(--serif);font-size:22px;font-weight:700}
+.sechead .en{margin-top:2px;color:var(--ink2);font-size:16.5px}
+.sechead .ar{font-size:14.5px;color:var(--ink2);margin-top:2px}
+.sechead .rng{white-space:nowrap}
+.paperhead{border-bottom:2px solid var(--ink);padding-bottom:8px;margin-top:6px}
+.paperhead h1{font-family:var(--serif);font-size:28px}
+.paperhead p{font-family:var(--serif);color:var(--ink2)}
+
+/* practice + exam chrome */
+.ptop{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px;font-size:15px}
+.ptxt{color:var(--ink2)}
+.prog{height:8px;background:#DCE2EE;border-radius:99px;overflow:hidden}
+.prog span{display:block;height:100%;background:var(--pencil);border-radius:99px;transition:width .3s}
+.prog.low span{background:var(--bad)}
+.exambar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(237,240,246,.96);backdrop-filter:blur(6px);padding:10px 2px;margin:0 0 6px;border-bottom:1px solid var(--line)}
+.ec{display:flex;gap:14px;flex-wrap:wrap;font-size:15px;font-weight:600}
+.etime{font-variant-numeric:tabular-nums}
+.etime.low{color:var(--bad)}
+.exambar .btn{flex:none}
+
+/* results */
+.rhero{text-align:center;padding:14px 0 8px}
+.rhero h1{font-size:24px}
+.grade{position:relative;display:inline-block;margin:20px 22px 10px;padding:4px 26px}
+.gnum{font-family:var(--serif);font-size:62px;font-weight:600;line-height:1.2;color:var(--bad)}
+.gnum small{font-size:30px;color:var(--ink2);font-weight:400}
+.grade .ring{left:0;top:-4px;width:100%;height:calc(100% + 8px);animation-duration:.7s;animation-delay:.2s}
+.grade .ring path{stroke:var(--bad);stroke-width:3.2}
+.pct{font-size:20px;font-weight:700;margin-bottom:4px}
+.brw{margin:12px 0}
+.bt2{display:flex;justify-content:space-between;gap:12px;font-size:15px;margin-bottom:5px}
+.review{margin-top:22px}
+.seg{display:flex;border:1.8px solid var(--line);border-radius:10px;overflow:hidden;background:#fff}
+.seg button{border:0;background:none;padding:7px 14px;cursor:pointer;font-weight:600}
+.seg button.on{background:var(--pencil);color:#fff}
+
+@media (max-width:640px){
+ .modes{grid-template-columns:1fr}
+ .match{grid-template-columns:1fr}
+ .q{grid-template-columns:44px minmax(0,1fr)}
+ .q .body{padding:14px 12px}
+ .stem{font-size:18px}
+ .row{align-items:flex-start;flex-direction:column;gap:8px}
+ .exambar .btn{font-size:14px;padding:8px 12px}
+ .fills{padding-left:20px;font-size:17px}
+ .blank{min-width:110px}
+}
+@media (prefers-reduced-motion:reduce){
+ .ring{animation:none}
+ .prog span{transition:none}
+}
+
+.stem[hidden]{display:none}
+
+</style>
+</head>
+<body>
+<main class="wrap" id="app"></main>
+<script>
+const LEC=[null,
+ {ar:"المحاضرة 1",en:"Introduction to Business"},
+ {ar:"المحاضرة 2",en:"Forms of Business Ownership"},
+ {ar:"المحاضرة 3",en:"Business Ethics and Social Responsibility"},
+ {ar:"المحاضرة 4",en:"Business in a Global Environment"},
+ {ar:"المحاضرة 5",en:"Entrepreneurship and Starting a Business"},
+ {ar:"المحاضرة 6",en:"Management and Human Resource Management"},
+ {ar:"المحاضرة 7",en:"Marketing and Operations Management"},
+ {ar:"المحاضرة 8",en:"Accounting, Finance, and IT in Business"}];
+
+/* [lecture, statement, isTrue, correction] */
+const TF=[
+[1,"A business produces goods or services to satisfy customer needs and generate profit.",true],
+[1,"Goods are intangible activities provided to customers.",false,"Goods are tangible products; services are the intangible activities."],
+[1,"Cloud hosting is an example of a service.",true],
+[1,"Profit = Revenue − Expenses.",true],
+[1,"Information resources include data and software.",true],
+[1,"Employees and company culture belong to the external environment.",false,"Employees, company culture, technology systems and management are the internal environment."],
+[1,"Government regulations and competitors are part of the external environment.",true],
+[1,"During economic recessions, customers may reduce spending on technology products.",true],
+[1,"Suppliers provide the materials, equipment, or services a business needs.",true],
+[1,"Retail businesses produce physical goods.",false,"Manufacturing businesses produce physical goods; retail businesses sell products directly to customers."],
+[1,"Inflation, unemployment, and interest rates are examples of the economic environment.",true],
+[1,"Profit is the main financial goal of most businesses.",true],
+[1,"Cloud computing and blockchain are examples of technologies businesses invest in to promote innovation.",true],
+
+[2,"A sole proprietorship is owned and managed by one individual.",true],
+[2,"In a sole proprietorship, the owner has limited liability.",false,"The sole proprietor has unlimited liability and is personally responsible for all debts."],
+[2,"A corporation is a legal entity separate from its owners.",true],
+[2,"Ownership of a corporation is represented by shares of stock.",true],
+[2,"In the comparison table, a partnership has limited liability.",false,"Partnership: unlimited liability. Corporation and LLC: limited liability."],
+[2,"An LLC combines features of both partnerships and corporations.",true],
+[2,"The owners of an LLC are called shareholders.",false,"LLC owners are called members; corporation owners are shareholders."],
+[2,"Possible double taxation is a disadvantage of a corporation.",true],
+[2,"In a limited partnership, some partners invest money but do not participate in management.",true],
+[2,"A corporation is the easiest form of business ownership to set up.",false,"A corporation is complex and expensive to establish; a sole proprietorship is the easiest."],
+[2,"A sole proprietorship usually requires less capital to start.",true],
+[2,"Corporations are often preferred when startups plan to raise large investments.",true],
+[2,"A corporation is managed by a board of directors.",true],
+[2,"In a general partnership, all partners share management responsibilities and liabilities.",true],
+
+[3,"Business ethics refers to the moral principles and standards that guide behavior in business.",true],
+[3,"False advertising is an example of ethical behavior.",false,"False advertising is unethical; honest advertising is ethical."],
+[3,"The first step in ethical decision making is to make a decision.",false,"The first step is to identify the problem."],
+[3,"Review the Outcome is the last step in ethical decision making.",true],
+[3,"Philanthropic responsibility means contributing to society through donations or community support.",true],
+[3,"Legal responsibility means doing what is right beyond legal requirements.",false,"That is ethical responsibility. Legal responsibility means following laws and regulations."],
+[3,"Data centers and electronic waste are ways IT companies affect the environment.",true],
+[3,"Bias in algorithms is an ethical concern related to artificial intelligence.",true],
+[3,"Illegal copying of software is unethical and illegal.",true],
+[3,"Corporate social responsibility means businesses should focus only on profit.",false,"CSR means businesses should also consider social impact, environmental impact, and ethical responsibilities."],
+[3,"Collecting user data without consent is a data privacy issue.",true],
+[3,"Unethical behavior can lead to loss of trust, legal penalties, and business failure.",true],
+[3,"Economic responsibility means being profitable and sustainable.",true],
+
+[4,"Globalization is the process by which businesses and economies become connected and integrated across the world.",true],
+[4,"Exports are goods and services purchased from other countries.",false,"Exports are sold to other countries; imports are purchased from other countries."],
+[4,"Tariffs and taxes are trade restrictions that create challenges for international trade.",true],
+[4,"A multinational company operates in more than one country.",true],
+[4,"Technology is not considered a driver of globalization.",false,"Technology (internet, cloud computing) is a key driver of globalization."],
+[4,"Cultural differences can affect attitudes toward time, deadlines, and teamwork.",true],
+[4,"Outsourcing can lead to job displacement in some regions.",true],
+[4,"Global markets usually have low competition.",false,"Global markets are characterized by high competition."],
+[4,"Economies of scale is an advantage of multinational companies.",true],
+[4,"Digital products such as mobile apps can be sold globally without physical distribution.",true],
+[4,"Access to talent from different countries is a positive impact of globalization.",true],
+[4,"Currency differences and political risks are benefits of international trade.",false,"They are challenges of international trade."],
+
+[5,"An entrepreneur is a person who starts and manages a business.",true],
+[5,"Entrepreneurship involves taking risks in order to make a profit.",true],
+[5,"Startups usually have unlimited initial resources.",false,"Startups have limited initial resources and high risk."],
+[5,"Persistence means continuing efforts despite challenges and failures.",true],
+[5,"A business plan is a written document that outlines a business idea and how it will be implemented.",true],
+[5,"A business plan can help a business secure funding.",true],
+[5,"Customer feedback is a source of business ideas.",true],
+[5,"Startups are considered low-risk businesses.",false,"Startups have high risk and high growth potential."],
+[5,"The financial plan estimates costs, revenue, and profit.",true],
+[5,"The market analysis section explains how the product or service will be delivered.",false,"Market analysis is about customers and competitors; the operations plan explains delivery."],
+[5,"Legal and regulatory issues are among the challenges of starting a business.",true],
+[5,"In the mobile app startup example, market research comes before developing the product.",true],
+
+[6,"Management is the process of planning, organizing, leading, and controlling resources to achieve organizational goals.",true],
+[6,"Controlling involves monitoring performance and making corrections.",true],
+[6,"Planning involves arranging resources and tasks.",false,"Arranging resources and tasks is organizing; planning is setting goals and deciding how to achieve them."],
+[6,"The CEO belongs to top-level management.",true],
+[6,"Team leaders and supervisors belong to middle-level management.",false,"They belong to operational (lower-level) management."],
+[6,"Recruitment is the process of choosing the best candidate.",false,"That is selection. Recruitment is attracting candidates for a job."],
+[6,"Training focuses on long-term growth, while development teaches skills for current jobs.",false,"Reversed: training teaches job skills; development focuses on long-term growth."],
+[6,"Bonuses and incentives are examples of financial motivation.",true],
+[6,"Recognition and career growth are examples of non-financial motivation.",true],
+[6,"Employee retention means keeping talented employees in the organization.",true],
+[6,"Employee burnout is a challenge in IT human resource management.",true],
+[6,"HRM focuses on people as the most important resource.",true],
+
+[7,"Marketing is only about selling products.",false,"Marketing starts before the product is created, by identifying customer needs."],
+[7,"Customer value = Benefits − Cost.",true],
+[7,"The 4Ps of the marketing mix are Product, Price, Place, and Promotion.",true],
+[7,"Subscription models are a pricing strategy.",true],
+[7,"Search engine optimization (SEO) is a type of digital marketing.",true],
+[7,"Service operations produce output that can be stored.",false,"Service output is intangible and cannot be stored."],
+[7,"Manufacturing operations produce tangible output.",true],
+[7,"Services are produced and consumed at the same time.",true],
+[7,"Quality control prevents defects, while quality assurance checks products.",false,"Reversed: quality control = checking products; quality assurance = preventing defects."],
+[7,"A supply chain includes suppliers, manufacturers, distributors, and retailers.",true],
+[7,"Marketing identifies customer needs, and operations produce products or services to meet them.",true],
+[7,"Place refers to where and how products are distributed.",true],
+
+[8,"Accounting is the process of recording, organizing, summarizing, and reporting financial information.",true],
+[8,"Investors and banks are internal users of accounting information.",false,"They are external users. Internal users are managers, owners, and employees."],
+[8,"Assets = Liabilities + Owner's Equity.",true],
+[8,"Loans and unpaid bills are examples of assets.",false,"They are liabilities, meaning debts or obligations owed by the business."],
+[8,"The income statement measures business profitability.",true],
+[8,"The balance sheet shows how cash enters and leaves the business.",false,"That is the cash flow statement. The balance sheet shows assets, liabilities, and owner's equity."],
+[8,"A budget is a financial plan that estimates future income and expenses.",true],
+[8,"Higher investments may produce higher profits but also involve higher risk.",true],
+[8,"An information system combines hardware, software, data, people, and processes.",true],
+[8,"Management Information Systems (MIS) handle daily transactions such as payroll.",false,"Daily transactions are handled by TPS; MIS provide reports for managers."],
+[8,"Decision Support Systems help managers make decisions using data analysis.",true],
+[8,"Hacking, malware, and data breaches are common cybersecurity threats.",true]
+];
+
+/* [lecture, question, correct, wrong1, wrong2, wrong3, note] */
+const MCQ=[
+[1,"Which of the following is an example of a physical resource?","Equipment","Employees","Capital","Software"],
+[1,"Which of the following is an example of a good?","Smartphones","Cloud hosting","Technical support","Software development"],
+[1,"A software company has revenue of $50,000 and operating costs of $30,000. What is its profit?","$20,000","$80,000","$30,000","$50,000","Profit = Revenue − Expenses = 50,000 − 30,000."],
+[1,"Which type of business provides services instead of physical products?","Service business","Manufacturing business","Retail business","Hardware producer"],
+[1,"Which of the following is part of the internal business environment?","Company culture","Competitors","Government regulations","Economic conditions"],
+[1,"Which of the following is part of the external business environment?","Technology trends","Employees","Management","Technology systems"],
+[1,"Which of the following is NOT listed as a key technology affecting business?","Manual bookkeeping","Cloud computing","Artificial intelligence","Cybersecurity"],
+[1,"Individuals or groups affected by the activities of a business are called:","Stakeholders","Competitors","Suppliers","Entrepreneurs"],
+[1,"Which stakeholder regulates business activities through laws and regulations?","Government","Suppliers","Customers","Employees"],
+[1,"Which of the following is a factor of the economic environment?","Interest rates","Preference for online shopping","Cloud computing","Company culture"],
+[1,"A growing preference for online shopping belongs to which environment?","Social and cultural","Economic","Technological","Internal"],
+[1,"Investing in research and development relates to which reason businesses exist?","Promote innovation","Generate profit","Create employment","Produce goods"],
+
+[2,"Which form of business is owned and managed by one individual?","Sole proprietorship","Partnership","Corporation","LLC"],
+[2,"Which form is a separate legal entity whose ownership is divided into shares?","Corporation","Sole proprietorship","General partnership","Limited partnership"],
+[2,"Which structure is a hybrid combining features of partnerships and corporations?","LLC","Sole proprietorship","Corporation","General partnership"],
+[2,"The owners of an LLC are called:","Members","Shareholders","Partners","Directors"],
+[2,"Which is an advantage of a sole proprietorship?","The owner keeps all profits","Limited liability","Raising capital by selling shares","Business continuity if owners change"],
+[2,"Which is a disadvantage of a corporation?","Possible double taxation","Unlimited liability","Very easy to establish","Full control by one owner"],
+[2,"In a general partnership:","All partners share management responsibilities and liabilities","Some partners invest but do not manage","There is only one owner","Owners are called members"],
+[2,"A technology company plans to attract investors and expand globally. Which structure fits best?","Corporation","Sole proprietorship","General partnership","Freelance work"],
+[2,"Which is NOT a factor listed for choosing a business structure?","Choice of company logo","Number of owners","Tax considerations","Capital requirements"],
+[2,"According to the comparison table, which structure has very easy setup and limited capital?","Sole proprietorship","Partnership","Corporation","LLC"],
+[2,"A corporation is managed by:","A board of directors","Its members","A single owner","A partnership agreement"],
+[2,"What is often required when two or more people own a business together?","A partnership agreement","A board of directors","Shares of stock","A public listing"],
+
+[3,"The process of choosing actions that are morally correct is called:","Ethical decision making","Corporate philanthropy","Globalization","Strategic planning"],
+[3,"What is the first step in ethical decision making?","Identify the problem","Evaluate alternatives","Take action","Review the outcome"],
+[3,"Which step comes right after 'Evaluate Alternatives'?","Make a decision","Gather information","Take action","Review the outcome"],
+[3,"Being profitable and sustainable is which type of CSR?","Economic responsibility","Legal responsibility","Ethical responsibility","Philanthropic responsibility"],
+[3,"Following laws and regulations is which type of CSR?","Legal responsibility","Economic responsibility","Ethical responsibility","Philanthropic responsibility"],
+[3,"Doing what is right beyond legal requirements is which type of CSR?","Ethical responsibility","Legal responsibility","Economic responsibility","Philanthropic responsibility"],
+[3,"Donating to charities is an example of which type of CSR?","Philanthropic responsibility","Legal responsibility","Economic responsibility","Ethical responsibility"],
+[3,"Which is an example of unethical behavior?","Misusing customer data","Honest advertising","Fair pricing","Treating employees fairly"],
+[3,"Bias in algorithms and lack of transparency are concerns of:","Ethical use of artificial intelligence","Data privacy","Intellectual property rights","Cybersecurity ethics"],
+[3,"Illegal copying of software violates:","Intellectual property rights","Data privacy","AI ethics","Environmental responsibility"],
+[3,"Which is one way IT companies affect the environment?","Data centers (energy consumption)","Hiring remote employees","Selling subscriptions","Using encryption"],
+[3,"Using encryption, securing databases, and preventing data breaches are responsibilities of:","Protecting customer data","Ethical use of AI","Intellectual property","Environmental responsibility"],
+[3,"A mobile app collecting location data without permission is an example of a problem in:","Data privacy","Intellectual property","Environmental responsibility","Economic responsibility"],
+[3,"Which is NOT a reason business ethics is important?","It increases legal risks","It builds trust with customers","It improves company reputation","It encourages fair competition"],
+
+[4,"Which of the following is a driver of globalization?","Faster transportation and logistics","Trade restrictions","Currency differences","Political risks"],
+[4,"Goods and services sold to other countries are called:","Exports","Imports","Tariffs","Outsourcing"],
+[4,"A company buying computer hardware from another country is an example of:","Imports","Exports","Outsourcing","A global market"],
+[4,"Which is a challenge of international trade?","Currency differences","Access to new markets","Increased revenue opportunities","Lower production costs"],
+[4,"Which is a benefit of international trade?","Access to new markets","Tariffs and taxes","Political risks","Legal regulations"],
+[4,"A business that operates in more than one country is a:","Multinational company","Sole proprietorship","Startup","Local retailer"],
+[4,"Which is a challenge for multinational companies?","Communication barriers","Economies of scale","Access to global resources","Larger markets"],
+[4,"Language, communication style, work habits, and business etiquette are examples of:","Key cultural factors","Trade restrictions","Drivers of globalization","Global market characteristics"],
+[4,"Which is a positive impact of globalization?","Access to talent from different countries","Job displacement","Increased competition for local businesses","Economic risks"],
+[4,"Which is a negative impact of globalization?","Job displacement","Market expansion","Increased innovation","Cost reduction"],
+[4,"Which IT tool helps companies manage global operations?","Cloud computing","Print advertising","Paper filing","Local servers only"],
+[4,"Which is a characteristic of global markets?","High competition","Small customer base","Identical customer needs","Identical regulations"],
+
+[5,"A newly established business designed to develop a unique and scalable product or service is a:","Startup","Franchise","Corporation","Retailer"],
+[5,"Willingness to take financial and business risks is called:","Risk-taking","Creativity","Vision","Persistence"],
+[5,"The ability to plan for the future and set goals is called:","Vision","Leadership","Innovation","Creativity"],
+[5,"Which business plan component describes the product or service?","Business idea","Market analysis","Financial plan","Operations plan"],
+[5,"Which business plan component estimates costs, revenue, and profit?","Financial plan","Marketing strategy","Management team","Market analysis"],
+[5,"Understanding customers and competitors is the purpose of the:","Market analysis","Operations plan","Financial plan","Management team"],
+[5,"Identifying gaps in the market is a source of ideas called:","Market needs","Personal experience","Customer feedback","Competitor analysis"],
+[5,"Improving existing products offered by competitors is a source of ideas called:","Competitor analysis","Technology trends","Personal experience","Customer feedback"],
+[5,"Which is NOT a characteristic of startups?","Low risk","Focus on innovation","High growth potential","Limited initial resources"],
+[5,"Which is a type of tech startup?","Software as a Service (SaaS) company","Traditional farm","Family-owned restaurant","Local grocery store"],
+[5,"In the mobile app startup example, which step comes right after 'Identify Idea'?","Market research","Launch business","Develop product","Growth"],
+[5,"Many startups fail because of:","Poor planning or execution","Too much funding","Too little competition","Strong business plans"],
+[5,"Which is NOT an importance of entrepreneurship?","It decreases the number of jobs","It creates new jobs","It encourages innovation","It promotes economic growth"],
+
+[6,"Which of the following is NOT one of the four functions of management?","Marketing","Planning","Organizing","Controlling"],
+[6,"Assigning developers, designers, and testers to a project is an example of:","Organizing","Planning","Leading","Controlling"],
+[6,"Checking whether a software project meets its deadlines is an example of:","Controlling","Planning","Organizing","Leading"],
+[6,"Forecasting future conditions is an activity of:","Planning","Organizing","Leading","Controlling"],
+[6,"Which management level sets long-term goals and makes major decisions?","Top-level management","Middle-level management","Operational management","Supervisory management"],
+[6,"An IT Manager or Department Head belongs to:","Middle-level management","Top-level management","Operational management","Executive management"],
+[6,"Team leaders and supervisors oversee daily tasks at which level?","Operational (lower-level) management","Middle-level management","Top-level management","Strategic management"],
+[6,"Attracting candidates through job ads, job portals, and social media is called:","Recruitment","Selection","Training","Retention"],
+[6,"Reviewing applications, interviewing, testing skills, and making job offers is called:","Selection","Recruitment","Development","Motivation"],
+[6,"Preparing employees for leadership roles is an example of:","Development","Training","Recruitment","Selection"],
+[6,"Salary, bonuses, and incentives are examples of:","Financial motivation","Non-financial motivation","Employee retention","Recruitment"],
+[6,"Which is a strategy for employee retention?","Career development opportunities","Reducing salaries","Removing training","Increasing workload"],
+[6,"Which is a challenge in IT HRM?","Fast-changing technology","Low competition for skilled employees","Little need for training","No remote work"],
+
+[7,"Which P of the marketing mix refers to the goods or services offered to customers?","Product","Price","Place","Promotion"],
+[7,"A monthly subscription for a cloud service illustrates which P?","Price","Product","Place","Promotion"],
+[7,"Selling software through a website or app store illustrates which P?","Place","Product","Price","Promotion"],
+[7,"Advertising a mobile app on social media illustrates which P?","Promotion","Product","Price","Place"],
+[7,"Which type of customer value refers to product usefulness?","Functional value","Emotional value","Social value","Financial value"],
+[7,"Which type of customer value refers to status and brand image?","Social value","Functional value","Emotional value","Operational value"],
+[7,"Which type of customer value refers to customer satisfaction?","Emotional value","Functional value","Social value","Operational value"],
+[7,"Which approach is about preventing defects?","Quality assurance","Quality control","Supply chain","Digital marketing"],
+[7,"Which is a characteristic of service operations?","Cannot be stored","Tangible output","Can be stored","Produced before being sold"],
+[7,"Which is the correct supply chain example?","Hardware supplier, manufacturer, retailer, customer","Customer, retailer, manufacturer, hardware supplier","Retailer, supplier, customer, manufacturer","Manufacturer, customer, supplier, retailer"],
+[7,"Which is a benefit of digital marketing?","Measurable results","Local audience only","High printing costs","Slow communication"],
+[7,"Which is an importance of operations management?","It reduces costs","It increases defects","It avoids customer demand","It replaces marketing"],
+
+[8,"Which financial statement shows revenue, expenses, and profit or loss?","Income statement","Balance sheet","Cash flow statement","Budget"],
+[8,"Which financial statement shows assets, liabilities, and owner's equity?","Balance sheet","Income statement","Cash flow statement","Budget"],
+[8,"Which financial statement shows how cash enters and leaves the business?","Cash flow statement","Income statement","Balance sheet","Budget"],
+[8,"Which of the following is an example of an asset?","Servers","Loans","Unpaid bills","Salaries"],
+[8,"Which of the following is an example of an expense?","Rent","Income from subscriptions","Servers","Cash"],
+[8,"Which of the following is an external user of accounting information?","Banks","Managers","Owners","Employees"],
+[8,"Which information system handles daily transactions such as online purchases and payroll?","Transaction Processing System (TPS)","Management Information System (MIS)","Decision Support System (DSS)","Cash flow system"],
+[8,"Which information system provides reports for managers, such as sales performance reports?","Management Information System (MIS)","Transaction Processing System (TPS)","Decision Support System (DSS)","Balance sheet system"],
+[8,"Which information system helps managers make decisions using data analysis?","Decision Support System (DSS)","Transaction Processing System (TPS)","Management Information System (MIS)","Payroll system"],
+[8,"Using digital technologies to improve business operations is called:","Digital transformation","Globalization","Outsourcing","Budgeting"],
+[8,"Which is NOT a component of an information system?","Advertising slogans","Hardware","Software","People"],
+[8,"Which is a common cybersecurity threat?","Malware","Budgeting","Recruitment","Retention"]
+];
+
+/* [lecture, term, definition] */
+const DEF=[
+[1,"Business","An organization or entity engaged in commercial, industrial, or professional activities that produces goods or services to satisfy customer needs and generate profit."],
+[1,"Goods","Tangible products that customers can physically use."],
+[1,"Services","Intangible activities provided to customers."],
+[1,"Stakeholders","Individuals or groups who are affected by the activities of a business."],
+[1,"Economic environment","The economic conditions that affect businesses, such as inflation, unemployment, interest rates, and economic growth."],
+[1,"Social and cultural environment","Social values, attitudes, lifestyles, and cultural factors that influence consumer behavior."],
+[2,"Business ownership structure","The legal form of an organization that determines who owns the business, who makes decisions, how profits are distributed, and the owners' liability."],
+[2,"Sole proprietorship","A business that is owned and managed by one individual."],
+[2,"Partnership","A business owned by two or more individuals who share responsibility for managing the business and sharing profits."],
+[2,"Corporation","A legal entity that is separate from its owners."],
+[2,"Limited Liability Company (LLC)","A hybrid business structure that combines features of both partnerships and corporations."],
+[3,"Business ethics","The moral principles and standards that guide behavior in the world of business."],
+[3,"Ethical decision making","The process of choosing actions that are morally correct."],
+[3,"Corporate Social Responsibility (CSR)","The responsibility of businesses to contribute positively to society."],
+[3,"Data privacy","Protecting the personal information of users."],
+[4,"Globalization","The process by which businesses and economies become connected and integrated across the world."],
+[4,"International trade","The exchange of goods and services between countries."],
+[4,"Global market","A market where businesses sell products or services across multiple countries."],
+[4,"Multinational company (MNC)","A business that operates in more than one country."],
+[4,"Culture","The values, beliefs, behaviors, and customs of a group of people."],
+[5,"Entrepreneurship","The process of identifying a business opportunity and creating, organizing, and managing a new business while taking risks in order to make a profit."],
+[5,"Entrepreneur","A person who starts and manages a business."],
+[5,"Startup","A newly established business designed to develop a unique and scalable product or service."],
+[5,"Business plan","A written document that outlines a business idea and how it will be implemented."],
+[6,"Management","The process of planning, organizing, leading, and controlling resources to achieve organizational goals efficiently and effectively."],
+[6,"Human Resource Management (HRM)","The process of recruiting, developing, and managing employees in an organization."],
+[6,"Recruitment","The process of attracting candidates for a job."],
+[6,"Selection","The process of choosing the best candidate."],
+[6,"Employee retention","Keeping talented employees in the organization."],
+[6,"Training","Helping employees learn the skills needed for their jobs."],
+[7,"Marketing","The process of identifying customer needs and satisfying them by creating and delivering value through products or services."],
+[7,"Customer value","The benefit that customers receive from a product compared to its cost."],
+[7,"Marketing mix","A set of tools used by businesses to market products: product, price, place, and promotion."],
+[7,"Digital marketing","The use of online platforms to promote products."],
+[7,"Operations management","The process of planning, organizing, and controlling the production of goods and services."],
+[7,"Supply chain","The network of organizations involved in producing and delivering a product."],
+[7,"Quality management","Ensuring that products or services meet customer expectations."],
+[8,"Accounting","The process of recording, organizing, summarizing, and reporting financial information."],
+[8,"Revenue","The income a business earns from selling goods or services."],
+[8,"Expenses","The costs incurred in running the business."],
+[8,"Assets","Resources owned by the business."],
+[8,"Liabilities","Debts or obligations owed by the business."],
+[8,"Finance","The management of money and financial resources."],
+[8,"Budget","A financial plan that estimates future income and expenses."],
+[8,"Information system","A combination of hardware, software, data, people, and processes used to collect and manage information."],
+[8,"Cybersecurity","Protecting systems, networks, and data from cyber threats."],
+[8,"Digital transformation","The use of digital technologies to improve business operations."]
+];
+
+/* [lecture, sentence with ____, answer] */
+const FILL=[
+[1,"Profit = Revenue − ____.","Expenses"],
+[1,"____ are tangible products that customers can physically use.","Goods"],
+[1,"____ are intangible activities provided to customers.","Services"],
+[1,"The ____ environment includes employees, company culture, and management.","internal"],
+[1,"Competitors and government regulations belong to the ____ environment.","external"],
+[1,"____ are individuals or groups affected by the activities of a business.","Stakeholders"],
+[1,"During economic ____, customers may reduce spending on technology products.","recessions"],
+[1,"____ businesses sell products directly to customers.","Retail"],
+[2,"A ____ is owned and managed by one individual.","sole proprietorship"],
+[2,"The owners of an LLC are called ____.","members"],
+[2,"A corporation is managed by a board of ____.","directors"],
+[2,"Ownership of a corporation is divided into ____.","shares"],
+[2,"A sole proprietor has ____ liability for all business debts.","unlimited"],
+[2,"In a ____ partnership, some partners invest money but do not participate in management.","limited"],
+[2,"____ taxation is a possible disadvantage of corporations.","Double"],
+[2,"A(n) ____ is a hybrid structure combining features of partnerships and corporations.","LLC"],
+[3,"____ ethics refers to moral principles and standards that guide behavior in business.","Business"],
+[3,"The first step in ethical decision making is to identify the ____.","problem"],
+[3,"____ responsibility means contributing to society through donations or community support.","Philanthropic"],
+[3,"____ responsibility means following laws and regulations.","Legal"],
+[3,"Data ____ refers to protecting the personal information of users.","privacy"],
+[3,"Bias in algorithms is an ethical concern related to ____ intelligence.","artificial"],
+[3,"IT companies should adopt ____ IT practices to reduce their environmental impact.","green"],
+[3,"Illegal copying of software violates ____ property rights.","intellectual"],
+[4,"____ is the process by which businesses and economies become connected across the world.","Globalization"],
+[4,"____ are goods and services sold to other countries.","Exports"],
+[4,"____ are goods and services purchased from other countries.","Imports"],
+[4,"A(n) ____ company operates in more than one country.","multinational"],
+[4,"____ refers to the values, beliefs, behaviors, and customs of a group of people.","Culture"],
+[4,"Tariffs and taxes are examples of trade ____.","restrictions"],
+[4,"Outsourcing may cause job ____ in some regions.","displacement"],
+[4,"____ computing helps companies manage global operations using online systems.","Cloud"],
+[5,"An ____ is a person who starts and manages a business.","entrepreneur"],
+[5,"A ____ is a newly established business designed to develop a unique and scalable product.","startup"],
+[5,"A business ____ is a written document that outlines a business idea.","plan"],
+[5,"____ is the ability to continue efforts despite challenges and failures.","Persistence"],
+[5,"The ____ plan estimates costs, revenue, and profit.","financial"],
+[5,"____ analysis means understanding customers and competitors.","Market"],
+[5,"____ is the willingness to take financial and business risks.","Risk-taking"],
+[5,"The ____ plan explains how the product or service will be delivered.","operations"],
+[6,"____ is the process of planning, organizing, leading, and controlling resources.","Management"],
+[6,"____ involves monitoring performance and making corrections.","Controlling"],
+[6,"The CEO belongs to ____-level management.","top"],
+[6,"Team leaders and supervisors belong to ____ management.","operational"],
+[6,"____ is the process of attracting candidates for a job.","Recruitment"],
+[6,"____ is the process of choosing the best candidate.","Selection"],
+[6,"____ focuses on the long-term growth of employees.","Development"],
+[6,"____ means keeping talented employees in the organization.","Retention"],
+[7,"The four Ps are Product, Price, Place, and ____.","Promotion"],
+[7,"Customer value = Benefits − ____.","Cost"],
+[7,"____ is the process of identifying customer needs and satisfying them by delivering value.","Marketing"],
+[7,"The output of service operations cannot be ____.","stored"],
+[7,"Quality ____ is about preventing defects.","assurance"],
+[7,"Quality ____ is about checking products.","control"],
+[7,"A supply ____ is the network of organizations involved in producing and delivering a product.","chain"],
+[7,"SEO stands for search engine ____.","optimization"],
+[8,"Assets = Liabilities + Owner's ____.","Equity"],
+[8,"____ is the income a business earns from selling goods or services.","Revenue"],
+[8,"____ are debts or obligations owed by the business.","Liabilities"],
+[8,"The ____ statement measures business profitability.","income"],
+[8,"The ____ flow statement shows how cash enters and leaves a business.","cash"],
+[8,"A ____ is a financial plan that estimates future income and expenses.","budget"],
+[8,"____ processing systems handle daily transactions.","Transaction"],
+[8,"____ refers to protecting systems, networks, and data from cyber threats.","Cybersecurity"]
+];
+
+/* [lecture, List A item, List B description] */
+const MATCH=[
+[1,"Goods","Tangible products customers can physically use"],
+[1,"Services","Intangible activities provided to customers"],
+[1,"Manufacturing business","Produces physical goods"],
+[1,"Retail business","Sells products directly to customers"],
+[1,"Internal environment","Factors inside the organization"],
+[1,"External environment","Factors outside the organization"],
+[1,"Suppliers","Provide materials, equipment, or services"],
+[1,"Government","Regulates business through laws and regulations"],
+[2,"Sole proprietorship","One owner with unlimited liability"],
+[2,"General partnership","All partners share management and liabilities"],
+[2,"Limited partnership","Some partners invest but do not manage"],
+[2,"Corporation","Separate legal entity owned through shares"],
+[2,"LLC","Hybrid structure whose owners are called members"],
+[2,"Shareholders","The owners of a corporation"],
+[2,"Double taxation","A possible disadvantage of corporations"],
+[2,"Partnership agreement","Often required when two or more people own a business"],
+[3,"Economic responsibility","Be profitable and sustainable"],
+[3,"Legal responsibility","Follow laws and regulations"],
+[3,"Ethical responsibility","Do what is right beyond legal requirements"],
+[3,"Philanthropic responsibility","Donations or community support"],
+[3,"Data privacy","Protecting the personal information of users"],
+[3,"Protection of customer data","Using encryption and securing databases"],
+[3,"AI ethics","Bias in algorithms and lack of transparency"],
+[3,"Intellectual property","Respecting ownership of software and digital content"],
+[4,"Exports","Goods and services sold to other countries"],
+[4,"Imports","Goods and services purchased from other countries"],
+[4,"Globalization","Businesses and economies connected across the world"],
+[4,"Tariffs and taxes","Trade restrictions"],
+[4,"Economies of scale","An advantage of multinational companies"],
+[4,"Culture","Values, beliefs, behaviors, and customs of a group"],
+[4,"Outsourcing","Reduces costs but may reduce jobs in some regions"],
+[4,"Remote work","Employees in different countries working on the same projects"],
+[5,"Creativity","Ability to generate new ideas"],
+[5,"Risk-taking","Willingness to take financial and business risks"],
+[5,"Leadership","Ability to manage and motivate a team"],
+[5,"Vision","Ability to plan for the future and set goals"],
+[5,"Market analysis","Understanding customers and competitors"],
+[5,"Marketing strategy","How the business will attract customers"],
+[5,"Management team","People responsible for running the business"],
+[5,"Customer feedback","Listening to customer needs and suggestions"],
+[6,"Planning","Setting goals and deciding how to achieve them"],
+[6,"Organizing","Assigning responsibilities and allocating resources"],
+[6,"Leading","Motivating and guiding employees"],
+[6,"Controlling","Measuring performance and making corrections"],
+[6,"Top-level management","Sets long-term goals, for example the CEO"],
+[6,"Middle-level management","Implements strategies, for example an IT manager"],
+[6,"Training","Teaching employees the skills needed for their jobs"],
+[6,"Non-financial motivation","Recognition, career growth, flexible work environment"],
+[7,"Product","The goods or services offered to customers"],
+[7,"Price","The amount customers pay for a product"],
+[7,"Place","Where and how products are distributed"],
+[7,"Promotion","Activities used to communicate with customers"],
+[7,"Functional value","Product usefulness"],
+[7,"Emotional value","Customer satisfaction"],
+[7,"Social value","Status and brand image"],
+[7,"Quality assurance","Preventing defects"],
+[8,"Revenue","Income from selling goods or services"],
+[8,"Expenses","Costs incurred in running the business"],
+[8,"Assets","Resources owned by the business"],
+[8,"Liabilities","Debts or obligations owed by the business"],
+[8,"Income statement","Shows revenue, expenses, and profit or loss"],
+[8,"Balance sheet","Shows assets, liabilities, and owner's equity"],
+[8,"Cash flow statement","Shows how cash enters and leaves the business"],
+[8,"TPS","Handles daily transactions such as payroll"]
+];
+
+"use strict";
+const TYPES=[
+ {k:"tf",ar:"صح أو خطأ",en:"True or False",unit:"سؤال",size:1,sec:"True or False",secAr:"صح أو خطأ",ins:"Choose True or False for each statement."},
+ {k:"mcq",ar:"ضع دائرة حول الإجابة الصحيحة",en:"Circle the correct answer",unit:"سؤال",size:1,sec:"Circle the Correct Answer",secAr:"ضع دائرة حول الإجابة الصحيحة",ins:"Circle the one correct answer."},
+ {k:"def",ar:"تعريفات",en:"Definitions",unit:"سؤال",size:1,sec:"Definitions",secAr:"تعريفات",ins:"Circle the correct definition of the given term."},
+ {k:"fill",ar:"ضع الكلمة في مكانها الصحيح",en:"Word bank",unit:"مجموعة (5 جمل)",size:5,sec:"Put the Word in its Correct Place",secAr:"ضع الكلمة في مكانها الصحيح",ins:"Complete each sentence using a word from the word bank."},
+ {k:"match",ar:"القائمة A والقائمة B",en:"Match List A with List B",unit:"مجموعة (5 عناصر)",size:5,sec:"Match List A with List B",secAr:"القائمة A والقائمة B",ins:"Choose the letter from List B that matches each item in List A."}
+];
+const TMAP=Object.fromEntries(TYPES.map(t=>[t.k,t]));
+const app=document.getElementById("app");
+const LET="abcdefgh";
+const rnd=n=>Math.floor(Math.random()*n);
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]]}return a}
+const norm=s=>(s==null?"":String(s)).trim().toLowerCase();
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function el(tag,cls,html){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e}
+let timerId=null;
+function clearTimer(){if(timerId){clearInterval(timerId);timerId=null}}
+function mount(node){clearTimer();app.replaceChildren(node);window.scrollTo(0,0)}
+
+const RING='<svg class="ring" viewBox="0 0 100 40" preserveAspectRatio="none" aria-hidden="true"><path d="M9 7 C 30 2, 72 2, 92 6 C 99 8, 99 31, 93 34 C 72 39, 28 39, 8 35 C 1 32, 1 11, 7 5 C 9 3, 14 3, 21 3"/></svg>';
+
+/* ---------- state for setup ---------- */
+const cfg={mode:"practice",lecs:new Set([1,2,3,4,5,6,7,8]),n:{tf:10,mcq:10,def:5,fill:2,match:2},timer:true,minutes:30,minTouched:false};
+function inL(x){return cfg.lecs.has(x[0])}
+function uniqFill(L){return new Set(FILL.filter(x=>L.has(x[0])).map(x=>norm(x[2]))).size}
+function setsFor(n){return n>=5?Math.floor(n/5):(n>=3?1:0)}
+function avail(k){
+ const f=inL;
+ if(k==="tf")return TF.filter(f).length;
+ if(k==="mcq")return MCQ.filter(f).length;
+ if(k==="def")return DEF.filter(f).length;
+ if(k==="fill")return setsFor(uniqFill(cfg.lecs));
+ if(k==="match")return setsFor(MATCH.filter(f).length);
+ return 0;
+}
+
+/* ---------- deck building ---------- */
+function buildDeck(c){
+ const cards=[];
+ const L=c.lecs, f=x=>L.has(x[0]);
+ /* true/false: keep a balanced mix */
+ const tfAll=TF.filter(f), fal=shuffle(tfAll.filter(x=>!x[2])), tru=shuffle(tfAll.filter(x=>x[2]));
+ const wantF=Math.min(fal.length,Math.round(c.n.tf*0.45)), wantT=Math.min(tru.length,c.n.tf-wantF);
+ let tfPick=fal.slice(0,wantF).concat(tru.slice(0,wantT));
+ if(tfPick.length<c.n.tf){tfPick=tfPick.concat(fal.slice(wantF,wantF+(c.n.tf-tfPick.length)))}
+ shuffle(tfPick).forEach(x=>cards.push({type:"tf",lec:x[0],q:x[1],ans:x[2],exp:x[3]||"",user:null,done:false}));
+ /* circle */
+ shuffle(MCQ.filter(f)).slice(0,c.n.mcq).forEach(x=>{
+  const opts=shuffle([{t:x[2],c:1},{t:x[3]},{t:x[4]},{t:x[5]}]);
+  cards.push({type:"mcq",lec:x[0],q:x[1],opts,correct:opts.findIndex(o=>o.c),exp:x[6]||"",user:null,done:false});
+ });
+ /* definitions */
+ shuffle(DEF.filter(f)).slice(0,c.n.def).forEach(x=>{
+  const others=shuffle(DEF.filter(d=>d!==x));
+  const same=others.filter(d=>d[0]===x[0]), rest=others.filter(d=>d[0]!==x[0]);
+  const wrong=same.slice(0,2).concat(rest).slice(0,3);
+  const opts=shuffle([{t:x[2],c:1}].concat(wrong.map(w=>({t:w[2]}))));
+  cards.push({type:"def",lec:x[0],term:x[1],opts,correct:opts.findIndex(o=>o.c),user:null,done:false});
+ });
+ /* fill in the blank */
+ const seen=new Set(), picked=[];
+ shuffle(FILL.filter(f)).forEach(x=>{const k=norm(x[2]);if(!seen.has(k)){seen.add(k);picked.push(x)}});
+ for(let s=0;s<c.n.fill;s++){
+  const grp=picked.slice(s*5,s*5+5); if(grp.length<3)break;
+  const gl=new Set(grp.map(g=>g[0]));
+  const used=new Set(grp.map(g=>norm(g[2])));
+  let extras=shuffle(FILL.filter(x=>!used.has(norm(x[2]))));
+  const diff=extras.filter(x=>!gl.has(x[0]));
+  const extra=(diff[0]||extras[0]||[0,0,"—"])[2];
+  const bank=shuffle(grp.map(g=>g[2]).concat(extra));
+  cards.push({type:"fill",lec:grp[0][0],items:grp.map(g=>({s:g[1],a:g[2],lec:g[0]})),bank,user:grp.map(()=>""),done:false});
+ }
+ /* matching */
+ const rem={};
+ MATCH.filter(f).forEach(x=>{(rem[x[0]]=rem[x[0]]||[]).push(x)});
+ Object.keys(rem).forEach(k=>rem[k]=shuffle(rem[k]));
+ for(let s=0;s<c.n.match;s++){
+  const keys=Object.keys(rem).filter(k=>rem[k].length>0); if(!keys.length)break;
+  const k=keys[s%keys.length];
+  let grp=rem[k].splice(0,5);
+  if(grp.length<5){for(const k2 of Object.keys(rem)){while(grp.length<5&&rem[k2].length)grp.push(rem[k2].pop())}}
+  if(grp.length<3)break;
+  const pool=shuffle(MATCH.filter(x=>!grp.includes(x)&&!grp.some(g=>g[2]===x[2])));
+  const gl=new Set(grp.map(g=>g[0]));
+  const extra=(pool.find(x=>!gl.has(x[0]))||pool[0]||[0,0,"None of these"])[2];
+  const right=shuffle(grp.map(g=>g[2]).concat(extra));
+  const left=shuffle(grp).map(g=>({t:g[1],lec:g[0],ri:right.indexOf(g[2])}));
+  cards.push({type:"match",lec:grp[0][0],left,right,user:left.map(()=>-1),done:false});
+ }
+ return numberDeck(cards);
+}
+function ptsOf(c){return c.type==="fill"?c.items.length:c.type==="match"?c.left.length:1}
+function numberDeck(cards){let n=1;cards.forEach(c=>{c.pts=ptsOf(c);c.no=n;n+=c.pts});return cards}
+function itemsOf(c){
+ switch(c.type){
+  case "tf":return[{ok:c.user===c.ans,lec:c.lec}];
+  case "mcq":case "def":return[{ok:c.user===c.correct,lec:c.lec}];
+  case "fill":return c.items.map((it,i)=>({ok:norm(c.user[i])===norm(it.a),lec:it.lec}));
+  case "match":return c.left.map((l,i)=>({ok:c.user[i]===l.ri,lec:l.lec}));
+ }
+}
+const scoreOf=c=>itemsOf(c).filter(i=>i.ok).length;
+function answeredOf(c){
+ switch(c.type){
+  case "tf":case "mcq":case "def":return c.user===null?0:1;
+  case "fill":return c.user.filter(v=>v!=="").length;
+  case "match":return c.user.filter(v=>v>=0).length;
+ }
+}
+
+/* ---------- card rendering ---------- */
+function renderCard(c,opt){
+ opt=opt||{};
+ const art=el("article","q q-"+c.type);
+ const no=el("div","no",c.pts>1?c.no+"–"+(c.no+c.pts-1):String(c.no));
+ const body=el("div","body");
+ const stem=el("p","stem");
+ const zone=el("div","zone");
+ const fb=el("div","fb");
+ body.append(stem,zone,fb); art.append(no,body);
+ const changed=()=>{opt.onChange&&opt.onChange(c)};
+
+ function optBtn(label,text,state,onclick,cls){
+  const b=el("button","opt"+(state?" "+state:"")+(cls?" "+cls:""));
+  b.type="button";
+  b.setAttribute("role","radio");
+  b.setAttribute("aria-checked",state==="sel"||state==="ok"||state==="bad"?"true":"false");
+  b.innerHTML='<span class="bub">'+label+'</span><span class="otxt">'+esc(text)+(state&&state!=="sel"?"":"")+(state?RING:"")+"</span>";
+  b.onclick=onclick; if(c.done)b.disabled=true;
+  return b;
+ }
+ function drawChoice(){
+  zone.innerHTML="";
+  if(c.type==="tf"){
+   zone.className="zone opts tf";
+   [[true,"True","T"],[false,"False","F"]].forEach(([v,t,l])=>{
+    let st="";
+    if(c.done){if(v===c.ans)st="ok";else if(c.user===v)st="bad"}
+    else if(c.user===v)st="sel";
+    zone.append(optBtn(l,t,st,()=>{if(c.done)return;c.user=v;drawChoice();changed()}));
+   });
+  }else{
+   zone.className="zone opts";
+   c.opts.forEach((o,i)=>{
+    let st="";
+    if(c.done){if(i===c.correct)st="ok";else if(c.user===i)st="bad"}
+    else if(c.user===i)st="sel";
+    zone.append(optBtn(LET[i].toUpperCase(),o.t,st,()=>{if(c.done)return;c.user=i;drawChoice();changed()}));
+   });
+  }
+ }
+ function drawFill(){
+  zone.innerHTML="";zone.className="zone";
+  const bank=el("div","bank");bank.innerHTML='<span class="bt">Word bank</span>'+c.bank.map(w=>'<span class="w">'+esc(w)+"</span>").join("");
+  const ol=el("ol","fills");
+  c.items.forEach((it,i)=>{
+   const li=el("li");const parts=it.s.split("____");
+   li.append(document.createTextNode(parts[0]));
+   const sel=el("select","blank");
+   sel.innerHTML='<option value="">…</option>'+c.bank.map(w=>'<option value="'+esc(w)+'">'+esc(w)+"</option>").join("");
+   sel.value=c.user[i];sel.disabled=c.done;sel.setAttribute("aria-label","Blank "+(i+1));
+   sel.onchange=()=>{c.user[i]=sel.value;changed()};
+   li.append(sel,document.createTextNode(parts.slice(1).join("____")));
+   if(c.done){const ok=norm(c.user[i])===norm(it.a);sel.classList.add(ok?"ok":"bad");if(!ok){li.append(" ",el("span","fix","الصحيح: <b dir=\"ltr\">"+esc(it.a)+"</b>"))}}
+   ol.append(li);
+  });
+  zone.append(bank,ol);
+ }
+ function drawMatch(){
+  zone.innerHTML="";zone.className="zone";
+  const wrap=el("div","match");
+  const A=el("div","la");A.append(el("h4","","List A"));
+  c.left.forEach((l,i)=>{
+   const row=el("div","mrow");
+   row.append(el("span","mn",String(i+1)),el("span","mt",esc(l.t)));
+   const sel=el("select","blank");
+   sel.innerHTML='<option value="-1">—</option>'+c.right.map((_,j)=>'<option value="'+j+'">'+LET[j]+"</option>").join("");
+   sel.value=String(c.user[i]);sel.disabled=c.done;sel.setAttribute("aria-label","Match for item "+(i+1));
+   sel.onchange=()=>{c.user[i]=parseInt(sel.value,10);changed()};
+   row.append(sel);
+   if(c.done){const ok=c.user[i]===l.ri;sel.classList.add(ok?"ok":"bad");if(!ok)row.append(el("span","fix","الصحيح: <b>"+LET[l.ri]+"</b>"))}
+   A.append(row);
+  });
+  const B=el("div","lb");B.append(el("h4","","List B"));
+  c.right.forEach((t,j)=>{const r=el("div","brow");r.append(el("span","bl",LET[j]),el("span","",esc(t)));B.append(r)});
+  wrap.append(A,B);zone.append(wrap);
+ }
+ function drawFb(){
+  fb.className="fb";fb.innerHTML="";
+  if(!c.done)return;
+  const sc=scoreOf(c),full=sc===c.pts;
+  fb.classList.add(full?"ok":"bad");
+  let h="";
+  if(c.pts===1){
+   h+="<b>"+(full?"إجابة صحيحة":(answeredOf(c)?"إجابة غير صحيحة":"لم تُجب عن هذا السؤال"))+"</b>";
+   if(!full){
+    if(c.type==="tf")h+=' <span>الإجابة الصحيحة: <span class="en" dir="ltr">'+(c.ans?"True":"False")+"</span></span>";
+    else h+='<div class="corr">الإجابة الصحيحة: <span class="en" dir="ltr">'+esc(c.opts[c.correct].t)+"</span></div>";
+   }
+   if(c.exp)h+='<div class="exp"><mark class="en" dir="ltr">'+esc(c.exp)+"</mark></div>";
+  }else{
+   h+="<b>"+(full?"كل الإجابات صحيحة":"حصلت على "+sc+" من "+c.pts)+"</b>";
+  }
+  fb.innerHTML=h;
+ }
+ function draw(){
+  if(c.type==="tf"){stem.innerHTML=esc(c.q);drawChoice()}
+  else if(c.type==="mcq"){stem.innerHTML=esc(c.q);drawChoice()}
+  else if(c.type==="def"){stem.innerHTML="Choose the correct definition of: <b>"+esc(c.term)+"</b>";drawChoice()}
+  else if(c.type==="fill"){stem.hidden=true;drawFill()}
+  else if(c.type==="match"){stem.hidden=true;drawMatch()}
+  drawFb();
+  if(c.done)art.classList.add("done");
+ }
+ art.reveal=()=>{c.done=true;draw()};
+ draw();
+ return art;
+}
+
+/* ---------- setup screen ---------- */
+function renderSetup(){
+ const root=el("div");
+ root.innerHTML=`
+ <header class="hero">
+  <h1>تدرّب على امتحان <span class="en" dir="ltr">Introduction to Business</span></h1>
+  <p>بنك أسئلة من محاضرات الترم الثاني الثمانية. اختر طريقة الحل والمحاضرات وعدد الأسئلة، ثم ابدأ.</p>
+ </header>
+ <section class="panel demo">
+  <h2>جرّب أولًا</h2>
+  <p class="muted">اضغط على الإجابة التي تراها صحيحة لتضع عليها دائرة، كما في ورقة الامتحان.</p>
+  <div id="demo"></div>
+ </section>
+ <section class="panel">
+  <h2>طريقة الحل</h2>
+  <div class="modes" role="radiogroup">
+   <label class="mode"><input type="radio" name="mode" value="practice"><span class="mc"><b>وضع التدريب</b><span>بعد كل سؤال تحلّه تظهر الإجابة الصحيحة والشرح مباشرة.</span></span></label>
+   <label class="mode"><input type="radio" name="mode" value="exam"><span class="mc"><b>وضع الامتحان</b><span>تحلّ كل الأسئلة أولًا، ثم تظهر النتيجة والإجابات في النهاية.</span></span></label>
+  </div>
+  <div class="timer" id="timerBox">
+   <label class="chk"><input type="checkbox" id="timerOn"> <span>مؤقت للامتحان</span></label>
+   <label class="mins">المدة بالدقائق <input type="number" id="mins" min="1" max="300" inputmode="numeric"></label>
+  </div>
+ </section>
+ <section class="panel">
+  <div class="ph"><h2>المحاضرات</h2><button type="button" class="link" id="allL">تحديد الكل</button></div>
+  <div class="chips" id="chips"></div>
+ </section>
+ <section class="panel">
+  <div class="ph"><h2>عدد الأسئلة</h2>
+   <div class="presets"><button type="button" class="link" data-p="s">سريع</button><button type="button" class="link" data-p="m">متوسط</button><button type="button" class="link" data-p="a">كل الأسئلة</button></div>
+  </div>
+  <div id="rows"></div>
+  <p class="total">إجمالي الدرجات: <b id="total">0</b></p>
+ </section>
+ <div class="startbar"><button type="button" class="btn primary big" id="start">ابدأ</button><p class="muted" id="warn"></p></div>`;
+ mount(root);
+
+ /* demo question */
+ const demo={type:"mcq",lec:1,q:"Profit = Revenue − ____",opts:shuffle([{t:"Expenses",c:1},{t:"Assets"},{t:"Liabilities"},{t:"Equity"}]),user:null,done:false,no:1,pts:1};
+ demo.correct=demo.opts.findIndex(o=>o.c);
+ root.querySelector("#demo").append(renderCard(demo));
+
+ /* mode */
+ const timerBox=root.querySelector("#timerBox"),timerOn=root.querySelector("#timerOn"),mins=root.querySelector("#mins");
+ root.querySelectorAll('input[name=mode]').forEach(r=>{r.checked=r.value===cfg.mode;r.onchange=()=>{cfg.mode=r.value;syncMode()}});
+ function syncMode(){timerBox.hidden=cfg.mode!=="exam"}
+ timerOn.checked=cfg.timer;timerOn.onchange=()=>{cfg.timer=timerOn.checked;mins.disabled=!cfg.timer};
+ mins.value=cfg.minutes;mins.disabled=!cfg.timer;
+ mins.onchange=()=>{const v=Math.max(1,Math.min(300,parseInt(mins.value,10)||cfg.minutes));cfg.minutes=v;cfg.minTouched=true;mins.value=v};
+ syncMode();
+
+ /* lectures */
+ const chips=root.querySelector("#chips");
+ for(let i=1;i<=8;i++){
+  const b=el("button","chip");b.type="button";b.dataset.l=i;
+  b.innerHTML='<span class="cl">'+LEC[i].ar+'</span><span class="ce" dir="ltr">'+esc(LEC[i].en)+"</span>";
+  b.onclick=()=>{cfg.lecs.has(i)?cfg.lecs.delete(i):cfg.lecs.add(i);update()};
+  chips.append(b);
+ }
+ root.querySelector("#allL").onclick=()=>{const all=cfg.lecs.size===8;cfg.lecs=new Set(all?[]:[1,2,3,4,5,6,7,8]);update()};
+
+ /* steppers */
+ const rows=root.querySelector("#rows");
+ TYPES.forEach(t=>{
+  const r=el("div","row");r.dataset.k=t.k;
+  r.innerHTML=`<div class="rl"><div class="ar">${t.ar}</div><div class="en" dir="ltr">${t.en}</div><div class="hint">المتاح: <b data-av>0</b> ${t.unit}</div></div>
+  <div class="step" dir="ltr"><button type="button" data-d="-1" aria-label="أقل">−</button><input type="number" min="0" inputmode="numeric" aria-label="${t.ar}"><button type="button" data-d="1" aria-label="أكثر">+</button></div>`;
+  const inp=r.querySelector("input");
+  const set=v=>{const a=avail(t.k);cfg.n[t.k]=Math.max(0,Math.min(a,v));update()};
+  r.querySelectorAll("button").forEach(b=>b.onclick=()=>set(cfg.n[t.k]+parseInt(b.dataset.d,10)*(t.size>1?1:1)));
+  inp.onchange=()=>set(parseInt(inp.value,10)||0);
+  rows.append(r);
+ });
+ const PRE={s:{tf:6,mcq:6,def:3,fill:1,match:1},m:{tf:10,mcq:10,def:5,fill:2,match:2}};
+ root.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{
+  const p=b.dataset.p;
+  TYPES.forEach(t=>{cfg.n[t.k]=p==="a"?avail(t.k):Math.min(avail(t.k),PRE[p][t.k])});
+  update();
+ });
+
+ const totalEl=root.querySelector("#total"),startBtn=root.querySelector("#start"),warn=root.querySelector("#warn");
+ function update(){
+  chips.querySelectorAll(".chip").forEach(b=>{const on=cfg.lecs.has(+b.dataset.l);b.classList.toggle("on",on);b.setAttribute("aria-pressed",on)});
+  let total=0;
+  TYPES.forEach(t=>{
+   const a=avail(t.k);cfg.n[t.k]=Math.min(cfg.n[t.k],a);
+   const r=rows.querySelector('[data-k="'+t.k+'"]');
+   const inp=r.querySelector("input");inp.max=a;inp.value=cfg.n[t.k];
+   r.querySelector("[data-av]").textContent=a;
+   r.querySelector('[data-d="-1"]').disabled=cfg.n[t.k]<=0;
+   r.querySelector('[data-d="1"]').disabled=cfg.n[t.k]>=a;
+   total+=cfg.n[t.k]*t.size;
+  });
+  totalEl.textContent=total;
+  startBtn.disabled=total===0;
+  warn.textContent=cfg.lecs.size===0?"اختر محاضرة واحدة على الأقل.":(total===0?"حدّد عدد الأسئلة لتبدأ.":"");
+  if(!cfg.minTouched){cfg.minutes=Math.max(5,Math.round(total*0.75));mins.value=cfg.minutes}
+ }
+ update();
+ startBtn.onclick=()=>{
+  const cards=buildDeck(cfg);
+  if(!cards.length)return;
+  if(cfg.mode==="practice")runPractice(cards);
+  else runExam(cards,cfg.timer?cfg.minutes*60:0);
+ };
+}
+
+/* ---------- practice mode ---------- */
+function runPractice(cards){
+ let i=0;
+ const root=el("div");
+ const totalPts=cards.reduce((s,c)=>s+c.pts,0);
+ function show(){
+  root.innerHTML="";
+  const c=cards[i];
+  const doneCards=cards.slice(0,i);
+  const got=doneCards.reduce((s,x)=>s+scoreOf(x),0),outOf=doneCards.reduce((s,x)=>s+x.pts,0);
+  const top=el("div","ptop");
+  top.innerHTML='<button type="button" class="link" id="back">العودة للإعدادات</button><span class="ptxt">السؤال '+(i+1)+" من "+cards.length+'</span><span class="ptxt">الدرجة حتى الآن: <b>'+got+"</b> من "+outOf+"</span>";
+  const prog=el("div","prog");prog.innerHTML='<span style="width:'+Math.round(i/cards.length*100)+'%"></span>';
+  const sec=TMAP[c.type];
+  const head=el("div","sechead");head.dir="ltr";head.innerHTML="<h2>"+esc(sec.sec)+'</h2><p class="en">'+esc(sec.ins)+"</p>";
+  const acts=el("div","acts");
+  const check=el("button","btn primary","تحقق من الإجابة");check.type="button";check.disabled=true;
+  const giveUp=el("button","btn ghost","لا أعرف، اعرض الإجابة");giveUp.type="button";
+  const next=el("button","btn primary",i===cards.length-1?"إنهاء وعرض النتيجة":"السؤال التالي");next.type="button";
+  const card=renderCard(c,{onChange:()=>{check.disabled=answeredOf(c)===0}});
+  check.onclick=()=>{card.reveal();acts.replaceChildren(next);next.focus()};
+  giveUp.onclick=()=>{card.reveal();acts.replaceChildren(next);next.focus()};
+  next.onclick=()=>{if(i<cards.length-1){i++;show();window.scrollTo(0,0)}else showResults(cards,"practice")};
+  acts.append(check,giveUp);
+  root.append(top,prog,head,card,acts);
+  root.querySelector("#back").onclick=renderSetup;
+ }
+ show();mount(root);
+}
+
+/* ---------- exam mode ---------- */
+function runExam(cards,seconds){
+ const root=el("div");
+ const total=cards.reduce((s,c)=>s+c.pts,0);
+ const bar=el("div","exambar");
+ bar.innerHTML='<div class="ec"><span class="eans"></span><span class="etime" hidden></span></div><button type="button" class="btn primary sm" id="submit">تسليم الامتحان</button>';
+ const eans=bar.querySelector(".eans"),etime=bar.querySelector(".etime"),submit=bar.querySelector("#submit");
+ root.append(bar);
+ const paper=el("div","paper");paper.dir="ltr";
+ const head=el("div","paperhead");
+ head.innerHTML="<h1>Introduction to Business</h1><p>Total marks: "+total+"</p>";
+ paper.append(head);
+ let letter=0;
+ TYPES.forEach(t=>{
+  const list=cards.filter(c=>c.type===t.k);if(!list.length)return;
+  const first=list[0].no,last=list[list.length-1].no+list[list.length-1].pts-1;
+  const sh=el("div","sechead");
+  sh.innerHTML="<h2>Section "+String.fromCharCode(65+letter++)+": "+esc(t.sec)+'</h2><p class="en">'+esc(t.ins)+' <span class="rng">(Questions '+first+" to "+last+')</span></p><p class="ar" dir="rtl">'+t.secAr+"</p>";
+  paper.append(sh);
+  list.forEach(c=>paper.append(renderCard(c,{onChange:upd})));
+ });
+ root.append(paper);
+ const bottom=el("div","acts");
+ const submit2=el("button","btn primary big","تسليم الامتحان");submit2.type="button";bottom.append(submit2);
+ root.append(bottom);
+ let armed=false;
+ function upd(){
+  const a=cards.reduce((s,c)=>s+answeredOf(c),0);
+  eans.textContent="أجبت عن "+a+" من "+total;
+  if(armed&&a===total){armed=false;submit.textContent="تسليم الامتحان";submit2.textContent="تسليم الامتحان"}
+ }
+ function finish(){clearTimer();cards.forEach(c=>c.done=true);showResults(cards,"exam")}
+ function trySubmit(){
+  const a=cards.reduce((s,c)=>s+answeredOf(c),0);
+  if(a<total&&!armed){armed=true;const m="بقي "+(total-a)+" بدون إجابة. اضغط مرة أخرى للتسليم";submit.textContent=m;submit2.textContent=m;return}
+  finish();
+ }
+ submit.onclick=trySubmit;submit2.onclick=trySubmit;
+ upd();mount(root);
+ if(seconds>0){
+  let left=seconds;etime.hidden=false;
+  const tick=()=>{
+   const m=Math.floor(left/60),s=left%60;
+   etime.textContent="الوقت المتبقي "+String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+   etime.classList.toggle("low",left<=60);
+   if(left<=0){finish();return}
+   left--;
+  };
+  tick();timerId=setInterval(tick,1000);
+ }
+}
+
+/* ---------- results ---------- */
+function showResults(cards,mode){
+ clearTimer();
+ cards.forEach(c=>c.done=true);
+ const all=cards.flatMap(c=>itemsOf(c).map(i=>Object.assign({type:c.type},i)));
+ const total=all.length,got=all.filter(i=>i.ok).length,pct=total?Math.round(got/total*100):0;
+ const root=el("div");
+ const msg=pct>=85?"ممتاز. مستواك ممتاز في هذا الجزء.":pct>=70?"جيد جدًا. راجع الأخطاء القليلة.":pct>=50?"جيد. راجع الأجزاء الضعيفة قبل الامتحان.":"تحتاج إلى مراجعة أكثر. ابدأ بالمحاضرات الأضعف أدناه.";
+ const hero=el("header","rhero");
+ hero.innerHTML='<h1>النتيجة</h1><div class="grade"><span class="gnum" dir="ltr">'+got+'<small>/'+total+"</small></span>"+RING+'</div><p class="pct">'+pct+"%</p><p>"+msg+"</p>";
+ root.append(hero);
+
+ const byType=el("section","panel");byType.innerHTML="<h2>حسب نوع السؤال</h2>";
+ TYPES.forEach(t=>{
+  const it=all.filter(i=>i.type===t.k);if(!it.length)return;
+  const g=it.filter(i=>i.ok).length;byType.append(barRow(t.ar,g,it.length));
+ });
+ root.append(byType);
+
+ const byLec=el("section","panel");byLec.innerHTML="<h2>حسب المحاضرة</h2>";
+ const rows=[];
+ for(let l=1;l<=8;l++){
+  const it=all.filter(i=>i.lec===l);if(!it.length)continue;
+  const g=it.filter(i=>i.ok).length;rows.push({l,g,n:it.length,p:g/it.length});
+  byLec.append(barRow(LEC[l].ar+': <span class="en" dir="ltr">'+esc(LEC[l].en)+"</span>",g,it.length,true));
+ }
+ const weak=rows.filter(r=>r.n>=2&&r.p<1).sort((a,b)=>a.p-b.p)[0];
+ if(weak)byLec.append(el("p","muted","أضعف محاضرة في هذه المحاولة: "+LEC[weak.l].ar+"."));
+ root.append(byLec);
+
+ const wrongCards=cards.filter(c=>scoreOf(c)<c.pts);
+ const acts=el("div","acts");
+ if(wrongCards.length){
+  const r=el("button","btn primary","أعد حل الأسئلة التي أخطأت فيها ("+wrongCards.length+")");r.type="button";
+  r.onclick=()=>{
+   const copy=JSON.parse(JSON.stringify(wrongCards)).map(c=>{c.done=false;c.user=c.type==="fill"?c.items.map(()=>""):c.type==="match"?c.left.map(()=>-1):null;return c});
+   runPractice(numberDeck(copy));
+  };
+  acts.append(r);
+ }
+ const again=el("button","btn ghost","امتحان جديد");again.type="button";again.onclick=renderSetup;
+ acts.append(again);
+ root.append(acts);
+
+ const rev=el("section","review");
+ const rh=el("div","ph");rh.innerHTML="<h2>مراجعة الإجابات</h2>";
+ const tog=el("div","seg");
+ const bAll=el("button","on","كل الأسئلة"),bWr=el("button","","الأخطاء فقط");bAll.type="button";bWr.type="button";
+ tog.append(bAll,bWr);rh.append(tog);
+ const list=el("div","rlist");list.dir="ltr";
+ function drawList(onlyWrong){
+  list.innerHTML="";
+  const src=onlyWrong?wrongCards:cards;
+  if(!src.length){list.append(el("p","muted","لا توجد أخطاء. أحسنت.")); list.firstChild.dir="rtl";return}
+  src.forEach(c=>list.append(renderCard(c)));
+ }
+ bAll.onclick=()=>{bAll.className="on";bWr.className="";drawList(false)};
+ bWr.onclick=()=>{bWr.className="on";bAll.className="";drawList(true)};
+ drawList(false);
+ rev.append(rh,list);root.append(rev);
+ mount(root);
+}
+function barRow(label,g,n,isHtml){
+ const p=Math.round(g/n*100);
+ const r=el("div","brw");
+ r.innerHTML='<div class="bt2"><span>'+(isHtml?label:esc(label))+'</span><b dir="ltr">'+g+"/"+n+'</b></div><div class="prog '+(p<60?"low":"")+'"><span style="width:'+p+'%"></span></div>';
+ return r;
+}
+renderSetup();
+
+</script>
+</body>
+</html>

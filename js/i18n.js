@@ -32,6 +32,7 @@ const dictionaries = {
     guestGroupHint: 'يمكنك تصفح المجموعات، لكن إنشاء مجموعة أو طلب الانضمام يتطلب تسجيل الدخول.',
     guestProfileHint: 'يمكنك تصفح الملفات الشخصية. سجّل الدخول للتواصل أو الإبلاغ.',
     browseAsGuest: 'تصفح كزائر',
+    menu: 'القائمة',
     // Auth
     signIn: 'تسجيل الدخول',
     signUp: 'إنشاء حساب',
@@ -252,7 +253,7 @@ const dictionaries = {
     usersIntro: 'ابحث عن زميل بالاسم أو اسم المستخدم وافتح ملفه الشخصي.',
     searchUsers: 'ابحث عن طالب',
     searchUsersPlaceholder: 'الاسم أو اسم المستخدم…',
-    searchUsersHint: 'اكتب حرفين على الأقل، أو اترك الحقل فارغاً لعرض كل الطلاب.',
+    searchUsersHint: 'اكتب الاسم أو اسم المستخدم، أو اترك الحقل فارغاً لعرض كل الطلاب.',
     allUsers: 'كل الطلاب',
     usersResults: '{n} طالب',
     noUsersFound: 'لا يوجد طلاب مطابقون لبحثك.',
@@ -408,6 +409,7 @@ const dictionaries = {
     guestGroupHint: 'You can browse groups, but creating a group or requesting to join requires signing in.',
     guestProfileHint: 'You can browse profiles. Sign in to contact or report.',
     browseAsGuest: 'Browse as guest',
+    menu: 'Menu',
     // Auth
     signIn: 'Sign in',
     signUp: 'Create account',
@@ -628,7 +630,7 @@ const dictionaries = {
     usersIntro: 'Find a classmate by name or username and open their profile.',
     searchUsers: 'Search for a student',
     searchUsersPlaceholder: 'Name or username…',
-    searchUsersHint: 'Type at least two characters, or leave the field empty to show every student.',
+    searchUsersHint: 'Type a name or username, or leave the field empty to show every student.',
     allUsers: 'All students',
     usersResults: '{n} students',
     noUsersFound: 'No students match your search.',
