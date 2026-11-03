@@ -1,0 +1,118 @@
+<!DOCTYPE html><html lang="en" data-theme="dark"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Computer Ethics Exam</title>
+<style>
+:root{--bg:#fafaf7;--fg:#1c1c1a;--mu:#6b6b64;--cd:#fff;--bd:#d9d8d0;--ac:#2d5be3;--ok:#1b7f3b;--okb:#e3f4e8;--no:#b3261e;--nob:#fbe5e3;--se:#e8edfc;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161614;--fg:#ecebe6;--mu:#9a9a92;--cd:#20201d;--bd:#3a3a35;--ac:#7c9bff;--ok:#6fd08c;--okb:#173222;--no:#ff8a80;--nob:#3a1d1b;--se:#23294a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#161614;--fg:#ecebe6;--mu:#9a9a92;--cd:#20201d;--bd:#3a3a35;--ac:#7c9bff;--ok:#6fd08c;--okb:#173222;--no:#ff8a80;--nob:#3a1d1b;--se:#23294a;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+#app{max-width:760px;margin:0 auto;padding:12px 16px 48px}
+h1{margin:32px 0 4px}h2{margin:32px 0 8px;font-size:18px}.mu{color:var(--mu)}
+.bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;background:var(--bg);display:flex;gap:12px;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--bd)}
+button{font:inherit;color:var(--fg);cursor:pointer}
+.s{background:none;border:1px solid var(--bd);border-radius:8px;padding:4px 12px}
+.cards{display:grid;gap:12px;margin-top:20px}
+.card{display:flex;flex-direction:column;gap:4px;text-align:left;background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:16px}
+.card:hover{border-color:var(--ac)}.card span{color:var(--mu);font-size:14px}
+.q{background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;margin:10px 0}
+.q p{margin:0 0 10px}
+.o{display:flex;gap:10px;width:100%;text-align:left;background:none;border:1px solid var(--bd);border-radius:8px;padding:8px 12px;margin:6px 0}
+.o i{font-style:normal;font-weight:600;color:var(--mu);min-width:1.2em}
+.o.se{background:var(--se);border-color:var(--ac)}.o.ok{background:var(--okb);border-color:var(--ok)}.o.no{background:var(--nob);border-color:var(--no)}
+.fb{font-size:14px;margin-top:8px;color:var(--mu)}.fb b{color:var(--fg)}
+.mr{display:grid;gap:6px;margin:10px 0;padding-bottom:10px;border-bottom:1px dashed var(--bd)}
+select{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--bd);border-radius:8px;padding:6px;max-width:100%}
+.g{color:var(--ok);font-style:normal}.rd{color:var(--no);font-style:normal;font-size:14px}
+.b{background:var(--ac);color:#fff;border:0;border-radius:10px;padding:10px 18px;margin:8px 8px 0 0}
+.res{background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:16px;margin:14px 0;display:flex;justify-content:space-between;font-size:26px;font-weight:700}
+</style></head><body><div id="app"></div>
+<script>
+const MC=[
+["Which situation best shows a lack of integrity?","Applying moral standards differently depending on the situation or the people involved","Holding personal beliefs that differ from those of the surrounding culture","Following company policy even when it conflicts with a personal preference","Refusing to give an opinion on a dilemma that has no clear right answer",6],
+["A court holds a company responsible for something its employee did on the job. Which principle applies?","Respondent superior","Strict liability","Diffusion of responsibility","Good Samaritan immunity",15],
+["What does Section 406 of the Sarbanes-Oxley Act require of public companies?","Disclose whether they have a code of ethics and whether any waivers were granted","Have the CEO and CFO sign every SEC filing to attest to its accuracy","Hold an annual social audit that is open to all shareholders","Appoint an ethics officer who reports directly to the board of directors",20],
+["What is the purpose of a social audit?","To review how well the organization meets its ethical and social responsibility goals, and set new ones","To verify that financial statements comply with SEC reporting rules","To measure employee productivity against industry benchmarks","To test whether software licences are properly registered",21],
+["What share of companies include ethical conduct in employee performance appraisals, per the slides?","43%","57%","30%","15%",23],
+["Which step is called the most critical in the decision-making process?","Developing the problem statement","Identifying alternatives","Evaluating and choosing an alternative","Implementing the decision",26],
+["Why is “We need to implement a new inventory control system” a poor problem statement?","It describes a possible solution rather than the problem itself","It is too vague about which product is out of stock","It does not state how much revenue was lost","It ignores the people affected by the shortage",27],
+["What is the main weakness of the virtue ethics approach?","It offers no clear guide for action and depends on circumstances","Measuring and comparing the values at stake is often difficult","Decisions can be skewed by the decision maker’s personal bias","It ignores consequences when weighing costs and benefits",29],
+["Which approach’s weakness is that consensus is hard to reach and some people must bear greater costs than others?","Common good approach","Fairness approach","Utilitarian approach","Virtue ethics approach",31],
+["Accountability is described as the flip side of which concept?","Delegation","Liability","Negligence","Blame",35],
+["Kim invests heavily and the company loses money, although she did everything her duty required. Which type of responsibility applies to her?","Causal responsibility","Role responsibility","Blameworthy responsibility","Diffusion of responsibility",37],
+["A friend slips on your polished floor and breaks a leg. What does this example illustrate?","You may be held liable without being blameworthy","You are blameworthy but cannot be held liable","You are negligent because you owed a role responsibility","You are accountable only if the friend was invited",38],
+["Why can strict liability be imposed on mass-market software but not on customised software?","The client specifies the requirements, so the client shares the risk","Customised software is always tested more thoroughly than mass-market products before delivery","Mass-market buyers write their own specification, so producers cannot foresee the damage","Customised software is covered by licence terms that cancel every claim for damages",41],
+["Why was the Therac-25 operator found to have caused the accidents but not to be to blame?","Even after correcting the wrong mode within the 8 seconds allowed, the system still failed","The flaw appeared only in the newest version, which the operator had never been trained on","The operator followed a manual that told him to override the dose limit","The fatalities were traced to a hardware fault the operator could not have seen",45],
+["What did the US Communications Decency Act do after Stratton v. Prodigy?","Treated ISPs more like telephone companies and introduced Good Samaritan immunity","Confirmed that ISPs are liable like newspapers for forum content","Forced ISPs to reveal the identity of anonymous forum users","Made ISPs liable only when they had advertised editorial control",45],
+["From a legal perspective, which statement about IT workers is correct?","They are not licensed by government and are not liable for malpractice","They are licensed but exempt from malpractice claims","They qualify as professionals because of their long academic preparation","They are liable for malpractice but cannot be licensed",48],
+["Which of these is NOT one of the seven forces changing professional services?","Standardization","Modularization","Commoditization","Transparency",49],
+["Which is NOT a characteristic of a trade secret?","It must be registered with a government agency","It requires cost or effort to develop","It has some degree of uniqueness or novelty","The company takes actions to keep it confidential",53],
+["Which best describes whistle-blowing?","An employee exposes an abusive or dangerous act that threatens the public interest","A manager reports an employee’s poor performance to the human resources department","A company discloses a waiver of its code of ethics in an SEC filing","An employee leaks unreleased product plans to a competing firm for payment",53],
+["An IT firm detects a problem at a client and recommends its own products to fix it. What ethical problem does this create?","Conflict of interest","Misrepresentation","Breach of contract","Fraud",54],
+["After a material breach of contract, what may the non-breaching party do?","Rescind the contract, seek restitution, and be discharged from further performance","Keep performing but sue only after the project ends","Rescind the contract but forfeit any compensation already paid","Demand renegotiation but remain bound to the original terms",55],
+["The US Foreign Corrupt Practices Act makes it a crime to:","Bribe a foreign official, a foreign party official, or a foreign political candidate","Accept any gift from a supplier regardless of its value","Use a foreign supplier without government approval","Disclose trade secrets to a foreign competitor",56]];
+const TF=[
+["Section 406 of the Sarbanes-Oxley Act requires the CEO and CFO to sign SEC filings.",false,20],
+["Accountability rests with the person who holds the ultimate responsibility.",true,36],
+["IT workers are licensed by the government and can be sued for malpractice.",false,48],
+["Good Samaritan immunity lets an entity exercise control over content without liability.",true,45],
+["The slides conclude that storing years as 2 digits in 1970 was poor professional practice.",false,43],
+["Customised software is treated as a service because the client shares part of the risk.",true,41],
+["Résumé inflation appears on roughly 30% of U.S. job applications.",true,57],
+["A legal act is one that conforms to what an individual personally believes is right.",false,7],
+["Ethics training should increase the percentage of employees who report misconduct.",true,22],
+["The Therac-25 software error was new in that version and absent from earlier ones.",false,45],
+["A good problem statement proposes a solution to the issue.",false,27],
+["Donors and recipients can perceive the same gift differently when judging whether it is a bribe.",true,56],
+["In a mixed software case, product and service are each treated on their own.",true,42],
+["Virtue ethics gives a clear guide for action, which is why it is preferred over rules.",false,29],
+["Large scale, complexity and many people involved make responsibility for a system easier to assign.",false,44],
+["Kant held that humans are responsible for their actions because they can control them.",true,44]];
+const MA=[
+{t:"Part 3A — Match each term (left) with its definition (right). Two definitions are extras.",pr:[
+["Fraud","Obtaining goods, services or property through deception or trickery"],
+["Misrepresentation","A misstatement or incomplete statement of a material fact"],
+["Breach of contract","One party fails to meet the terms of the agreement"],
+["Bribery","Providing money, property or favors to gain a business advantage"],
+["Software piracy","Illegally copying software or enabling access one is not entitled to"],
+["Whistle-blowing","Drawing attention to a dangerous or unethical act that threatens the public"],
+["Negligence","Failing to do what a reasonable and prudent person would do"],
+["Trade secret","Confidential business information that took effort to develop"]],
+x:["Principle that an employer is responsible for its employees’ acts","Trade group whose mission is to stop unauthorized copying of software"]},
+{t:"Part 3B — Match each concept (left) with its example or case (right). Two examples are extras.",pr:[
+["Role responsibility","LambdaMOO players are expected to play by the rules"],
+["Causal responsibility","Kim’s investment makes the company lose money though she did her duty"],
+["Liability","A friend slips on the polished floor of your house"],
+["Negligence","A security guard who is drunk while on duty"],
+["Diffusion of responsibility","Therac-25 radiation overdoses with no single clear culprit"],
+["Strict liability","Producers of mass-market software sued for malfunctions"],
+["Good Samaritan immunity","The 1996 Communications Decency Act protecting ISPs that exercise control"],
+["Conflict of interest","A firm recommends its own products to fix problems it detected"]],
+x:["Storing years as two digits to save expensive space in 1970","A seller who hides a flaw that the buyer never asked about"]}];
+const $=s=>document.querySelector(s);
+let M,S,fin;
+function sh(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+function start(m){M=m;fin=false;S={mc:sh(MC).map(x=>({q:x[0],a:x[1],o:sh(x.slice(1,5)),s:x[5],p:null})),tf:sh(TF).map(x=>({q:x[0],a:x[1],s:x[2],p:null})),ma:MA.map(z=>({t:z.t,pr:z.pr,o:sh([...z.pr.map(p=>p[1]),...z.x]),p:{},c:false}))};draw();scrollTo(0,0)}
+function home(){S=null;$("#app").innerHTML=`<h1>Computer Ethics</h1><p class="mu">Chapters 1–3 · ${MC.length} circle-the-answer, ${TF.length} true/false, ${MA.reduce((a,z)=>a+z.pr.length,0)} matching pairs. Answer order is reshuffled every attempt.</p><div class="cards"><button class="card" onclick="start('p')"><b>Practice mode</b><span>Instant feedback after each answer, with the correct answer and slide number</span></button><button class="card" onclick="start('e')"><b>Real exam mode</b><span>No feedback until you press Finish, then your score and a full review</span></button></div>`}
+function score(){let s=0,t=0;S.mc.forEach(q=>{t+=2;if(q.o[q.p]===q.a)s+=2});S.tf.forEach(q=>{t++;if(q.p===q.a)s++});S.ma.forEach(z=>z.pr.forEach((p,i)=>{t++;if(z.p[i]===p[1])s++}));return[s,t]}
+function pk(t,i,j){const q=S[t][i];if(fin||(M=="p"&&q.p!==null))return;q.p=t=="mc"?j:j==0;draw()}
+function ms(k,i,v){S.ma[k].p[i]=v;draw()}
+function fbk(r,ok,ans,s,none){return r?`<div class="fb"><b>${ok?"✓ Correct":none?"Not answered":"✗ Wrong"}</b>${ok?"":" · Answer: "+ans} · Slide ${s}</div>`:""}
+function draw(){
+if(!S)return home();
+const tot=S.mc.length+S.tf.length+S.ma.reduce((a,z)=>a+z.pr.length,0);
+const an=S.mc.filter(q=>q.p!==null).length+S.tf.filter(q=>q.p!==null).length+S.ma.reduce((a,z)=>a+Object.values(z.p).filter(Boolean).length,0);
+let h=`<div class="bar"><b>${M=="p"?"Practice mode":"Exam mode"}</b><span class="mu">${an}/${tot} answered</span><button class="s" onclick="home()">Menu</button></div>`;
+if(fin){const[s,t]=score();h+=`<div class="res"><span>${s} / ${t}</span><span>${Math.round(100*s/t)}%</span></div>`}
+h+="<h2>Part 1 — Circle the correct answer (2 points each)</h2>";
+S.mc.forEach((q,i)=>{const r=fin||(M=="p"&&q.p!==null);
+h+=`<div class="q"><p><b>${i+1}.</b> ${q.q}</p>`+q.o.map((o,j)=>{const c=r&&o===q.a?"ok":q.p===j?(r?"no":"se"):"";return `<button class="o ${c}" ${r?"disabled":""} onclick="pk('mc',${i},${j})"><i>${"ABCD"[j]}</i><span>${o}</span></button>`}).join("")+fbk(r,q.o[q.p]===q.a,q.a,q.s,q.p===null)+"</div>"});
+h+="<h2>Part 2 — True or false (1 point each)</h2>";
+S.tf.forEach((q,i)=>{const r=fin||(M=="p"&&q.p!==null);
+h+=`<div class="q"><p><b>${i+1}.</b> ${q.q}</p>`+[true,false].map((v,j)=>{const c=r&&v===q.a?"ok":q.p===v?(r?"no":"se"):"";return `<button class="o ${c}" style="display:inline-flex;width:auto;margin-right:8px" ${r?"disabled":""} onclick="pk('tf',${i},${j})">${v?"True":"False"}</button>`}).join("")+fbk(r,q.p===q.a,q.a?"True":"False",q.s,q.p===null)+"</div>"});
+h+="<h2>Part 3 — Matching (1 point per pair)</h2>";
+S.ma.forEach((z,k)=>{const r=fin||(M=="p"&&z.c);
+h+=`<div class="q"><p><b>${z.t}</b></p>`+z.pr.map((p,i)=>{const v=z.p[i];return `<div class="mr"><span>${i+1}. ${p[0]}</span><select ${r?"disabled":""} onchange="ms(${k},${i},this.value)"><option value="">— choose —</option>${z.o.map(o=>`<option ${v===o?"selected":""}>${o}</option>`).join("")}</select>${r?(v===p[1]?'<em class="g">✓ Correct</em>':`<em class="rd">✗ Answer: ${p[1]}</em>`):""}</div>`}).join("")+(M=="p"&&!fin&&!z.c?`<button class="b" onclick="S.ma[${k}].c=true;draw()">Check this set</button>`:"")+"</div>"});
+h+=fin?`<button class="b" onclick="start('${M}')">Retake (new shuffle)</button><button class="s" onclick="home()">Menu</button>`:`<button class="b" onclick="fin=true;draw();scrollTo(0,0)">Finish and see score</button>`;
+$("#app").innerHTML=h}
+home();
+</script></body></html>
