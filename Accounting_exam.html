@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Principles of Accounting | مبادئ المحاسبة</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap');
+:root{
+  --bg:#0b0f17; --card:#1f2937; --ink:#f3f4f6; --mute:#9ca3af; --line:#374151;
+  --v:rgb(168, 85, 247); --v-soft:rgba(168, 85, 247, 0.15); --v-ink:#ffffff;
+  --ok:#16a34a; --ok-soft:rgba(22, 163, 74, 0.15); --bad:#ef4444; --bad-soft:rgba(239, 68, 68, 0.15);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background-color:var(--bg);color:var(--ink);
+  background-image: linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+  background-size: 36px 36px;
+  font-family:"Inter","Cairo",system-ui,sans-serif;line-height:1.55;font-size:16px}
+.wrap{max-width:720px;margin:0 auto;padding:14px 14px 60px}
+h1,h2{font-family:Georgia,"Times New Roman",serif;margin:0}
+button{font:inherit;color:inherit}
+button:focus-visible,textarea:focus-visible{outline:3px solid var(--v);outline-offset:2px}
+
+/* start screen */
+.hero{background:linear-gradient(135deg, rgb(147, 51, 234), #111827);color:var(--v-ink);border-radius:14px;padding:24px 20px;margin-bottom:14px; border:1px solid var(--line);}
+.hero h1{font-size:1.65rem;line-height:1.2}
+.hero p{margin:6px 0 0;opacity:.92}
+.modes{display:grid;gap:12px}
+.mode{text-align:start;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:16px;cursor:pointer}
+.mode:hover{border-color:var(--v)}
+.mode h2{font-size:1.2rem;color:var(--v)}
+.mode p{margin:4px 0 0;color:var(--mute);font-size:.93rem}
+.facts{margin:14px 2px 0;color:var(--mute);font-size:.9rem}
+.step{margin:18px 2px 8px;font-size:1rem;color:var(--v)}
+.sizes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.size{text-align:start;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:12px;cursor:pointer}
+.size h2{font-size:1.05rem}
+.size p{margin:3px 0 0;font-size:.85rem;color:var(--mute)}
+.size .nums{font-size:.8rem}
+.size[aria-pressed="true"]{border-color:var(--v);background:var(--v-soft)}
+.size[aria-pressed="true"] h2{color:var(--v)}
+@media (max-width:520px){.sizes{grid-template-columns:1fr}}
+
+/* exam frame */
+.bar{height:6px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar>div{height:100%;background:var(--v);transition:width .2s}
+.qhead{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:8px 2px 10px;font-size:.88rem;color:var(--mute)}
+.qhead b{color:var(--v)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 16px}
+.how{margin:0 0 14px;padding:9px 12px;background:var(--v-soft);border-radius:8px;font-size:.92rem}
+.stmt{margin:0 0 12px;font-size:1.06rem}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:14px}
+.btn{transition: background 0.3s; padding:12px 24px;border-radius:10px;border:0;background:var(--v);color:var(--v-ink);font-weight:700;cursor:pointer}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.alt{background:transparent;color:var(--v);border:1.5px solid var(--v);font-weight:600}
+.btn.alt:disabled{opacity:.35}
+
+/* true / false circles */
+.opts{display:flex;gap:12px;flex-wrap:wrap}
+.circ{min-width:96px;padding:9px 20px;border-radius:999px;border:2px solid transparent;background:transparent;font-weight:600;cursor:pointer}
+.circ:hover:not(:disabled){background:var(--v-soft)}
+.circ[aria-checked="true"]{border-color:var(--v);background:var(--v-soft);color:var(--v);transform:rotate(-1.5deg)}
+.circ.right{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
+.circ.wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
+.circ:disabled{cursor:default}
+
+/* multiple choice with circled letter */
+.choices{display:grid;gap:8px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:start;width:100%;padding:10px 12px;border-radius:10px;
+  border:1.5px solid var(--line);background:transparent;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--v)}
+.opt .ltr{flex:none;width:30px;height:30px;border-radius:50%;border:2px solid var(--mute);display:grid;place-items:center;
+  font-weight:700;font-size:.9rem;color:var(--mute);margin-top:1px}
+.opt[aria-checked="true"] .ltr{border-color:var(--v);background:var(--v);color:var(--v-ink)}
+.opt[aria-checked="true"]{border-color:var(--v)}
+.opt.right{border-color:var(--ok);background:var(--ok-soft)}
+.opt.right .ltr{border-color:var(--ok);background:var(--ok);color:#fff}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.opt.wrong .ltr{border-color:var(--bad);background:var(--bad);color:#fff}
+.opt:disabled{cursor:default}
+
+.fb{margin:12px 0 0;padding:9px 12px;border-radius:8px;font-size:.92rem}
+.fb.ok{background:var(--ok-soft);color:var(--ok)}
+.fb.bad{background:var(--bad-soft);color:var(--bad)}
+
+/* matching */
+.match{display:grid;gap:10px}
+.row{display:grid;grid-template-columns:minmax(110px,32%) 1fr;gap:6px 10px}
+.term{display:flex;align-items:center;padding:10px 12px;border-radius:8px;background:var(--v-soft);font-weight:600}
+.slot{min-height:54px;border:2px dashed var(--line);border-radius:8px;padding:4px;display:flex;align-items:center}
+.slot:not(.filled)::before{content:"Drop here";color:var(--mute);font-size:.86rem;padding:0 8px}
+.slot.filled{border-style:solid;border-color:var(--v)}
+.slot.over,#bank.over{border-color:var(--v);background:var(--v-soft)}
+.row.done .slot{border-color:var(--ok);background:var(--ok-soft)}
+.fix{grid-column:1/-1;font-size:.88rem;color:var(--bad);margin:0}
+.bankhead{margin:16px 0 6px;font-weight:600;font-size:.95rem}
+#bank{display:flex;flex-direction:column;gap:8px;padding:10px;border:2px dashed var(--line);border-radius:10px;min-height:64px}
+.chip{width:100%;text-align:start;font-size:.93rem;line-height:1.4;padding:9px 11px;border-radius:8px;
+  background:var(--card);border:1.5px solid var(--v);cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
+.slot .chip{border:0;background:transparent;padding:6px 8px}
+.chip.picked{background:var(--v);color:var(--v-ink)}
+.chip.lifting{opacity:.35}
+.chip.fixed{cursor:default;touch-action:auto}
+.ghost{position:fixed;z-index:50;pointer-events:none;box-shadow:0 8px 22px rgba(0,0,0,.3);background:var(--card);
+  border:1.5px solid var(--v);border-radius:8px;padding:9px 11px;font-size:.93rem;line-height:1.4;transform:rotate(1.5deg)}
+
+/* talk */
+.topics{display:grid;gap:8px;margin-bottom:12px}
+.topic{display:flex;gap:10px;text-align:start;padding:10px 12px;border-radius:10px;border:1.5px solid var(--line);background:transparent;cursor:pointer}
+.topic[aria-checked="true"]{border-color:var(--v);background:var(--v-soft)}
+textarea{width:100%;min-height:160px;resize:vertical;padding:12px;border-radius:10px;border:1.5px solid var(--line);
+  font:inherit;background:var(--bg);color:var(--ink)}
+.tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:8px 0 0}
+.mic{padding:8px 14px;border-radius:999px;border:1.5px solid var(--v);background:transparent;color:var(--v);cursor:pointer}
+.mic.on{background:var(--v);color:var(--v-ink)}
+.count{color:var(--mute);font-size:.9rem}
+.sample{margin-top:12px;padding:10px 12px;background:var(--v-soft);border-radius:8px;font-size:.93rem}
+
+/* result */
+.score{font-size:2.3rem;font-weight:700;font-variant-numeric:tabular-nums;color:var(--v)}
+table{border-collapse:collapse;width:100%;margin:8px 0 14px}
+td{padding:6px 0;border-top:1px solid var(--line)}
+td:last-child{text-align:end;font-variant-numeric:tabular-nums}
+details{border:1px solid var(--line);border-radius:10px;padding:8px 12px;margin-top:10px}
+summary{cursor:pointer;font-weight:600}
+.rev{list-style:none;padding:0;margin:10px 0 0}
+.rev li{padding:10px 0;border-top:1px solid var(--line);font-size:.93rem}
+.rev .a{color:var(--bad)} .rev .c{color:var(--ok)} .rev .w{color:var(--mute)}
+.mine{white-space:pre-wrap;background:var(--bg);border-radius:8px;padding:10px;font-size:.93rem}
+@media (max-width:520px){.row{grid-template-columns:1fr}.hero h1{font-size:1.4rem}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+(function(){
+/* ================= DATA ================= */
+const PARTS={
+  1:"Part 1: True or False",
+  2:"Part 2: Circle the correct answer",
+  3:"Part 3: Match A with B",
+  4:tr("Part 4: Talk about it")
+};
+
+const TF=[
+ {q:"In the first definition, the accounting process reports the transactions to owners, regulators and tax collection entities.",a:false,
+  why:"It says oversight agencies, regulators and tax collection entities. Owners are not named there."},
+ {q:"The first definition says the financial statements summarize a company's operations, its financial position and its cash flows over an accounting period.",a:true,
+  why:"That is the end of the third bullet of the definition."},
+ {q:"Pacioli, called the Father of Accounting, published the first double-entry book in 1494 and also invented the system.",a:false,
+  why:"He published the first book on it, but he did not invent the system."},
+ {q:"The phrase 'financial in nature' means that the information is expressed in monetary terms.",a:true,
+  why:"Accounting information is mainly financial, so it is measured in money."},
+ {q:"A retailer buys goods in large quantities, usually from manufacturers, and resells them in smaller batches.",a:false,
+  why:"That describes a wholesaler. A retailer buys from wholesalers and sells directly to consumers."},
+ {q:"Wholesale and retail businesses are also known as trade businesses.",a:true,
+  why:"Both buy goods and resell them."},
+ {q:"A corporation gives its owners limited liability, and the number of owners it can have is limited.",a:false,
+  why:"There is no limit on the number of owners."},
+ {q:"A sole proprietorship is the most common form of business because there are so few legal requirements to set it up.",a:true,
+  why:"The owner is called the sole proprietor."},
+ {q:"Managers need accounting information mainly to verify the tax figures that the company submitted.",a:false,
+  why:"Verifying taxes is what government agencies do. Managers prepare reports, read budgets and evaluate performance."},
+ {q:"Employees use accounting information partly because their bonuses or options may be tied to the enterprise's performance.",a:true,
+  why:"They also want to work for successful companies."},
+ {q:"An asset may be intangible.",a:true,
+  why:"Assets may be tangible or intangible."},
+ {q:"A business has assets of 31,000 and owner's equity of 20,000. Its liabilities are 10,000.",a:false,
+  why:"31,000 - 20,000 = 11,000."},
+ {q:"In the sample chart of accounts, Cash is numbered 1000 and Accounts Payable is numbered 3000.",a:false,
+  why:"Accounts Payable is 2000. The 3000s are for owner's equity."},
+ {q:"In the ledger, the PR column shows the journal page that the entry came from, such as G1.",a:true,
+  why:"The journal's PR column holds the account number, and the ledger's PR column holds the journal reference."},
+ {q:"A compound entry has exactly one debit and one credit.",a:false,
+  why:"A compound entry has more than one debit or more than one credit."},
+ {q:"Only business transactions and events that affect the business are recorded in the general journal and the general ledger.",a:true,
+  why:"Other events are not recorded."},
+ {q:"A trial balance lists the account balances in the order of the income statement.",a:false,
+  why:"It lists them in balance sheet order."},
+ {q:"In a sole proprietorship, the owner's withdrawal account is closed together with the revenue and expense accounts.",a:true,
+  why:"Revenue, expense and withdrawal accounts are all temporary accounts."},
+ {q:"A quarterly income statement uses the revenues and expenses of a six-month period.",a:false,
+  why:"Quarterly means three months. An annual statement covers 12 months."},
+ {q:"The balance sheet lists assets, liabilities and owner's equity at a particular point in time, so it shows the net worth of the business.",a:true,
+  why:"The income statement, in contrast, covers a period."}
+];
+
+/* first option is always the correct one; options are shuffled when the exam starts */
+const MCQ=[
+ {q:"Which kind of business needs a reseller's permit in most states, according to the lecture?",
+  o:["Retail business","Manufacturing business","Service business","Partnership"],
+  why:"The retailer bullet says most states require a reseller's permit to purchase and resell."},
+ {q:"What do a wholesaler and a retailer have in common?",
+  o:["Both resell goods that they buy","Both convert materials into goods","Both earn their income from fees","Both sell directly to the end buyers"],
+  why:"They are called trade businesses. Only the retailer sells directly to the end consumer."},
+ {q:"Besides some form of investment, what does every business need in order to make a profit?",
+  o:["Enough customers to buy its output regularly","More than one owner to share the risk","A reseller's permit from the government","A bank loan that is paid back each year"],
+  why:"The lecture says it needs enough customers to whom its output can be sold on a consistent basis."},
+ {q:"Which of these is the owners' proof of ownership in a corporation?",
+  o:["Stock","Capital account","Partnership deed","Reseller's permit"],
+  why:"The owners are called stockholders or shareholders."},
+ {q:"Which of these is greater in a corporation than in the other two forms of business?",
+  o:["Government regulation","Ease of dissolving","Ease of starting up","Control by one person"],
+  why:"A corporation has more regulation. The other three fit a sole proprietorship better."},
+ {q:"According to the first definition, the accounting process reports the transactions to which group?",
+  o:["Oversight agencies, regulators, tax collection entities","Shareholders, creditors, employees and financial analysts","Customers, suppliers, banks and competing companies","Owners, managers, directors and the company's staff"],
+  why:"The first definition names oversight agencies, regulators and tax collection entities."},
+ {q:"Which of these is NOT something the financial statements summarize, according to the first definition?",
+  o:["The budget for the next period","The company's operations","The company's financial position","The company's cash flows"],
+  why:"The statements summarize operations, financial position and cash flows."},
+ {q:"The second definition describes accounting as a body of knowledge about all of these EXCEPT:",
+  o:["Preparing goods for sale","Keeping financial records","Performing internal audits","Advising on taxation matters"],
+  why:"It covers recording transactions, keeping records, internal audits, reporting to management and tax advice."},
+ {q:"In the AICPA committee's definition, which activity comes right after classifying?",
+  o:["Summarizing","Recording","Interpreting","Analyzing"],
+  why:"The order is recording, classifying, summarizing, and then interpreting the results."},
+ {q:"Which statement about Friar Luca is correct?",
+  o:["He published the first double-entry book but did not invent it","He invented the double-entry system and published it in 1494","He founded the FASB and wrote the first accounting rules","He was the AICPA committee member who defined accounting"],
+  why:"The first book on double entry was published in 1494, but he did not invent the system."},
+ {q:"Which user is interested in the company's earnings, its prospects for future earnings and its ability to pay its debts?",
+  o:["Owners","Creditors","Tax authorities","Employees"],
+  why:"Owners want all three. Creditors mainly want to know they will be paid."},
+ {q:"A tax inspector checks the figures a company submitted for income tax, sales tax and employment tax. Which user is this?",
+  o:["A government agency","A financial analyst","A creditor","A manager"],
+  why:"Taxing authorities verify the information submitted by companies."},
+ {q:"Managers and supervisors must understand the accounting data in reports and budgets, and express future plans in:",
+  o:["Financial terms","Legal terms","Physical units","Marketing terms"],
+  why:"They must be able to express future plans in financial terms."},
+ {q:"Which user forms opinions from accounting data in order to make investment recommendations?",
+  o:["Financial analyst","Employee","Creditor","Owner"],
+  why:"Financial analysts base their investment recommendations on accounting data."},
+ {q:"Which statement about assets is correct, according to the lecture?",
+  o:["They may be tangible or intangible","They are not affected by transactions","They only change when the owner invests more money","They are limited to items that can be touched"],
+  why:"Assets may be tangible or intangible, and they are affected by the transactions of the business."},
+ {q:"A bank lends the business 23,000 for a truck. In this loan the business is the:",
+  o:["Debtor","Creditor","Stockholder","Partner"],
+  why:"The one who borrows is the debtor. The bank is the creditor."},
+ {q:"Capital is sometimes called net assets because it equals:",
+  o:["Assets minus liabilities","Assets plus liabilities","Revenue minus expenses","Liabilities minus drawings"],
+  why:"Owner's equity = assets - liabilities."},
+ {q:"A truck costs 35,000. The owner invests 12,000 and the bank lends the rest. In the equation, the 23,000 appears under:",
+  o:["Liabilities","Assets","Owner's equity","Revenue"],
+  why:"The borrowed amount is owed to the bank, so it is a liability."},
+ {q:"The assets of a business are 31,000 and the owner's equity is 20,000. What are the liabilities?",
+  o:["11,000","51,000","9,000","20,000"],
+  why:"Liabilities = assets - equity = 31,000 - 20,000."},
+ {q:"The liabilities are 20,000 and the owner's equity is 80,000. What are the assets?",
+  o:["100,000","60,000","80,000","120,000"],
+  why:"Assets = liabilities + owner's equity."},
+ {q:"The owner takes 3,000 cash from the business to pay a personal bill. Which element does this affect?",
+  o:["Drawing","Expense","Revenue","Liability"],
+  why:"Cash withdrawn by the owner is a drawing, not an expense of the business."},
+ {q:"What is a chart of accounts used for?",
+  o:["Listing the accounts used, grouped by class","Proving that total debits equal total credits","Recording each transaction in date order","Reporting the result of one accounting period"],
+  why:"It organizes the accounts into assets, liabilities, equity, revenue and expenses."},
+ {q:"In the sample chart of accounts, which numbers are used for Owner's Equity accounts?",
+  o:["3000s","1000s","2000s","4000s"],
+  why:"Owner's Capital is 3000, Owner's Withdrawals 3010 and Retained Earnings 3020."},
+ {q:"Which of these is listed among the liability accounts in the lecture?",
+  o:["Accrued interest","Prepaid rent","Retained earnings","Depreciation"],
+  why:"Prepaid rent is an asset, retained earnings is equity and depreciation is an expense."},
+ {q:"Which of these is listed among the expense accounts in the lecture?",
+  o:["Doubtful accounts","Interest income","Retained earnings","Bonds payable"],
+  why:"Interest income is revenue, retained earnings is equity and bonds payable is a liability."},
+ {q:"Which pair of accounts both normally have debit balances?",
+  o:["Equipment and utilities expense","Equipment and accounts payable","Sales and rent expense","Capital and cash"],
+  why:"Assets and expenses have a normal debit balance."},
+ {q:"A credit to an asset account means that the account:",
+  o:["Decreases","Increases","Is closed","Has its normal balance"],
+  why:"Assets increase with debits and decrease with credits."},
+ {q:"Which two books receive the recorded business transactions?",
+  o:["General journal and general ledger","Trial balance and balance sheet","Chart of accounts and journal","Ledger and income statement"],
+  why:"Transactions are recorded in the general journal and then posted to the general ledger."},
+ {q:"A journal entry with more than one debit or more than one credit is called a:",
+  o:["Compound entry","Single entry","Closing entry","Opening entry"],
+  why:"This is the lecture's definition of a compound entry."},
+ {q:"A company buys supplies for 2,500 cash and later buys 7,100 of supplies on credit. After both are posted, the Supplies account shows:",
+  o:["Two debits: 2,500 and 7,100","A debit of 2,500 and a credit of 7,100","One credit of 9,600","A debit of 7,100 only"],
+  why:"Supplies are an asset that increased both times, so both entries are debits."},
+ {q:"A business provides consulting services and immediately collects 4,200 in cash. Which account is credited?",
+  o:["Consulting Revenue","Cash","Accounts Receivable","Unearned Revenue"],
+  why:"Cash is debited and the revenue earned is credited."},
+ {q:"For the owner's investment of 30,000 in the business, which account is credited?",
+  o:["The owner's capital account","Cash","Consulting revenue","Accounts payable"],
+  why:"Cash is debited and the owner's capital is credited."},
+ {q:"Which order matches the columns of a ledger account in the lecture?",
+  o:["Date, description, PR, debit, credit, balance","Date, debit, credit, PR, description, balance","Description, date, PR, debit, credit, balance","Date, description, debit, credit, PR, balance"],
+  why:"The ledger page has Date, Description, PR, Debit, Credit and Balance."},
+ {q:"After posting, the ledger's PR column shows a reference such as G1. What does it point to?",
+  o:["The journal page that the entry came from","The number of the ledger account","The date of the transaction","The balance after posting"],
+  why:"The account number goes in the journal's PR column, and the journal page goes in the ledger's PR column."},
+ {q:"A trial balance lists the account balances in the order of the:",
+  o:["Balance sheet","Income statement","Alphabet","Dates of the transactions"],
+  why:"The lecture says balance sheet order."},
+ {q:"The debit balances are Cash 4,350, Supplies 9,720, Prepaid insurance 2,400, Equipment 26,000, Withdrawals 200, Salaries 1,400, Rent 1,000 and Utilities 230. What is the total of the debit column?",
+  o:["45,300","44,300","46,300","45,100"],
+  why:"4,350 + 9,720 + 2,400 + 26,000 + 200 + 1,400 + 1,000 + 230 = 45,300."},
+ {q:"A shop's income statement shows sales of 24,800, lesson income of 3,000 and total expenses of 14,850. What is the net income?",
+  o:["12,950","9,950","27,800","14,850"],
+  why:"Revenues 27,800 - expenses 14,850 = 12,950."},
+ {q:"Which of these accounts is NOT closed at the end of the accounting cycle?",
+  o:["Equipment","Rental revenue","Utilities expense","Owner's withdrawals"],
+  why:"Revenue, expense and withdrawal accounts are temporary. Permanent accounts are never closed."},
+ {q:"What is the purpose of closing entries for the temporary accounts?",
+  o:["To start the next period from zero","To remove them from the chart of accounts","To show the owner's net worth","To prove that debits equal credits"],
+  why:"Their balances are moved to permanent accounts, so they do not mix with the next period."}
+];
+
+const MATCH=[
+ {title:"Terms and descriptions",
+  how:"Drag each description into the slot next to the right term. Two descriptions are extra.",
+  terms:[
+   {id:"c",t:"Capital"},{id:"d",t:"Trial balance"},{id:"e",t:"General journal"},
+   {id:"f",t:"General ledger"},{id:"g",t:"Balance sheet"},{id:"h",t:"Income statement"}],
+  defs:{
+   c:"The owner's share of the business: assets minus liabilities",
+   d:"A list of ledger balances used to check that debits equal credits",
+   e:"The book where each transaction is first recorded in date order",
+   f:"The book that holds a separate account for every item",
+   g:"A report of assets, liabilities and equity at one date",
+   h:"A report of revenues and expenses over a period of time",
+   x:"An account that is reset to zero at the end of the period",
+   y:"A list of all the accounts a business uses, each with a number"}},
+ {title:"Transactions and entries",
+  how:"Drag each journal entry into the slot next to the transaction it records. Two entries are extra.",
+  terms:[
+   {id:"a",t:"Owner invests cash"},{id:"b",t:"Buys supplies on credit"},{id:"c",t:"Earns a fee and collects cash"},
+   {id:"d",t:"Owner withdraws cash"},{id:"e",t:"Pays a supplier on account"},{id:"f",t:"Customer pays what he owed"}],
+  defs:{
+   a:"Debit Cash, credit Owner's Capital",
+   b:"Debit Supplies, credit Accounts Payable",
+   c:"Debit Cash, credit Service Revenue",
+   d:"Debit Drawings, credit Cash",
+   e:"Debit Accounts Payable, credit Cash",
+   f:"Debit Cash, credit Accounts Receivable",
+   x:"Debit Rent Expense, credit Cash",
+   y:"Debit Supplies, credit Cash"}}
+];
+
+const TOPICS=[
+ {t:"Why does the owner of a small shop need to keep accounting records?",
+  s:"A shop owner needs records to know how much money comes in and goes out. The records show what the shop owns, which are the assets, and what it owes, which are the liabilities. With them the owner can see if the shop makes a profit. Banks and tax offices also ask for these records."},
+ {t:"Explain the difference between an asset and a liability.",
+  s:"An asset is something of value that the business owns, like cash, equipment or land. A liability is money the business owes to others, like a bank loan or accounts payable. Assets give future benefit to the owner. Liabilities must be paid back, so the owner's equity is assets minus liabilities."},
+ {t:"What is a trial balance and why do we prepare it?",
+  s:"A trial balance is a list of the balances of all ledger accounts on one date. The debit balances are in one column and the credit balances in another. We prepare it to check that total debits equal total credits. If they are equal we can move on to the financial statements, but it does not prove there are no mistakes."}
+];
+
+/* ================= STATE ================= */
+let lang = 'en';
+const DICT = {
+    "Part 1: True or False": "الجزء 1: صح أو خطأ",
+    "Part 2: Circle the correct answer": "الجزء 2: اختر الإجابة الصحيحة",
+    "Part 3: Match A with B": "الجزء 3: طابق أ مع ب",
+    "Part 4: Talk about it": "الجزء 4: تحدث عن ذلك",
+    "Question ": "السؤال ",
+    " of ": " من ",
+    "Practice": "تدريب",
+    "Exam": "امتحان",
+    "True": "صح",
+    "False": "خطأ",
+    "Correct. ": "إجابة صحيحة. ",
+    "Answer: ": "الإجابة: ",
+    "Circle True or False.": "اختر صح أو خطأ.",
+    "Circle the letter of the correct answer.": "اختر حرف الإجابة الصحيحة.",
+    tr("Back"): "رجوع",
+    tr("Next"): "التالي",
+    tr("See result"): "النتيجة",
+    "Result": "النتيجة",
+    tr("Try again"): "حاول مرة أخرى",
+    tr("Change mode"): "تغيير الوضع",
+    tr("Review mistakes ("): "مراجعة الأخطاء (",
+    "Your answer: ": "إجابتك: ",
+    tr("not answered"): "لم تتم الإجابة",
+    "Correct: ": "الصحيح: ",
+    tr("No mistakes. Well done."): "لا توجد أخطاء. عمل ممتاز.",
+    tr("Your talk answer"): "إجابتك",
+    "words": "كلمات",
+    "Terms and descriptions": "المصطلحات والأوصاف",
+    "Transactions and entries": "المعاملات والقيود",
+    "Drop here": "أسقط هنا",
+    "Descriptions (B)": "الأوصاف (ب)",
+    "In the first definition, the accounting process reports the transactions to owners, regulators and tax collection entities.": "في التعريف الأول، تقوم العملية المحاسبية بإبلاغ المعاملات للملاك، والجهات الرقابية، وجهات تحصيل الضرائب.",
+    "The first definition says the financial statements summarize a company's operations, its financial position and its cash flows over an accounting period.": "ينص التعريف الأول على أن القوائم المالية تلخص عمليات الشركة ومركزها المالي وتدفقاتها النقدية خلال فترة محاسبية.",
+    "Pacioli, called the Father of Accounting, published the first double-entry book in 1494 and also invented the system.": "لوكا باتشولي، الملقب بأبي المحاسبة، نشر أول كتاب للقيد المزدوج عام 1494 وهو من اخترع النظام أيضًا.",
+    "The phrase 'financial in nature' means that the information is expressed in monetary terms.": "عبارة 'مالية في طبيعتها' تعني أن المعلومات يُعبر عنها بوحدات نقدية.",
+    "A retailer buys goods in large quantities, usually from manufacturers, and resells them in smaller batches.": "تاجر التجزئة يشتري السلع بكميات كبيرة من المصنعين ويعيد بيعها بدفعات أصغر.",
+    "Wholesale and retail businesses are also known as trade businesses.": "أعمال الجملة والتجزئة تُعرف أيضاً بالأعمال التجارية.",
+    "A corporation gives its owners limited liability, and the number of owners it can have is limited.": "الشركة المساهمة تمنح مالكيها مسؤولية محدودة، وعدد مالكيها محدود.",
+    "A sole proprietorship is the most common form of business because there are so few legal requirements to set it up.": "المنشأة الفردية هي الشكل الأكثر شيوعاً للأعمال لقلة المتطلبات القانونية لتأسيسها.",
+    "Managers need accounting information mainly to verify the tax figures that the company submitted.": "يحتاج المديرون للمعلومات المحاسبية أساساً للتحقق من الأرقام الضريبية التي قدمتها الشركة.",
+    "Employees use accounting information partly because their bonuses or options may be tied to the enterprise's performance.": "يستخدم الموظفون المعلومات المحاسبية جزئياً لأن مكافآتهم أو خياراتهم قد ترتبط بأداء المنشأة.",
+    "An asset may be intangible.": "قد يكون الأصل غير ملموس.",
+    "A business has assets of 31,000 and owner's equity of 20,000. Its liabilities are 10,000.": "نشاط أصوله 31,000 وحقوق ملكيته 20,000. خصومه 10,000.",
+    "In the sample chart of accounts, Cash is numbered 1000 and Accounts Payable is numbered 3000.": "في نموذج دليل الحسابات، النقدية رقمها 1000 والذمم الدائنة رقمها 3000.",
+    "In the ledger, the PR column shows the journal page that the entry came from, such as G1.": "في دفتر الأستاذ، يوضح عمود PR صفحة اليومية التي جاء منها القيد، مثل G1.",
+    "A compound entry has exactly one debit and one credit.": "يحتوي القيد المركب على طرف مدين واحد وطرف دائن واحد بالضبط.",
+    "Only business transactions and events that affect the business are recorded in the general journal and the general ledger.": "تُسجل فقط المعاملات والأحداث التجارية التي تؤثر على النشاط في دفتر اليومية العام ودفتر الأستاذ العام.",
+    "A trial balance lists the account balances in the order of the income statement.": "ميزان المراجعة يسرد أرصدة الحسابات بترتيب قائمة الدخل.",
+    "In a sole proprietorship, the owner's withdrawal account is closed together with the revenue and expense accounts.": "في المنشأة الفردية، يُغلق حساب مسحوبات المالك مع حسابات الإيرادات والمصروفات.",
+    "A quarterly income statement uses the revenues and expenses of a six-month period.": "قائمة الدخل ربع السنوية تستخدم إيرادات ومصروفات فترة ستة أشهر.",
+    "The balance sheet lists assets, liabilities and owner's equity at a particular point in time, so it shows the net worth of the business.": "الميزانية العمومية تسرد الأصول والخصوم وحقوق الملكية في نقطة زمنية معينة، لذا فهي تظهر صافي ثروة النشاط."
+,
+    "Circle True or False.": "اختر صح أو خطأ.",
+    "Circle the letter of the correct answer.": "اختر حرف الإجابة الصحيحة.",
+    "Drag each description into the slot next to the right term. Two descriptions are extra.": "اسحب كل وصف إلى الخانة بجوار المصطلح الصحيح. يوجد وصفان إضافيان.",
+    "Choose one topic. Speak with the microphone or type 4 to 6 simple sentences. Use at least three terms from the course.": "اختر موضوعاً واحداً. تحدث باستخدام الميكروفون أو اكتب من 4 إلى 6 جمل بسيطة. استخدم ثلاثة مصطلحات على الأقل من المنهج.",
+    tr("Start microphone"): "تشغيل الميكروفون",
+    tr("Stop microphone"): "إيقاف الميكروفون",
+    tr("Show sample answer"): "إظهار إجابة نموذجية",
+    tr("Hide sample answer"): "إخفاء الإجابة النموذجية",
+    "Sample:": "النموذج:",
+    tr("Review mistakes ("): "مراجعة الأخطاء (",
+    "Your answer: ": "إجابتك: ",
+    tr("not answered"): "لم تتم الإجابة",
+    "Correct: ": "الصحيح: ",
+    tr("No mistakes. Well done."): "لا توجد أخطاء. عمل ممتاز.",
+    tr("Your talk answer"): "إجابتك الصوتية/النصية",
+    "words": "كلمات",
+    tr("Back"): "السابق",
+    tr("Next"): "التالي",
+    tr("See result"): "النتيجة",
+    "Result": "النتيجة النهائية",
+    tr("Try again"): "حاول مرة أخرى",
+    tr("Change mode"): "تغيير الوضع",
+    "Practice mode · ": "وضع التدريب · ",
+    "Exam mode · ": "وضع الامتحان · ",
+    " length": " الطول",
+    " · time ": " · الوقت ",
+    tr("Parts 1 to 3 are marked automatically. Part 4 is marked by your instructor."): "تم تصحيح الأجزاء من 1 إلى 3 تلقائياً. الجزء 4 يتم تصحيحه بواسطة معلمك."};
+
+function tr(str) {
+    if (lang === 'en') return str;
+    return DICT[str] || str;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.createElement('button');
+    btn.innerHTML = '🌐 عربي / English';
+    btn.className = 'btn alt';
+    btn.style.cssText = 'position:fixed; top:12px; right:12px; z-index:9999; padding:6px 12px; font-size:14px; border-radius:8px; font-family:"Cairo", sans-serif; background:var(--card); color:var(--v); border: 2px solid var(--v); cursor:pointer;';
+    btn.onclick = () => {
+        lang = lang === 'en' ? 'ar' : 'en';
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        document.documentElement.lang = lang;
+        if (lang === 'ar') {
+            document.querySelector('.hero h1').innerHTML = tr("Principles of Accounting");
+        } else {
+            document.querySelector('.hero h1').innerHTML = "Principles of Accounting";
+        }
+        render(false);
+    };
+    document.body.appendChild(btn);
+});
+
+const app=document.getElementById("app");
+let size="medium",mode=null,Q=[],ans=[],idx=0,picked=null,startT=0,clockT=null,drag=null,ghost=null,tapStamp=0;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+const LET="ABCD";
+
+const SIZES={
+  short:{name:"Short",ar:"قصير",tf:10,mcq:20,lists:2,items:3,desc:"Half of everything"},
+  medium:{name:"Medium",ar:"متوسط",tf:15,mcq:20,lists:1,items:6,desc:"One matching list"},
+  long:{name:"Long",ar:"طويل",tf:20,mcq:40,lists:2,items:6,desc:"The full exam"}
+};
+function build(){
+  const S=SIZES[size],out=[];
+  shuffle(TF).slice(0,S.tf).forEach(t=>out.push({type:"tf",part:1,q:t.q,a:t.a,why:t.why}));
+  shuffle(MCQ).slice(0,S.mcq).forEach(m=>out.push({type:"mcq",part:2,q:m.q,why:m.why,opts:shuffle(m.o.map((t,i)=>({t,c:i===0})))}));
+  shuffle(MATCH).slice(0,S.lists).forEach(s=>{
+    let terms=s.terms; if(S.items<terms.length) terms=shuffle(terms).slice(0,S.items);
+    const defs={}; terms.forEach(t=>defs[t.id]=s.defs[t.id]); defs.x=s.defs.x; defs.y=s.defs.y;
+    out.push({type:"match",part:3,title:s.title,how:s.how,terms,defs,order:shuffle(Object.keys(defs))});
+  });
+  out.push({type:"talk",part:4});
+  return out;
+}
+function initAns(q){
+  if(q.type==="match") return {map:{},bad:{},done:{}};
+  if(q.type==="talk") return {topic:0,text:"",sample:false};
+  return {v:null,done:false};
+}
+
+/* ================= START SCREEN ================= */
+function home(){
+  clearInterval(clockT); mode=null;
+  const card=k=>{
+    const S=SIZES[k], pages=S.tf+S.mcq+S.lists+1;
+    return '<button class="size" data-act="size" data-s="'+k+'" aria-pressed="'+(size===k)+'"><h2>'+S.name+' <span dir="rtl">| '+S.ar+'</span></h2>'+
+      '<p>'+S.desc+'</p><p class="nums">'+S.tf+' True/False · '+S.mcq+' circle · '+S.lists+(S.lists>1?' lists':' list')+
+      (S.items<6?' ('+S.items+' items each)':'')+' · 1 talk<br>'+pages+' questions</p></button>';
+  };
+  app.innerHTML=
+   '<div class="hero"><h1>Principles of Accounting</h1><p dir="rtl">مبادئ المحاسبة — امتحان تجريبي</p></div>'+
+   '<h3 class="step">1. Choose the length <span dir="rtl">| اختر الطول</span></h3>'+
+   '<div class="sizes">'+card("short")+card("medium")+card("long")+'</div>'+
+   '<h3 class="step">2. Choose the mode <span dir="rtl">| اختر الوضع</span></h3>'+
+   '<div class="modes">'+
+    '<button class="mode" data-act="start" data-m="practice"><h2>Practice <span dir="rtl">| تدريب</span></h2>'+
+    '<p>You see the correct answer right after each question. Good for studying.</p></button>'+
+    '<button class="mode" data-act="start" data-m="exam"><h2>Exam <span dir="rtl">| امتحان</span></h2>'+
+    '<p>No answers until the end. You can go back and change your answers. A timer runs.</p></button>'+
+   '</div>'+
+   '<p class="facts">Questions are picked at random from the whole bank and shuffled each time.</p>';
+}
+
+function start(m){
+  mode=m; Q=build(); ans=Q.map(initAns); idx=0; picked=null; startT=Date.now();
+  clearInterval(clockT);
+  if(m==="exam") clockT=setInterval(paintClock,1000);
+  render(true);
+}
+function paintClock(){
+  const el=document.getElementById("clock"); if(!el) return;
+  el.textContent=fmtTime(Date.now()-startT);
+}
+function fmtTime(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+
+/* ================= RENDER ================= */
+function canNext(){
+  if(mode!=="practice") return true;
+  const q=Q[idx],a=ans[idx];
+  if(q.type==="tf"||q.type==="mcq") return a.done;
+  if(q.type==="match") return q.terms.every(t=>a.done[t.id]);
+  return true;
+}
+function render(toTop){
+  if(idx>=Q.length){ return results(); }
+  const q=Q[idx], a=ans[idx], last=idx===Q.length-1;
+  let body="";
+  if(q.type==="tf") body=bodyTF(q,a);
+  else if(q.type==="mcq") body=bodyMCQ(q,a);
+  else if(q.type==="match") body=bodyMatch(q,a);
+  else body=bodyTalk(q,a);
+  app.innerHTML=
+   '<div class="bar"><div style="width:'+(idx/Q.length*100)+'%"></div></div>'+
+   '<div class="qhead"><span><b>'+esc(tr(PARTS[q.part]))+'</b></span><span>Question '+(idx+1)+' of '+Q.length+'</span>'+
+   (mode==="exam"?'<span id="clock">'+fmtTime(Date.now()-startT)+'</span>':'<span>Practice</span>')+'</div>'+
+   '<div class="card">'+body+'</div>'+
+   '<div class="nav"><button class="btn alt" data-act="prev"'+(idx===0?' disabled':'')+'>Back</button>'+
+   '<button class="btn" data-act="next"'+(canNext()?'':' disabled')+'>'+(last?'See result':'Next')+'</button></div>';
+  if(toTop) window.scrollTo(0,0);
+}
+
+function feedback(ok,text){
+  return '<p class="fb '+(ok?'ok':'bad')+'">'+esc(text)+'</p>';
+}
+
+function bodyTF(q,a){
+  const show=mode==="practice"&&a.done, corr=q.a?"T":"F";
+  const btn=(v,label)=>{
+    let cls="circ";
+    if(show){ if(v===corr) cls+=" right"; else if(a.v===v) cls+=" wrong"; }
+    return '<button class="'+cls+'" role="radio" aria-checked="'+(a.v===v)+'" data-act="tf" data-v="'+v+'"'+(show?' disabled':'')+'>'+label+'</button>';
+  };
+  let h='<p class="how">Circle <b>True</b> or <b>False</b>.</p><p class="stmt">'+esc(tr(q.q))+'</p>'+
+        '<div class="opts" role="radiogroup">'+btn("T",tr("True"))+btn("F",tr("False"))+'</div>';
+  if(show){
+    const ok=a.v===corr;
+    h+=feedback(ok,(ok?"Correct. ":tr("Answer: ")+(q.a?"True":"False")+". ")+q.why);
+  }
+  return h;
+}
+
+function bodyMCQ(q,a){
+  const show=mode==="practice"&&a.done;
+  let h='<p class="how">Circle the letter of the correct answer.</p><p class="stmt">'+esc(tr(q.q))+'</p><div class="choices" role="radiogroup">';
+  q.opts.forEach((o,k)=>{
+    let cls="opt";
+    if(show){ if(o.c) cls+=" right"; else if(a.v===k) cls+=" wrong"; }
+    h+='<button class="'+cls+'" role="radio" aria-checked="'+(a.v===k)+'" data-act="mcq" data-k="'+k+'"'+(show?' disabled':'')+'>'+
+       '<span class="ltr">'+LET[k]+'</span><span>'+esc(tr(o.t))+'</span></button>';
+  });
+  h+='</div>';
+  if(show){
+    const ok=q.opts[a.v].c, right=LET[q.opts.findIndex(o=>o.c)];
+    h+=feedback(ok,(ok?"Correct. ":tr("Answer: ")+right+". ")+q.why);
+  }
+  return h;
+}
+
+function bodyMatch(q,a){
+  const used=Object.values(a.map);
+  const chip=(d,fixed)=>'<button class="chip'+(fixed?' fixed':'')+(picked===d?' picked':'')+'" data-d="'+d+'"'+(fixed?' disabled':'')+'>'+esc(tr(q.defs[d]))+'</button>';
+  let h='<p class="how">'+esc(tr(q.how))+' You can also tap a description, then tap a slot.</p><div class="match">';
+  q.terms.forEach(t=>{
+    const d=a.map[t.id], done=!!a.done[t.id];
+    h+='<div class="row'+(done?' done':'')+'"><div class="term">'+esc(tr(t.t))+'</div>'+
+       '<div class="slot'+(d?' filled':'')+'" data-t="'+t.id+'">'+(d?chip(d,done):'')+'</div>';
+    if(done&&a.bad[t.id]) h+='<p class="fix">Your choice was: '+esc(q.defs[a.bad[t.id]])+'</p>';
+    h+='</div>';
+  });
+  h+='</div><div class="bankhead">Descriptions (B)</div><div id="bank">'+
+     q.order.filter(k=>!used.includes(k)).map(k=>chip(k,false)).join("")+'</div>';
+  return h;
+}
+
+function bodyTalk(q,a){
+  const T=TOPICS[a.topic];
+  let h='<p class="how">Choose one topic. Speak with the microphone or type 4 to 6 simple sentences. Use at least three terms from the course.</p><div class="topics" role="radiogroup">';
+  TOPICS.forEach((t,k)=>{
+    h+='<button class="topic" role="radio" aria-checked="'+(a.topic===k)+'" data-act="topic" data-k="'+k+'"><span>'+esc(tr(t.t))+'</span></button>';
+  });
+  h+='</div><textarea id="talk" placeholder="Start here..." aria-label="Your answer">'+esc(a.text)+'</textarea>'+
+     '<div class="tools"><button class="mic" id="mic" data-act="mic" hidden>Start microphone</button>'+
+     '<span class="count" id="count">'+wc(a.text)+' words</span>'+
+     (mode==="practice"?'<button class="mic" data-act="sample">'+(a.sample?'Hide':'Show')+' sample answer</button>':'')+'</div>';
+  if(mode==="practice"&&a.sample) h+='<p class="sample"><b>Sample:</b> '+esc(tr(T.s))+'</p>';
+  return h;
+}
+function wc(t){const m=t.trim().match(/\S+/g);return m?m.length:0}
+
+/* ================= EVENTS ================= */
+app.addEventListener("click",e=>{
+  const el=e.target.closest("[data-act]"); 
+  if(el){
+    const act=el.dataset.act, a=ans[idx];
+    if(act==="size"){ size=el.dataset.s; return home(); }
+    if(act==="start") return start(el.dataset.m);
+    if(act==="home") return home();
+    if(act==="retry") return start(mode);
+    if(act==="next"){ stopMic(); picked=null; idx++; return render(true); }
+    if(act==="prev"){ stopMic(); picked=null; idx=Math.max(0,idx-1); return render(true); }
+    if(act==="tf"){ if(mode==="practice"&&a.done) return; a.v=el.dataset.v; if(mode==="practice") a.done=true; return render(); }
+    if(act==="mcq"){ if(mode==="practice"&&a.done) return; a.v=+el.dataset.k; if(mode==="practice") a.done=true; return render(); }
+    if(act==="topic"){ a.topic=+el.dataset.k; return render(); }
+    if(act==="sample"){ a.sample=!a.sample; return render(); }
+    if(act==="mic") return toggleMic();
+    return;
+  }
+  /* matching taps */
+  if(Date.now()-tapStamp<400) return;
+  const q=Q[idx]; if(!q||q.type!=="match") return;
+  const chip=e.target.closest(".chip");
+  if(chip&&!chip.classList.contains("fixed")){
+    /* a tap on a chip is handled on pointerup (see below) */ return;
+  }
+  const slot=e.target.closest(".slot");
+  if(slot&&picked){ placeDef(picked,slot.dataset.t); return; }
+  if(e.target.closest("#bank")&&picked){ placeDef(picked,null); }
+});
+
+document.addEventListener("input",e=>{
+  if(e.target.id!=="talk") return;
+  ans[idx].text=e.target.value;
+  const c=document.getElementById("count"); if(c) c.textContent=wc(e.target.value)+tr(" words");
+});
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"&&picked){picked=null;render()}
+});
+
+/* ---- matching: drag + tap ---- */
+function placeDef(d,t){
+  const q=Q[idx], a=ans[idx];
+  for(const k in a.map){ if(a.map[k]===d&&!a.done[k]) delete a.map[k]; }
+  picked=null;
+  if(t){
+    if(a.done[t]) return render();
+    a.map[t]=d;
+    if(mode==="practice"){
+      a.done[t]=true;
+      if(d!==t){ a.bad[t]=d; a.map[t]=t; }
+    }
+  }
+  render();
+}
+function targetAt(x,y){
+  const el=document.elementFromPoint(x,y); if(!el) return null;
+  return el.closest(".slot")||el.closest("#bank");
+}
+function clearOver(){document.querySelectorAll(".over").forEach(n=>n.classList.remove("over"))}
+document.addEventListener("pointerdown",e=>{
+  const chip=e.target.closest(".chip"); if(!chip||chip.classList.contains("fixed")) return;
+  drag={d:chip.dataset.d,chip,sx:e.clientX,sy:e.clientY,moving:false};
+});
+document.addEventListener("pointermove",e=>{
+  if(!drag) return;
+  if(!drag.moving){
+    if(Math.hypot(e.clientX-drag.sx,e.clientY-drag.sy)<7) return;
+    drag.moving=true; picked=null;
+    const r=drag.chip.getBoundingClientRect();
+    ghost=drag.chip.cloneNode(true); ghost.className="ghost"; ghost.style.width=r.width+"px";
+    document.body.appendChild(ghost);
+    drag.chip.classList.add("lifting");
+    drag.dx=Math.min(40,r.width/2); drag.dy=18;
+  }
+  ghost.style.left=(e.clientX-drag.dx)+"px"; ghost.style.top=(e.clientY-drag.dy)+"px";
+  clearOver(); const t=targetAt(e.clientX,e.clientY); if(t) t.classList.add("over");
+});
+function endDrag(e,cancel){
+  if(!drag) return;
+  const d=drag; drag=null; tapStamp=Date.now();
+  if(d.moving){
+    const t=cancel?null:targetAt(e.clientX,e.clientY);
+    if(ghost){ghost.remove();ghost=null}
+    clearOver(); d.chip.classList.remove("lifting");
+    if(t) placeDef(d.d, t.classList.contains("slot")?t.dataset.t:null);
+  } else if(!cancel){
+    const inSlot=d.chip.parentNode.classList&&d.chip.parentNode.classList.contains("slot");
+    if(picked&&picked!==d.d&&inSlot) return placeDef(picked,d.chip.parentNode.dataset.t);
+    picked=(picked===d.d)?null:d.d; render();
+  }
+}
+document.addEventListener("pointerup",e=>endDrag(e,false));
+document.addEventListener("pointercancel",e=>endDrag(e,true));
+
+/* ---- microphone ---- */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let rec=null,listening=false;
+function stopMic(){ if(listening&&rec){try{rec.stop()}catch(_){}} }
+function toggleMic(){
+  if(!SR) return;
+  if(listening){ stopMic(); return; }
+  const a=ans[idx];
+  rec=new SR(); rec.lang="en-US"; rec.continuous=true; rec.interimResults=false;
+  rec.onresult=ev=>{
+    for(let i=ev.resultIndex;i<ev.results.length;i++){
+      if(ev.results[i].isFinal){
+        a.text=(a.text+" "+ev.results[i][0].transcript).trim();
+        const t=document.getElementById("talk"),c=document.getElementById("count");
+        if(t) t.value=a.text; if(c) c.textContent=wc(a.text)+tr(" words");
+      }
+    }
+  };
+  rec.onend=()=>{listening=false;const m=document.getElementById("mic");if(m){m.classList.remove("on");m.textContent=tr("Start microphone")}};
+  rec.onerror=()=>{};
+  rec.start(); listening=true;
+  const m=document.getElementById("mic"); if(m){m.classList.add("on");m.textContent=tr("Stop microphone")}
+}
+/* show the mic button only when supported (checked after every render) */
+new MutationObserver(()=>{const m=document.getElementById("mic"); if(m&&SR) m.hidden=false;}).observe(app,{childList:true,subtree:true});
+
+/* ================= RESULTS ================= */
+function scoreOf(i){
+  const q=Q[i],a=ans[i];
+  if(q.type==="tf") return a.v===(q.a?"T":"F")?1:0;
+  if(q.type==="mcq") return (a.v!==null&&q.opts[a.v].c)?1:0;
+  if(q.type==="match") return q.terms.filter(t=>a.map[t.id]===t.id&&!a.bad[t.id]).length;
+  return 0;
+}
+function results(){
+  clearInterval(clockT); stopMic();
+  const by={1:[0,0],2:[0,0],3:[0,0]};
+  Q.forEach((q,i)=>{
+    if(q.part===4) return;
+    by[q.part][0]+=scoreOf(i);
+    by[q.part][1]+= q.type==="match"?q.terms.length:1;
+  });
+  const got=by[1][0]+by[2][0]+by[3][0], tot=by[1][1]+by[2][1]+by[3][1];
+  const talk=ans[Q.length-1];
+  const rev=[];
+  Q.forEach((q,i)=>{
+    const a=ans[i];
+    if(q.type==="tf"&&scoreOf(i)===0){
+      rev.push('<li><b>'+(i+1)+'.</b> '+esc(tr(q.q))+'<br><span class="'+(a.v?'a':'w')+'">Your answer: '+(a.v?(a.v==="T"?"True":"False"):tr("not answered"))+
+        '</span><br><span class="c">Correct: '+(q.a?"True":"False")+'.</span> '+esc(tr(q.why))+'</li>');
+    }
+    if(q.type==="mcq"&&scoreOf(i)===0){
+      const c=q.opts.find(o=>o.c).t;
+      rev.push('<li><b>'+(i+1)+'.</b> '+esc(tr(q.q))+'<br><span class="'+(a.v!==null?'a':'w')+'">Your answer: '+(a.v!==null?esc(q.opts[a.v].t):tr("not answered"))+
+        '</span><br><span class="c">Correct: '+esc(c)+'.</span> '+esc(tr(q.why))+'</li>');
+    }
+    if(q.type==="match"){
+      q.terms.forEach(t=>{
+        if(a.map[t.id]===t.id&&!a.bad[t.id]) return;
+        const mine=a.bad[t.id]||a.map[t.id];
+        rev.push('<li><b>'+(i+1)+'.</b> '+esc(tr(t.t))+'<br><span class="'+(mine?'a':'w')+'">Your answer: '+(mine?esc(tr(q.defs[mine])):tr("not answered"))+
+          '</span><br><span class="c">Correct: '+esc(tr(q.defs[t.id]))+'</span></li>');
+      });
+    }
+  });
+  const row=(n,k)=>'<tr><td>'+n+'</td><td>'+by[k][0]+' / '+by[k][1]+'</td></tr>';
+  app.innerHTML=
+   '<div class="hero"><h1>'+tr("Result")+'</h1><p>'+(mode==="exam"?tr("Exam"):tr("Practice"))+' · '+SIZES[size].name+(mode==="exam"?tr(" · time ")+fmtTime(Date.now()-startT):'')+'</p></div>'+
+   '<div class="card"><div class="score">'+got+' / '+tot+'</div>'+
+   '<p style="margin:2px 0 10px;color:var(--mute)">Parts 1 to 3 are marked automatically. Part 4 is marked by your instructor.</p>'+
+   '<table>'+row(tr("Part 1: True or False"),1)+row(tr("Part 2: Circle the correct answer"),2)+row(tr("Part 3: Matching"),3)+
+   '<tr><td>Part 4: Talk about it</td><td>'+wc(talk.text)+' words</td></tr></table>'+
+   '<details'+(rev.length?' open':'')+'><summary>Review mistakes ('+rev.length+')</summary>'+
+   (rev.length?'<ol class="rev" style="list-style:none">'+rev.join("")+'</ol>':'<p>No mistakes. Well done.</p>')+'</details>'+
+   (talk.text.trim()?'<details><summary>Your talk answer</summary><p><b>'+esc(TOPICS[talk.topic].t)+'</b></p><p class="mine">'+esc(talk.text)+'</p></details>':'')+
+   '</div>'+
+   '<div class="nav"><button class="btn alt" data-act="home">Change mode</button><button class="btn" data-act="retry">Try again</button></div>';
+  window.scrollTo(0,0);
+}
+
+home();
+})();
+</script>
+</body>
+</html>
