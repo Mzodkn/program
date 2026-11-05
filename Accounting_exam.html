@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,7 +18,7 @@ body{margin:0;background-color:var(--bg);color:var(--ink);
   background-image: linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px), linear-gradient(to bottom, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
   background-size: 36px 36px;
   font-family:"Inter","Cairo",system-ui,sans-serif;line-height:1.55;font-size:16px}
-.wrap{max-width:720px;margin:0 auto;padding:14px 14px 60px}
+.wrap{max-width:720px;margin:0 auto;padding:54px 14px 60px}
 h1,h2{font-family:Georgia,"Times New Roman",serif;margin:0}
 button{font:inherit;color:inherit}
 button:focus-visible,textarea:focus-visible{outline:3px solid var(--v);outline-offset:2px}
@@ -90,7 +90,7 @@ button:focus-visible,textarea:focus-visible{outline:3px solid var(--v);outline-o
 .row{display:grid;grid-template-columns:minmax(110px,32%) 1fr;gap:6px 10px}
 .term{display:flex;align-items:center;padding:10px 12px;border-radius:8px;background:var(--v-soft);font-weight:600}
 .slot{min-height:54px;border:2px dashed var(--line);border-radius:8px;padding:4px;display:flex;align-items:center}
-.slot:not(.filled)::before{content:"Drop here";color:var(--mute);font-size:.86rem;padding:0 8px}
+.slot:not(.filled)::before{color:var(--mute);font-size:.86rem;padding:0 8px}
 .slot.filled{border-style:solid;border-color:var(--v)}
 .slot.over,#bank.over{border-color:var(--v);background:var(--v-soft)}
 .row.done .slot{border-color:var(--ok);background:var(--ok-soft)}
@@ -130,20 +130,47 @@ summary{cursor:pointer;font-weight:600}
 .rev .a{color:var(--bad)} .rev .c{color:var(--ok)} .rev .w{color:var(--mute)}
 .mine{white-space:pre-wrap;background:var(--bg);border-radius:8px;padding:10px;font-size:.93rem}
 @media (max-width:520px){.row{grid-template-columns:1fr}.hero h1{font-size:1.4rem}}
+
+/* ===== v6 additions ===== */
+html[dir="rtl"] body{font-family:"Cairo","Inter",system-ui,sans-serif}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:-36px 0 14px}
+.lang{padding:7px 14px;border-radius:999px;border:1.5px solid var(--v);background:var(--card);color:var(--v);font-weight:700;cursor:pointer;font-size:.9rem}
+.lang:hover{background:var(--v-soft)}
+.slot:not(.filled)::before{content:attr(data-ph)}
+.qbox{background:var(--bg);border:1px solid var(--line);border-inline-start:4px solid var(--v);border-radius:10px;padding:14px 14px;margin:0 0 16px}
+.qbox .stmt{margin:0;font-size:1.08rem;line-height:1.65}
+.alabel{margin:0 0 8px;font-size:.82rem;font-weight:700;color:var(--mute);letter-spacing:.04em;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.alabel::after{content:"";flex:1;height:1px;background:var(--line)}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.circ{min-height:58px;display:flex;align-items:center;justify-content:center;gap:8px;border:2px solid var(--line);border-radius:12px;font-size:1.05rem;background:transparent}
+.circ i{font-style:normal;font-weight:800;font-size:1.15rem}
+.circ[aria-checked="true"]{transform:none;border-color:var(--v);background:var(--v-soft);color:var(--v)}
+.circ.right{border-color:var(--ok);background:var(--ok-soft);color:var(--ok)}
+.circ.wrong{border-color:var(--bad);background:var(--bad-soft);color:var(--bad)}
+.dots{display:flex;flex-wrap:wrap;gap:5px;margin:0 0 10px}
+.dot{width:26px;height:26px;border-radius:7px;border:1.5px solid var(--line);background:transparent;font-size:.72rem;color:var(--mute);cursor:pointer;padding:0}
+.dot.ans{background:var(--v-soft);border-color:var(--v);color:var(--v)}
+.dot.cur{background:var(--v);border-color:var(--v);color:var(--v-ink);font-weight:700}
+.dot:disabled{opacity:.5;cursor:default}
+.ghostlink{background:none;border:0;color:var(--mute);cursor:pointer;font-size:.88rem;padding:4px 0;text-decoration:underline}
+.warn{margin:12px 0 0;padding:9px 12px;border-radius:8px;background:rgba(234,179,8,.15);color:#facc15;font-size:.9rem}
+.pct{color:var(--mute);font-size:1rem;margin-inline-start:8px}
+.fb{display:flex;gap:8px}
+@media (max-width:520px){.topbar{margin-top:-40px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
 <body>
-<div class="wrap" id="app"></div>
+<div class="wrap"><div class="topbar"><span></span><button class="lang" id="langbtn" type="button"></button></div><div id="app"></div></div>
 
 <script>
 (function(){
 /* ================= DATA ================= */
-const PARTS={
+const PARTS_UNUSED={
   1:"Part 1: True or False",
   2:"Part 2: Circle the correct answer",
   3:"Part 3: Match A with B",
-  4:tr("Part 4: Talk about it")
+  4:"Part 4: Talk about it"
 };
 
 const TF=[
@@ -350,7 +377,7 @@ const TOPICS=[
   s:"A trial balance is a list of the balances of all ledger accounts on one date. The debit balances are in one column and the credit balances in another. We prepare it to check that total debits equal total credits. If they are equal we can move on to the financial statements, but it does not prove there are no mistakes."}
 ];
 
-/* ================= STATE ================= */
+/* ================= STATE / i18n ================= */
 let lang = 'en';
 const DICT = {
     "Part 1: True or False": "الجزء 1: صح أو خطأ",
@@ -367,18 +394,18 @@ const DICT = {
     "Answer: ": "الإجابة: ",
     "Circle True or False.": "اختر صح أو خطأ.",
     "Circle the letter of the correct answer.": "اختر حرف الإجابة الصحيحة.",
-    tr("Back"): "رجوع",
-    tr("Next"): "التالي",
-    tr("See result"): "النتيجة",
+    "Back": "رجوع",
+    "Next": "التالي",
+    "See result": "النتيجة",
     "Result": "النتيجة",
-    tr("Try again"): "حاول مرة أخرى",
-    tr("Change mode"): "تغيير الوضع",
-    tr("Review mistakes ("): "مراجعة الأخطاء (",
+    "Try again": "حاول مرة أخرى",
+    "Change mode": "تغيير الوضع",
+    "Review mistakes (": "مراجعة الأخطاء (",
     "Your answer: ": "إجابتك: ",
-    tr("not answered"): "لم تتم الإجابة",
+    "not answered": "لم تتم الإجابة",
     "Correct: ": "الصحيح: ",
-    tr("No mistakes. Well done."): "لا توجد أخطاء. عمل ممتاز.",
-    tr("Your talk answer"): "إجابتك",
+    "No mistakes. Well done.": "لا توجد أخطاء. عمل ممتاز.",
+    "Your talk answer": "إجابتك",
     "words": "كلمات",
     "Terms and descriptions": "المصطلحات والأوصاف",
     "Transactions and entries": "المعاملات والقيود",
@@ -404,58 +431,78 @@ const DICT = {
     "In a sole proprietorship, the owner's withdrawal account is closed together with the revenue and expense accounts.": "في المنشأة الفردية، يُغلق حساب مسحوبات المالك مع حسابات الإيرادات والمصروفات.",
     "A quarterly income statement uses the revenues and expenses of a six-month period.": "قائمة الدخل ربع السنوية تستخدم إيرادات ومصروفات فترة ستة أشهر.",
     "The balance sheet lists assets, liabilities and owner's equity at a particular point in time, so it shows the net worth of the business.": "الميزانية العمومية تسرد الأصول والخصوم وحقوق الملكية في نقطة زمنية معينة، لذا فهي تظهر صافي ثروة النشاط."
-,
-    "Circle True or False.": "اختر صح أو خطأ.",
-    "Circle the letter of the correct answer.": "اختر حرف الإجابة الصحيحة.",
-    "Drag each description into the slot next to the right term. Two descriptions are extra.": "اسحب كل وصف إلى الخانة بجوار المصطلح الصحيح. يوجد وصفان إضافيان.",
-    "Choose one topic. Speak with the microphone or type 4 to 6 simple sentences. Use at least three terms from the course.": "اختر موضوعاً واحداً. تحدث باستخدام الميكروفون أو اكتب من 4 إلى 6 جمل بسيطة. استخدم ثلاثة مصطلحات على الأقل من المنهج.",
-    tr("Start microphone"): "تشغيل الميكروفون",
-    tr("Stop microphone"): "إيقاف الميكروفون",
-    tr("Show sample answer"): "إظهار إجابة نموذجية",
-    tr("Hide sample answer"): "إخفاء الإجابة النموذجية",
-    "Sample:": "النموذج:",
-    tr("Review mistakes ("): "مراجعة الأخطاء (",
-    "Your answer: ": "إجابتك: ",
-    tr("not answered"): "لم تتم الإجابة",
-    "Correct: ": "الصحيح: ",
-    tr("No mistakes. Well done."): "لا توجد أخطاء. عمل ممتاز.",
-    tr("Your talk answer"): "إجابتك الصوتية/النصية",
-    "words": "كلمات",
-    tr("Back"): "السابق",
-    tr("Next"): "التالي",
-    tr("See result"): "النتيجة",
-    "Result": "النتيجة النهائية",
-    tr("Try again"): "حاول مرة أخرى",
-    tr("Change mode"): "تغيير الوضع",
-    "Practice mode · ": "وضع التدريب · ",
-    "Exam mode · ": "وضع الامتحان · ",
-    " length": " الطول",
-    " · time ": " · الوقت ",
-    tr("Parts 1 to 3 are marked automatically. Part 4 is marked by your instructor."): "تم تصحيح الأجزاء من 1 إلى 3 تلقائياً. الجزء 4 يتم تصحيحه بواسطة معلمك."};
-
-function tr(str) {
-    if (lang === 'en') return str;
-    return DICT[str] || str;
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    const btn = document.createElement('button');
-    btn.innerHTML = '🌐 عربي / English';
-    btn.className = 'btn alt';
-    btn.style.cssText = 'position:fixed; top:12px; right:12px; z-index:9999; padding:6px 12px; font-size:14px; border-radius:8px; font-family:"Cairo", sans-serif; background:var(--card); color:var(--v); border: 2px solid var(--v); cursor:pointer;';
-    btn.onclick = () => {
-        lang = lang === 'en' ? 'ar' : 'en';
-        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-        document.documentElement.lang = lang;
-        if (lang === 'ar') {
-            document.querySelector('.hero h1').innerHTML = tr("Principles of Accounting");
-        } else {
-            document.querySelector('.hero h1').innerHTML = "Principles of Accounting";
-        }
-        render(false);
-    };
-    document.body.appendChild(btn);
+};
+Object.assign(DICT,{
+ "Capital":"رأس المال","Trial balance":"ميزان المراجعة","General journal":"دفتر اليومية العام","General ledger":"دفتر الأستاذ العام","Balance sheet":"الميزانية العمومية","Income statement":"قائمة الدخل",
+ "Drag each description into the slot next to the right term. Two descriptions are extra.":"اسحب كل وصف إلى الخانة المجاورة للمصطلح الصحيح. يوجد وصفان زائدان.",
+ "Drag each journal entry into the slot next to the transaction it records. Two entries are extra.":"اسحب كل قيد إلى الخانة المجاورة للمعاملة التي يسجلها. يوجد قيدان زائدان.",
+ "The owner's share of the business: assets minus liabilities":"حصة المالك في النشاط: الأصول ناقص الخصوم",
+ "A list of ledger balances used to check that debits equal credits":"قائمة بأرصدة الأستاذ للتأكد من تساوي المدين والدائن",
+ "The book where each transaction is first recorded in date order":"الدفتر الذي تُسجَّل فيه كل معاملة أولاً بترتيب التاريخ",
+ "The book that holds a separate account for every item":"الدفتر الذي يحتوي على حساب مستقل لكل بند",
+ "A report of assets, liabilities and equity at one date":"تقرير بالأصول والخصوم وحقوق الملكية في تاريخ واحد",
+ "A report of revenues and expenses over a period of time":"تقرير بالإيرادات والمصروفات خلال فترة زمنية",
+ "An account that is reset to zero at the end of the period":"حساب يُصفَّر في نهاية الفترة",
+ "A list of all the accounts a business uses, each with a number":"قائمة بكل الحسابات التي يستخدمها النشاط، لكل حساب رقم",
+ "Transactions and entries":"المعاملات والقيود","Terms and descriptions":"المصطلحات والأوصاف",
+ "Owner invests cash":"المالك يستثمر نقداً","Buys supplies on credit":"شراء مستلزمات بالآجل","Earns a fee and collects cash":"كسب أتعاب وتحصيلها نقداً","Owner withdraws cash":"المالك يسحب نقداً","Pays a supplier on account":"سداد مبلغ للمورد","Customer pays what he owed":"العميل يسدد ما عليه",
+ "Debit Cash, credit Owner's Capital":"من حـ/ النقدية إلى حـ/ رأس مال المالك","Debit Supplies, credit Accounts Payable":"من حـ/ المستلزمات إلى حـ/ الذمم الدائنة","Debit Cash, credit Service Revenue":"من حـ/ النقدية إلى حـ/ إيراد الخدمات",
+ "Debit Drawings, credit Cash":"من حـ/ المسحوبات إلى حـ/ النقدية","Debit Accounts Payable, credit Cash":"من حـ/ الذمم الدائنة إلى حـ/ النقدية","Debit Cash, credit Accounts Receivable":"من حـ/ النقدية إلى حـ/ الذمم المدينة",
+ "Debit Rent Expense, credit Cash":"من حـ/ مصروف الإيجار إلى حـ/ النقدية","Debit Supplies, credit Cash":"من حـ/ المستلزمات إلى حـ/ النقدية",
+ "Why does the owner of a small shop need to keep accounting records?":"لماذا يحتاج صاحب المحل الصغير إلى مسك سجلات محاسبية؟",
+ "Explain the difference between an asset and a liability.":"اشرح الفرق بين الأصل والخصم (الالتزام).",
+ "What is a trial balance and why do we prepare it?":"ما هو ميزان المراجعة ولماذا نعدّه؟"
 });
+const WHY_AR=["النص يقول الجهات الرقابية والتنظيمية وجهات تحصيل الضرائب، ولا يذكر الملاك.","هذه نهاية النقطة الثالثة من التعريف.","نشر أول كتاب عنه لكنه لم يخترع النظام.","المعلومات المحاسبية مالية في الأساس، فتُقاس بالنقود.","هذا وصف تاجر الجملة. تاجر التجزئة يشتري من تجار الجملة ويبيع مباشرة للمستهلكين.","كلاهما يشتري السلع ويعيد بيعها.","لا يوجد حد لعدد الملاك.","يُسمى المالك صاحب المنشأة الفردية.","التحقق من الضرائب من عمل الجهات الحكومية. المديرون يعدّون التقارير ويقرأون الموازنات ويقيّمون الأداء.","كما يرغبون في العمل لدى شركات ناجحة.","الأصول قد تكون ملموسة أو غير ملموسة.","31,000 − 20,000 = 11,000.","حساب الذمم الدائنة رقمه 2000. أرقام 3000 لحقوق الملكية.","عمود PR في اليومية يحمل رقم الحساب، وفي الأستاذ يحمل مرجع اليومية.","القيد المركب فيه أكثر من مدين أو أكثر من دائن.","الأحداث الأخرى لا تُسجَّل.","يُرتَّب حسب ترتيب الميزانية العمومية.","حسابات الإيرادات والمصروفات والمسحوبات كلها حسابات مؤقتة.","ربع سنوية تعني ثلاثة أشهر. السنوية تغطي 12 شهراً.","قائمة الدخل بالمقابل تغطي فترة زمنية."];
+const MCQ_AR=["أي نوع من الأعمال يحتاج إلى تصريح إعادة بيع في معظم الولايات حسب المحاضرة؟","ما القاسم المشترك بين تاجر الجملة وتاجر التجزئة؟","إلى جانب الاستثمار، ماذا يحتاج كل نشاط ليحقق ربحاً؟","ما دليل ملكية المالكين في الشركة المساهمة؟","أي مما يلي أكبر في الشركة المساهمة منه في الشكلين الآخرين؟","حسب التعريف الأول، لمن تُبلِّغ العملية المحاسبية المعاملات؟","أي مما يلي لا تلخصه القوائم المالية حسب التعريف الأول؟","يصف التعريف الثاني المحاسبة بأنها مجموعة معارف عن كل ما يلي ما عدا:","في تعريف لجنة AICPA، ما النشاط الذي يأتي مباشرة بعد التصنيف؟","أي عبارة عن الراهب لوكا صحيحة؟","أي مستخدم يهتم بأرباح الشركة وفرص أرباحها المستقبلية وقدرتها على سداد ديونها؟","مفتش ضرائب يراجع الأرقام المقدمة لضريبة الدخل والمبيعات والتوظيف. أي مستخدم هذا؟","على المديرين فهم البيانات المحاسبية في التقارير والموازنات والتعبير عن الخطط المستقبلية بـ:","أي مستخدم يكوّن آراءه من البيانات المحاسبية ليقدم توصيات استثمارية؟","أي عبارة عن الأصول صحيحة حسب المحاضرة؟","يقرض بنك النشاط 23,000 لشراء شاحنة. في هذا القرض يكون النشاط:","يسمى رأس المال أحياناً صافي الأصول لأنه يساوي:","شاحنة تكلف 35,000. استثمر المالك 12,000 وأقرض البنك الباقي. في المعادلة يظهر مبلغ 23,000 تحت:","أصول النشاط 31,000 وحقوق الملكية 20,000. كم الخصوم؟","الخصوم 20,000 وحقوق الملكية 80,000. كم الأصول؟","سحب المالك 3,000 نقداً لدفع فاتورة شخصية. أي عنصر يتأثر؟","فيمَ يُستخدم دليل الحسابات؟","في نموذج دليل الحسابات، أي أرقام تُستخدم لحسابات حقوق الملكية؟","أي مما يلي مدرج ضمن حسابات الخصوم في المحاضرة؟","أي مما يلي مدرج ضمن حسابات المصروفات في المحاضرة؟","أي زوج من الحسابات رصيده الطبيعي مدين؟","الدائن في حساب أصل يعني أن الحساب:","أي دفترين تُسجَّل فيهما المعاملات؟","قيد اليومية الذي فيه أكثر من مدين أو أكثر من دائن يسمى:","تشتري شركة مستلزمات بـ 2,500 نقداً، ثم 7,100 بالآجل. بعد الترحيل يُظهر حساب المستلزمات:","يقدم نشاط استشارات ويحصّل 4,200 نقداً فوراً. أي حساب يكون دائناً؟","عند استثمار المالك 30,000 في النشاط، أي حساب يكون دائناً؟","أي ترتيب يطابق أعمدة حساب الأستاذ في المحاضرة؟","بعد الترحيل يظهر في عمود PR بالأستاذ مرجع مثل G1. إلامَ يشير؟","يسرد ميزان المراجعة أرصدة الحسابات بترتيب:","الأرصدة المدينة: النقدية 4,350، المستلزمات 9,720، تأمين مدفوع مقدماً 2,400، المعدات 26,000، المسحوبات 200، الرواتب 1,400، الإيجار 1,000، المرافق 230. كم مجموع عمود المدين؟","قائمة دخل محل: مبيعات 24,800، دخل دروس 3,000، إجمالي المصروفات 14,850. كم صافي الدخل؟","أي من هذه الحسابات لا يُقفل في نهاية الدورة المحاسبية؟","ما الغرض من قيود الإقفال للحسابات المؤقتة؟"];
+
+const UI={
+ en:{title:"Principles of Accounting",sub:"Practice exam",step1:"1. Choose the length",step2:"2. Choose the mode",
+  short:"Short",medium:"Medium",long:"Long",dShort:"Half of the questions",dMedium:"One matching list",dLong:"The full exam",
+  tf:"True/False",mc:"multiple choice",list:"list",lists:"lists",items:"items each",talk1:"1 talk",questions:"questions",
+  practice:"Practice",exam:"Exam",practiceD:"You see the correct answer right after each question. Good for studying.",examD:"No answers until the end. You can go back and change your answers. A timer runs.",
+  facts:"Questions are picked at random from the whole bank and shuffled each time.",
+  qOf:(i,n)=>"Question "+i+" of "+n,back:"Back",next:"Next",finish:"See result",home:"Home",
+  leave:"Leave this attempt? Your answers will be lost.",
+  unans:n=>"You have "+n+" unanswered question(s). Finish anyway?",
+  howTF:"Read the statement, then choose <b>True</b> or <b>False</b>.",howMC:"Read the question, then choose the correct answer.",
+  choose:"Your answer",T:"True",F:"False",right:"Correct. ",ans:"Answer: ",
+  tap:"You can also tap a description, then tap a slot.",drop:"Drop here",bank:"Descriptions (B)",termsH:"Terms (A)",chosen:"Your choice was: ",
+  talkHow:"Choose one topic. Speak with the microphone or type 4 to 6 simple sentences. Use at least three terms from the course.",
+  ph:"Start here...",words:"words",micOn:"Start microphone",micOff:"Stop microphone",show:"Show sample answer",hide:"Hide sample answer",sample:"Sample:",
+  result:"Result",pMode:"Practice mode",eMode:"Exam mode",len:"length",time:"time",auto:"Parts 1 to 3 are marked automatically. Part 4 is marked by your instructor.",
+  p1:"Part 1: True or False",p2:"Part 2: Circle the correct answer",p3:"Part 3: Match A with B",p4:"Part 4: Talk about it",
+  review:"Review mistakes",none:"No mistakes. Well done.",yours:"Your answer: ",na:"not answered",correct:"Correct: ",myTalk:"Your talk answer",
+  change:"Change mode",retry:"Try again",toggle:"🌐 العربية",answered:"answered"},
+ ar:{title:"مبادئ المحاسبة",sub:"امتحان تجريبي",step1:"١. اختر الطول",step2:"٢. اختر الوضع",
+  short:"قصير",medium:"متوسط",long:"طويل",dShort:"نصف الأسئلة",dMedium:"قائمة مطابقة واحدة",dLong:"الامتحان الكامل",
+  tf:"صح/خطأ",mc:"اختيار من متعدد",list:"قائمة",lists:"قائمتان",items:"بنود لكل قائمة",talk1:"سؤال تحدث واحد",questions:"سؤالاً",
+  practice:"تدريب",exam:"امتحان",practiceD:"تظهر الإجابة الصحيحة بعد كل سؤال مباشرة. مناسب للمذاكرة.",examD:"لا تظهر الإجابات إلا في النهاية. يمكنك الرجوع وتغيير إجاباتك. يعمل مؤقت للوقت.",
+  facts:"تُختار الأسئلة عشوائياً من بنك الأسئلة كاملاً وتُرتَّب بشكل مختلف كل مرة.",
+  qOf:(i,n)=>"السؤال "+i+" من "+n,back:"رجوع",next:"التالي",finish:"عرض النتيجة",home:"الرئيسية",
+  leave:"هل تريد مغادرة هذه المحاولة؟ ستفقد إجاباتك.",
+  unans:n=>"لديك "+n+" سؤال بدون إجابة. هل تريد الإنهاء رغم ذلك؟",
+  howTF:"اقرأ العبارة ثم اختر <b>صح</b> أو <b>خطأ</b>.",howMC:"اقرأ السؤال ثم اختر الإجابة الصحيحة.",
+  choose:"إجابتك",T:"صح",F:"خطأ",right:"إجابة صحيحة. ",ans:"الإجابة: ",
+  tap:"يمكنك أيضاً الضغط على وصف ثم الضغط على خانة.",drop:"أسقط هنا",bank:"الأوصاف (ب)",termsH:"المصطلحات (أ)",chosen:"اختيارك كان: ",
+  talkHow:"اختر موضوعاً واحداً. تحدث بالميكروفون أو اكتب من 4 إلى 6 جمل بسيطة. استخدم ثلاثة مصطلحات على الأقل من المقرر.",
+  ph:"ابدأ هنا...",words:"كلمات",micOn:"تشغيل الميكروفون",micOff:"إيقاف الميكروفون",show:"إظهار إجابة نموذجية",hide:"إخفاء الإجابة النموذجية",sample:"نموذج:",
+  result:"النتيجة",pMode:"وضع التدريب",eMode:"وضع الامتحان",len:"الطول",time:"الوقت",auto:"الأجزاء من 1 إلى 3 تُصحَّح تلقائياً. الجزء 4 يصححه المدرّس.",
+  p1:"الجزء 1: صح أو خطأ",p2:"الجزء 2: اختر الإجابة الصحيحة",p3:"الجزء 3: طابق أ مع ب",p4:"الجزء 4: تحدث عن ذلك",
+  review:"مراجعة الأخطاء",none:"لا توجد أخطاء. عمل ممتاز.",yours:"إجابتك: ",na:"لم تتم الإجابة",correct:"الصحيح: ",myTalk:"إجابتك في التحدث",
+  change:"تغيير الوضع",retry:"حاول مرة أخرى",toggle:"🌐 English",answered:"تمت الإجابة"}
+};
+const u=k=>(UI[lang][k]!==undefined?UI[lang][k]:UI.en[k]);
+function t(str){ if(lang==='en') return str; return DICT[str]||str; }
+const qt=q=>(lang==='ar'&&q.type==='mcq'&&MCQ_AR[q.i])?MCQ_AR[q.i]:t(q.q);
+const wt=q=>(lang==='ar'&&WHY_AR[q.i]&&q.type==='tf')?WHY_AR[q.i]:q.why;
+const num=n=>lang==='ar'?String(n).replace(/\d/g,d=>"٠١٢٣٤٥٦٧٨٩"[d]):String(n);
+
+function setLang(l){
+  lang=l; document.documentElement.dir=l==='ar'?'rtl':'ltr'; document.documentElement.lang=l;
+  document.getElementById('langbtn').textContent=u('toggle');
+}
+document.getElementById('langbtn').onclick=()=>{ setLang(lang==='en'?'ar':'en'); if(mode===null) home(); else render(false); };
 
 const app=document.getElementById("app");
 let size="medium",mode=null,Q=[],ans=[],idx=0,picked=null,startT=0,clockT=null,drag=null,ghost=null,tapStamp=0;
@@ -464,14 +511,14 @@ function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor
 const LET="ABCD";
 
 const SIZES={
-  short:{name:"Short",ar:"قصير",tf:10,mcq:20,lists:2,items:3,desc:"Half of everything"},
-  medium:{name:"Medium",ar:"متوسط",tf:15,mcq:20,lists:1,items:6,desc:"One matching list"},
-  long:{name:"Long",ar:"طويل",tf:20,mcq:40,lists:2,items:6,desc:"The full exam"}
+  short:{k:"short",d:"dShort",tf:10,mcq:20,lists:2,items:3},
+  medium:{k:"medium",d:"dMedium",tf:15,mcq:20,lists:1,items:6},
+  long:{k:"long",d:"dLong",tf:20,mcq:Math.min(40,MCQ.length),lists:2,items:6}
 };
 function build(){
   const S=SIZES[size],out=[];
-  shuffle(TF).slice(0,S.tf).forEach(t=>out.push({type:"tf",part:1,q:t.q,a:t.a,why:t.why}));
-  shuffle(MCQ).slice(0,S.mcq).forEach(m=>out.push({type:"mcq",part:2,q:m.q,why:m.why,opts:shuffle(m.o.map((t,i)=>({t,c:i===0})))}));
+  shuffle(TF.map((x,i)=>Object.assign({i},x))).slice(0,S.tf).forEach(t=>out.push({type:"tf",part:1,i:t.i,q:t.q,a:t.a,why:t.why}));
+  shuffle(MCQ.map((x,i)=>Object.assign({i},x))).slice(0,S.mcq).forEach(m=>out.push({type:"mcq",part:2,i:m.i,q:m.q,why:m.why,opts:shuffle(m.o.map((t,i)=>({t,c:i===0})))}));
   shuffle(MATCH).slice(0,S.lists).forEach(s=>{
     let terms=s.terms; if(S.items<terms.length) terms=shuffle(terms).slice(0,S.items);
     const defs={}; terms.forEach(t=>defs[t.id]=s.defs[t.id]); defs.x=s.defs.x; defs.y=s.defs.y;
@@ -488,129 +535,113 @@ function initAns(q){
 
 /* ================= START SCREEN ================= */
 function home(){
-  clearInterval(clockT); mode=null;
+  clearInterval(clockT); mode=null; window.onbeforeunload=null; setLang(lang);
   const card=k=>{
     const S=SIZES[k], pages=S.tf+S.mcq+S.lists+1;
-    return '<button class="size" data-act="size" data-s="'+k+'" aria-pressed="'+(size===k)+'"><h2>'+S.name+' <span dir="rtl">| '+S.ar+'</span></h2>'+
-      '<p>'+S.desc+'</p><p class="nums">'+S.tf+' True/False · '+S.mcq+' circle · '+S.lists+(S.lists>1?' lists':' list')+
-      (S.items<6?' ('+S.items+' items each)':'')+' · 1 talk<br>'+pages+' questions</p></button>';
+    return '<button class="size" data-act="size" data-s="'+k+'" aria-pressed="'+(size===k)+'"><h2>'+u(S.k)+'</h2>'+
+      '<p>'+u(S.d)+'</p><p class="nums">'+num(S.tf)+' '+u('tf')+' · '+num(S.mcq)+' '+u('mc')+' · '+num(S.lists)+' '+u(S.lists>1?'lists':'list')+
+      (S.items<6?' ('+num(S.items)+' '+u('items')+')':'')+' · '+u('talk1')+'<br><b>'+num(pages)+' '+u('questions')+'</b></p></button>';
   };
   app.innerHTML=
-   '<div class="hero"><h1>Principles of Accounting</h1><p dir="rtl">مبادئ المحاسبة — امتحان تجريبي</p></div>'+
-   '<h3 class="step">1. Choose the length <span dir="rtl">| اختر الطول</span></h3>'+
-   '<div class="sizes">'+card("short")+card("medium")+card("long")+'</div>'+
-   '<h3 class="step">2. Choose the mode <span dir="rtl">| اختر الوضع</span></h3>'+
-   '<div class="modes">'+
-    '<button class="mode" data-act="start" data-m="practice"><h2>Practice <span dir="rtl">| تدريب</span></h2>'+
-    '<p>You see the correct answer right after each question. Good for studying.</p></button>'+
-    '<button class="mode" data-act="start" data-m="exam"><h2>Exam <span dir="rtl">| امتحان</span></h2>'+
-    '<p>No answers until the end. You can go back and change your answers. A timer runs.</p></button>'+
-   '</div>'+
-   '<p class="facts">Questions are picked at random from the whole bank and shuffled each time.</p>';
+   '<div class="hero"><h1>'+u('title')+'</h1><p>'+u('sub')+'</p></div>'+
+   '<h3 class="step">'+u('step1')+'</h3><div class="sizes">'+card("short")+card("medium")+card("long")+'</div>'+
+   '<h3 class="step">'+u('step2')+'</h3><div class="modes">'+
+    '<button class="mode" data-act="start" data-m="practice"><h2>'+u('practice')+'</h2><p>'+u('practiceD')+'</p></button>'+
+    '<button class="mode" data-act="start" data-m="exam"><h2>'+u('exam')+'</h2><p>'+u('examD')+'</p></button></div>'+
+   '<p class="facts">'+u('facts')+'</p>';
 }
-
 function start(m){
   mode=m; Q=build(); ans=Q.map(initAns); idx=0; picked=null; startT=Date.now();
   clearInterval(clockT);
   if(m==="exam") clockT=setInterval(paintClock,1000);
+  window.onbeforeunload=()=>true;
   render(true);
 }
-function paintClock(){
-  const el=document.getElementById("clock"); if(!el) return;
-  el.textContent=fmtTime(Date.now()-startT);
-}
+function paintClock(){ const el=document.getElementById("clock"); if(el) el.textContent=fmtTime(Date.now()-startT); }
 function fmtTime(ms){const s=Math.floor(ms/1000);return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
 
 /* ================= RENDER ================= */
+function isAnswered(i){
+  const q=Q[i],a=ans[i];
+  if(q.type==="tf"||q.type==="mcq") return a.v!==null;
+  if(q.type==="match") return q.terms.every(x=>a.map[x.id]);
+  return a.text.trim().length>0;
+}
 function canNext(){
   if(mode!=="practice") return true;
   const q=Q[idx],a=ans[idx];
   if(q.type==="tf"||q.type==="mcq") return a.done;
-  if(q.type==="match") return q.terms.every(t=>a.done[t.id]);
+  if(q.type==="match") return q.terms.every(x=>a.done[x.id]);
   return true;
 }
 function render(toTop){
   if(idx>=Q.length){ return results(); }
   const q=Q[idx], a=ans[idx], last=idx===Q.length-1;
   let body="";
-  if(q.type==="tf") body=bodyTF(q,a);
-  else if(q.type==="mcq") body=bodyMCQ(q,a);
-  else if(q.type==="match") body=bodyMatch(q,a);
-  else body=bodyTalk(q,a);
+  if(q.type==="tf") body=bodyTF(q,a); else if(q.type==="mcq") body=bodyMCQ(q,a);
+  else if(q.type==="match") body=bodyMatch(q,a); else body=bodyTalk(q,a);
+  const dots=Q.map((_,i)=>'<button class="dot'+(i===idx?' cur':(isAnswered(i)?' ans':''))+'" data-act="go" data-i="'+i+'"'+(mode==="practice"&&i>idx?' disabled':'')+
+    ' aria-label="'+esc(u('qOf')(i+1,Q.length))+'"'+(i===idx?' aria-current="step"':'')+'>'+num(i+1)+'</button>').join("");
   app.innerHTML=
-   '<div class="bar"><div style="width:'+(idx/Q.length*100)+'%"></div></div>'+
-   '<div class="qhead"><span><b>'+esc(tr(PARTS[q.part]))+'</b></span><span>Question '+(idx+1)+' of '+Q.length+'</span>'+
-   (mode==="exam"?'<span id="clock">'+fmtTime(Date.now()-startT)+'</span>':'<span>Practice</span>')+'</div>'+
+   '<div class="bar"><div style="width:'+((idx+1)/Q.length*100)+'%"></div></div>'+
+   '<div class="qhead"><span><b>'+esc(u('p'+q.part))+'</b></span><span>'+u('qOf')(num(idx+1),num(Q.length))+'</span>'+
+   (mode==="exam"?'<span id="clock">'+fmtTime(Date.now()-startT)+'</span>':'<span>'+u('practice')+'</span>')+'</div>'+
+   '<div class="dots">'+dots+'</div>'+
    '<div class="card">'+body+'</div>'+
-   '<div class="nav"><button class="btn alt" data-act="prev"'+(idx===0?' disabled':'')+'>Back</button>'+
-   '<button class="btn" data-act="next"'+(canNext()?'':' disabled')+'>'+(last?'See result':'Next')+'</button></div>';
+   '<div class="nav"><button class="btn alt" data-act="prev"'+(idx===0?' disabled':'')+'>'+(lang==='ar'?'→ ':'← ')+u('back')+'</button>'+
+   '<button class="btn" data-act="next"'+(canNext()?'':' disabled')+'>'+(last?u('finish'):u('next')+(lang==='ar'?' ←':' →'))+'</button></div>'+
+   '<p style="text-align:center;margin:14px 0 0"><button class="ghostlink" data-act="quit">'+u('home')+'</button></p>';
   if(toTop) window.scrollTo(0,0);
 }
-
-function feedback(ok,text){
-  return '<p class="fb '+(ok?'ok':'bad')+'">'+esc(text)+'</p>';
-}
+function feedback(ok,text){ return '<p class="fb '+(ok?'ok':'bad')+'" role="status"><b>'+(ok?'✓':'✗')+'</b><span>'+esc(text)+'</span></p>'; }
 
 function bodyTF(q,a){
   const show=mode==="practice"&&a.done, corr=q.a?"T":"F";
-  const btn=(v,label)=>{
+  const btn=(v,label,ic)=>{
     let cls="circ";
     if(show){ if(v===corr) cls+=" right"; else if(a.v===v) cls+=" wrong"; }
-    return '<button class="'+cls+'" role="radio" aria-checked="'+(a.v===v)+'" data-act="tf" data-v="'+v+'"'+(show?' disabled':'')+'>'+label+'</button>';
+    return '<button class="'+cls+'" role="radio" aria-checked="'+(a.v===v)+'" data-act="tf" data-v="'+v+'"'+(show?' disabled':'')+'><i>'+ic+'</i>'+label+'</button>';
   };
-  let h='<p class="how">Circle <b>True</b> or <b>False</b>.</p><p class="stmt">'+esc(tr(q.q))+'</p>'+
-        '<div class="opts" role="radiogroup">'+btn("T",tr("True"))+btn("F",tr("False"))+'</div>';
-  if(show){
-    const ok=a.v===corr;
-    h+=feedback(ok,(ok?"Correct. ":tr("Answer: ")+(q.a?"True":"False")+". ")+q.why);
-  }
+  let h='<p class="how">'+u('howTF')+'</p><div class="qbox"><p class="stmt">'+esc(t(q.q))+'</p></div>'+
+        '<p class="alabel">'+u('choose')+'</p><div class="opts" role="radiogroup">'+btn("T",u('T'),"✓")+btn("F",u('F'),"✗")+'</div>';
+  if(show){ const ok=a.v===corr; h+=feedback(ok,(ok?u('right'):u('ans')+(q.a?u('T'):u('F'))+". ")+wt(q)); }
   return h;
 }
-
 function bodyMCQ(q,a){
-  const show=mode==="practice"&&a.done;
-  let h='<p class="how">Circle the letter of the correct answer.</p><p class="stmt">'+esc(tr(q.q))+'</p><div class="choices" role="radiogroup">';
+  const show=mode==="practice"&&a.done, L=lang==='ar'?"أبجد":LET;
+  let h='<p class="how">'+u('howMC')+'</p><div class="qbox"><p class="stmt">'+esc(qt(q))+'</p></div><p class="alabel">'+u('choose')+'</p><div class="choices" role="radiogroup">';
   q.opts.forEach((o,k)=>{
     let cls="opt";
     if(show){ if(o.c) cls+=" right"; else if(a.v===k) cls+=" wrong"; }
-    h+='<button class="'+cls+'" role="radio" aria-checked="'+(a.v===k)+'" data-act="mcq" data-k="'+k+'"'+(show?' disabled':'')+'>'+
-       '<span class="ltr">'+LET[k]+'</span><span>'+esc(tr(o.t))+'</span></button>';
+    h+='<button class="'+cls+'" role="radio" aria-checked="'+(a.v===k)+'" data-act="mcq" data-k="'+k+'"'+(show?' disabled':'')+'><span class="ltr">'+L[k]+'</span><span>'+esc(t(o.t))+'</span></button>';
   });
   h+='</div>';
-  if(show){
-    const ok=q.opts[a.v].c, right=LET[q.opts.findIndex(o=>o.c)];
-    h+=feedback(ok,(ok?"Correct. ":tr("Answer: ")+right+". ")+q.why);
-  }
+  if(show){ const ok=q.opts[a.v].c, right=L[q.opts.findIndex(o=>o.c)]; h+=feedback(ok,(ok?u('right'):u('ans')+right+". ")+t(q.why)); }
   return h;
 }
-
 function bodyMatch(q,a){
   const used=Object.values(a.map);
-  const chip=(d,fixed)=>'<button class="chip'+(fixed?' fixed':'')+(picked===d?' picked':'')+'" data-d="'+d+'"'+(fixed?' disabled':'')+'>'+esc(tr(q.defs[d]))+'</button>';
-  let h='<p class="how">'+esc(tr(q.how))+' You can also tap a description, then tap a slot.</p><div class="match">';
-  q.terms.forEach(t=>{
-    const d=a.map[t.id], done=!!a.done[t.id];
-    h+='<div class="row'+(done?' done':'')+'"><div class="term">'+esc(tr(t.t))+'</div>'+
-       '<div class="slot'+(d?' filled':'')+'" data-t="'+t.id+'">'+(d?chip(d,done):'')+'</div>';
-    if(done&&a.bad[t.id]) h+='<p class="fix">Your choice was: '+esc(q.defs[a.bad[t.id]])+'</p>';
+  const chip=(d,fixed)=>'<button class="chip'+(fixed?' fixed':'')+(picked===d?' picked':'')+'" data-d="'+d+'"'+(fixed?' disabled':'')+'>'+esc(t(q.defs[d]))+'</button>';
+  let h='<p class="how">'+esc(t(q.how))+' '+u('tap')+'</p><p class="alabel">'+u('termsH')+'</p><div class="match">';
+  q.terms.forEach(tm=>{
+    const d=a.map[tm.id], done=!!a.done[tm.id];
+    h+='<div class="row'+(done?' done':'')+'"><div class="term">'+esc(t(tm.t))+'</div>'+
+       '<div class="slot'+(d?' filled':'')+'" data-t="'+tm.id+'" data-ph="'+u('drop')+'">'+(d?chip(d,done):'')+'</div>';
+    if(done&&a.bad[tm.id]) h+='<p class="fix">'+u('chosen')+esc(t(q.defs[a.bad[tm.id]]))+'</p>';
     h+='</div>';
   });
-  h+='</div><div class="bankhead">Descriptions (B)</div><div id="bank">'+
-     q.order.filter(k=>!used.includes(k)).map(k=>chip(k,false)).join("")+'</div>';
+  h+='</div><div class="bankhead">'+u('bank')+'</div><div id="bank">'+q.order.filter(k=>!used.includes(k)).map(k=>chip(k,false)).join("")+'</div>';
   return h;
 }
-
 function bodyTalk(q,a){
   const T=TOPICS[a.topic];
-  let h='<p class="how">Choose one topic. Speak with the microphone or type 4 to 6 simple sentences. Use at least three terms from the course.</p><div class="topics" role="radiogroup">';
-  TOPICS.forEach((t,k)=>{
-    h+='<button class="topic" role="radio" aria-checked="'+(a.topic===k)+'" data-act="topic" data-k="'+k+'"><span>'+esc(tr(t.t))+'</span></button>';
-  });
-  h+='</div><textarea id="talk" placeholder="Start here..." aria-label="Your answer">'+esc(a.text)+'</textarea>'+
-     '<div class="tools"><button class="mic" id="mic" data-act="mic" hidden>Start microphone</button>'+
-     '<span class="count" id="count">'+wc(a.text)+' words</span>'+
-     (mode==="practice"?'<button class="mic" data-act="sample">'+(a.sample?'Hide':'Show')+' sample answer</button>':'')+'</div>';
-  if(mode==="practice"&&a.sample) h+='<p class="sample"><b>Sample:</b> '+esc(tr(T.s))+'</p>';
+  let h='<p class="how">'+u('talkHow')+'</p><div class="topics" role="radiogroup">';
+  TOPICS.forEach((tp,k)=>{ h+='<button class="topic" role="radio" aria-checked="'+(a.topic===k)+'" data-act="topic" data-k="'+k+'"><span>'+esc(t(tp.t))+'</span></button>'; });
+  h+='</div><textarea id="talk" dir="ltr" placeholder="'+u('ph')+'" aria-label="'+u('myTalk')+'">'+esc(a.text)+'</textarea>'+
+     '<div class="tools"><button class="mic" id="mic" data-act="mic" hidden>'+u('micOn')+'</button>'+
+     '<span class="count" id="count">'+num(wc(a.text))+' '+u('words')+'</span>'+
+     (mode==="practice"?'<button class="mic" data-act="sample">'+(a.sample?u('hide'):u('show'))+'</button>':'')+'</div>';
+  if(mode==="practice"&&a.sample) h+='<p class="sample" dir="ltr"><b>'+u('sample')+'</b> '+esc(T.s)+'</p>';
   return h;
 }
 function wc(t){const m=t.trim().match(/\S+/g);return m?m.length:0}
@@ -624,7 +655,12 @@ app.addEventListener("click",e=>{
     if(act==="start") return start(el.dataset.m);
     if(act==="home") return home();
     if(act==="retry") return start(mode);
-    if(act==="next"){ stopMic(); picked=null; idx++; return render(true); }
+    if(act==="next"){
+      stopMic(); picked=null;
+      if(idx===Q.length-1){ const n=Q.filter((_,i)=>!isAnswered(i)&&Q[i].type!=="talk").length; if(mode==="exam"&&n&&!confirm(u('unans')(num(n)))) return; }
+      idx++; return render(true); }
+    if(act==="go"){ stopMic(); picked=null; idx=+el.dataset.i; return render(true); }
+    if(act==="quit"){ if(confirm(u('leave'))) return home(); return; }
     if(act==="prev"){ stopMic(); picked=null; idx=Math.max(0,idx-1); return render(true); }
     if(act==="tf"){ if(mode==="practice"&&a.done) return; a.v=el.dataset.v; if(mode==="practice") a.done=true; return render(); }
     if(act==="mcq"){ if(mode==="practice"&&a.done) return; a.v=+el.dataset.k; if(mode==="practice") a.done=true; return render(); }
@@ -648,7 +684,7 @@ app.addEventListener("click",e=>{
 document.addEventListener("input",e=>{
   if(e.target.id!=="talk") return;
   ans[idx].text=e.target.value;
-  const c=document.getElementById("count"); if(c) c.textContent=wc(e.target.value)+tr(" words");
+  const c=document.getElementById("count"); if(c) c.textContent=num(wc(e.target.value))+" "+u("words");
 });
 document.addEventListener("keydown",e=>{
   if(e.key==="Escape"&&picked){picked=null;render()}
@@ -723,14 +759,14 @@ function toggleMic(){
       if(ev.results[i].isFinal){
         a.text=(a.text+" "+ev.results[i][0].transcript).trim();
         const t=document.getElementById("talk"),c=document.getElementById("count");
-        if(t) t.value=a.text; if(c) c.textContent=wc(a.text)+tr(" words");
+        if(t) t.value=a.text; if(c) c.textContent=num(wc(a.text))+" "+u("words");
       }
     }
   };
-  rec.onend=()=>{listening=false;const m=document.getElementById("mic");if(m){m.classList.remove("on");m.textContent=tr("Start microphone")}};
+  rec.onend=()=>{listening=false;const m=document.getElementById("mic");if(m){m.classList.remove("on");m.textContent=u("micOn")}};
   rec.onerror=()=>{};
   rec.start(); listening=true;
-  const m=document.getElementById("mic"); if(m){m.classList.add("on");m.textContent=tr("Stop microphone")}
+  const m=document.getElementById("mic"); if(m){m.classList.add("on");m.textContent=u("micOff")}
 }
 /* show the mic button only when supported (checked after every render) */
 new MutationObserver(()=>{const m=document.getElementById("mic"); if(m&&SR) m.hidden=false;}).observe(app,{childList:true,subtree:true});
@@ -744,52 +780,43 @@ function scoreOf(i){
   return 0;
 }
 function results(){
-  clearInterval(clockT); stopMic();
+  clearInterval(clockT); stopMic(); window.onbeforeunload=null;
   const by={1:[0,0],2:[0,0],3:[0,0]};
-  Q.forEach((q,i)=>{
-    if(q.part===4) return;
-    by[q.part][0]+=scoreOf(i);
-    by[q.part][1]+= q.type==="match"?q.terms.length:1;
-  });
-  const got=by[1][0]+by[2][0]+by[3][0], tot=by[1][1]+by[2][1]+by[3][1];
-  const talk=ans[Q.length-1];
-  const rev=[];
+  Q.forEach((q,i)=>{ if(q.part===4) return; by[q.part][0]+=scoreOf(i); by[q.part][1]+= q.type==="match"?q.terms.length:1; });
+  const got=by[1][0]+by[2][0]+by[3][0], tot=by[1][1]+by[2][1]+by[3][1], pct=Math.round(got/tot*100);
+  const talk=ans[Q.length-1], rev=[], L=lang==='ar'?"أبجد":LET;
+  const yn=v=>v==="T"?u('T'):u('F');
   Q.forEach((q,i)=>{
     const a=ans[i];
     if(q.type==="tf"&&scoreOf(i)===0){
-      rev.push('<li><b>'+(i+1)+'.</b> '+esc(tr(q.q))+'<br><span class="'+(a.v?'a':'w')+'">Your answer: '+(a.v?(a.v==="T"?"True":"False"):tr("not answered"))+
-        '</span><br><span class="c">Correct: '+(q.a?"True":"False")+'.</span> '+esc(tr(q.why))+'</li>');
+      rev.push('<li><b>'+num(i+1)+'.</b> '+esc(t(q.q))+'<br><span class="'+(a.v?'a':'w')+'">'+u('yours')+(a.v?yn(a.v):u('na'))+'</span><br><span class="c">'+u('correct')+(q.a?u('T'):u('F'))+'.</span> '+esc(wt(q))+'</li>');
     }
     if(q.type==="mcq"&&scoreOf(i)===0){
       const c=q.opts.find(o=>o.c).t;
-      rev.push('<li><b>'+(i+1)+'.</b> '+esc(tr(q.q))+'<br><span class="'+(a.v!==null?'a':'w')+'">Your answer: '+(a.v!==null?esc(q.opts[a.v].t):tr("not answered"))+
-        '</span><br><span class="c">Correct: '+esc(c)+'.</span> '+esc(tr(q.why))+'</li>');
+      rev.push('<li><b>'+num(i+1)+'.</b> '+esc(qt(q))+'<br><span class="'+(a.v!==null?'a':'w')+'">'+u('yours')+(a.v!==null?esc(t(q.opts[a.v].t)):u('na'))+'</span><br><span class="c">'+u('correct')+esc(t(c))+'.</span> '+esc(t(q.why))+'</li>');
     }
     if(q.type==="match"){
-      q.terms.forEach(t=>{
-        if(a.map[t.id]===t.id&&!a.bad[t.id]) return;
-        const mine=a.bad[t.id]||a.map[t.id];
-        rev.push('<li><b>'+(i+1)+'.</b> '+esc(tr(t.t))+'<br><span class="'+(mine?'a':'w')+'">Your answer: '+(mine?esc(tr(q.defs[mine])):tr("not answered"))+
-          '</span><br><span class="c">Correct: '+esc(tr(q.defs[t.id]))+'</span></li>');
+      q.terms.forEach(tm=>{
+        if(a.map[tm.id]===tm.id&&!a.bad[tm.id]) return;
+        const mine=a.bad[tm.id]||a.map[tm.id];
+        rev.push('<li><b>'+num(i+1)+'.</b> '+esc(t(tm.t))+'<br><span class="'+(mine?'a':'w')+'">'+u('yours')+(mine?esc(t(q.defs[mine])):u('na'))+'</span><br><span class="c">'+u('correct')+esc(t(q.defs[tm.id]))+'</span></li>');
       });
     }
   });
-  const row=(n,k)=>'<tr><td>'+n+'</td><td>'+by[k][0]+' / '+by[k][1]+'</td></tr>';
+  const row=(n,k)=>'<tr><td>'+n+'</td><td>'+num(by[k][0])+' / '+num(by[k][1])+'</td></tr>';
   app.innerHTML=
-   '<div class="hero"><h1>'+tr("Result")+'</h1><p>'+(mode==="exam"?tr("Exam"):tr("Practice"))+' · '+SIZES[size].name+(mode==="exam"?tr(" · time ")+fmtTime(Date.now()-startT):'')+'</p></div>'+
-   '<div class="card"><div class="score">'+got+' / '+tot+'</div>'+
-   '<p style="margin:2px 0 10px;color:var(--mute)">Parts 1 to 3 are marked automatically. Part 4 is marked by your instructor.</p>'+
-   '<table>'+row(tr("Part 1: True or False"),1)+row(tr("Part 2: Circle the correct answer"),2)+row(tr("Part 3: Matching"),3)+
-   '<tr><td>Part 4: Talk about it</td><td>'+wc(talk.text)+' words</td></tr></table>'+
-   '<details'+(rev.length?' open':'')+'><summary>Review mistakes ('+rev.length+')</summary>'+
-   (rev.length?'<ol class="rev" style="list-style:none">'+rev.join("")+'</ol>':'<p>No mistakes. Well done.</p>')+'</details>'+
-   (talk.text.trim()?'<details><summary>Your talk answer</summary><p><b>'+esc(TOPICS[talk.topic].t)+'</b></p><p class="mine">'+esc(talk.text)+'</p></details>':'')+
-   '</div>'+
-   '<div class="nav"><button class="btn alt" data-act="home">Change mode</button><button class="btn" data-act="retry">Try again</button></div>';
+   '<div class="hero"><h1>'+u('result')+'</h1><p>'+(mode==="exam"?u('eMode'):u('pMode'))+' · '+u(SIZES[size].k)+(mode==="exam"?' · '+u('time')+' '+fmtTime(Date.now()-startT):'')+'</p></div>'+
+   '<div class="card"><div class="score">'+num(got)+' / '+num(tot)+'<span class="pct">'+num(pct)+'%</span></div>'+
+   '<p style="margin:2px 0 10px;color:var(--mute)">'+u('auto')+'</p>'+
+   '<table>'+row(u('p1'),1)+row(u('p2'),2)+row(u('p3'),3)+'<tr><td>'+u('p4')+'</td><td>'+num(wc(talk.text))+' '+u('words')+'</td></tr></table>'+
+   '<details'+(rev.length?' open':'')+'><summary>'+u('review')+' ('+num(rev.length)+')</summary>'+
+   (rev.length?'<ol class="rev" style="list-style:none">'+rev.join("")+'</ol>':'<p>'+u('none')+'</p>')+'</details>'+
+   (talk.text.trim()?'<details><summary>'+u('myTalk')+'</summary><p dir="ltr"><b>'+esc(TOPICS[talk.topic].t)+'</b></p><p class="mine" dir="ltr">'+esc(talk.text)+'</p></details>':'')+
+   '</div><div class="nav"><button class="btn alt" data-act="home">'+u('change')+'</button><button class="btn" data-act="retry">'+u('retry')+'</button></div>';
   window.scrollTo(0,0);
 }
 
-home();
+setLang("en");home();
 })();
 </script>
 </body>
