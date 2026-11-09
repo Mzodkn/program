@@ -77,25 +77,29 @@ tailwind.config = {
 <div class="bg-glow" aria-hidden="true"><span class="orb1"></span><span class="orb2"></span><span class="orb3"></span></div>
 
 <header class="fixed top-0 inset-x-0 z-40 h-14 bg-dark-surface/95 backdrop-blur border-b border-dark-border flex items-center justify-between px-4">
-<span class="font-bold text-brand-500 inline-flex items-center gap-2 align-middle mono text-base">
-  <img src="it-logo.svg" alt="IT Logo" class="w-8 h-8 inline-block object-contain"> 
-  <span>IT <span class="text-brand-500">&gt;_</span></span>
-</span>  
-<button id="langBtn" class="px-3.5 py-1.5 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500 text-white text-xs sm:text-sm font-semibold mono transition"></button>
+  <span class="font-bold text-brand-500 inline-flex items-center gap-2 align-middle mono text-base">
+    <img src="it-logo.svg" alt="IT Logo" class="w-8 h-8 inline-block object-contain"> 
+    <span>IT <span class="text-brand-500">&gt;_</span></span>
+  </span>
+  <div class="flex items-center gap-2">
+    <a href="InformationSystems_exam.html" class="px-3 py-1.5 rounded-lg bg-brand-500 hover:bg-brand-600 text-dark-base text-xs sm:text-sm font-extrabold mono shadow-[0_0_15px_rgba(249,115,22,0.4)] transition">
+       اضغط لامتاحانات IS
+    </a>
+    <button id="langBtn" class="px-3.5 py-1.5 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500 text-white text-xs sm:text-sm font-semibold mono transition"></button>
+  </div>
 </header>
 
 <main class="pt-14"><div id="app" class="max-w-4xl mx-auto p-4 sm:p-6 pb-24"></div></main>
 
 <script>
-// تم إضافة تاريخ الامتحان (examDate) لكل مادة ليعمل العد التنازلي والترتيب التلقائي
 const SUBJECTS = [
   {id:'prg', file:'Programming.html',        type:'orange', ready:true,  icon:'⚡', header:'Programming.h',   lecCount:'10', name:["Programming","البرمجة المتقدمة"], examDate: '2026-06-15T09:00:00'},
   {id:'it',  file:'IT.html',                 type:'orange', ready:true,  icon:'🌐', header:'Networking.h',    lecCount:'10', name:["Introduction to IT","مقدمة في تقنية المعلومات"], examDate: '2026-06-10T09:00:00'},
   {id:'mth', file:'DiscreteMath.html',       type:'orange', ready:true,  icon:'🧮', header:'Math.h',          lecCount:'9',  name:["Discrete Math","الرياضيات المنفصلة"], examDate: '2026-11-08T09:00:00'},
-  {id:'is',  file:'InformationSystems.html',  type:'orange', ready:true,  icon:'🗄️', header:'Systems.h',       lecCount:'7',  name:["Information Systems","نظم المعلومات (IS)"], examDate: '2026-11-10T09:00:00'}, // منتهية كمثال
+  {id:'is',  file:'InformationSystems.html',  type:'orange', ready:true,  icon:'🗄️', header:'Systems.h',       lecCount:'7',  name:["Information Systems","نظم المعلومات (IS)"], examDate: '2026-11-10T09:00:00'},
   {id:'Etc', file:'ComputerEthics.html',     type:'sky',    ready:true,  icon:'⚖️', header:'Ethics.h',        lecCount:'8',  name:["Computer Ethics","أخلاقيات الكمبيوتر"], examDate: '2026-11-03T09:00:00'},
   {id:'eng', file:'TechnicalEnglish.html',   type:'sky',    ready:true,  icon:'📜', header:'English.h',       lecCount:'7',  name:["Technical English II","اللغة الإنجليزية التقنية 2"], examDate: '2026-06-18T09:00:00'},
-  {id:'biz', file:'Business.html',           type:'sky',    ready:true,  icon:'💼', header:'Business.h',      lecCount:'8',  name:["Business Fundamentals","أساسيات الأعمال"], examDate: '2026-11-01T09:00:00'}, // منتهية كمثال
+  {id:'biz', file:'Business.html',           type:'sky',    ready:true,  icon:'💼', header:'Business.h',      lecCount:'8',  name:["Business Fundamentals","أساسيات الأعمال"], examDate: '2026-11-01T09:00:00'},
   {id:'acc', file:'Accounting.html',         type:'sky',    ready:true,  icon:'📊', header:'Financial.h',     lecCount:'6',  name:["Principles of Accounting","مبادئ المحاسبة"], examDate: '2026-11-05T10:00:00'},
 ];
 
@@ -120,7 +124,6 @@ function load(){ try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch
 let lang = load().lang||'en';
 const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
-// دالة لحساب الوقت المتبقي وتحديد إذا ما انتهى الامتحان أم لا
 function getExamStatus(examDateStr, ar) {
   const now = new Date().getTime();
   const examTime = new Date(examDateStr).getTime();
@@ -147,7 +150,6 @@ function render(){
   document.documentElement.lang=lang; document.documentElement.dir=ar?'rtl':'ltr';
   document.getElementById('langBtn').textContent=ar?'English':'العربية';
 
-  // فرز المواد: المواد غير المنتهية أولاً (الأقرب وقتاً في الصدارة)، والمواد المنتهية في الأسفل
   const sortedSubjects = [...SUBJECTS].sort((a, b) => {
     const now = new Date().getTime();
     const timeA = new Date(a.examDate).getTime() - now;
@@ -157,9 +159,9 @@ function render(){
     const expiredB = timeB <= 0 ? 1 : 0;
 
     if (expiredA !== expiredB) {
-      return expiredA - expiredB; // المنتهية تذهب للأسفل
+      return expiredA - expiredB;
     }
-    return timeA - timeB; // الأقرب فالأبعد للأعلى
+    return timeA - timeB;
   });
 
   const cards = sortedSubjects.map(s => {
@@ -167,7 +169,6 @@ function render(){
     const d = data[s.id] || {}, m = s.ready ? (d.mastery || 0) : 0;
     const examStatus = getExamStatus(s.examDate, ar);
     
-    // إذا انتهى الوقت، نغير لون الحدود والشفافية ونضيف شريط التحذير
     const expiredStyle = examStatus.isExpired ? 'opacity-50 border-red-500/60 bg-red-950/20' : '';
     const tag = s.ready ? 'a href="' + esc(s.file) + '"' : 'div';
     const close = s.ready ? 'a' : 'div';
@@ -225,10 +226,13 @@ function render(){
 
         <div class="w-full">
           <div class="text-xs sm:text-sm mono text-brand-500 mb-1 font-bold">&gt; g++ -o IT_TOP.cpp && ./run </div>
-          <h1 class="text-2xl sm:text-4xl font-extrabold mb-2 tracking-wide flex items-center justify-center sm:justify-start gap-2">
+          <h1 class="text-2xl sm:text-4xl font-extrabold mb-2 tracking-wide flex flex-wrap items-center justify-center sm:justify-start gap-3">
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-amber-400 font-mono">
               ${ar ? 'مركز تقنية معلومات' : 'IT Study Hub'}
             </span>
+            <a href="InformationSystems_exam.html" class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-gradient-to-r from-brand-500 to-amber-400 text-dark-base font-extrabold text-sm sm:text-base shadow-[0_0_20px_rgba(249,115,22,0.5)] hover:scale-105 transition transform">
+              🔥 امتحانات IS
+            </a>
           </h1>
           <p class="text-dark-muted text-xs sm:text-sm mono min-h-[24px]">
             <span id="typed-text"></span><span class="text-brand-500 terminal-cursor">_</span>
@@ -263,14 +267,12 @@ function render(){
   startTypewriter(ar);
 }
 
-// تحديث العدادات التنازلية كل ثانية بسلاسة
 setInterval(() => {
   const ar = lang === 'ar';
   document.querySelectorAll('.countdown-timer').forEach(el => {
     const examDateStr = el.getAttribute('data-date');
     const status = getExamStatus(examDateStr, ar);
     if (status.isExpired) {
-      // إذا انتهى الوقت أثناء تواجد المستخدم في الصفحة يتم إعادة الترتيب والرسم
       render();
     } else {
       el.textContent = status.text;
