@@ -206,6 +206,16 @@ function render(){
       </div>
     </div>
 
+    <!-- زر صفحة النتائج -->
+    <a href="results.html" class="group flex items-center gap-3 rounded-2xl p-4 mb-6 border-2 border-brand-500/60 bg-dark-surface/95 hover:bg-dark-elevated hover:-translate-y-0.5 hover:shadow-[0_0_20px_rgba(249,115,22,0.25)] shadow-lg transition">
+      <span class="text-3xl">📋</span>
+      <div class="flex-1">
+        <div class="text-xs mono text-brand-500 font-bold mb-1">${ar ? '// النتائج نزلت' : '// Results are out'}</div>
+        <div class="font-bold text-base sm:text-lg">${ar ? 'نتائج الامتحانات النهائية — السمستر الثاني' : 'Results — Semester 2'}</div>
+      </div>
+      <span class="mono text-brand-500 text-xl" aria-hidden="true">${ar ? '←' : '→'}</span>
+    </a>
+
     <!-- شبكة المواد -->
     <div class="grid gap-4 sm:grid-cols-2">${cards}</div>
   </div>`;
