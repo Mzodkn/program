@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="it-logo.svg">
+<title>Semester comparison | It Study Hub | مركز تقنية معلومات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: { extend: {
+    colors: {
+      brand: { 500: 'rgb(var(--b5) / <alpha-value>)', 600: 'rgb(var(--b6) / <alpha-value>)' },
+      dark: { base: '#060911', surface: '#0c101d', elevated: '#151c2c', border: '#30384b', text: '#f3f4f6', muted: '#94a3b8' }
+    },
+    fontFamily: { sans: ['Inter', 'sans-serif'], arabic: ['Cairo', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
+  } }
+}
+</script>
+<style>
+  :root { --b5: 249 115 22; --b6: 234 88 12; }
+  html[lang="en"] body { font-family: 'Inter', sans-serif; }
+  html[lang="ar"] body { font-family: 'Cairo', sans-serif; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  body {
+    background-color: #060911;
+    background-image:
+      linear-gradient(to right, rgba(56, 189, 248, 0.08) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(56, 189, 248, 0.08) 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+  .bg-glow { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+  .bg-glow span { position: absolute; border-radius: 50%; filter: blur(90px); will-change: transform; }
+  .bg-glow .orb1 { width: 420px; height: 420px; top: -12%; left: -8%; background: rgb(var(--b5) / .35); animation: drift1 24s ease-in-out infinite; }
+  .bg-glow .orb2 { width: 360px; height: 360px; bottom: -14%; right: -8%; background: rgba(56,189,248,.28); animation: drift2 30s ease-in-out infinite; }
+  .bg-glow .orb3 { width: 300px; height: 300px; top: 45%; left: 60%; background: rgba(168,85,247,.18); animation: drift3 36s ease-in-out infinite; }
+  @keyframes drift1 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(110px,70px) scale(1.15); } }
+  @keyframes drift2 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-90px,-60px) scale(1.1); } }
+  @keyframes drift3 { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-70px,50px) scale(1.2); } }
+  #netCanvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+  main, header { position: relative; z-index: 1; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #060911; }
+  ::-webkit-scrollbar-thumb { background: #30384b; border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgb(var(--b6)); }
+  .fade { animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+  .terminal-cursor { animation: blink 0.8s infinite; }
+  @media (prefers-reduced-motion: reduce){ .bg-glow span,.terminal-cursor,.fade{animation:none} }
+  .ltr-txt{direction:ltr;unicode-bidi:plaintext}
+  summary{list-style:none} summary::-webkit-details-marker{display:none}
+  details[open] .chev{transform:rotate(180deg)}
+  details[open] summary .tapmsg{display:none}
+</style>
+</head>
+<body class="bg-dark-base text-dark-text min-h-screen">
+
+<canvas id="netCanvas"></canvas>
+<div class="bg-glow" aria-hidden="true"><span class="orb1"></span><span class="orb2"></span><span class="orb3"></span></div>
+
+<header class="fixed top-0 inset-x-0 z-40 h-14 bg-dark-surface/95 backdrop-blur border-b border-dark-border flex items-center justify-between px-4">
+  <a href="index.html" class="font-bold text-brand-500 inline-flex items-center gap-2 align-middle mono text-base">
+    <img src="it-logo.svg" alt="IT Logo" class="w-8 h-8 inline-block object-contain" onerror="this.style.display='none'">
+    <span>IT <span class="text-brand-500">&gt;_</span></span>
+  </a>
+  <div class="flex items-center gap-2"><a href="results.html" id="navRes" class="px-3 py-1.5 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500 text-white text-xs sm:text-sm font-semibold transition"></a>
+    <button id="langBtn" class="px-3.5 py-1.5 rounded-lg bg-dark-elevated border border-dark-border hover:border-brand-500 text-white text-xs sm:text-sm font-semibold mono transition"></button></div>
+</header>
+
+<main class="pt-14"><div id="app" class="max-w-4xl mx-auto p-4 sm:p-6 pb-24"></div></main>
+<script>
+const P = [{"no": 1, "idx2": "24-0001", "name": "Abda Abduallah Musa Mohammed", "g2": ["B-", "B-", "C-", "B-", "B-", "B-", "C+", "C+"], "gpa2": 2.79, "cgpa2": 2.4, "rec2": "Pass", "g1": ["C-", "F", "B-", "C+", "C+", "C-", "C-"], "gpa1": 2.01, "idx1": "24-0001"}, {"no": 2, "idx2": "24-0002", "name": "Abdulla Omer Abdullah Mohammed", "g2": ["C-", "C+", "C-", "B-", "C-", "C", "C-", "C+"], "gpa2": 2.36, "cgpa2": 2.41, "rec2": "Pass", "g1": ["B", "C+", "C-", "B-", "C", "F", "C-"], "gpa1": 2.15, "idx1": "24-0002"}, {"no": 3, "idx2": "24-0003", "name": "Abdullah Abdulbagi Ibrahim Alzobier", "g2": ["C+", "B", "B-", "B-", "A+", "B", "B", "A-"], "gpa2": 3.29, "cgpa2": 3.13, "rec2": "Pass", "g1": ["B-", "B", "C-", "B-", "B", "A+", "C"], "gpa1": 2.96, "idx1": "24-0003"}, {"no": 4, "idx2": "24-0004", "name": "Abobaker Alshref Goni", "g2": null, "gpa2": null, "cgpa2": null, "rec2": "", "g1": ["C-", "F", "F", "F", "C-", "F", "F"], "gpa1": 0.53, "idx1": "24-0005"}, {"no": 5, "idx2": "24-0005", "name": "Abubakr Hatim Abdulalim Mohamed", "g2": ["C-", "B-", "C-", "C+", "C", "B", "C+", "C+"], "gpa2": 2.59, "cgpa2": 2.53, "rec2": "Pass", "g1": ["C+", "C", "C", "B-", "B-", "F", "C-"], "gpa1": 2.15, "idx1": "24-0004"}, {"no": 6, "idx2": "24-0006", "name": "Ahmed Altahier Mohammed Abo haga", "g2": ["C", "B-", "C-", "C", "B-", "B+", "C-", "B-"], "gpa2": 2.65, "cgpa2": 2.68, "rec2": "Pass", "g1": ["C+", "C", "C", "B-", "C", "A+", "C-"], "gpa1": 2.72, "idx1": "24-0011", "alt1": "Ahmed Altahier Mohammed Banga"}, {"no": 7, "idx2": "24-0007", "name": "Ahmed Arbab Fadal Abubaker", "g2": ["C+", "B", "B+", "B-", "A-", "A-", "B-", "A+"], "gpa2": 3.38, "cgpa2": 3.12, "rec2": "Pass", "g1": ["B-", "B", "C", "F", "B-", "B+", "C+"], "gpa1": 2.65, "idx1": "24-0006"}, {"no": 8, "idx2": "24-0008", "name": "Ahmed Awad Khalifa Hawitalla", "g2": ["C", "C+", "C-", "B-", "C+", "C", "B-", "B"], "gpa2": 2.69, "cgpa2": 2.63, "rec2": "Pass", "g1": ["C", "C+", "C", "B-", "C+", "C+", "C-"], "gpa1": 2.57, "idx1": "24-0008"}, {"no": 9, "idx2": "24-0009", "name": "Ahmed Hytham Hassn Ali", "g2": ["C-", "C", "F", "B-", "C", "F", "C-", "C-"], "gpa2": 1.68, "cgpa2": 1.71, "rec2": "2 Supps+1st warning", "g1": ["C", "C", "F", "F", "B", "C-", "C-"], "gpa1": 1.73, "idx1": "24-0007"}, {"no": 10, "idx2": "24-0010", "name": "Ahmed Mohammed Ali Mohamed", "g2": ["F", "C-", "F", "C", "C-", "C-", "F", "F"], "gpa2": 0.99, "cgpa2": 0.49, "rec2": "Repeat", "g1": ["F", "F", "F", "F", "F", "F", "F"], "gpa1": 0.0, "idx1": "24-0012"}, {"no": 11, "idx2": "24-0011", "name": "Ahmed Osman Mostafa Ahmed", "g2": ["B+", "B-", "B+", "B-", "A-", "A", "B-", "B"], "gpa2": 3.32, "cgpa2": 3.06, "rec2": "Pass", "g1": ["B-", "B-", "C+", "B-", "C", "B-", "C"], "gpa1": 2.81, "idx1": "24-0009"}, {"no": 12, "idx2": "24-0012", "name": "Ahmed Wedaa Hakim Ali", "g2": ["C+", "C+", "C-", "B", "C", "B+", "C", "B+"], "gpa2": 2.77, "cgpa2": 2.59, "rec2": "Pass", "g1": ["C-", "B-", "C-", "C+", "B-", "C", "C-"], "gpa1": 2.41, "idx1": "24-0010"}, {"no": 13, "idx2": "24-0013", "name": "Ali Abualgasim Ali Amubarak", "g2": ["C-", "C-", "F", "B-", "B", "C-", "C", "B-"], "gpa2": 2.18, "cgpa2": 2.74, "rec2": "Supp", "g1": ["B", "C", "A+", "B-", "A+", "B", "B+"], "gpa1": 3.29, "idx1": "24-0069"}, {"no": 14, "idx2": "24-0014", "name": "Ali Adam Ahmed Altahir", "g2": ["B-", "B-", "B-", "B+", "A", "B+", "B", "B+"], "gpa2": 3.29, "cgpa2": 3.02, "rec2": "Pass", "g1": ["C-", "B", "B-", "B-", "B-", "B", "F"], "gpa1": 2.43, "idx1": "24-0013"}, {"no": 15, "idx2": "24-0015", "name": "Ali Babikir Abdalrhem Ali", "g2": ["C", "B-", "C+", "C+", "B+", "B-", "C", "B"], "gpa2": 2.92, "cgpa2": 2.83, "rec2": "Pass", "g1": ["C+", "B-", "C", "B-", "B", "B-", "C-"], "gpa1": 2.74, "idx1": "24-0014"}, {"no": 16, "idx2": "24-0016", "name": "Ali Mahir Mohamed Ali", "g2": ["B", "B+", "A-", "B", "A", "A", "B+", "B+"], "gpa2": 3.49, "cgpa2": 3.36, "rec2": "Pass", "g1": ["B-", "B+", "C+", "A-", "C+", "A-", "B+"], "gpa1": 3.23, "idx1": "24-0015"}, {"no": 17, "idx2": "24-0017", "name": "Ali Mohamed Ali Ahmed", "g2": ["C", "C+", "C+", "C-", "C+", "B-", "B-", "C+"], "gpa2": 2.72, "cgpa2": 2.64, "rec2": "Pass", "g1": ["C+", "C", "C-", "C+", "B-", "B", "C-"], "gpa1": 2.57, "idx1": "24-0016"}, {"no": 18, "idx2": "24-0018", "name": "Almohtadi Khalid Mohamed Ali", "g2": ["B-", "C+", "C-", "B-", "C+", "C-", "C", "C"], "gpa2": 2.53, "cgpa2": 2.16, "rec2": "Pass", "g1": ["B+", "C-", "C-", "F", "B-", "C-", "F"], "gpa1": 1.8, "idx1": "24-0017"}, {"no": 19, "idx2": "24-0019", "name": "Almonzer Mohamed Hamdan", "g2": ["B-", "B-", "B", "B-", "B+", "A+", "B+", "A-"], "gpa2": 3.34, "cgpa2": 3.02, "rec2": "Pass", "g1": ["C+", "B-", "C", "F", "B", "B+", "C-"], "gpa1": 2.48, "idx1": "24-0018"}, {"no": 20, "idx2": "24-0020", "name": "Alrasheed Mohamed Abdalla Taher", "g2": ["B-", "C+", "F", "C+", "C-", "C+", "C+", "C+"], "gpa2": 2.25, "cgpa2": 2.32, "rec2": "Supp", "g1": ["C", "C-", "C", "B-", "C+", "C", "C-"], "gpa1": 2.38, "idx1": "24-0019"}, {"no": 21, "idx2": "24-0021", "name": "Altayb Abbas Hassan Ali", "g2": ["C", "B-", "C-", "C", "F", "C", "C-", "C+"], "gpa2": 2.04, "cgpa2": 2.09, "rec2": "Supp", "g1": ["C", "C+", "C", "B-", "B-", "C-", "F"], "gpa1": 2.15, "idx1": "24-0020"}, {"no": 22, "idx2": "24-0022", "name": "Altayb Mohamed Khalid Mohamed", "g2": ["B-", "B-", "C-", "B", "B-", "C", "B-", "C+"], "gpa2": 2.77, "cgpa2": 2.46, "rec2": "Pass", "g1": ["C-", "C-", "B-", "B-", "C", "B-", "F"], "gpa1": 2.15, "idx1": "24-0021"}, {"no": 23, "idx2": "24-0023", "name": "Ameer Abdubaker Awad Abdalhamid", "g2": null, "gpa2": null, "cgpa2": null, "rec2": "", "g1": ["F", "C+", "C", "C+", "C-", "C-", "F"], "gpa1": 1.64, "idx1": "24-0022"}, {"no": 24, "idx2": "24-0024", "name": "Ammar Osamn Omer Elwali", "g2": ["C", "C", "F", "B-", "F", "A-", "B+", "B"], "gpa2": 2.06, "cgpa2": 2.76, "rec2": "2 Supps", "g1": ["A+", "B+", "A", "B-", "A", "B", "B-"], "gpa1": 3.46, "idx1": "24-0070"}, {"no": 25, "idx2": "24-0025", "name": "Amna Alsideg Habiballa Alnour", "g2": ["C", "C", "C", "B-", "B-", "C", "C-", "C+"], "gpa2": 2.58, "cgpa2": 2.49, "rec2": "Pass", "g1": ["C-", "C+", "C-", "C", "B-", "C-", "C+"], "gpa1": 2.4, "idx1": "24-0023"}, {"no": 26, "idx2": "24-0026", "name": "Anfal Fadlalkareem Agbar", "g2": ["F", "C-", "F", "B+", "C-", "B-", "B-", "B-"], "gpa2": 1.99, "cgpa2": 2.72, "rec2": "2 Supp", "g1": ["A+", "A-", "A-", "B-", "A-", "B", "B-"], "gpa1": 3.44, "idx1": "24-0071"}, {"no": 27, "idx2": "24-0027", "name": "Badawi Hassan Badawi", "g2": ["C-", "B-", "C-", "B", "B-", "B", "B-", "B+"], "gpa2": 2.84, "cgpa2": 2.81, "rec2": "Pass", "g1": ["B-", "B", "C", "A-", "C", "B-", "C-"], "gpa1": 2.78, "idx1": "24-0024"}, {"no": 28, "idx2": "24-0028", "name": "Dilla Majdy", "g2": ["B-", "C+", "C-", "B-", "C", "C+", "C-", "B-"], "gpa2": 2.6, "cgpa2": 2.58, "rec2": "Pass", "g1": ["B-", "C+", "C", "B-", "B-", "F", "C-"], "gpa1": 2.24, "idx1": "24-0025"}, {"no": 29, "idx2": "24-0029", "name": "Elsir Awadalla Elsir", "g2": ["C-", "C", "F", "C+", "F", "C", "C-", "C"], "gpa2": 1.6, "cgpa2": 2.01, "rec2": "2 Supps", "g1": ["C+", "C", "C-", "C+", "B+", "C-", "C-"], "gpa1": 2.42, "idx1": "24-0026"}, {"no": 30, "idx2": "24-0030", "name": "Fadul Suliman Abdalla Mohamed", "g2": ["C-", "B-", "C+", "C+", "C-", "B-", "C-", "B-"], "gpa2": 2.58, "cgpa2": 2.37, "rec2": "Pass", "g1": ["B-", "C-", "C", "F", "C-", "B-", "C-"], "gpa1": 2.17, "idx1": "24-0027"}, {"no": 31, "idx2": "24-0031", "name": "Faris Fisal Babiker Mohammed Nor", "g2": ["C-", "C+", "F", "B-", "C-", "C", "F", "C+"], "gpa2": 1.83, "cgpa2": 1.76, "rec2": "2 Supps+1st warning", "g1": ["C-", "C-", "F", "C+", "C", "B", "F"], "gpa1": 1.68, "idx1": "24-0049"}, {"no": 32, "idx2": "24-0032", "name": "Haddel Haron Edris Hassan", "g2": ["C-", "C+", "F", "B+", "B", "A+", "B-", "A+"], "gpa2": 2.74, "cgpa2": 2.61, "rec2": "Supp", "g1": ["F", "B-", "C", "B-", "C+", "C", "F"], "gpa1": 1.84, "idx1": "24-0028"}, {"no": 33, "idx2": "24-0033", "name": "Haiiham Zaher Sir Alkhitem", "g2": ["C-", "B-", "C-", "B-", "B+", "C+", "C+", "C+"], "gpa2": 2.73, "cgpa2": 2.66, "rec2": "Pass", "g1": ["B", "B-", "C-", "C+", "B-", "C-", "C"], "gpa1": 2.6, "idx1": "24-0029", "alt1": "Haitham Zaher Sir Alkhitem"}, {"no": 34, "idx2": "24-0034", "name": "Hiba Obaid Abdalbagi", "g2": ["B-", "C+", "C-", "C", "B-", "A+", "B", "A-"], "gpa2": 2.98, "cgpa2": 3.31, "rec2": "Pass", "g1": ["B+", "A+", "A+", "B", "A", "A", "B"], "gpa1": 3.64, "idx1": "24-0072"}, {"no": 35, "idx2": "24-0035", "name": "Hidar Bala Hidar Ibrahim", "g2": ["C-", "B-", "C-", "B-", "B-", "B-", "C+", "B"], "gpa2": 2.75, "cgpa2": 2.64, "rec2": "Pass", "g1": ["C", "B-", "F", "B-", "C+", "C+", "C-"], "gpa1": 2.22, "idx1": "24-0030"}, {"no": 36, "idx2": "24-0036", "name": "Mawda Ahmed Jouran", "g2": ["B", "B", "B", "B+", "B-", "A+", "B+", "A-"], "gpa2": 3.36, "cgpa2": 3.5, "rec2": "Pass", "g1": ["B+", "A", "A", "B-", "A+", "A", "A-"], "gpa1": 3.64, "idx1": "24-0072"}, {"no": 37, "idx2": "24-0037", "name": "Moawiya Altigani Hassan Altaib", "g2": ["C", "B", "B", "B-", "B", "B-", "C", "B-"], "gpa2": 2.96, "cgpa2": 2.54, "rec2": "Pass", "g1": ["B-", "C", "C", "B-", "C", "C-", "F"], "gpa1": 2.12, "idx1": "24-0031"}, {"no": 38, "idx2": "24-0038", "name": "Modar Kamalaldeen Nooraldeen", "g2": ["B-", "B-", "A+", "B", "A+", "B", "A", "B+"], "gpa2": 3.51, "cgpa2": 3.51, "rec2": "Pass", "g1": ["B", "B", "B+", "A-", "A-", "A+", "A-"], "gpa1": 3.51, "idx1": "24-0032"}, {"no": 39, "idx2": "24-0039", "name": "Mohamed Aboed Hassan Mohamed", "g2": ["C-", "B", "C", "B-", "B-", "C-", "C-", "B-"], "gpa2": 2.61, "cgpa2": 2.41, "rec2": "Pass", "g1": ["C+", "C", "F", "B-", "B-", "C+", "F"], "gpa1": 1.89, "idx1": "24-0033"}, {"no": 40, "idx2": "24-0040", "name": "Mohamed Ahmed Fathi", "g2": ["C-", "B", "C-", "C", "C+", "B+", "C", "B-"], "gpa2": 2.64, "cgpa2": 2.35, "rec2": "Pass", "g1": ["C", "C", "C", "B-", "C+", "C-", "F"], "gpa1": 2.06, "idx1": "24-0034"}, {"no": 41, "idx2": "24-0041", "name": "Mohamed Ahmed Mohamed Mamoun", "g2": ["C", "C", "F", "B-", "B-", "C+", "C-", "B-"], "gpa2": 2.27, "cgpa2": 2.17, "rec2": "Supp", "g1": ["C", "C+", "C-", "B-", "C+", "C-", "F"], "gpa1": 2.06, "idx1": "24-0035"}, {"no": 42, "idx2": "24-0042", "name": "Mohamed Emad Alhassan Mohammed", "g2": ["C-", "B-", "B", "C", "C", "B-", "C", "B"], "gpa2": 2.74, "cgpa2": 2.6, "rec2": "Pass", "g1": ["B+", "C+", "F", "B-", "C", "B+", "C"], "gpa1": 2.46, "idx1": "24-0036"}, {"no": 43, "idx2": "24-0043", "name": "Mohamed Kamal Seed Ahmed Osman", "g2": ["C-", "C-", "B", "B-", "C+", "C+", "C-", "B"], "gpa2": 2.69, "cgpa2": 2.4, "rec2": "Pass", "g1": ["B", "C", "C-", "F", "B-", "C", "F"], "gpa1": 1.89, "idx1": "24-0037"}, {"no": 44, "idx2": "24-0044", "name": "Mohamed Motasim Mohammed Ahmed", "g2": ["C-", "C+", "F", "C", "B+", "F", "C-", "B-"], "gpa2": 1.98, "cgpa2": 1.99, "rec2": "2 Supps+1st warning", "g1": ["C-", "C", "C", "C+", "B-", "C-", "F"], "gpa1": 2.0, "idx1": "24-0038"}, {"no": 45, "idx2": "24-0045", "name": "Mohamed Omer Bakri Mohamed", "g2": ["C-", "B-", "C", "C", "F", "C-", "F", "A"], "gpa2": 1.97, "cgpa2": 2.18, "rec2": "2 Supps", "g1": ["C+", "C-", "C-", "B-", "C", "C+", "F"], "gpa1": 2.08, "idx1": "24-0039"}, {"no": 46, "idx2": "24-0046", "name": "Mohamed Omer Shikh Idres Omer", "g2": ["B-", "B-", "B-", "B-", "A+", "C-", "C+", "B-"], "gpa2": 3.03, "cgpa2": 2.87, "rec2": "Pass+1st warning", "g1": ["C-", "B-", "C+", "B-", "B-", "C", "B-"], "gpa1": 2.72, "idx1": "24-0040"}, {"no": 47, "idx2": "24-0047", "name": "Mohamed Osame Brare", "g2": ["B+", "B+", "B", "B+", "A+", "A+", "B-", "C"], "gpa2": 3.33, "cgpa2": 3.28, "rec2": "Pass", "g1": ["B+", "B-", "B-", "A-", "B+", "B+", "B-"], "gpa1": 3.23, "idx1": "24-0041"}, {"no": 48, "idx2": "24-0048", "name": "Mohammed Ahmed Jouran Fadalmola", "g2": ["B", "B-", "B", "A-", "B-", "A+", "A", "A+"], "gpa2": 3.46, "cgpa2": 3.52, "rec2": "Pass", "g1": ["B", "A", "A-", "B-", "A+", "A-", "A"], "gpa1": 3.58, "idx1": "24-0074", "alt1": "Mohammed Ahmed Jouran"}, {"no": 49, "idx2": "24-0049", "name": "Mohammed Awadallah Salih Saied", "g2": null, "gpa2": null, "cgpa2": null, "rec2": "", "g1": ["C+", "B-", "B-", "C-", "B", "F", "B+"], "gpa1": 2.47, "idx1": "24-0073"}, {"no": 50, "idx2": "24-0050", "name": "Moram Younis Albashier", "g2": null, "gpa2": null, "cgpa2": null, "rec2": "", "g1": null, "gpa1": null, "idx1": "24-0050"}, {"no": 51, "idx2": "24-0051", "name": "Motaz Hisham Taj alsir", "g2": ["A", "C", "F", "C", "F", "A-", "C-", "A-"], "gpa2": 2.06, "cgpa2": 2.75, "rec2": "2 Supps", "g1": ["A-", "C+", "A+", "B", "A-", "B+", "B+"], "gpa1": 3.43, "idx1": "24-0070"}, {"no": 52, "idx2": "24-0052", "name": "Mousa Faisal Musa", "g2": ["A+", "B-", "C", "B-", "B", "A-", "C-", "B+"], "gpa2": 3.06, "cgpa2": 2.75, "rec2": "Pass", "g1": ["C-", "C", "B-", "C", "C", "C+", "F"], "gpa1": 2.12, "idx1": "24-0042"}, {"no": 53, "idx2": "24-0053", "name": "Muaaz Yasir Elsmani Mohammed", "g2": ["A+", "A-", "A+", "A-", "A+", "A+", "A+", "A-"], "gpa2": 3.85, "cgpa2": 3.82, "rec2": "Pass", "g1": ["A+", "A", "A", "A-", "A-", "A+", "A-"], "gpa1": 3.79, "idx1": "24-0043"}, {"no": 54, "idx2": "24-0054", "name": "Muhab Mohammed Alamin", "g2": ["B-", "C+", "F", "C-", "F", "C-", "C+", "B+"], "gpa2": 1.86, "cgpa2": 2.7, "rec2": "2 Supps", "g1": ["B+", "A-", "A+", "B", "A+", "B+", "B"], "gpa1": 3.54, "idx1": "24-0071"}, {"no": 55, "idx2": "24-0055", "name": "Musa Hassan Musa", "g2": null, "gpa2": null, "cgpa2": null, "rec2": "", "g1": null, "gpa1": null, "idx1": "24-0044"}, {"no": 56, "idx2": "24-0056", "name": "Musa Hidar Musa Alkhlil", "g2": ["B-", "B-", "C-", "C", "F", "C+", "F", "B-"], "gpa2": 1.97, "cgpa2": 1.79, "rec2": "2 Supps+1st warning", "g1": ["C", "F", "C-", "C+", "B-", "C-", "F"], "gpa1": 1.62, "idx1": "24-0045"}, {"no": 57, "idx2": "24-0057", "name": "Nada Yasier Abdafatah Taha", "g2": ["C", "B", "B-", "B-", "A+", "A-", "A", "A"], "gpa2": 3.39, "cgpa2": 3.13, "rec2": "Pass", "g1": ["B+", "A-", "C", "B-", "C", "C", "C+"], "gpa1": 2.87, "idx1": "24-0046"}, {"no": 58, "idx2": "24-0058", "name": "Nagham Omer Alhaj Salih", "g2": ["C-", "C+", "C-", "B-", "C", "C-", "C-", "C"], "gpa2": 2.32, "cgpa2": 2.44, "rec2": "Pass", "g1": ["C", "C+", "C", "C+", "B-", "C+", "C-"], "gpa1": 2.57, "idx1": "24-0047"}, {"no": 59, "idx2": "24-0059", "name": "Nasr Abdalbagi Alblal", "g2": ["C-", "C", "F", "B-", "C", "B-", "C-", "C"], "gpa2": 2.06, "cgpa2": 2.14, "rec2": "Supp", "g1": ["F", "F", "C-", "A+", "A-", "A+", "B-"], "gpa1": 2.22, "idx1": "24-0048"}, {"no": 60, "idx2": "24-0060", "name": "Nosaiba Mohammed Ibrahim", "g2": ["C-", "C", "B", "B-", "C-", "C-", "C+", "B-"], "gpa2": 2.58, "cgpa2": 2.49, "rec2": "Pass", "g1": ["C+", "C+", "C-", "C", "B-", "C-", "C-"], "gpa1": 2.4, "idx1": "24-0068"}, {"no": 61, "idx2": "24-0061", "name": "Ola Jafar Osman Sanusi", "g2": ["C-", "B-", "B-", "B-", "B-", "B+", "B-", "B-"], "gpa2": 2.94, "cgpa2": 2.8, "rec2": "Pass", "g1": ["C+", "C", "C", "B+", "B-", "B-", "F"], "gpa1": 2.35, "idx1": "24-0051"}, {"no": 62, "idx2": "24-0062", "name": "Om Alhassan Mohammed", "g2": ["C", "B-", "F", "C", "F", "B-", "B-", "B+"], "gpa2": 1.99, "cgpa2": 2.13, "rec2": "2 Supps", "g1": ["C-", "C", "C-", "F", "C", "B-", "F"], "gpa1": 1.74, "idx1": "24-0052"}, {"no": 63, "idx2": "24-0063", "name": "Omer Ahmed Hassan Alamin", "g2": ["C-", "C-", "F", "C", "C", "C", "C-", "B-"], "gpa2": 1.99, "cgpa2": 1.96, "rec2": "Supp+1st warning", "g1": ["F", "B-", "C-", "C+", "C-", "C-", "F"], "gpa1": 1.61, "idx1": "24-0053"}, {"no": 64, "idx2": "24-0064", "name": "Omer Mohammed Mergani Mohammed", "g2": ["C-", "C", "B-", "B-", "C-", "C+", "C", "B-"], "gpa2": 2.59, "cgpa2": 2.65, "rec2": "Pass", "g1": ["C+", "C+", "C", "B-", "B", "B-", "C-"], "gpa1": 2.71, "idx1": "24-0054"}, {"no": 65, "idx2": "24-0065", "name": "Reem Abdalmohsin Mohammed Ali", "g2": ["C-", "B-", "F", "B", "C", "B", "C", "B-"], "gpa2": 2.31, "cgpa2": 2.31, "rec2": "Supp", "g1": ["C-", "C", "C-", "F", "B", "C+", "C-"], "gpa1": 2.11, "idx1": "24-0055"}, {"no": 66, "idx2": "24-0066", "name": "Roba Ahmed Mohammed Haj", "g2": ["C+", "C", "B-", "B+", "A+", "B-", "B-", "B"], "gpa2": 3.15, "cgpa2": 3.03, "rec2": "Pass", "g1": ["C+", "B", "C", "B-", "B-", "B", "C+"], "gpa1": 2.91, "idx1": "24-0056"}, {"no": 67, "idx2": "24-0067", "name": "Rogia Ahmed Adam Mohamed", "g2": ["C", "C", "F", "C-", "F", "B", "C", "B-"], "gpa2": 1.78, "cgpa2": 2.74, "rec2": "2 Supps", "g1": null, "gpa1": null, "idx1": "24-0073"}, {"no": 68, "idx2": "24-0068", "name": "Rowa Esam Aldin Abdo Yousif", "g2": ["C", "C-", "C-", "C-", "F", "C", "F", "B"], "gpa2": 1.75, "cgpa2": 2.01, "rec2": "2 Supps", "g1": ["C-", "B-", "C", "F", "B-", "B-", "C-"], "gpa1": 2.27, "idx1": "24-0057"}, {"no": 69, "idx2": "24-0069", "name": "Safa Abobaker Ali Musa", "g2": null, "gpa2": null, "cgpa2": null, "rec2": "", "g1": null, "gpa1": null, "idx1": "24-0058"}, {"no": 70, "idx2": "24-0070", "name": "Salih Muntasier Salih", "g2": ["F", "C-", "C", "C", "F", "F", "C-", "C-"], "gpa2": 1.37, "cgpa2": 1.68, "rec2": "3 Supps+1st warning", "g1": ["C+", "C", "C-", "C", "C+", "C-", "F"], "gpa1": 2.0, "idx1": "24-0059"}, {"no": 71, "idx2": "24-0071", "name": "Samar Omer Ahmed", "g2": ["C-", "C-", "B", "B", "B-", "B-", "C+", "A"], "gpa2": 2.95, "cgpa2": 2.85, "rec2": "Pass", "g1": ["C-", "B-", "C", "B+", "C", "B", "B-"], "gpa1": 2.76, "idx1": "24-0060"}, {"no": 72, "idx2": "24-0072", "name": "Sami Yousif Eisa Mohammed", "g2": null, "gpa2": null, "cgpa2": null, "rec2": "", "g1": null, "gpa1": null, "idx1": "24-0061"}, {"no": 73, "idx2": "24-0073", "name": "Siddig Sifaldeen", "g2": ["B+", "B-", "F", "B+", "C-", "C", "F", "B"], "gpa2": 2.11, "cgpa2": 1.94, "rec2": "2 Supps+1st warning", "g1": ["C", "C", "C", "F", "B-", "C-", "F"], "gpa1": 1.77, "idx1": "24-0062"}, {"no": 74, "idx2": "24-0074", "name": "Tarig Mohammed Ali Mohammed", "g2": ["C-", "C-", "C", "B-", "F", "C-", "C-", "C"], "gpa2": 1.92, "cgpa2": 1.87, "rec2": "Supp", "g1": ["C-", "C+", "F", "B-", "A-", "C", "F"], "gpa1": 1.83, "idx1": "24-0063"}, {"no": 75, "idx2": "24-0075", "name": "Wadida Rabie Khalil Ahmed", "g2": ["B-", "C", "B", "B", "A", "A", "B", "A"], "gpa2": 3.35, "cgpa2": 3.29, "rec2": "Pass", "g1": ["B", "B+", "B-", "B", "B", "A-", "B-"], "gpa1": 3.23, "idx1": "24-0064"}, {"no": 76, "idx2": "24-0076", "name": "Wahbi Albagee Ali", "g2": ["C-", "C", "C+", "B-", "B", "B-", "B-", "B+"], "gpa2": 2.89, "cgpa2": 2.73, "rec2": "Pass", "g1": ["C", "B-", "C", "F", "B", "B-", "F"], "gpa1": 2.04, "idx1": "24-0065"}, {"no": 77, "idx2": "24-0077", "name": "Yazan Ahmed Abualnour", "g2": null, "gpa2": null, "cgpa2": null, "rec2": "", "g1": ["A-", "B+", "A", "C-", "B+", "B-", "C"], "gpa1": 3.13, "idx1": "24-0074"}, {"no": 78, "idx2": "24-0078", "name": "Yousif Moawia Ahmed Alfaki", "g2": ["C-", "C", "F", "B-", "F", "F", "C+", "B-"], "gpa2": 1.55, "cgpa2": 1.52, "rec2": "3 Supps+1st warning", "g1": ["F", "F", "C-", "C+", "C", "C-", "F"], "gpa1": 1.18, "idx1": "24-0066"}, {"no": 79, "idx2": "24-0079", "name": "Zamam Abdalmohsin Abass", "g2": ["C-", "B-", "C-", "B", "B+", "A-", "F", "A-"], "gpa2": 2.66, "cgpa2": 2.5, "rec2": "Supp", "g1": ["C", "F", "C", "C+", "B", "C-", "C-"], "gpa1": 2.02, "idx1": "24-0067"}, {"no": 80, "idx2": "24-0080", "name": "Eslam Hussin Adam Tr", "g2": ["C", "B-", "C-", "F", "B-", "B", "B-", "C"], "gpa2": 2.39, "cgpa2": 1.19, "rec2": "Supp+1st warning", "g1": null, "gpa1": null, "idx1": null}, {"no": 81, "idx2": "24-0081", "name": "Mostahde Ahmed Musa Omer", "g2": ["F", "B-", "F", "C-", "C-", "C", "F", "C"], "gpa2": 1.47, "cgpa2": null, "rec2": "3 Supps", "g1": null, "gpa1": null, "idx1": null}];
+const C1 = [{"en": "Principles of Management", "ar": "مبادئ الإدارة"}, {"en": "Technical English I", "ar": "اللغة الإنجليزية التقنية 1"}, {"en": "Computer Skills", "ar": "مهارات الحاسوب"}, {"en": "Communication Skills", "ar": "مهارات التواصل"}, {"en": "Fundamentals of Economics", "ar": "أساسيات الاقتصاد"}, {"en": "Programming Techniques I", "ar": "تقنيات البرمجة 1"}, {"en": "Mathematics", "ar": "الرياضيات"}];
+const C2 = [{"en": "Introduction to Information Technology", "ar": "مقدمة في تقنية المعلومات"}, {"en": "Fundamental of Accounting", "ar": "أساسيات المحاسبة"}, {"en": "Programming Techniques II", "ar": "تقنيات البرمجة 2"}, {"en": "Computer Ethics", "ar": "أخلاقيات الحاسوب"}, {"en": "Discrete Mathematics", "ar": "الرياضيات المتقطعة"}, {"en": "Introduction to Business", "ar": "مقدمة في الأعمال"}, {"en": "Fundamental of Information System", "ar": "أساسيات نظم المعلومات"}, {"en": "Technical English Language II", "ar": "اللغة الإنجليزية التقنية 2"}];
+const KEY='studyHubV2';
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){ return {}; } }
+let lang = load().lang||'en';
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const T={
+ en:{res:'Results', title:'Semester 1 vs Semester 2', sub:'Batch 24 — June 2026 vs October 2026', cmd:'> ./compare --sem 1 --sem 2',
+  avg:'Average GPA', s1:'Sem 1', s2:'Sem 2', chg:'Average change', up:'Improved', down:'Declined', same:'Same', n:'students', base:(n,tot)=>`Compared ${n} students who have a GPA in both semesters (out of ${tot} names).`,
+  fT:'Grades of F', fStud:'Students with at least one F', fShare:'Share of F among all grades', clean:'Students with no F',
+  top:'Biggest improvement', bot:'Biggest decline', find:'// Search by name', ph:'Type a name (e.g. Ali Mahir)', sort:'Sort by',
+  sorts:{idx:'Sheet order',up:'Biggest rise',down:'Biggest drop',g2:'Highest Sem 2 GPA',g1:'Highest Sem 1 GPA',name:'Name (A–Z)'},
+  fl:{all:'All',up:'Improved',down:'Declined',same:'Same',na:'Cannot compare'},
+  gpa1:'GPA Sem 1', gpa2:'GPA Sem 2', cgpa:'CGPA Sem 2', status:'Sem 2 status', subj:'Subject', grade:'Grade', sem1:'Semester 1', sem2:'Semester 2',
+  tap:'Tap to show subject grades of both semesters', none:'No matching name.', noS1:'No Semester 1 result for this student.', noS2:'No Semester 2 result for this student.',
+  nameNote:'Name written differently on the Semester 1 sheet:', nocomp:'Cannot compare', noRes:'No result',
+  foot1:'Students were matched by name, because index numbers differ between the two sheets. Each match was checked against the CGPA printed on the Semester 2 sheet.',
+  foot2:'Subjects differ between the two semesters, so the comparison is by GPA, not by subject. CGPA can be higher than the average of both GPAs when a supplementary exam was passed.', back:'Back'},
+ ar:{res:'النتائج', title:'السمستر الأول مقابل الثاني', sub:'الدفعة 24 — يونيو 2026 مقابل أكتوبر 2026', cmd:'> ./compare --sem 1 --sem 2',
+  avg:'متوسط المعدل', s1:'السمستر 1', s2:'السمستر 2', chg:'متوسط التغيّر', up:'تحسّن', down:'تراجع', same:'ثابت', n:'طالب', base:(n,tot)=>`المقارنة على ${n} طالب لديهم معدل في السمسترين (من أصل ${tot} اسم).`,
+  fT:'تقدير F', fStud:'طلاب عندهم F واحدة على الأقل', fShare:'نسبة F من كل التقديرات', clean:'طلاب بدون F',
+  top:'أكبر تحسّن', bot:'أكبر تراجع', find:'// ابحث بالاسم', ph:'اكتب الاسم (مثال: Ali Mahir)', sort:'الترتيب',
+  sorts:{idx:'ترتيب الكشف',up:'الأكثر تحسّناً',down:'الأكثر تراجعاً',g2:'الأعلى GPA في السمستر 2',g1:'الأعلى GPA في السمستر 1',name:'الاسم (A–Z)'},
+  fl:{all:'الكل',up:'تحسّن',down:'تراجع',same:'ثابت',na:'لا يمكن المقارنة'},
+  gpa1:'GPA السمستر 1', gpa2:'GPA السمستر 2', cgpa:'CGPA السمستر 2', status:'حالة السمستر 2', subj:'المادة', grade:'التقدير', sem1:'السمستر الأول', sem2:'السمستر الثاني',
+  tap:'اضغط لعرض درجات المواد في السمسترين', none:'ما لقينا اسم مطابق.', noS1:'لا توجد نتيجة للسمستر الأول لهذا الطالب.', noS2:'لا توجد نتيجة للسمستر الثاني لهذا الطالب.',
+  nameNote:'الاسم مكتوب بصيغة مختلفة في كشف السمستر الأول:', nocomp:'لا يمكن المقارنة', noRes:'بدون نتيجة',
+  foot1:'تمت مطابقة الطلاب بالاسم لأن الأرقام الجامعية تختلف بين الكشفين. وتم التأكد من كل مطابقة بالمعدل التراكمي المطبوع في كشف السمستر الثاني.',
+  foot2:'المواد تختلف بين السمسترين، فالمقارنة بالمعدل (GPA) وليست بالمادة. والتراكمي قد يكون أعلى من متوسط المعدلين لو الطالب نجح في ملحق.', back:'رجوع'}
+};
+const r2=x=>Math.round(x*100)/100;
+P.forEach(p=>{ p.cmp = p.gpa1!=null && p.gpa2!=null; p.d = p.cmp? r2(p.gpa2-p.gpa1):null; p.k = !p.cmp?'na':(p.d>0?'up':p.d<0?'down':'same'); });
+const B=P.filter(p=>p.cmp);
+const avg=a=>a.reduce((x,y)=>x+y,0)/a.length;
+const f2=x=>x.toFixed(2), sg=x=>(x>0?'+':x<0?'−':'')+Math.abs(x).toFixed(2);
+const pct=(x,n)=>n?(x/n*100).toFixed(1):'0.0';
+let query='', sortKey='idx', filt='all';
+
+function recCls(r){ if(!r) return 'text-slate-300'; if(r==='Pass') return 'text-emerald-300'; if(/Repeat|3 Supps/.test(r)) return 'text-red-300'; return 'text-amber-300'; }
+const KC={up:['#10b981','text-emerald-300','▲'],down:['#ef4444','text-red-300','▼'],same:['#94a3b8','text-slate-300','='],na:['#64748b','text-slate-300','?']};
+const stat=(k,label,val,sub)=>`<div class="rounded-xl border border-dark-border bg-dark-base/70 p-3 text-center"><div class="text-[11px] text-dark-muted mb-1">${label}</div><div class="text-xl font-extrabold mono ${k||''}" dir="ltr">${val}</div>${sub?`<div class="text-[11px] text-dark-muted mt-0.5" dir="ltr">${sub}</div>`:''}</div>`;
+
+function summary(){
+  const t=T[lang], ar=lang==='ar';
+  const a1=avg(B.map(p=>p.gpa1)), a2=avg(B.map(p=>p.gpa2)), ch=a2-a1;
+  const cu=B.filter(p=>p.k==='up').length, cd=B.filter(p=>p.k==='down').length, cs=B.filter(p=>p.k==='same').length;
+  const f1=B.filter(p=>p.g1.includes('F')).length, f2c=B.filter(p=>p.g2.includes('F')).length;
+  const nf1=B.reduce((x,p)=>x+p.g1.filter(g=>g==='F').length,0), nf2=B.reduce((x,p)=>x+p.g2.filter(g=>g==='F').length,0);
+  const tot1=B.length*7, tot2=B.length*8;
+  const bar=(n,c)=>`<div style="width:${pct(n,B.length)}%;background:${c}" class="h-full"></div>`;
+  const movers=(list,title,cls)=>`<div class="rounded-2xl border border-dark-border bg-dark-surface/95 p-4"><div class="text-xs mono font-bold mb-3 ${cls}">${title}</div>`+
+    list.map(p=>`<div class="flex items-center justify-between gap-2 py-1.5 border-t border-dark-border first:border-0 text-sm"><span class="font-semibold ltr-txt min-w-0 truncate">${esc(p.name)}</span><span class="mono text-xs shrink-0 ${cls}" dir="ltr">${f2(p.gpa1)} → ${f2(p.gpa2)} (${sg(p.d)})</span></div>`).join('')+`</div>`;
+  const srt=B.slice().sort((x,y)=>y.d-x.d||x.name.localeCompare(y.name));
+  const topUp=srt.slice(0,5), topDown=srt.slice().reverse().slice(0,5);
+  return `<div class="rounded-2xl border border-dark-border bg-dark-surface/95 p-5 mb-4 shadow-xl" style="border-top:4px solid #f97316">
+      <div class="text-xs mono text-brand-500 font-bold mb-3">${t.avg} · ${B.length} ${t.n}</div>
+      <div class="grid grid-cols-3 gap-2">
+        ${stat('',t.s1,f2(a1))}${stat('text-brand-500',t.s2,f2(a2))}${stat(ch>0?'text-emerald-300':ch<0?'text-red-300':'',t.chg,sg(ch))}
+      </div>
+      <div class="h-3 rounded-full overflow-hidden flex mt-5 bg-dark-base" dir="ltr">${bar(cu,'#10b981')}${bar(cs,'#94a3b8')}${bar(cd,'#ef4444')}</div>
+      <div class="grid grid-cols-3 gap-2 mt-3 text-center text-sm">
+        <div><div class="font-extrabold mono text-emerald-300" dir="ltr">${cu} <span class="text-xs opacity-70">(${pct(cu,B.length)}%)</span></div><div class="text-[11px] text-dark-muted">${t.up}</div></div>
+        <div><div class="font-extrabold mono text-slate-300" dir="ltr">${cs} <span class="text-xs opacity-70">(${pct(cs,B.length)}%)</span></div><div class="text-[11px] text-dark-muted">${t.same}</div></div>
+        <div><div class="font-extrabold mono text-red-300" dir="ltr">${cd} <span class="text-xs opacity-70">(${pct(cd,B.length)}%)</span></div><div class="text-[11px] text-dark-muted">${t.down}</div></div>
+      </div>
+    </div>
+    <div class="rounded-2xl border border-dark-border bg-dark-surface/95 p-5 mb-4">
+      <div class="text-xs mono text-brand-500 font-bold mb-3">${t.fT}</div>
+      <div class="grid grid-cols-3 gap-2 text-center mb-1"><div></div><div class="text-[11px] text-dark-muted">${t.s1}</div><div class="text-[11px] text-dark-muted">${t.s2}</div></div>
+      ${[[t.fStud,f1+' ('+pct(f1,B.length)+'%)',f2c+' ('+pct(f2c,B.length)+'%)'],[t.clean,(B.length-f1)+' ('+pct(B.length-f1,B.length)+'%)',(B.length-f2c)+' ('+pct(B.length-f2c,B.length)+'%)'],[t.fShare,nf1+'/'+tot1+' ('+pct(nf1,tot1)+'%)',nf2+'/'+tot2+' ('+pct(nf2,tot2)+'%)']].map(r=>`<div class="grid grid-cols-3 gap-2 py-2 border-t border-dark-border text-center items-center"><div class="text-xs text-start">${r[0]}</div><div class="mono text-xs font-bold" dir="ltr">${r[1]}</div><div class="mono text-xs font-bold text-brand-500" dir="ltr">${r[2]}</div></div>`).join('')}
+    </div>
+    <div class="grid sm:grid-cols-2 gap-4 mb-6">${movers(topUp,'▲ '+t.top,'text-emerald-300')}${movers(topDown,'▼ '+t.bot,'text-red-300')}</div>`;
+}
+
+function track(p){
+  if(!p.cmp) return '';
+  const a=p.gpa1/4*100, b=p.gpa2/4*100, lo=Math.min(a,b), w=Math.abs(b-a), c=KC[p.k][0];
+  return `<div class="relative h-2 rounded-full bg-dark-base mt-3" dir="ltr" aria-hidden="true">
+    <div class="absolute top-0 h-2 rounded-full" style="left:${lo}%;width:${w}%;background:${c};opacity:.55"></div>
+    <div class="absolute -top-0.5 w-3 h-3 rounded-full border-2 border-dark-surface" style="left:calc(${a}% - 6px);background:#38bdf8"></div>
+    <div class="absolute -top-0.5 w-3 h-3 rounded-full border-2 border-dark-surface" style="left:calc(${b}% - 6px);background:#f97316"></div></div>`;
+}
+function gradeTable(courses,grades,title){
+  const t=T[lang], ar=lang==='ar';
+  if(!grades) return '';
+  return `<div><div class="px-4 py-2 text-xs mono font-bold text-brand-500 bg-dark-base/70">${title}</div><table class="w-full text-sm"><tbody>`+
+   courses.map((c,i)=>{const g=grades[i],f=g==='F';return `<tr class="border-t border-dark-border"><td class="px-4 py-2"><div class="font-semibold ltr-txt ${ar?'text-right':'text-left'}">${c.en}</div>${ar?`<div class="text-xs text-dark-muted">${c.ar}</div>`:''}</td><td class="px-4 py-2 text-center w-20"><span class="inline-block min-w-[44px] mono font-bold px-2.5 py-1 rounded-md ${f?'bg-red-500 text-white':'bg-dark-base border border-dark-border'}" style="${f?'':'color:#fb923c'}">${g}</span></td></tr>`}).join('')+`</tbody></table></div>`;
+}
+function card(p){
+  const t=T[lang], ar=lang==='ar', k=KC[p.k];
+  const dTxt = p.cmp ? `<span class="${k[1]} font-extrabold mono" dir="ltr">${k[2]} ${sg(p.d)}</span>` : `<span class="text-slate-300 text-xs">${t.nocomp}</span>`;
+  const g1=p.gpa1!=null?f2(p.gpa1):'—', g2=p.gpa2!=null?f2(p.gpa2):'—';
+  const note=[];
+  if(p.alt1) note.push(`${t.nameNote} <span class="ltr-txt font-semibold">${esc(p.alt1)}</span>`);
+  if(p.gpa1==null) note.push(t.noS1);
+  if(p.gpa2==null) note.push(t.noS2);
+  const body=gradeTable(C1,p.g1,t.sem1)+gradeTable(C2,p.g2,t.sem2)+(note.length?`<p class="p-4 text-sm bg-amber-500/10 text-amber-300 border-t border-dark-border">${note.join('<br>')}</p>`:'');
+  return `<details class="rounded-2xl border border-dark-border bg-dark-surface/95 overflow-hidden shadow-xl" style="border-inline-start:5px solid ${k[0]}">
+   <summary class="cursor-pointer p-4 select-none hover:bg-dark-elevated transition">
+    <div class="flex items-center justify-between gap-3">
+      <div class="min-w-0"><div class="text-base sm:text-lg font-bold ltr-txt ${ar?'text-right':'text-left'}">${esc(p.name)}</div><div class="mono text-xs text-brand-500 mt-0.5 ltr-txt ${ar?'text-right':'text-left'}">${p.idx2}</div></div>
+      <div class="flex items-center gap-3 shrink-0"><div class="text-end">${dTxt}</div><span class="chev text-brand-500 text-lg transition-transform" aria-hidden="true">▼</span></div>
+    </div>
+    <div class="grid grid-cols-3 gap-2 mt-3">${stat('',t.gpa1,g1)}${stat('text-brand-500',t.gpa2,g2)}${stat('',t.cgpa,p.cgpa2!=null?f2(p.cgpa2):'—')}</div>
+    ${track(p)}
+    <div class="tapmsg text-[11px] text-dark-muted mt-3 text-center">${t.tap}</div>
+   </summary><div class="border-t border-dark-border">${body}${p.rec2?`<div class="px-4 py-3 border-t border-dark-border text-sm flex justify-between"><span class="text-dark-muted">${t.status}</span><span class="mono font-bold ltr-txt ${recCls(p.rec2)}">${esc(p.rec2)}</span></div>`:''}</div></details>`;
+}
+const norm=s=>s.toLowerCase().replace(/[^a-z0-9؀-ۿ ]/g," ").replace(/\s+/g," ").trim();
+function sorted(r){
+  const n=(v,d)=>v==null?(d?-Infinity:Infinity):v;
+  const by={idx:(a,b)=>a.no-b.no, up:(a,b)=>n(b.d,1)-n(a.d,1)||a.no-b.no, down:(a,b)=>n(a.d,0)-n(b.d,0)||a.no-b.no,
+    g2:(a,b)=>n(b.gpa2,1)-n(a.gpa2,1)||a.no-b.no, g1:(a,b)=>n(b.gpa1,1)-n(a.gpa1,1)||a.no-b.no, name:(a,b)=>a.name.localeCompare(b.name,'en')};
+  return r.slice().sort(by[sortKey]);
+}
+function list(){
+  const t=T[lang], box=document.getElementById('out');
+  const w=norm(query).split(' ').filter(Boolean);
+  let r=P.filter(p=>(filt==='all'||p.k===filt)&&w.every(x=>norm(p.name+' '+(p.alt1||'')).includes(x)));
+  r=sorted(r);
+  box.innerHTML = r.length ? `<div class="text-xs mono text-dark-muted mb-3" dir="ltr">// ${r.length} / ${P.length}</div><div class="grid gap-4">${r.map(card).join('')}</div>` : `<div class="rounded-2xl p-4 border border-dashed border-dark-border text-dark-muted text-sm">${t.none}</div>`;
+}
+function chips(){
+  const t=T[lang], el=document.getElementById('chips');
+  el.innerHTML=Object.keys(t.fl).map(k=>{const on=k===filt, c=k==='all'?P.length:P.filter(p=>p.k===k).length;
+    return `<button type="button" data-f="${k}" aria-pressed="${on}" class="px-3 py-1.5 rounded-lg border text-xs font-semibold transition ${on?'bg-brand-500 text-black border-brand-500':'bg-dark-base border-dark-border text-dark-muted hover:border-brand-500'}">${t.fl[k]} <span class="mono opacity-70">${c}</span></button>`;}).join('');
+  el.querySelectorAll('button').forEach(b=>b.onclick=()=>{filt=b.dataset.f;chips();list();});
+}
+function shell(){
+  const t=T[lang], ar=lang==='ar';
+  document.documentElement.lang=lang; document.documentElement.dir=ar?'rtl':'ltr';
+  document.getElementById('langBtn').textContent=ar?'English':'العربية';
+  document.getElementById('navRes').textContent=t.res;
+  document.getElementById('app').innerHTML=`<div>
+   <div class="rounded-2xl bg-dark-surface/95 backdrop-blur p-6 sm:p-8 mb-5 border-2 border-brand-500/40 shadow-2xl relative overflow-hidden">
+    <div class="absolute top-3 ${ar?'right-4':'left-4'} flex items-center gap-1.5 opacity-70" dir="ltr"><span class="w-3 h-3 rounded-full bg-red-500 inline-block"></span><span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span><span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span><span class="text-[11px] mono text-dark-muted ms-2">compare_sem1_sem2.cpp</span></div>
+    <div class="relative z-10 mt-5 text-center sm:text-start">
+      <div class="text-xs sm:text-sm mono text-brand-500 mb-1 font-bold" dir="ltr">${t.cmd}</div>
+      <h1 class="text-2xl sm:text-4xl font-extrabold mb-2 tracking-wide"><span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-amber-400">${t.title}</span></h1>
+      <p class="text-dark-muted text-xs sm:text-sm mono">${t.sub}<span class="text-brand-500 terminal-cursor">_</span></p>
+    </div></div>
+   ${summary()}
+   <p class="text-dark-muted text-xs mb-6 -mt-2">${t.base(B.length,P.length)}</p>
+   <div class="rounded-2xl p-4 mb-6 border border-brand-500/40 bg-dark-surface/95 shadow-lg">
+     <label for="q" class="block text-xs mono text-brand-500 font-bold mb-2">${t.find}</label>
+     <input id="q" type="search" autocomplete="off" value="${esc(query)}" placeholder="${esc(t.ph)}" class="w-full bg-dark-base border border-dark-border focus:border-brand-500 rounded-xl px-3.5 py-2.5 text-sm font-semibold text-white outline-none transition">
+     <div class="mt-3 flex flex-col sm:flex-row sm:items-center gap-3">
+       <label class="flex items-center gap-2 text-xs mono text-brand-500 font-bold shrink-0">${t.sort}
+        <select id="sortSel" class="bg-dark-base border border-dark-border focus:border-brand-500 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-white outline-none cursor-pointer">${Object.keys(t.sorts).map(k=>`<option value="${k}" ${k===sortKey?'selected':''}>${t.sorts[k]}</option>`).join('')}</select></label>
+       <div id="chips" class="flex flex-wrap gap-2"></div></div></div>
+   <div id="out"></div>
+   <p class="text-dark-muted text-xs mt-8">${t.foot1}</p><p class="text-dark-muted text-xs mt-2">${t.foot2}</p>
+  </div>`;
+  document.getElementById('q').addEventListener('input',e=>{query=e.target.value;list();});
+  document.getElementById('sortSel').onchange=e=>{sortKey=e.target.value;list();};
+  chips(); list();
+}
+document.getElementById('langBtn').onclick=()=>{ lang=lang==='ar'?'en':'ar'; try{ const c=load(); c.lang=lang; localStorage.setItem(KEY,JSON.stringify(c)); }catch(e){} shell(); };
+shell();
+
+(function networkBackground(){
+  const canvas=document.getElementById('netCanvas'); if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  const reduceMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const colors=['249,115,22','56,189,248'];
+  let w,h,particles=[],rafId=null;
+  function resize(){w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight;}
+  function initParticles(){const n=reduceMotion?0:Math.min(60,Math.round((w*h)/24000));
+    particles=Array.from({length:n},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3}));}
+  function step(){ctx.clearRect(0,0,w,h);
+    for(const p of particles){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;}
+    for(let i=0;i<particles.length;i++){const a=particles[i];
+      ctx.beginPath();ctx.arc(a.x,a.y,1.5,0,Math.PI*2);ctx.fillStyle='rgba(148,163,184,.55)';ctx.fill();
+      for(let j=i+1;j<particles.length;j++){const b=particles[j];const dx=a.x-b.x,dy=a.y-b.y;const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<130){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=`rgba(${colors[(i+j)%2]},${.16*(1-d/130)})`;ctx.lineWidth=1;ctx.stroke();}}}}
+  function loop(){step();rafId=requestAnimationFrame(loop);}
+  function start(){if(!rafId&&!reduceMotion)rafId=requestAnimationFrame(loop);}
+  function stop(){if(rafId){cancelAnimationFrame(rafId);rafId=null;}}
+  window.addEventListener('resize',()=>{resize();initParticles();});
+  document.addEventListener('visibilitychange',()=>{document.hidden?stop():start();});
+  resize();initParticles();
+  if(reduceMotion){step();}else{start();}
+})();
+
+</script>
+</body>
+</html>
